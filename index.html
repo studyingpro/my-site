@@ -100,6 +100,11 @@
             border-color: var(--t19-accent) !important;
             color: var(--t19-accent) !important;
         }
+        @keyframes geoAssistBlink {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); background: rgba(245,158,11,0.35); }
+            50% { box-shadow: 0 0 0 10px rgba(245,158,11,0); background: rgba(245,158,11,0.08); }
+        }
+        .geo-assist-blink { animation: geoAssistBlink 0.6s ease-in-out 3; border-color: #f59e0b !important; }
 
 
         /* ツアーオーバーレイ */
@@ -206,9 +211,35 @@
         .t19-slide-in-left   { animation: t19SlideInLeft   0.32s cubic-bezier(0.4,0,0.2,1) forwards; }
         .t19-slide-out-right { animation: t19SlideOutRight 0.22s cubic-bezier(0.4,0,0.2,1) forwards; }
         .t19-slide-out-left  { animation: t19SlideOutLeft  0.22s cubic-bezier(0.4,0,0.2,1) forwards; }
+
+        /* ===== 開発者モード中の全体演出 =====
+           画面全体を縞模様のボーダーで囲み、開発者モードであることを常に視認できるようにする */
+        @keyframes devModeStripes {
+            from { background-position: 0 0; }
+            to   { background-position: 56px 0; }
+        }
+        body.dev-mode-active::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            pointer-events: none;
+            border: 4px solid transparent;
+            box-shadow: inset 0 0 0 4px #f59e0b;
+        }
+        body.dev-mode-active #dev-mode-top-banner {
+            background-image: repeating-linear-gradient(135deg, #f59e0b 0 14px, #d97706 14px 28px);
+            background-size: 56px 100%;
+            animation: devModeStripes 2.2s linear infinite;
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-500 antialiased relative overflow-x-hidden w-full">
+    <!-- 開発者モード中であることを常に示す、画面最上部のバナー -->
+    <div id="dev-mode-top-banner" class="hidden w-full text-white text-[11px] font-black tracking-wide text-center py-1.5 shadow-md flex items-center justify-center gap-1.5">
+        <i data-lucide="pencil-ruler" class="w-3.5 h-3.5"></i>
+        <span>開発者モードで編集中です（本体アプリの画面がそのまま編集モードになっています）</span>
+    </div>
 
     <!-- ==================================================
          ログイン / ゲスト選択モーダル
@@ -1932,17 +1963,63 @@
                 </button>
                 <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
                 <div class="flex items-center space-x-2">
-                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow"><i data-lucide="map" class="w-4 h-4"></i></div>
-                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">国あてパズル</h3>
+                    <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-400 via-emerald-400 to-amber-400 flex items-center justify-center text-white shadow"><i data-lucide="earth" class="w-4 h-4"></i></div>
+                    <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">あそんでまなべる世界地図パズル</h3>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm max-w-2xl mx-auto w-full">
-            <p class="text-[11px] font-bold text-slate-400 mb-3">下の国の形を、地図の正しい位置までドラッグしよう（実際の地図から抽出した形です）</p>
+        <!-- ===== アプリ風スタート画面 ===== -->
+        <div id="geo-puzzle-splash" class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm max-w-md mx-auto w-full text-center">
+            <div class="w-16 h-16 mx-auto mb-3 rounded-[26%] bg-gradient-to-br from-sky-400 via-emerald-400 to-amber-400 flex items-center justify-center shadow-lg">
+                <i data-lucide="earth" class="w-8 h-8 text-white"></i>
+            </div>
+            <h2 class="text-sm font-black text-slate-900 dark:text-white mb-1">あそんでまなべる<br>世界地図パズル</h2>
+            <p class="text-[10px] font-bold text-slate-400 mb-4">ジグソーパズル感覚で、世界の国の位置を覚えよう！</p>
+
+            <div class="flex items-center justify-center gap-4 mb-5 text-[10px] font-bold text-slate-400">
+                <span>プレイ回数 <b class="text-slate-700 dark:text-slate-200" id="geo-splash-plays">0</b></span>
+                <span class="w-px h-3 bg-slate-200 dark:bg-slate-700"></span>
+                <span>自己ベスト <b class="text-slate-700 dark:text-slate-200" id="geo-splash-best">−</b></span>
+            </div>
+
+            <!-- モード選択（実際のアプリの「クイック／ワールド」のような遊び方の選択画面） -->
+            <div class="space-y-2.5 text-left">
+                <button onclick="startGeoPuzzleGame('quick')" class="w-full flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/20 transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500 flex items-center justify-center text-white shrink-0"><i data-lucide="zap" class="w-5 h-5"></i></div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-black text-slate-800 dark:text-white">クイック</p>
+                        <p class="text-[10px] font-bold text-slate-400">出題順をシャッフルしてサクッと1周</p>
+                    </div>
+                </button>
+                <button onclick="startGeoPuzzleGame('world')" class="w-full flex items-center gap-3 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-700 hover:border-sky-400 hover:bg-sky-50 dark:hover:bg-sky-950/20 transition-all">
+                    <div class="w-10 h-10 rounded-xl bg-sky-500 flex items-center justify-center text-white shrink-0"><i data-lucide="globe" class="w-5 h-5"></i></div>
+                    <div class="min-w-0">
+                        <p class="text-xs font-black text-slate-800 dark:text-white">ワールド</p>
+                        <p class="text-[10px] font-bold text-slate-400">決まった順番で、収録国を制覇しよう</p>
+                    </div>
+                </button>
+            </div>
+
+            <div class="mt-4 flex items-center justify-center gap-1.5 text-[10px] font-bold text-amber-500">
+                <i data-lucide="lightbulb" class="w-3.5 h-3.5"></i>
+                <span>迷ったら「アシスト」で正解の位置がヒカる</span>
+            </div>
+        </div>
+
+        <div id="geo-puzzle-game-card" class="hidden bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm max-w-2xl mx-auto w-full">
+            <div class="flex items-center justify-between mb-3">
+                <p class="text-[11px] font-bold text-slate-400">下の国の形を、地図の正しい位置までドラッグしよう</p>
+                <span id="geo-puzzle-mode-label" class="text-[9px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 shrink-0">クイック</span>
+            </div>
             <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 mb-2">
                 <span id="geo-puzzle-progress"></span>
-                <span id="geo-puzzle-mistakes" class="text-rose-400"></span>
+                <div class="flex items-center gap-2">
+                    <button onclick="geoPuzzleAssist()" class="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-800/50 hover:bg-amber-100 transition-all">
+                        <i data-lucide="lightbulb" class="w-3 h-3"></i><span>アシスト</span>
+                    </button>
+                    <span id="geo-puzzle-mistakes" class="text-rose-400"></span>
+                </div>
             </div>
 
             <!-- 地図キャンバス -->
@@ -2288,19 +2365,37 @@
                     </h4>
                     <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
                         <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">GitHub Personal Access Token（Fine-grained, Contents: Read &amp; write）でこのリポジトリの config.json を直接編集・公開できます。Tokenはこの端末のブラウザ内にのみ保存されます。</p>
-                        <input type="password" id="cms-gh-token" placeholder="GitHub Personal Access Token"
-                            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                        <div class="grid grid-cols-2 gap-2">
-                            <input type="text" id="cms-gh-repo" placeholder="owner/repo"
-                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                            <input type="text" id="cms-gh-branch" placeholder="ブランチ" value="main"
-                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+
+                        <!-- 接続済みの場合はこちらを表示。保存済みの接続情報を使って自動で再接続されるため、毎回の入力は不要です -->
+                        <div id="cms-gh-connected-view" class="hidden bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 rounded-xl p-3 flex items-center justify-between gap-2">
+                            <div class="min-w-0">
+                                <p class="text-xs font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i><span>接続済み</span></p>
+                                <p id="cms-gh-connected-repo" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 truncate"></p>
+                            </div>
+                            <div class="flex gap-1 shrink-0">
+                                <button onclick="cmsReloadFromGitHub()" class="p-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40" title="最新の内容を再読込"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i></button>
+                                <button onclick="cmsGhShowForm()" class="p-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40" title="接続先を変更する"><i data-lucide="settings" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i></button>
+                                <button onclick="cmsDisconnectGitHub()" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40" title="接続を解除する"><i data-lucide="log-out" class="w-3.5 h-3.5 text-rose-500"></i></button>
+                            </div>
                         </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <button onclick="cmsConnect()" id="cms-connect-btn" class="py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">接続して読み込み</button>
-                            <button onclick="cmsReloadFromGitHub()" class="py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black hover:opacity-90 transition-all">再読込</button>
+
+                        <!-- 未接続、または「接続先を変更する」を押した時だけ表示する入力フォーム -->
+                        <div id="cms-gh-connect-form" class="space-y-3">
+                            <input type="password" id="cms-gh-token" placeholder="GitHub Personal Access Token"
+                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="cms-gh-repo" placeholder="owner/repo"
+                                    class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                                <input type="text" id="cms-gh-branch" placeholder="ブランチ" value="main"
+                                    class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="cmsConnect()" id="cms-connect-btn" class="py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">接続して読み込み</button>
+                                <button onclick="cmsReloadFromGitHub()" class="py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black hover:opacity-90 transition-all">再読込</button>
+                            </div>
+                            <p id="cms-gh-status" class="text-[10px] font-bold text-slate-500 dark:text-slate-400"></p>
                         </div>
-                        <p id="cms-gh-status" class="text-[10px] font-bold text-slate-500 dark:text-slate-400"></p>
+
                         <button onclick="cmsSaveToGitHub()" id="cms-save-btn" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">GitHubに保存して公開</button>
                         <p id="cms-save-status" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 text-center"></p>
                     </div>
@@ -2457,8 +2552,15 @@
                     </div>
                 </div>
                 <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">対象クラス（未選択なら全員に表示）</label>
-                    <select id="cms-sch-class" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400"></select>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400">対象クラス（複数選択可・未選択なら全員に表示）</label>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <button type="button" onclick="cmsScheduleClassSelectAll()" class="text-[10px] font-black text-blue-500 hover:underline">全選択</button>
+                            <button type="button" onclick="cmsScheduleClassClear()" class="text-[10px] font-black text-slate-400 hover:underline">解除</button>
+                        </div>
+                    </div>
+                    <div id="cms-sch-class-checks" class="flex flex-wrap gap-1.5"></div>
+                    <p id="cms-sch-class-summary" class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5"></p>
                 </div>
                 <div>
                     <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">メモ（任意）</label>
@@ -2619,12 +2721,22 @@
         </div>
     </div>
 
-    <!-- 開発者編集モード中を示すフローティングインジケーター -->
-    <div id="dev-floating-indicator" class="hidden fixed bottom-6 left-6 z-40 flex items-center gap-1.5 bg-slate-900/95 dark:bg-slate-800/95 text-white pl-3.5 pr-1.5 py-1.5 rounded-full shadow-2xl backdrop-blur-sm border border-slate-700">
-        <i data-lucide="pencil-ruler" class="w-3.5 h-3.5 text-cyan-400"></i>
-        <span class="text-[11px] font-black">編集モード</span>
-        <button onclick="openDevDashboard()" class="p-1.5 rounded-full hover:bg-white/10 transition-all" title="開発者設定（GitHub連携など）"><i data-lucide="settings-2" class="w-3.5 h-3.5"></i></button>
-        <button onclick="devExitEditMode()" class="p-1.5 rounded-full hover:bg-white/10 transition-all" title="編集モードを終了"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+    <!-- 開発者編集モード中を示すフローティングインジケーター（ダッシュボードの外からも公開・状況確認ができる） -->
+    <div id="dev-floating-indicator" class="hidden fixed bottom-6 left-6 z-[9999] flex flex-col items-start gap-1.5">
+        <div id="dev-floating-status" class="hidden max-w-[80vw] px-3 py-1.5 rounded-full text-[10px] font-black text-white shadow-lg"></div>
+        <div class="flex items-center gap-1.5 bg-amber-500 text-white pl-3 pr-1.5 py-1.5 rounded-full shadow-2xl border-2 border-amber-300">
+            <span class="relative flex h-2 w-2 shrink-0">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+            </span>
+            <i data-lucide="pencil-ruler" class="w-3.5 h-3.5"></i>
+            <span class="text-[11px] font-black">開発者モード編集中</span>
+            <button onclick="cmsSaveToGitHub()" id="dev-floating-publish-btn" class="flex items-center gap-1 pl-2 pr-2.5 py-1.5 rounded-full bg-white/20 hover:bg-white/30 transition-all" title="GitHubに保存して公開">
+                <i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i><span class="text-[11px] font-black">公開</span>
+            </button>
+            <button onclick="openDevDashboard()" class="p-1.5 rounded-full hover:bg-white/20 transition-all" title="開発者設定（GitHub連携など）"><i data-lucide="settings-2" class="w-3.5 h-3.5"></i></button>
+            <button onclick="devExitEditMode()" class="p-1.5 rounded-full hover:bg-white/20 transition-all" title="編集モードを終了"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
+        </div>
     </div>
 
     <!-- 通常トースト -->
@@ -2975,8 +3087,15 @@
                     </label>
                     <div id="schedule-input-publish-fields" class="hidden space-y-3 pt-1 border-t border-cyan-200 dark:border-cyan-800/40">
                         <div>
-                            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">対象クラス（未選択なら全員に表示）</label>
-                            <select id="schedule-input-class" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400"></select>
+                            <div class="flex items-center justify-between mb-1">
+                                <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400">対象クラス（複数選択可・未選択なら全員に表示）</label>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <button type="button" onclick="scheduleInputClassSelectAll()" class="text-[10px] font-black text-cyan-600 dark:text-cyan-400 hover:underline">全選択</button>
+                                    <button type="button" onclick="scheduleInputClassClear()" class="text-[10px] font-black text-slate-400 hover:underline">解除</button>
+                                </div>
+                            </div>
+                            <div id="schedule-input-class-checks" class="flex flex-wrap gap-1.5"></div>
+                            <p id="schedule-input-class-summary" class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5"></p>
                         </div>
                         <div>
                             <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">コーナー（任意・複数選択可）</label>
@@ -5558,12 +5677,32 @@
             return Math.round(diffMs / (1000 * 60 * 60 * 24));
         }
 
+        // 予定オブジェクトから「対象クラスID」の配列を取り出す共通ヘルパー。
+        // 新形式（classIds配列・複数選択）と旧形式（classId単一値）の両方に対応する。
+        function scheduleClassIdsOf(s) {
+            if (!s) return [];
+            if (Array.isArray(s.classIds)) return s.classIds.filter(Boolean);
+            if (s.classId) return [s.classId];
+            return [];
+        }
+        // クラスIDごとに一定の色を割り当てるためのシンプルなハッシュ関数（チップ表示用）
+        const CLASS_CHIP_COLORS = ['#38bdf8', '#f472b6', '#a78bfa', '#fb923c', '#34d399', '#facc15', '#f87171', '#60a5fa'];
+        function classChipColor(id) {
+            let hash = 0;
+            const str = String(id || '');
+            for (let i = 0; i < str.length; i++) hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+            return CLASS_CHIP_COLORS[hash % CLASS_CHIP_COLORS.length];
+        }
+
         // ローカル（自分で追加）＋ 管理サイトの全体予定をマージした「全期間」の予定一覧
-        // 「対象クラス」が設定されている予定は、そのクラスに参加しているユーザーにのみ表示する
+        // 「対象クラス」が設定されている予定は、そのクラスに参加しているユーザーにのみ表示する（複数クラス指定可）
         function getAllSchedules() {
             const myClassId = window.currentUserClassId || null;
             const remoteItems = (window._remoteGlobalSchedules || [])
-                .filter(s => !s.classId || s.classId === myClassId)
+                .filter(s => {
+                    const ids = scheduleClassIdsOf(s);
+                    return ids.length === 0 || ids.includes(myClassId);
+                })
                 .map(s => ({
                     id: 'remote_' + (s.id || s.title + s.date),
                     type: s.type || 'test',
@@ -5571,6 +5710,7 @@
                     subject: s.subject || null,
                     date: s.date,
                     memo: s.memo || null,
+                    classIds: scheduleClassIdsOf(s),
                     classId: s.classId || null,
                     cornerIds: Array.isArray(s.cornerIds) ? s.cornerIds : [],
                     notifyAt: s.notifyAt || null,
@@ -5796,6 +5936,9 @@
                 const isToday = item.date === todayStr;
                 const done = item.type === 'submission' && isSubmissionDone(item.id);
                 const openCall = item.isRemote ? `openScheduleViewModal('${item.id}')` : `openScheduleViewModal(${item.id})`;
+                const d = daysUntil(item.date);
+                const daysLabel = d === 0 ? '当日' : (d > 0 ? `あと${d}日` : `${Math.abs(d)}日前`);
+                const daysColor = d === 0 ? 'text-rose-500' : (d > 0 ? 'text-cyan-500 dark:text-cyan-400' : 'text-slate-400 dark:text-slate-500');
                 return `
                 <div onclick="${openCall}" class="group flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${(isPast || done) ? 'opacity-50' : ''} bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/60 active:scale-[0.99]">
                     ${renderSubmissionCheckbox(item)}
@@ -5813,7 +5956,10 @@
                             ${item.subject ? `<span class="text-[10px] font-bold text-slate-400">・${escapeHtml(item.subject)}</span>` : ''}
                         </div>
                     </div>
-                    <span class="text-[10px] font-black text-slate-400 shrink-0">${escapeHtml(item.date)}</span>
+                    <div class="flex flex-col items-end gap-0.5 shrink-0">
+                        <span class="text-[10px] font-black text-slate-400">${escapeHtml(item.date)}</span>
+                        ${done ? '' : `<span class="text-[9px] font-black ${daysColor}">${daysLabel}</span>`}
+                    </div>
                     <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 shrink-0"></i>
                 </div>`;
             };
@@ -6278,7 +6424,6 @@
             // 開発者モード用セクションの表示切替＆選択肢の準備
             const devSection = document.getElementById('schedule-input-dev-section');
             if (devSection) devSection.classList.toggle('hidden', !devUnlocked);
-            if (devUnlocked) populateScheduleInputDevOptions();
 
             let remoteMatch = null;
             let rawEditId = editId;
@@ -6286,6 +6431,7 @@
                 rawEditId = cmsStripRemoteIdPrefix(editId);
                 remoteMatch = (window._remoteGlobalSchedules || []).find(x => String(x.id) === String(rawEditId));
             }
+            if (devUnlocked) populateScheduleInputDevOptions(remoteMatch ? scheduleClassIdsOf(remoteMatch) : []);
 
             if (editId != null && !remoteMatch) {
                 const s = scheduleItems.find(x => x.id === editId);
@@ -6314,7 +6460,6 @@
                 scheduleSelectedType = s.type || 'test';
                 if (deleteBtn) deleteBtn.classList.remove('hidden');
                 setSchedulePublishToggle(true);
-                document.getElementById('schedule-input-class').value = s.classId || '';
                 document.getElementById('schedule-input-notify').value = s.notifyAt ? s.notifyAt.slice(0, 16) : '';
                 populateScheduleInputCornerChecks(s.cornerIds || []);
             } else {
@@ -6367,13 +6512,37 @@
             const fields = document.getElementById('schedule-input-publish-fields');
             if (fields) fields.classList.toggle('hidden', !(toggle && toggle.checked));
         }
-        function populateScheduleInputDevOptions() {
+        function populateScheduleInputDevOptions(selectedIds) {
+            selectedIds = selectedIds || [];
             const classes = window._remoteClasses || [];
-            const sel = document.getElementById('schedule-input-class');
-            if (sel) {
-                sel.innerHTML = '<option value="">（未選択：全員に表示）</option>' +
-                    classes.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
+            const wrap = document.getElementById('schedule-input-class-checks');
+            if (wrap) {
+                if (classes.length === 0) {
+                    wrap.innerHTML = '<p class="text-[10px] text-slate-400">クラスがまだありません（開発者ダッシュボードから作成できます）</p>';
+                } else {
+                    wrap.innerHTML = classes.map(c => `
+                        <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer text-[11px] font-bold bg-white dark:bg-slate-900">
+                            <input type="checkbox" class="schedule-input-class-check" value="${escapeHtml(c.id)}" onchange="updateScheduleInputClassSummary()" ${selectedIds.includes(c.id) ? 'checked' : ''}>
+                            <span style="width:8px;height:8px;border-radius:50%;background:${classChipColor(c.id)};display:inline-block;"></span>
+                            ${escapeHtml(c.name)}
+                        </label>`).join('');
+                }
             }
+            updateScheduleInputClassSummary();
+        }
+        function updateScheduleInputClassSummary() {
+            const summaryEl = document.getElementById('schedule-input-class-summary');
+            if (!summaryEl) return;
+            const n = document.querySelectorAll('.schedule-input-class-check:checked').length;
+            summaryEl.textContent = n === 0 ? '未選択：この予定は全員に表示されます' : `${n}クラスに表示されます`;
+        }
+        function scheduleInputClassSelectAll() {
+            document.querySelectorAll('.schedule-input-class-check').forEach(el => { el.checked = true; });
+            updateScheduleInputClassSummary();
+        }
+        function scheduleInputClassClear() {
+            document.querySelectorAll('.schedule-input-class-check').forEach(el => { el.checked = false; });
+            updateScheduleInputClassSummary();
         }
         function populateScheduleInputCornerChecks(selectedIds) {
             const wrap = document.getElementById('schedule-input-corner-checks');
@@ -6413,6 +6582,7 @@
                     return;
                 }
                 const cornerIds = Array.from(document.querySelectorAll('.schedule-input-corner-check:checked')).map(el => el.value);
+                const classIds = Array.from(document.querySelectorAll('.schedule-input-class-check:checked')).map(el => el.value);
                 const notifyRaw = document.getElementById('schedule-input-notify').value;
                 const entry = {
                     id: (wasRemote && editIdRaw) ? (isNaN(editIdRaw) ? editIdRaw : Number(editIdRaw)) : Date.now(),
@@ -6421,7 +6591,7 @@
                     subject: subject || null,
                     date,
                     memo: memo || null,
-                    classId: document.getElementById('schedule-input-class').value || null,
+                    classIds,
                     cornerIds,
                     notifyAt: notifyRaw ? new Date(notifyRaw).toISOString() : null,
                 };
@@ -11859,69 +12029,67 @@ const KOBUN_TANGO = [
   {n:311,w:'まゐらす（参らす）',m:'差し上げる、〜(し)申しあげる'},
   {n:312,w:'たまはる（給はる・賜はる）',m:'いただく'},
   {n:313,w:'のたまふ',m:'のたまはす（宣ふ・宣はす） おっしゃる'},
-  {n:314,w:'おほす（仰す）',m:'おっしゃる'},
-  {n:315,w:'おほせらる（仰せらる）',m:'おっしゃる'},
-  {n:316,w:'きこゆ（聞こゆ）',m:'申しあげる、〜(し)申しあげる'},
-  {n:317,w:'きこえさす（聞こえさす）',m:'申しあげる、〜(し)申しあげる'},
-  {n:318,w:'まうす（申す）',m:'申しあげる、〜(し)申しあげる'},
-  {n:319,w:'そうす（奏す）',m:'帝に申しあげる'},
-  {n:320,w:'けいす（啓す）',m:'皇后に申しあげる'},
-  {n:321,w:'きこしめす（聞こし召す）',m:'聞きなさる、召し上がる'},
-  {n:322,w:'うけたまはる（承る）',m:'お聞きする'},
-  {n:323,w:'あそばす（遊ばす）',m:'なさる'},
-  {n:324,w:'つかうまつる（仕うまつる）',m:'し申しあげる'},
-  {n:325,w:'めす（召す）',m:'お呼びになる、召しあがる'},
-  {n:326,w:'しろしめす（知ろしめす・領ろしめす）',m:'ご存じである、お治めになる'},
-  {n:327,w:'ごらんず（御覧ず）',m:'ご覧になる'},
-  {n:328,w:'おほとのごもる（大殿籠る）',m:'おやすみになる'},
-  {n:329,w:'〜たまふ(〜給ふ、〜賜ふ)',m:'(私が)〜ます'},
-  {n:330,w:'うへ（上）',m:'天皇、奥方'},
-  {n:331,w:'うち（内・内裏）',m:'天皇、宮中'},
-  {n:332,w:'きみ（君）',m:'天皇、あなた'},
-  {n:333,w:'みゆき（行幸・御幸）',m:'天皇のお出まし'},
-  {n:334,w:'くもゐ（雲居・雲井）',m:'宮中'},
-  {n:335,w:'ときめく（時めく）',m:'時勢に合って栄える、寵愛を受ける'},
-  {n:336,w:'ときめかす（時めかす）',m:'寵愛する'},
-  {n:337,w:'みや（宮）',m:'中宮、御殿'},
-  {n:338,w:'やまがつ（山賤）',m:'木こり'},
-  {n:339,w:'あま（海人・海士）',m:'漁師'},
-  {n:340,w:'もと（本・元）',m:'上の句、根本'},
-  {n:341,w:'すゑ（末）',m:'下の句、あと、末世、結果、子孫'},
-  {n:342,w:'こしをれ（腰折れ）',m:'下手な和歌'},
-  {n:343,w:'こころ（心・情）',m:'内容、気持ち、情趣を解する心、道理を理解する心'},
-  {n:344,w:'ことば（言葉・詞）',m:'表現、詞書'},
-  {n:345,w:'ふるうた（古歌）',m:'古人の詠んだ歌'},
-  {n:346,w:'ますらをぶり(益荒男振り・丈夫振り)',m:'素朴で力強い、歌風'},
-  {n:347,w:'だい(題)',m:'題'},
-  {n:348,w:'こころとし(心疾し)',m:'すばやい、気が早い'},
-  {n:349,w:'まばゆし(目映し・眩し)',m:'恥ずかしい、見ていられない'},
-  {n:350,w:'いふかひなし(言ふ甲斐無し)',m:'どうしようもない、つまらない'},
-  {n:351,w:'こよなし',m:'格段にすぐれている、格段に劣っている'},
-  {n:352,w:'あぢきなし',m:'どうしようもない、つまらない'},
-  {n:353,w:'むつまし(睦まし)',m:'親しい、慕わしい'},
-  {n:354,w:'おぼろけない',m:'〔打消を伴って〕並一通り(ではない)、並々ではない'},
-  {n:355,w:'なのめなり',m:'いい加減だ、並一通りだ'},
-  {n:356,w:'なほざりなり(等閑なり)',m:'いい加減だ、ほどほどだ'},
-  {n:357,w:'きよげなり(清げなり)',m:'美しい'},
-  {n:358,w:'かたくななり(頑ななり)',m:'頑固だ、教養がない、情趣を理解しない、見苦しい'},
-  {n:359,w:'あないす(案内す)',m:'事情を尋ねる、取次ぎを頼む'},
-  {n:360,w:'あるじす(主す、饗す)',m:'もてなす'},
-  {n:361,w:'むすぶ(掬ぶ)',m:'すくう'},
-  {n:362,w:'こころう(心得)',m:'理解する、よく通じる'},
-  {n:363,w:'いぬ(去ぬ、往ぬ）',m:'行ってしまう'},
-  {n:364,w:'すさぶ(遊ぶ、荒ぶ)',m:'気の向くまま に〜する'},
-  {n:365,w:'そらごと(空言、虚言)',m:'うそ'},
-  {n:366,w:'かたへ(片方)',m:'片側、かたわら、かたわらにいる人'},
-  {n:367,w:'そばめ(側目、傍目)',m:'横から見ること、横顔'},
-  {n:368,w:'よすが(縁、因、便)',m:'縁者、身を寄せる所、手段、方法'},
-  {n:369,w:'ものがたり(物語)',m:'話'},
-  {n:370,w:'ためし(例)',m:'前例'},
-  {n:371,w:'よろこび(喜び、慶び、悦び)',m:'昇進、慶事、お礼'},
-  {n:372,w:'しか(然)',m:'そのように'},
-  {n:373,w:'なべて(並べて)',m:'一般に、一面に、〔「なべて」の形で〕普通の'},
-  {n:374,w:'はた(将)',m:'そのうえまた、一方では'},
-  {n:375,w:'さらば(然らば)',m:'それならば'},
-  {n:376,w:'さるは(然るは)',m:'〔順接〕それというのも実は、〔累加〕そのうえ、〔逆接〕そうではあるが'}
+  {n:314,w:'おほす／おほせらる（仰す／仰せらる）',m:'おっしゃる'},
+  {n:315,w:'きこゆ／きこえさす（聞こゆ／聞こえさす）',m:'申しあげる、〜(し)申しあげる'},
+  {n:316,w:'まうす（申す）',m:'申しあげる、〜(し)申しあげる'},
+  {n:317,w:'そうす（奏す）',m:'帝に申しあげる'},
+  {n:318,w:'けいす（啓す）',m:'皇后に申しあげる'},
+  {n:319,w:'きこしめす（聞こし召す）',m:'聞きなさる、召し上がる'},
+  {n:320,w:'うけたまはる（承る）',m:'お聞きする'},
+  {n:321,w:'あそばす（遊ばす）',m:'なさる'},
+  {n:322,w:'つかうまつる（仕うまつる）',m:'し申しあげる'},
+  {n:323,w:'めす（召す）',m:'お呼びになる、召しあがる'},
+  {n:324,w:'しろしめす（知ろしめす・領ろしめす）',m:'ご存じである、お治めになる'},
+  {n:325,w:'ごらんず（御覧ず）',m:'ご覧になる'},
+  {n:326,w:'おほとのごもる（大殿籠る）',m:'おやすみになる'},
+  {n:327,w:'〜たまふ(〜給ふ、〜賜ふ)',m:'(私が)〜ます'},
+  {n:328,w:'うへ（上）',m:'天皇、奥方'},
+  {n:329,w:'うち（内・内裏）',m:'天皇、宮中'},
+  {n:330,w:'きみ（君）',m:'天皇、あなた'},
+  {n:331,w:'みゆき（行幸・御幸）',m:'天皇のお出まし'},
+  {n:332,w:'くもゐ（雲居・雲井）',m:'宮中'},
+  {n:333,w:'ときめく（時めく）',m:'時勢に合って栄える、寵愛を受ける'},
+  {n:334,w:'ときめかす（時めかす）',m:'寵愛する'},
+  {n:335,w:'みや（宮）',m:'中宮、御殿'},
+  {n:336,w:'やまがつ（山賤）',m:'木こり'},
+  {n:337,w:'あま（海人・海士）',m:'漁師'},
+  {n:338,w:'もと（本・元）',m:'上の句、根本'},
+  {n:339,w:'すゑ（末）',m:'下の句、あと、末世、結果、子孫'},
+  {n:340,w:'こしをれ（腰折れ）',m:'下手な和歌'},
+  {n:341,w:'こころ（心・情）',m:'内容、気持ち、情趣を解する心、道理を理解する心'},
+  {n:342,w:'ことば（言葉・詞）',m:'表現、詞書'},
+  {n:343,w:'ふるうた（古歌）',m:'古人の詠んだ歌'},
+  {n:344,w:'ますらをぶり(益荒男振り・丈夫振り)',m:'素朴で力強い、歌風'},
+  {n:345,w:'だい(題)',m:'題'},
+  {n:346,w:'こころとし(心疾し)',m:'すばやい、気が早い'},
+  {n:347,w:'まばゆし(目映し・眩し)',m:'恥ずかしい、見ていられない'},
+  {n:348,w:'いふかひなし(言ふ甲斐無し)',m:'どうしようもない、つまらない'},
+  {n:349,w:'こよなし',m:'格段にすぐれている、格段に劣っている'},
+  {n:350,w:'あぢきなし',m:'どうしようもない、つまらない'},
+  {n:351,w:'むつまし(睦まし)',m:'親しい、慕わしい'},
+  {n:352,w:'おぼろけない',m:'〔打消を伴って〕並一通り(ではない)、並々ではない'},
+  {n:353,w:'なのめなり',m:'いい加減だ、並一通りだ'},
+  {n:354,w:'なほざりなり(等閑なり)',m:'いい加減だ、ほどほどだ'},
+  {n:355,w:'きよげなり(清げなり)',m:'美しい'},
+  {n:356,w:'かたくななり(頑ななり)',m:'頑固だ、教養がない、情趣を理解しない、見苦しい'},
+  {n:357,w:'あないす(案内す)',m:'事情を尋ねる、取次ぎを頼む'},
+  {n:358,w:'あるじす(主す、饗す)',m:'もてなす'},
+  {n:359,w:'むすぶ(掬ぶ)',m:'すくう'},
+  {n:360,w:'こころう(心得)',m:'理解する、よく通じる'},
+  {n:361,w:'いぬ(去ぬ、往ぬ）',m:'行ってしまう'},
+  {n:362,w:'すさぶ(遊ぶ、荒ぶ)',m:'気の向くまま に〜する'},
+  {n:363,w:'そらごと(空言、虚言)',m:'うそ'},
+  {n:364,w:'かたへ(片方)',m:'片側、かたわら、かたわらにいる人'},
+  {n:365,w:'そばめ(側目、傍目)',m:'横から見ること、横顔'},
+  {n:366,w:'よすが(縁、因、便)',m:'縁者、身を寄せる所、手段、方法'},
+  {n:367,w:'ものがたり(物語)',m:'話'},
+  {n:368,w:'ためし(例)',m:'前例'},
+  {n:369,w:'よろこび(喜び、慶び、悦び)',m:'昇進、慶事、お礼'},
+  {n:370,w:'しか(然)',m:'そのように'},
+  {n:371,w:'なべて(並べて)',m:'一般に、一面に、〔「なべて」の形で〕普通の'},
+  {n:372,w:'はた(将)',m:'そのうえまた、一方では'},
+  {n:373,w:'さらば(然らば)',m:'それならば'},
+  {n:374,w:'さるは(然るは)',m:'〔順接〕それというのも実は、〔累加〕そのうえ、〔逆接〕そうではあるが'}
 ];
 
         const T19_SECTION_SIZE = 100;
@@ -13860,7 +14028,7 @@ const KOBUN_TANGO = [
                 { icon: 'landmark', label: '公共', desc: '一問一答（全' + (typeof SOCIAL_QA_DATA !== 'undefined' ? SOCIAL_QA_DATA.kokyo.length : '') + '問）', available: true, onclickFn: "openSocialQA('kokyo')" },
                 { icon: 'banknote', label: '政治・経済', desc: '一問一答（全' + (typeof SOCIAL_QA_DATA !== 'undefined' ? SOCIAL_QA_DATA.seikei.length : '') + '問）', available: true, onclickFn: "openSocialQA('seikei')" },
                 { icon: 'lightbulb', label: '倫理', desc: '一問一答（全' + (typeof SOCIAL_QA_DATA !== 'undefined' ? SOCIAL_QA_DATA.rinri.length : '') + '問）', available: true, onclickFn: "openSocialQA('rinri')" },
-                { icon: 'map', label: '地理', desc: '国あてパズル（実地図の形）', available: true, onclickFn: "openCountryPuzzle()" },
+                { icon: 'map', label: '地理', desc: '📍あそんでまなべる世界地図パズル', available: true, onclickFn: "openCountryPuzzle()" },
             ]);
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -14195,18 +14363,43 @@ const KOBUN_TANGO = [
         let geoSolvedCount = 0;
         let geoMistakes = 0;
 
+        // ===== あそんでまなべる世界地図パズル：スタート画面 =====
         function openCountryPuzzle() {
-            geoRemaining = [...GEO_COUNTRIES].sort(() => Math.random() - 0.5);
-            geoSolvedCount = 0;
-            geoMistakes = 0;
             hideAllPanels();
             const panel = document.getElementById('geo-puzzle-panel');
             if (!panel) return;
             panel.classList.remove('hidden');
+            document.getElementById('geo-puzzle-splash')?.classList.remove('hidden');
+            document.getElementById('geo-puzzle-game-card')?.classList.add('hidden');
+            const resultEl = document.getElementById('geo-puzzle-result');
+            if (resultEl) resultEl.classList.add('hidden');
+            // プレイ回数・自己ベストを表示（この端末に保存されたもの）
+            const plays = safeStorage.get('pm_geo_puzzle_plays') || 0;
+            const best = safeStorage.get('pm_geo_puzzle_best_mistakes');
+            const playsEl = document.getElementById('geo-splash-plays');
+            const bestEl = document.getElementById('geo-splash-best');
+            if (playsEl) playsEl.textContent = plays;
+            if (bestEl) bestEl.textContent = (best === null || best === undefined) ? '−' : (best + '回');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // 「はじめる」ボタンから、実際のパズルをスタートする
+        let geoCurrentMode = 'quick';
+        function startGeoPuzzleGame(mode) {
+            geoCurrentMode = mode || geoCurrentMode || 'quick';
+            geoRemaining = geoCurrentMode === 'world'
+                ? [...GEO_COUNTRIES]
+                : [...GEO_COUNTRIES].sort(() => Math.random() - 0.5);
+            geoSolvedCount = 0;
+            geoMistakes = 0;
+            document.getElementById('geo-puzzle-splash')?.classList.add('hidden');
+            document.getElementById('geo-puzzle-game-card')?.classList.remove('hidden');
             const resultEl = document.getElementById('geo-puzzle-result');
             if (resultEl) resultEl.classList.add('hidden');
             document.getElementById('geo-puzzle-canvas')?.classList.remove('hidden');
             document.getElementById('geo-puzzle-tray')?.classList.remove('hidden');
+            const modeLabelEl = document.getElementById('geo-puzzle-mode-label');
+            if (modeLabelEl) modeLabelEl.textContent = geoCurrentMode === 'world' ? 'ワールド' : 'クイック';
             renderGeoPuzzleTargets();
             renderGeoPuzzleTray();
             updateGeoPuzzleProgress();
@@ -14214,6 +14407,16 @@ const KOBUN_TANGO = [
         }
         function closeCountryPuzzle() {
             _showSocialHome();
+        }
+        // ===== アシスト：次に置くべき国の正解位置を、地図上でヒカらせて教える =====
+        function geoPuzzleAssist() {
+            if (geoRemaining.length === 0) return;
+            const target = geoRemaining[0];
+            const zone = document.querySelector(`.geo-target[data-country="${target.id}"]`);
+            if (!zone) return;
+            zone.classList.add('geo-assist-blink');
+            showToast(`ヒント：${target.flag} ${target.name} の位置がヒカっています`);
+            setTimeout(() => zone.classList.remove('geo-assist-blink'), 1800);
         }
         function updateGeoPuzzleProgress() {
             const p = document.getElementById('geo-puzzle-progress');
@@ -14300,6 +14503,12 @@ const KOBUN_TANGO = [
         }
         function showGeoPuzzleResult() {
             submitWordProgress(geoSolvedCount); // 単語ランキングにも加算
+            // プレイ回数・自己ベストをこの端末に記録する
+            const plays = (safeStorage.get('pm_geo_puzzle_plays') || 0) + 1;
+            safeStorage.set('pm_geo_puzzle_plays', plays);
+            const prevBest = safeStorage.get('pm_geo_puzzle_best_mistakes');
+            const isNewBest = (prevBest === null || prevBest === undefined || geoMistakes < prevBest);
+            if (isNewBest) safeStorage.set('pm_geo_puzzle_best_mistakes', geoMistakes);
             const resultEl = document.getElementById('geo-puzzle-result');
             if (!resultEl) return;
             resultEl.classList.remove('hidden');
@@ -14307,8 +14516,9 @@ const KOBUN_TANGO = [
                 <i data-lucide="party-popper" class="w-9 h-9 text-amber-500 mx-auto"></i>
                 <p class="text-xl font-black text-slate-800 dark:text-white">全${GEO_COUNTRIES.length}か国クリア！</p>
                 <p class="text-xs font-bold text-slate-400">間違えた回数：${geoMistakes}回</p>
+                ${isNewBest ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-500 text-white text-[10px] font-black"><i data-lucide="trophy" class="w-3 h-3"></i>自己ベスト更新！</span>` : ''}
                 <div class="space-y-2 pt-1">
-                    <button onclick="openCountryPuzzle()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-2xl text-xs font-black shadow hover:opacity-90 transition-all">もう一度</button>
+                    <button onclick="startGeoPuzzleGame()" class="w-full py-3 bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-500 text-white rounded-2xl text-xs font-black shadow hover:opacity-90 transition-all">もう一度</button>
                     <button onclick="closeCountryPuzzle()" class="w-full py-2.5 text-slate-400 text-xs font-bold">閉じる</button>
                 </div>
             `;
@@ -15448,6 +15658,7 @@ const KOBUN_TANGO = [
                 console.warn('自動接続に失敗しました:', e);
                 cmsSession = null;
             }
+            cmsGhRenderConnectionUI();
         }
 
         function openDevDashboard() {
@@ -15489,10 +15700,14 @@ const KOBUN_TANGO = [
         }
 
         // 開発者モード中であることを示す、画面下部の小さなフローティングボタン
+        // ＋ 画面全体の枠線・最上部バナーも合わせて切り替える
         function updateDevFloatingIndicator() {
             const el = document.getElementById('dev-floating-indicator');
-            if (!el) return;
-            el.classList.toggle('hidden', !devUnlocked);
+            if (el) el.classList.toggle('hidden', !devUnlocked);
+            const banner = document.getElementById('dev-mode-top-banner');
+            if (banner) banner.classList.toggle('hidden', !devUnlocked);
+            document.body.classList.toggle('dev-mode-active', devUnlocked);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
         function devRefreshDashboard() {
@@ -15601,14 +15816,27 @@ const KOBUN_TANGO = [
         let cmsDirty = false;
         const CMS_SESSION_KEY = 'pm_cms_session_v1';
 
+        // 保存状況メッセージを更新する。ダッシュボード内の表示だけでなく、
+        // ダッシュボードの外（フローティングインジケーター側）にも同じ内容を表示することで、
+        // 設定画面を開かなくても「未保存の変更があるか」がひと目でわかるようにする。
         function cmsSetSaveStatus(msg, kind) {
             const el = document.getElementById('cms-save-status');
-            if (!el) return;
-            el.textContent = msg;
-            el.classList.remove('text-green-500', 'text-rose-500', 'text-slate-500', 'dark:text-slate-400');
-            if (kind === 'ok') el.classList.add('text-green-500');
-            else if (kind === 'err') el.classList.add('text-rose-500');
-            else el.classList.add('text-slate-500', 'dark:text-slate-400');
+            if (el) {
+                el.textContent = msg;
+                el.classList.remove('text-green-500', 'text-rose-500', 'text-slate-500', 'dark:text-slate-400');
+                if (kind === 'ok') el.classList.add('text-green-500');
+                else if (kind === 'err') el.classList.add('text-rose-500');
+                else el.classList.add('text-slate-500', 'dark:text-slate-400');
+            }
+            const floatEl = document.getElementById('dev-floating-status');
+            if (floatEl) {
+                floatEl.textContent = msg;
+                floatEl.classList.remove('bg-emerald-500', 'bg-rose-500', 'bg-amber-600');
+                if (kind === 'ok') floatEl.classList.add('bg-emerald-500');
+                else if (kind === 'err') floatEl.classList.add('bg-rose-500');
+                else floatEl.classList.add('bg-amber-600');
+                floatEl.classList.toggle('hidden', !msg);
+            }
         }
 
         function cmsMarkDirty() {
@@ -15634,6 +15862,7 @@ const KOBUN_TANGO = [
             try {
                 await cmsReloadFromGitHub();
                 safeStorage.set(CMS_SESSION_KEY, cmsSession);
+                cmsGhRenderConnectionUI();
                 showToast('GitHubに接続しました。各画面の「＋」ボタンなどから編集できます');
             } catch (e) {
                 statusEl.textContent = '接続に失敗しました：' + e.message;
@@ -15703,9 +15932,13 @@ const KOBUN_TANGO = [
         async function cmsSaveToGitHub() {
             if (!cmsSession) { showToast('先にGitHubへ接続してください'); return; }
             const btn = document.getElementById('cms-save-btn');
-            btn.disabled = true;
+            const floatBtn = document.getElementById('dev-floating-publish-btn');
+            const floatBtnLabel = floatBtn ? floatBtn.querySelector('span') : null;
+            [btn, floatBtn].forEach(b => { if (b) b.disabled = true; });
             const origText = btn.textContent;
+            const origFloatLabel = floatBtnLabel ? floatBtnLabel.textContent : null;
             btn.textContent = '保存中…';
+            if (floatBtnLabel) floatBtnLabel.textContent = '保存中…';
             try {
                 const content = JSON.stringify(cmsConfigData, null, 2);
                 const encoded = btoa(unescape(encodeURIComponent(content)));
@@ -15737,18 +15970,61 @@ const KOBUN_TANGO = [
                 cmsSetSaveStatus('エラー：' + e.message, 'err');
                 showToast('保存に失敗しました');
             } finally {
-                btn.disabled = false;
+                [btn, floatBtn].forEach(b => { if (b) b.disabled = false; });
                 btn.textContent = origText;
+                if (floatBtnLabel && origFloatLabel != null) floatBtnLabel.textContent = origFloatLabel;
             }
         }
 
-        // 開発者ダッシュボードを開いたとき、保存済みのGitHubセッションがあれば自動で入力・接続する
-        function cmsTryAutoConnect() {
+        // 開発者ダッシュボードを開いたとき、保存済みのGitHubセッションがあれば自動で接続する。
+        // 既に接続済み（devLogin時のcmsSilentAutoConnectで接続済みなど）の場合は再接続しない。
+        // これにより、Token・リポジトリ名などを毎回入力し直す必要がなくなる。
+        async function cmsTryAutoConnect() {
             const saved = safeStorage.get(CMS_SESSION_KEY);
-            if (!saved || !saved.token || !saved.repo) return;
-            document.getElementById('cms-gh-token').value = saved.token;
-            document.getElementById('cms-gh-repo').value = saved.repo;
-            document.getElementById('cms-gh-branch').value = saved.branch || 'main';
+            if (saved && saved.token && saved.repo) {
+                document.getElementById('cms-gh-token').value = saved.token;
+                document.getElementById('cms-gh-repo').value = saved.repo;
+                document.getElementById('cms-gh-branch').value = saved.branch || 'main';
+                if (!cmsSession) {
+                    cmsSession = saved;
+                    try { await cmsReloadFromGitHub(); }
+                    catch (e) { cmsSession = null; }
+                }
+            }
+            cmsGhRenderConnectionUI();
+        }
+
+        // 接続済みかどうかに応じて、GitHub連携欄の表示を「接続済みサマリー」⇔「入力フォーム」で切り替える
+        function cmsGhRenderConnectionUI() {
+            const form = document.getElementById('cms-gh-connect-form');
+            const connected = document.getElementById('cms-gh-connected-view');
+            const repoLabel = document.getElementById('cms-gh-connected-repo');
+            if (cmsSession && cmsSession.repo) {
+                if (form) form.classList.add('hidden');
+                if (connected) connected.classList.remove('hidden');
+                if (repoLabel) repoLabel.textContent = cmsSession.repo + '（' + (cmsSession.branch || 'main') + '）';
+            } else {
+                if (form) form.classList.remove('hidden');
+                if (connected) connected.classList.add('hidden');
+            }
+        }
+        // 「接続先を変更する」ボタン：接続済みでも、別のリポジトリ等に切り替えたい時にフォームを再表示する
+        function cmsGhShowForm() {
+            const form = document.getElementById('cms-gh-connect-form');
+            const connected = document.getElementById('cms-gh-connected-view');
+            if (form) form.classList.remove('hidden');
+            if (connected) connected.classList.add('hidden');
+        }
+        // GitHubとの接続を解除する（保存済みTokenも端末から削除）
+        function cmsDisconnectGitHub() {
+            if (!confirm('GitHubとの接続を解除しますか？ 保存されているTokenはこの端末から削除されます。')) return;
+            cmsSession = null;
+            safeStorage.remove(CMS_SESSION_KEY);
+            document.getElementById('cms-gh-token').value = '';
+            document.getElementById('cms-gh-repo').value = '';
+            document.getElementById('cms-gh-branch').value = 'main';
+            cmsGhRenderConnectionUI();
+            showToast('GitHubとの接続を解除しました');
         }
 
         // ===== タブ切替 =====
@@ -15939,12 +16215,38 @@ const KOBUN_TANGO = [
             if (typeof renderClassPickerList === 'function') renderClassPickerList();
             cmsMarkDirty();
         }
-        function cmsPopulateScheduleClassOptions() {
+        // 対象クラスのチェックボックス一覧を描画する（複数選択可）。
+        // selectedIdsが省略された場合は、編集中の予定（cmsSchEditIdx）の設定を引き継ぐ。
+        function cmsRenderScheduleClassChecks(selectedIds) {
+            const wrap = document.getElementById('cms-sch-class-checks');
+            if (!wrap) return;
             const classes = cmsConfigData.classes || [];
-            const optionsHtml = '<option value="">（未選択：全員に表示）</option>' +
-                classes.map(c => `<option value="${escapeHtml(c.id)}">${escapeHtml(c.name)}</option>`).join('');
-            const sel = document.getElementById('cms-sch-class');
-            if (sel) sel.innerHTML = optionsHtml;
+            const currentIds = selectedIds || (cmsSchEditIdx != null ? scheduleClassIdsOf(cmsConfigData.globalSchedules[cmsSchEditIdx]) : []);
+            if (classes.length === 0) {
+                wrap.innerHTML = '<p class="text-[10px] text-slate-400">クラスがまだありません（「クラス」タブから追加できます）</p>';
+            } else {
+                wrap.innerHTML = classes.map(c => `
+                    <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer text-[11px] font-bold">
+                        <input type="checkbox" class="cms-sch-class-check" value="${escapeHtml(c.id)}" onchange="cmsUpdateScheduleClassSummary()" ${currentIds.includes(c.id) ? 'checked' : ''}>
+                        <span style="width:8px;height:8px;border-radius:50%;background:${classChipColor(c.id)};display:inline-block;"></span>
+                        ${escapeHtml(c.name)}
+                    </label>`).join('');
+            }
+            cmsUpdateScheduleClassSummary();
+        }
+        function cmsUpdateScheduleClassSummary() {
+            const summaryEl = document.getElementById('cms-sch-class-summary');
+            if (!summaryEl) return;
+            const n = document.querySelectorAll('.cms-sch-class-check:checked').length;
+            summaryEl.textContent = n === 0 ? '未選択：この予定は全員に表示されます' : `${n}クラスに表示されます`;
+        }
+        function cmsScheduleClassSelectAll() {
+            document.querySelectorAll('.cms-sch-class-check').forEach(el => { el.checked = true; });
+            cmsUpdateScheduleClassSummary();
+        }
+        function cmsScheduleClassClear() {
+            document.querySelectorAll('.cms-sch-class-check').forEach(el => { el.checked = false; });
+            cmsUpdateScheduleClassSummary();
         }
 
         // ----- 予定・通知 -----
@@ -15956,10 +16258,14 @@ const KOBUN_TANGO = [
             if (list.length === 0) { wrap.innerHTML = ''; empty.classList.remove('hidden'); return; }
             empty.classList.add('hidden');
             const typeLabel = { test: 'テスト', submission: '提出物' };
-            const classNameOf = (classId) => {
-                if (!classId) return '全員';
-                const c = (cmsConfigData.classes || []).find(x => x.id === classId);
-                return c ? c.name : '（削除済み）';
+            const classNamesOf = (s) => {
+                const ids = scheduleClassIdsOf(s);
+                if (ids.length === 0) return '全員';
+                const names = ids.map(id => {
+                    const c = (cmsConfigData.classes || []).find(x => x.id === id);
+                    return c ? c.name : '（削除済み）';
+                });
+                return names.join('、');
             };
             const sorted = list.map((s, idx) => ({ s, idx })).sort((a, b) => (a.s.date || '').localeCompare(b.s.date || ''));
             wrap.innerHTML = sorted.map(({ s, idx }) => `
@@ -15967,7 +16273,7 @@ const KOBUN_TANGO = [
                     <div class="min-w-0">
                         <span class="text-xs font-black text-slate-800 dark:text-white">${escapeHtml(s.title || '(無題)')}</span>
                         ${s.notifyAt ? `<span class="ml-1 text-[9px] font-black px-1.5 py-0.5 rounded-full bg-cyan-500 text-white inline-flex items-center gap-0.5"><i data-lucide="bell" class="w-2.5 h-2.5"></i>通知あり</span>` : ''}
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${typeLabel[s.type]||s.type} ・ ${escapeHtml(s.subject||'-')} ・ ${escapeHtml(s.date||'-')} ・ 対象：${escapeHtml(classNameOf(s.classId))}</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-1">${typeLabel[s.type]||s.type} ・ ${escapeHtml(s.subject||'-')} ・ ${escapeHtml(s.date||'-')} ・ 対象：${escapeHtml(classNamesOf(s))}</p>
                         ${s.notifyAt ? `<p class="text-[10px] text-cyan-600 dark:text-cyan-400 mt-0.5">通知日時：${cmsFormatDate(s.notifyAt)}</p>` : ''}
                     </div>
                     <div class="flex gap-1 shrink-0">
@@ -15983,15 +16289,14 @@ const KOBUN_TANGO = [
         function cmsEditSchedule(idx) { cmsOpenScheduleModal(idx); }
         function cmsOpenScheduleModal(idx) {
             cmsSchEditIdx = idx;
-            const s = idx != null ? cmsConfigData.globalSchedules[idx] : { type: 'test', title: '', subject: '', date: '', memo: '', classId: '', notifyAt: '' };
-            cmsPopulateScheduleClassOptions();
+            const s = idx != null ? cmsConfigData.globalSchedules[idx] : { type: 'test', title: '', subject: '', date: '', memo: '', classIds: [], notifyAt: '' };
             document.getElementById('cms-sch-title').value = s.title || '';
             document.getElementById('cms-sch-subject').value = s.subject || '';
-            document.getElementById('cms-sch-class').value = s.classId || '';
             document.getElementById('cms-sch-date').value = s.date || '';
             document.getElementById('cms-sch-memo').value = s.memo || '';
             document.getElementById('cms-sch-notify').value = s.notifyAt ? s.notifyAt.slice(0, 16) : '';
             cmsSetSchType(s.type || 'test');
+            cmsRenderScheduleClassChecks(idx != null ? scheduleClassIdsOf(s) : []);
             cmsRenderScheduleCornerChecks();
             cmsOpenModal('cms-schedule-modal', 'cms-schedule-card');
         }
@@ -16025,13 +16330,14 @@ const KOBUN_TANGO = [
         }
         function cmsConfirmSchedule() {
             const cornerIds = Array.from(document.querySelectorAll('.cms-sch-corner-check:checked')).map(el => el.value);
+            const classIds = Array.from(document.querySelectorAll('.cms-sch-class-check:checked')).map(el => el.value);
             const notifyRaw = document.getElementById('cms-sch-notify').value;
             const entry = {
                 id: Date.now(),
                 type: cmsSchSelectedType,
                 title: document.getElementById('cms-sch-title').value.trim(),
                 subject: document.getElementById('cms-sch-subject').value.trim() || null,
-                classId: document.getElementById('cms-sch-class').value || null,
+                classIds,
                 date: document.getElementById('cms-sch-date').value,
                 memo: document.getElementById('cms-sch-memo').value.trim() || null,
                 cornerIds,
