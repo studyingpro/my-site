@@ -287,12 +287,13 @@
       "type": "submission",
       "title": "スクランブルプリント",
       "subject": "論理表現",
-      "classId": null,
       "date": "2026-08-25",
       "memo": "第24章『動詞中心のイディオム』",
+      "classId": "c1783747980943",
       "cornerIds": [
         "corner_1784461896715"
-      ]
+      ],
+      "notifyAt": null
     },
     {
       "id": 1784601132098,
