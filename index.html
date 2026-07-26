@@ -2748,6 +2748,23 @@
         <p class="text-sm font-bold" id="toast-message">メッセージ</p>
     </div>
 
+    <!-- 新しいバージョンが公開された時に表示する更新案内バナー -->
+    <div id="new-version-banner" class="hidden fixed bottom-4 left-4 right-4 mx-auto max-w-sm sm:right-6 sm:left-auto z-[9997] bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl shadow-2xl p-4 items-start gap-3">
+        <div class="flex items-start gap-3">
+            <div class="p-2 bg-cyan-100 dark:bg-cyan-900/40 rounded-full text-cyan-500 dark:text-cyan-400 shrink-0">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+            </div>
+            <div class="min-w-0 flex-1">
+                <p class="text-xs font-black text-slate-800 dark:text-white">新しいバージョンがあります</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed">アプリの内容が更新されました。新しいバージョンを使いますか？</p>
+                <div class="flex gap-2 mt-3">
+                    <button onclick="reloadForNewVersion()" class="flex-1 py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-[11px] font-black hover:opacity-90 transition-all">今すぐ更新</button>
+                    <button onclick="dismissNewVersionBanner()" class="px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 rounded-xl text-[11px] font-black hover:opacity-90 transition-all">後で</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- フラッシュカードモーダル -->
     <div id="flashcard-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl w-full max-w-sm transform scale-95 transition-all duration-300" id="flashcard-modal-card">
@@ -4461,6 +4478,8 @@
             // 予定の通知（開発者が設定した日時に通知）の監視を開始
             initScheduleNotifications();
             updateScheduleNotifyToggleUI();
+            // GitHub上のHTML自体が新しいものに更新されていないかの監視を開始
+            startVersionWatcher();
             // 初めて訪れた人には、少し間を置いてから使い方ツアーをそっと案内する
             // （お知らせのポップアップが出る場合はそちらを優先し、重ならないようにする）
             maybeShowWelcomeTourPrompt();
@@ -4530,6 +4549,63 @@
             } catch (e) {
                 console.warn('config.json の取得に失敗しました（オフラインまたは未配置）:', e);
             }
+        }
+
+        // ===== 新しいバージョンの検知 =====
+        // GitHub上のindex.html自体が新しいものに更新された時、既に開いているユーザーの画面に
+        // 「新しいバージョンを使いますか？」というバナーを表示し、ワンタップで更新できるようにする。
+        // 特別なバージョン番号の管理は不要：今読み込まれているHTMLの中身と、
+        // サーバー上の最新HTMLの中身を定期的に比較し、違っていれば新しいバージョンありと判断する。
+        let _selfHtmlHash = null;
+        let _newVersionAvailable = false;
+        function _quickHash(text) {
+            // 変更検知だけが目的の軽量ハッシュ（暗号学的な強度は不要）
+            let h = 5381;
+            for (let i = 0; i < text.length; i++) {
+                h = ((h * 33) ^ text.charCodeAt(i)) >>> 0;
+            }
+            return h.toString(16) + ':' + text.length;
+        }
+        async function checkForNewVersion() {
+            if (_newVersionAvailable) return; // 既に案内済みなら再チェック不要
+            try {
+                const res = await fetch(location.pathname + '?_v=' + Date.now(), { cache: 'no-store' });
+                if (!res.ok) return;
+                const text = await res.text();
+                const hash = _quickHash(text);
+                if (_selfHtmlHash == null) {
+                    // 初回はこの端末で今読み込まれている内容を基準として記録するだけ（案内は出さない）
+                    _selfHtmlHash = hash;
+                    return;
+                }
+                if (hash !== _selfHtmlHash) {
+                    _newVersionAvailable = true;
+                    showNewVersionBanner();
+                }
+            } catch (e) {
+                // オフライン時などは静かに無視する
+            }
+        }
+        function showNewVersionBanner() {
+            const el = document.getElementById('new-version-banner');
+            if (el) el.classList.remove('hidden');
+        }
+        function dismissNewVersionBanner() {
+            const el = document.getElementById('new-version-banner');
+            if (el) el.classList.add('hidden');
+            // 「後で」を選んでも、次にタブに戻ってきた時などにもう一度案内できるようにしておく
+            _newVersionAvailable = false;
+        }
+        function reloadForNewVersion() {
+            location.reload();
+        }
+        // 定期的なチェックに加えて、タブを再びアクティブにした瞬間にもチェックする
+        function startVersionWatcher() {
+            checkForNewVersion();
+            setInterval(checkForNewVersion, 5 * 60 * 1000); // 5分ごと
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) checkForNewVersion();
+            });
         }
 
         // 1. テーマ初期設定と切り替え
