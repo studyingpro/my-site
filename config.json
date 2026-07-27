@@ -3616,6 +3616,452 @@
         ],
         "lessonTitle": "Lesson 3 Accessible Japan Section 4"
       }
+    },
+    {
+      "id": "L5S1",
+      "lessonLabel": "Lesson5",
+      "sectionLabel": "Section1",
+      "name": "Lesson5  Lesson 5 Mental Toughness  Section1",
+      "data": {
+        "transcription": "Yumi is in the volleyball club. She often gets nervous before a game. She found a magazine article that shows how successful athletes develop the mental toughness to perform up to their full potential. Let's get tough! Mental toughness is the ability to use the full power of your mind and your will. It will help you in any situation in which you have to remain calm in the face of difficulty. Mental toughness means focusing all of your attention on the challenge that you are facing at the moment. Mental toughness does not come naturally. It must be learned. Just as physical toughness requires long, hard training, mental toughness requires lots of practice. Athletes are ahead of the crowd in developing mental toughness, but almost anyone—artists, musicians, actors, scholars, teachers, and students—can learn the techniques that athletes use. If you are facing a difficult tennis match, an upcoming concert, or a challenging examination, mental toughness will increase your chances of success. Here are your mental toughness key words: Stay focused. Relax. Talk to yourself. Use imaging. Practice for failure.",
+        "transcriptionAnalysis": [
+          {
+            "english": "Yumi is in the volleyball club. She often gets nervous before a game.",
+            "japanese": "ユミはバレーボール部に所属しており、試合前によく緊張します。",
+            "grammarExplanation": "現在形を使い、ユミの日常的な状況と習慣を表しています。'gets nervous' は「緊張する」という状態変化を表す動詞句です。",
+            "sentenceStructure": "S(Yumi) V(is) C(in the volleyball club). S(She) V(gets) C(nervous) Adv(often, before a game).",
+            "keyExpressions": "get nervous (緊張する), before a game (試合前に)"
+          },
+          {
+            "english": "She found a magazine article that shows how successful athletes develop the mental toughness to perform up to their full potential.",
+            "japanese": "彼女は、成功したアスリートたちがその潜在能力を最大限に発揮するためにどのようにメンタルタフネスを培っているかを示す雑誌記事を見つけました。",
+            "grammarExplanation": "'that shows...' は先行詞 'a magazine article' を修飾する関係代名詞節です。'how successful athletes develop...' は 'shows' の目的語となる間接疑問文（名詞節）です。'to perform up to their full potential' は目的を表す不定詞の副詞的用法で、メンタルタフネスを培う目的を示します。",
+            "sentenceStructure": "S(She) V(found) O(a magazine article [that shows...]). 関係代名詞節内: S(that) V(shows) O(how successful athletes develop the mental toughness to perform up to their full potential). 間接疑問文内: S(successful athletes) V(develop) O(the mental toughness) 副詞句(to perform...).",
+            "keyExpressions": "successful athletes (成功したアスリート), develop mental toughness (メンタルタフネスを培う), perform up to one's full potential (潜在能力を最大限に発揮する)"
+          },
+          {
+            "english": "Let's get tough!",
+            "japanese": "タフになりましょう！",
+            "grammarExplanation": "'Let's + 動詞の原形' で「～しよう」という提案や勧誘を表します。'get tough' で「タフになる」「強くなる」という状態変化を示します。",
+            "sentenceStructure": "提案の構文。動詞(get) 形容詞(tough)。",
+            "keyExpressions": "get tough (タフになる、強くなる)"
+          },
+          {
+            "english": "Mental toughness is the ability to use the full power of your mind and your will.",
+            "japanese": "メンタルタフネスとは、心と意思の力を最大限に活用する能力のことです。",
+            "grammarExplanation": "'the ability to use...' は不定詞の形容詞的用法で 'ability' を修飾しています。'mind and your will' は「心と意思」を意味し、精神的な強さを構成する要素を指します。",
+            "sentenceStructure": "S(Mental toughness) V(is) C(the ability [to use the full power...]).",
+            "keyExpressions": "the ability to do (～する能力), full power (全能力、最大限の力), mind and will (心と意思)"
+          },
+          {
+            "english": "It will help you in any situation in which you have to remain calm in the face of difficulty.",
+            "japanese": "それ（メンタルタフネス）は、困難に直面して冷静さを保たなければならないどんな状況でもあなたを助けるでしょう。",
+            "grammarExplanation": "'in which' は前置詞+関係代名詞で、先行詞 'any situation' を修飾する関係副詞のような働きをします。'remain calm' は「冷静さを保つ」という状態動詞です。'in the face of difficulty' は「困難に直面して」という意味の副詞句です。",
+            "sentenceStructure": "S(It) V(will help) O(you) 副詞句(in any situation [in which S(you) V(have to remain) C(calm) 副詞句(in the face of difficulty)]).",
+            "keyExpressions": "in any situation (どんな状況でも), in which (その中で), have to remain calm (冷静さを保たなければならない), in the face of (～に直面して), difficulty (困難)"
+          },
+          {
+            "english": "Mental toughness means focusing all of your attention on the challenge that you are facing at the moment.",
+            "japanese": "メンタルタフネスとは、あなたが現在直面している課題にすべての注意を集中させることを意味します。",
+            "grammarExplanation": "'means focusing...' で 'mean + V-ing' の形をとっており、「～することを意味する」という意味です。'focusing all of your attention on...' は「～にすべての注意を集中させる」という動名詞句です。'that you are facing at the moment' は先行詞 'the challenge' を修飾する関係代名詞節です。",
+            "sentenceStructure": "S(Mental toughness) V(means) O(focusing all of your attention on the challenge [that S(you) V(are facing) 副詞句(at the moment)]).",
+            "keyExpressions": "focus attention on (～に注意を集中する), the challenge that you are facing (あなたが直面している課題), at the moment (現在、今)"
+          },
+          {
+            "english": "Mental toughness does not come naturally. It must be learned.",
+            "japanese": "メンタルタフネスは生まれつき備わっているものではありません。それは学ぶ必要があります。",
+            "grammarExplanation": "'come naturally' は「自然に備わる」という意味の動詞句です。'must be learned' は「学ばれなければならない」という助動詞 'must' と受動態の組み合わせで、必要性を示します。",
+            "sentenceStructure": "S(Mental toughness) V(does not come) 副詞(naturally). S(It) 助動詞(must) V(be learned).",
+            "keyExpressions": "come naturally (自然に備わる), must be learned (学ぶ必要がある)"
+          },
+          {
+            "english": "Just as physical toughness requires long, hard training, mental toughness requires lots of practice.",
+            "japanese": "身体的なタフネスが長く厳しい訓練を必要とするのと同様に、メンタルタフネスも多くの練習を必要とします。",
+            "grammarExplanation": "'Just as A, B' は「Aと同様に、Bも」という比較の構文です。動詞 'requires' は「～を必要とする」という意味で使われます。'long, hard training' は「長く、厳しい訓練」という意味です。'lots of practice' は「たくさんの練習」という意味です。",
+            "sentenceStructure": "接続詞(Just as) S(physical toughness) V(requires) O(long, hard training), S(mental toughness) V(requires) O(lots of practice).",
+            "keyExpressions": "Just as A, B (Aと同様に、Bも), require training/practice (訓練/練習を必要とする), long, hard training (長く厳しい訓練), lots of practice (多くの練習)"
+          },
+          {
+            "english": "Athletes are ahead of the crowd in developing mental toughness, but almost anyone—artists, musicians, actors, scholars, teachers, and students—can learn the techniques that athletes use.",
+            "japanese": "アスリートたちはメンタルタフネスを培うことにおいて群を抜いていますが、アーティスト、ミュージシャン、俳優、学者、教師、生徒など、ほとんど誰もがアスリートが使う技術を学ぶことができます。",
+            "grammarExplanation": "'be ahead of the crowd in V-ing' は「～することにおいて群を抜いている」という慣用表現です。挿入句 '—artists...students—' は 'anyone' の具体例を列挙しています。'that athletes use' は先行詞 'the techniques' を修飾する関係代名詞節です。",
+            "sentenceStructure": "S(Athletes) V(are) 補語(ahead of the crowd) 副詞句(in developing mental toughness), 接続詞(but) S(almost anyone [—artists, musicians, actors, scholars, teachers, and students—]) 助動詞(can) V(learn) O(the techniques [that S(athletes) V(use)]).",
+            "keyExpressions": "be ahead of the crowd in V-ing (～することにおいて群を抜いている), develop mental toughness (メンタルタフネスを培う), the techniques that athletes use (アスリートが使う技術)"
+          },
+          {
+            "english": "If you are facing a difficult tennis match, an upcoming concert, or a challenging examination, mental toughness will increase your chances of success.",
+            "japanese": "もし難しいテニスの試合、これからあるコンサート、あるいは骨の折れる試験に直面しているなら、メンタルタフネスはあなたの成功の可能性を高めるでしょう。",
+            "grammarExplanation": "'If + S + V..., S + will + V...' という条件文の形です。'be facing' は「～に直面している」という進行形です。'upcoming concert' は「これから開催されるコンサート」という意味です。'challenging examination' は「難しい試験」という意味です。'increase your chances of success' は「成功の可能性を高める」という表現です。",
+            "sentenceStructure": "副詞節(If S(you) V(are facing) O(a difficult tennis match, an upcoming concert, or a challenging examination)), 主節 S(mental toughness) 助動詞(will) V(increase) O(your chances of success).",
+            "keyExpressions": "be facing (～に直面している), upcoming (これからある), challenging examination (難しい試験), increase one's chances of success (成功の可能性を高める)"
+          },
+          {
+            "english": "Here are your mental toughness key words: Stay focused. Relax. Talk to yourself. Use imaging. Practice for failure.",
+            "japanese": "メンタルタフネスのためのキーワードは次の通りです：集中し続ける。リラックスする。自分に話しかける。イメージする。失敗に備えて練習する。",
+            "grammarExplanation": "'Here are...' は倒置構文で、「～があります」という意味です。続く 'Stay focused' などは命令文で、具体的な行動を示しています。'Practice for failure' は「失敗に備えて練習する」という意味で、失敗を経験し、そこから学ぶことの重要性を示唆しています。",
+            "sentenceStructure": "倒置構文(Here are S(your mental toughness key words)): ５つの命令文。",
+            "keyExpressions": "Stay focused (集中し続ける), Talk to yourself (自分に話しかける), Use imaging (イメージする), Practice for failure (失敗に備えて練習する)"
+          }
+        ],
+        "putIntoJapaneseAnswers": [
+          {
+            "num": "①",
+            "english": "She found a magazine article that shows how successful athletes...",
+            "japanese": "彼女は、成功したアスリートたちがその潜在能力を最大限に発揮するためにどのようにメンタルタフネスを培っているかを示す雑誌記事を見つけました。",
+            "translationPoint": "関係代名詞 'that' と間接疑問文 'how S V'、そして目的を表す不定詞 'to perform' が組み合わさった複雑な構造を、自然な日本語の連鎖で訳すことがポイントです。「～する方法を示す記事」ではなく「～するかを示す記事」とするとより自然です。'perform up to their full potential' は「潜在能力を最大限に発揮する」と意訳すると良いでしょう。",
+            "commonMistake": "直訳で「彼女は成功したアスリートが彼らの完全な潜在力まで発揮するために精神的タフネスをどのように発展させるかを示す雑誌記事を見つけた」とすると、日本語として不自然で分かりにくいです。関係代名詞節や副詞句の修飾関係を意識し、文全体の意味がスムーズにつながるように調整が必要です。"
+          },
+          {
+            "num": "②",
+            "english": "It will help you in any situation in which you have to remain calm...",
+            "japanese": "それは、困難に直面して冷静さを保たなければならないどんな状況でもあなたを助けるでしょう。",
+            "translationPoint": "'in which' は「その中で」という関係を示すため、「～する状況」として訳し、先行詞 'situation' を自然に修飾させます。'have to remain calm' は「冷静さを保たなければならない」と義務・必要性を明確に訳し、'in the face of difficulty' は「困難に直面して」という慣用表現として訳します。",
+            "commonMistake": "'in which' を「どんな状況の中であなたが冷静さを保つ必要があるか」と疑問文のように直訳したり、「困難の顔において」と 'in the face of' を直訳したりすると不自然です。文脈に合わせてより自然な表現を選ぶことが重要です。"
+          },
+          {
+            "num": "③",
+            "english": "If you are facing a difficult tennis match, an upcoming concert, or a challenging examination...",
+            "japanese": "もし難しいテニスの試合、これからあるコンサート、あるいは骨の折れる試験に直面しているなら、メンタルタフネスはあなたの成功の可能性を高めるでしょう。",
+            "translationPoint": "条件節 'If you are facing...' と主節 'mental toughness will increase...' の因果関係を明確に訳します。'facing' は「直面している」と現在進行形を活かし、'upcoming concert' は「これからあるコンサート」、'challenging examination' は「骨の折れる（または「やりがいのある」）試験」と状況に合わせた語彙を選びます。'increase your chances of success' は「成功の可能性を高める」と訳すのが自然です。",
+            "commonMistake": "「難しいテニスの試合、来るコンサート、または挑戦的な試験に直面しているなら」と直訳すると、「来るコンサート」がやや不自然に聞こえ、「挑戦的な試験」も文脈によってはより適切な表現があるかもしれません。「可能性を増やす」よりも「可能性を高める」方が自然な日本語です。"
+          }
+        ],
+        "vocabulary": [
+          {
+            "word": "toughness",
+            "meaning": "強靭さ、粘り強さ、たくましさ。精神的・肉体的な困難に耐え抜く力。",
+            "usage": "Her mental toughness helped her overcome many obstacles.",
+            "synonymsAntonyms": "Syn: resilience, grit, fortitude / Ant: weakness, fragility",
+            "derivatives": "tough (形: 丈夫な、困難な), toughen (動: 強くする、固める)",
+            "pronunciation": "/ˈtʌfnəs/",
+            "examFrequency": "頻出"
+          },
+          {
+            "word": "perform",
+            "meaning": "実行する、遂行する、果たす。演技する、演奏する。",
+            "usage": "He performed well under pressure during the competition.",
+            "synonymsAntonyms": "Syn: execute, carry out, achieve, act / Ant: fail, neglect",
+            "derivatives": "performance (名: 性能、演技、遂行), performer (名: 演者、実行者)",
+            "pronunciation": "/pərˈfɔːrm/",
+            "examFrequency": "頻出"
+          },
+          {
+            "word": "potential",
+            "meaning": "潜在能力、可能性。",
+            "usage": "Every student has the potential to achieve greatness.",
+            "synonymsAntonyms": "Syn: capability, prospect, promise / Ant: actualization, reality (名詞として)",
+            "derivatives": "potential (形: 潜在的な、可能性のある), potentially (副: 潜在的に)",
+            "pronunciation": "/pəˈtenʃəl/",
+            "examFrequency": "頻出"
+          },
+          {
+            "word": "tough",
+            "meaning": "丈夫な、頑丈な。困難な、厳しい。気丈な、タフな。",
+            "usage": "The exam was really tough, but I managed to pass.",
+            "synonymsAntonyms": "Syn: resilient, strong, difficult, challenging / Ant: fragile, easy, weak",
+            "derivatives": "toughness (名: 強靭さ), toughen (動: 強くする)",
+            "pronunciation": "/tʌf/",
+            "examFrequency": "頻出"
+          },
+          {
+            "word": "calm",
+            "meaning": "穏やかな、冷静な、落ち着いた。",
+            "usage": "It's important to stay calm during an emergency.",
+            "synonymsAntonyms": "Syn: serene, tranquil, peaceful, composed / Ant: agitated, excited, turbulent",
+            "derivatives": "calm (名: 穏やかさ、静けさ), calm (動: 落ち着かせる), calmly (副: 穏やかに)",
+            "pronunciation": "/kɑːm/",
+            "examFrequency": "やや頻出"
+          },
+          {
+            "word": "require",
+            "meaning": "～を必要とする、～を要求する。",
+            "usage": "This project will require a lot of time and effort.",
+            "synonymsAntonyms": "Syn: need, demand, necessitate, call for / Ant: waive, dispense with",
+            "derivatives": "requirement (名: 必要条件、要求)",
+            "pronunciation": "/rɪˈkwaɪər/",
+            "examFrequency": "頻出"
+          },
+          {
+            "word": "technique",
+            "meaning": "技術、手法、技法。",
+            "usage": "She has excellent guitar technique.",
+            "synonymsAntonyms": "Syn: skill, method, approach, artifice",
+            "derivatives": "technical (形: 技術的な), technician (名: 技術者)",
+            "pronunciation": "/tekˈniːk/",
+            "examFrequency": "頻出"
+          },
+          {
+            "word": "upcoming",
+            "meaning": "近づいている、今度の、近く起こる。",
+            "usage": "We are preparing for the upcoming school festival.",
+            "synonymsAntonyms": "Syn: forthcoming, approaching, imminent / Ant: past, previous",
+            "derivatives": "come up (句動: 起こる、近づく)",
+            "pronunciation": "/ˈʌpˌkʌmɪŋ/",
+            "examFrequency": "やや頻出"
+          },
+          {
+            "word": "perform up to ~",
+            "meaning": "～を最大限に発揮する、～に応える、～までやり遂げる。",
+            "usage": "The team struggled to perform up to their coach's expectations.",
+            "synonymsAntonyms": "Syn: live up to, fulfill, meet",
+            "derivatives": "(句動詞のため特定の派生語はなし)",
+            "pronunciation": "パフォーム アップ トゥ",
+            "examFrequency": "やや頻出"
+          },
+          {
+            "word": "at the moment",
+            "meaning": "現在、今、今のところ。",
+            "usage": "I'm busy at the moment, but I can talk later.",
+            "synonymsAntonyms": "Syn: currently, at present, right now",
+            "derivatives": "(慣用句のため特定の派生語はなし)",
+            "pronunciation": "アット ザ モーメント",
+            "examFrequency": "頻出"
+          },
+          {
+            "word": "come naturally",
+            "meaning": "自然に備わる、自然にできる。",
+            "usage": "Public speaking does not come naturally to everyone.",
+            "synonymsAntonyms": "Syn: be instinctive, be inherent / Ant: be learned, be acquired",
+            "derivatives": "(慣用句のため特定の派生語はなし)",
+            "pronunciation": "カム ナチュラリー",
+            "examFrequency": "やや頻出"
+          },
+          {
+            "word": "be ahead of the crowd in V-ing",
+            "meaning": "～することにおいて群を抜いている、～の点で他の人より進んでいる。",
+            "usage": "Japan is often ahead of the crowd in developing new technologies.",
+            "synonymsAntonyms": "Syn: excel in, be superior in, lead the way in / Ant: lag behind, fall behind",
+            "derivatives": "(慣用句のため特定の派生語はなし)",
+            "pronunciation": "ビー アヘッド オブ ザ クラウド イン ～イング",
+            "examFrequency": "やや難"
+          }
+        ],
+        "questions": [
+          {
+            "question": "What is mental toughness?",
+            "questionJapanese": "メンタルタフネスとは何ですか？",
+            "answer": "Mental toughness is the ability to use the full power of your mind and your will. It means focusing all of your attention on the challenge you are facing.",
+            "answerJapanese": "メンタルタフネスとは、心と意思の力を最大限に活用する能力です。それは、あなたが直面している課題にすべての注意を集中させることを意味します。",
+            "explanation": "本文の「Mental toughness is the ability to use the full power of your mind and your will.」と「Mental toughness means focusing all of your attention on the challenge that you are facing at the moment.」を統合して回答しています。",
+            "similarQuestion": "What are the core components of mental toughness as described in the text?"
+          },
+          {
+            "question": "In what situations will mental toughness help you?",
+            "questionJapanese": "どのような状況でメンタルタフネスは役立ちますか？",
+            "answer": "Mental toughness will help you in any situation in which you have to remain calm in the face of difficulty. Specifically, it can help in a difficult tennis match, an upcoming concert, or a challenging examination.",
+            "answerJapanese": "メンタルタフネスは、困難に直面して冷静さを保たなければならないどんな状況でもあなたを助けるでしょう。具体的には、難しいテニスの試合、これからあるコンサート、あるいは骨の折れる試験などで役立ちます。",
+            "explanation": "本文の「It will help you in any situation in which you have to remain calm in the face of difficulty.」と「If you are facing a difficult tennis match, an upcoming concert, or a challenging examination, mental toughness will increase your chances of success.」を組み合わせて回答しています。",
+            "similarQuestion": "According to the text, what is the general principle of situations where mental toughness is beneficial?"
+          },
+          {
+            "question": "Which of the following is true about mental toughness? a. People are born with it. b. It is not important for artists. c. It can be learned through training.",
+            "questionJapanese": "メンタルタフネスについて、次のうちどれが正しいですか？ a. 人は生まれつき持っている。 b. アーティストには重要ではない。 c. 訓練によって学ぶことができる。",
+            "answer": "c. It can be learned through training.",
+            "answerJapanese": "c. 訓練によって学ぶことができる。",
+            "explanation": "本文に「Mental toughness does not come naturally. It must be learned. Just as physical toughness requires long, hard training, mental toughness requires lots of practice.」とあり、生まれつきのものではなく、訓練や練習を通じて習得できると明記されています。また、「almost anyone—artists, musicians, actors, scholars, teachers, and students—can learn the techniques that athletes use.」とあり、アーティストにも重要であることが示唆されているため、bは誤りです。",
+            "similarQuestion": "Based on the text, what is explicitly stated about the origin and acquisition of mental toughness?"
+          }
+        ],
+        "lessonTitle": "Lesson 5 Mental Toughness"
+      }
+    },
+    {
+      "id": "L5S2",
+      "lessonLabel": "Lesson5",
+      "sectionLabel": "Section2",
+      "name": "Lesson5  Lesson 5 Mental Toughness Section 2  Section2",
+      "data": {
+        "transcription": "You might be surprised that even world-class athletes get nervous and lose confidence. Roger Federer is one of the greatest tennis players of all time. He is the winner of 20 Grand Slam tournaments. You might think that he would have no problems keeping up his self-confidence. You would be wrong. Roger Federer is sometimes plagued with negative thoughts. He was playing a match which he had perfectly prepared for, yet somehow he was losing. When asked how he felt, he said, \"No matter how positive you are, you just see negativity flying all around you.\" So what is his advice? Accept all the difficult thoughts and feelings and just stay focused on the game. Usain Bolt, the Jamaican sprinter who is considered the fastest man in the world, knows the key to staying focused: Just relax. Bolt says, \"I try to be myself, just be relaxed, and be a fun person. I try to find somebody who I know, try to talk and laugh and just relax and not think about anything else.\"",
+        "transcriptionAnalysis": [
+          {
+            "english": "You might be surprised that even world-class athletes get nervous and lose confidence.",
+            "japanese": "世界レベルのアスリートでさえ緊張して自信を失うことがある、と聞けば驚くかもしれません。",
+            "grammarExplanation": "「might be surprised that S + V...」は「～ということには驚くかもしれません」という意味で、控えめな推量を表します。that節の中では「even world-class athletes」が主語、動詞は「get nervous」と「lose confidence」の2つがandで並列されています。",
+            "sentenceStructure": "SVC: You (S) might be (V) surprised (C) that even world-class athletes (S) get (V) nervous (C) and lose (V) confidence (O).",
+            "keyExpressions": "might be surprised that...: ～ということに驚くかもしれない、world-class: 世界レベルの、get nervous: 緊張する、lose confidence: 自信を失う"
+          },
+          {
+            "english": "Roger Federer is one of the greatest tennis players of all time. He is the winner of 20 Grand Slam tournaments.",
+            "japanese": "ロジャー・フェデラーは史上最高のテニス選手の一人であり、グランドスラムで20回優勝しています。",
+            "grammarExplanation": "「one of the 複数名詞」で「～のうちの一つ」という意味になります。最上級を伴い「one of the greatest players」で「最も偉大な選手のうちの一人」となります。 「of all time」は「これまでの全ての時代において」という意味で、最上級を強調する働きをします。",
+            "sentenceStructure": "SVC: Roger Federer (S) is (V) one of the greatest tennis players of all time (C). SVC: He (S) is (V) the winner of 20 Grand Slam tournaments (C).",
+            "keyExpressions": "one of the greatest...: 最も偉大な～のうちの一人、of all time: 史上、Grand Slam tournaments: グランドスラム大会"
+          },
+          {
+            "english": "You might think that he would have no problems keeping up his self-confidence. You would be wrong.",
+            "japanese": "彼なら自信を維持するのに何の問題もないと思うかもしれませんが、それは間違いです。",
+            "grammarExplanation": "「might think that S + V...」は「～と思うかもしれない」という推量。「have no problems doing」は「～するのに問題がない」という意味です。続く「You would be wrong.」は仮定法過去の文で、前の仮定（そう思うこと）が現実とは異なることを示唆しています。",
+            "sentenceStructure": "SVO: You (S) might think (V) that he (S) would have (V) no problems (O) keeping up his self-confidence (形容詞句). SVC: You (S) would be (V) wrong (C).",
+            "keyExpressions": "have no problems doing: ～するのに問題がない、keep up ~: ～を維持する、self-confidence: 自信、You would be wrong: それは間違いだろう"
+          },
+          {
+            "english": "Roger Federer is sometimes plagued with negative thoughts.",
+            "japanese": "ロジャー・フェデラーは時々、ネガティブな思考に悩まされることがあります。",
+            "grammarExplanation": "「be plagued with ~」は「～に悩まされる」という受動態のイディオムです。plagueは「疫病」という意味の名詞もありますが、ここでは動詞として「苦しめる」という意味で使われています。",
+            "sentenceStructure": "SVC: Roger Federer (S) is (V) sometimes plagued with negative thoughts (C, 受動態の補語句).",
+            "keyExpressions": "be plagued with ~: ～に悩まされる、negative thoughts: 否定的な考え"
+          },
+          {
+            "english": "He was playing a match which he had perfectly prepared for, yet somehow he was losing.",
+            "japanese": "彼は完璧に準備した試合をしていたにもかかわらず、なぜか負けていました。",
+            "grammarExplanation": "「which he had perfectly prepared for」は関係代名詞whichを使った節で、先行詞「a match」を修飾しています。過去完了形「had prepared」が使われているのは、試合が始まるよりも前に準備が完了していたことを示しています。「yet somehow」は「しかしなぜか」という逆接を表します。",
+            "sentenceStructure": "SVO: He (S) was playing (V) a match (O) which (関係代名詞) he (S) had prepared (V) for. SVO: yet somehow he (S) was losing (V).",
+            "keyExpressions": "perfectly prepared for: 完璧に準備した、yet somehow: しかしなぜか"
+          },
+          {
+            "english": "When asked how he felt, he said, \"No matter how positive you are, you just see negativity flying all around you.\"",
+            "japanese": "どのように感じているか尋ねられた時、彼は「どれほどポジティブであろうと、ネガティブなものが周りに飛び交っているようにしか見えない」と答えました。",
+            "grammarExplanation": "「When asked」は「When he was asked」という接続詞+主語+be動詞が省略された形（分詞構文）です。「No matter how + 形容詞/副詞 + S + V」は「どれほど～であろうと」という意味の譲歩を表す構文です。「flying all around you」は現在分詞が名詞negativityを修飾し、分詞構文のように「～が～している」と描写しています。",
+            "sentenceStructure": "分詞構文: (When) asked (V) how he felt (O), SVO: he (S) said (V) \"No matter how positive you are, you (S) just see (V) negativity (O) flying all around you (C).\"",
+            "keyExpressions": "when asked: 尋ねられた時、no matter how + 形容詞/副詞: どれほど～であろうと、negativity: 否定的であること、flying all around: あたりを飛び交う"
+          },
+          {
+            "english": "So what is his advice? Accept all the difficult thoughts and feelings and just stay focused on the game.",
+            "japanese": "では、彼の助言は何でしょうか？ それは、すべての困難な思考や感情を受け入れ、ただゲームに集中することです。",
+            "grammarExplanation": "「What is his advice?」は間接疑問文のような形で、彼の助言の内容を尋ねています。その後の文はすべて命令形（動詞の原形から始まる）で、具体的な助言の内容を示しています。動詞「Accept」と「stay focused」がandで並列されています。",
+            "sentenceStructure": "SVC: what (C) is (V) his advice (S)? 命令形: Accept (V) all the difficult thoughts and feelings (O) and just stay (V) focused (C) on the game.",
+            "keyExpressions": "difficult thoughts and feelings: 困難な考えや感情、stay focused on ~: ～に集中し続ける"
+          },
+          {
+            "english": "Usain Bolt, the Jamaican sprinter who is considered the fastest man in the world, knows the key to staying focused: Just relax.",
+            "japanese": "世界最速の男とみなされているジャマイカの短距離走者ウサイン・ボルトは、集中し続ける秘訣を知っています。それは「ただリラックスすること」です。",
+            "grammarExplanation": "「Usain Bolt, the Jamaican sprinter who is considered...」は同格の用法で、ウサイン・ボルトを詳しく説明しています。「who is considered the fastest man in the world」は関係代名詞節で、sprinterを修飾しています。「consider A B」で「AをBとみなす」という動詞が受動態になっています。「the key to doing」は「～する鍵、秘訣」という意味で、toは前置詞なので後に動名詞が続きます。",
+            "sentenceStructure": "SVO: Usain Bolt (S), the Jamaican sprinter (同格) who (S) is considered (V) the fastest man in the world (C), knows (V) the key (O) to staying focused (句).",
+            "keyExpressions": "the Jamaican sprinter: ジャマイカの短距離走者、be considered ~: ～とみなされる、the fastest man in the world: 世界最速の男、the key to doing: ～する秘訣、stay focused: 集中し続ける"
+          },
+          {
+            "english": "Bolt says, \"I try to be myself, just be relaxed, and be a fun person. I try to find somebody who I know, try to talk and laugh and just relax and not think about anything else.\"",
+            "japanese": "ボルトは言います。「自分らしくいること、ただリラックスして、楽しい人間でいることを心がけているんだ。知っている人を見つけて、話したり笑ったりして、ただリラックスして他のことは何も考えないようにするんだ。」",
+            "grammarExplanation": "「try to do」は「～しようと努める」という意味。「be myself」は「自分らしくいる」。続く「just be relaxed, and be a fun person」は命令形を並列し、具体的な行動を説明しています。「somebody who I know」は関係代名詞whoが先行詞somebodyを修飾しています。「talk and laugh and just relax and not think...」のように、try toに続く動詞がandでいくつも並列されています。",
+            "sentenceStructure": "SVO: Bolt (S) says (V) \"I (S) try (V) to be (C) myself (O), (I) just be (V) relaxed (C), and be (V) a fun person (C). I (S) try (V) to find (O) somebody who I know (形容詞句), try (V) to talk (O) and laugh (O) and just relax (O) and not think (O) about anything else.\"",
+            "keyExpressions": "try to be myself: 自分らしくいようと努める、be relaxed: リラックスする、a fun person: 楽しい人、talk and laugh: 話したり笑ったりする、not think about anything else: 他のことは何も考えない"
+          }
+        ],
+        "putIntoJapaneseAnswers": [
+          {
+            "num": "①",
+            "english": "You might think that he would have no problems keeping up his self-confidence.",
+            "japanese": "彼が自信を維持するのに何の問題も抱えないだろうと、あなたは考えるかもしれません。",
+            "translationPoint": "「have no problems doing」を「～するのに問題がない」と自然に訳すこと。また、「might think that S + V」の「～かもしれない」という推量を表現する。",
+            "commonMistake": "「彼が彼の自己信頼を維持し続けることについて問題を持たないだろうと、あなたは考えるかもしれません」のような直訳になりがち。「keeping up his self-confidence」を「自信を維持するのに」のように目的語のように捉え、自然な日本語にすることがポイント。"
+          },
+          {
+            "num": "②",
+            "english": "When asked how he felt, he said...",
+            "japanese": "どのように感じたか尋ねられた時、彼はこう言いました…",
+            "translationPoint": "「When asked」が「When he was asked」の省略形（分詞構文）であることを理解し、「（彼が）尋ねられた時」と補って訳すこと。",
+            "commonMistake": "「いつ尋ねられたか、彼が感じたか」のように「When」と「how」を別々に訳そうとする間違い。When節は省略されており、「how he felt」はaskの目的語となっていることに注意。"
+          },
+          {
+            "num": "③",
+            "english": "I try to find somebody who I know, try to talk and laugh and just relax and not think about anything else.",
+            "japanese": "私は知っている人を見つけて、話したり笑ったりして、ただリラックスして他のことは何も考えないようにしています。",
+            "translationPoint": "「try to do」が複数並列されていることに注意し、それぞれ「～しようと努める」というニュアンスを維持しながら、全体として自然な行動の流れを表現する。最後の「and not think about anything else」は否定の並列。",
+            "commonMistake": "「私は知っている誰かを見つけようと努め、話したり笑ったりして、ただリラックスし、他の何についても考えないように努めます」のような堅苦しい直訳になりやすい。行動の羅列なので、「～して、～して…するんだ」といったくだけた口調で表現することも選択肢としてアリ。"
+          }
+        ],
+        "vocabulary": [
+          {
+            "word": "self-confidence",
+            "meaning": "自信",
+            "usage": "Having self-confidence is crucial for achieving your goals.",
+            "synonymsAntonyms": "Synonyms: self-esteem, assurance, belief in oneself. Antonyms: insecurity, self-doubt, diffidence.",
+            "derivatives": "Confide (動詞), confident (形容詞), confidently (副詞)",
+            "pronunciation": "/ˌselfˈkɒnfɪdəns/ (セルフ-コンフィデンス) アクセントは「con」の最初の音に置かれる。",
+            "examFrequency": "高（入試頻出）"
+          },
+          {
+            "word": "plague",
+            "meaning": "（動詞）～を悩ませる、苦しめる；（名詞）疫病、災厄",
+            "usage": "The constant noise from the construction site plagued the residents for months. / The plague devastated the city.",
+            "synonymsAntonyms": "Synonyms (動詞): bother, torment, afflict, vex. Antonyms (動詞): soothe, comfort.",
+            "derivatives": "Plagued (形容詞、動詞の過去分詞), plaguer (名詞)",
+            "pronunciation": "/pleɪɡ/ (プレイグ) 「a」は二重母音。",
+            "examFrequency": "中（文語的表現として稀に出題）"
+          },
+          {
+            "word": "perfectly",
+            "meaning": "完璧に、完全に、申し分なく",
+            "usage": "She executed the dance routine perfectly. / The new system works perfectly.",
+            "synonymsAntonyms": "Synonyms: flawlessly, impeccably, exactly. Antonyms: imperfectly, poorly.",
+            "derivatives": "Perfect (形容詞、動詞), perfection (名詞)",
+            "pronunciation": "/ˈpɜːrfɪktli/ (パーフェクトリー) アクセントは「per」に置かれる。",
+            "examFrequency": "高（日常会話・読解で頻出）"
+          },
+          {
+            "word": "negativity",
+            "meaning": "否定的であること、否定性",
+            "usage": "Try to avoid negativity and focus on the positive aspects of life.",
+            "synonymsAntonyms": "Synonyms: pessimism, gloom, cynicism. Antonyms: positivity, optimism, hopefulness.",
+            "derivatives": "Negative (形容詞、名詞), negatively (副詞)",
+            "pronunciation": "/ˌneɡəˈtɪvəti/ (ネガティヴィティ) アクセントは「tiv」に置かれる。",
+            "examFrequency": "中（現代文読解で出題される可能性あり）"
+          },
+          {
+            "word": "consider",
+            "meaning": "～を（よく）考える、検討する；～とみなす",
+            "usage": "You should consider all your options before making a decision. / We consider him a genius.",
+            "synonymsAntonyms": "Synonyms: contemplate, ponder, regard, deem. Antonyms: disregard, ignore.",
+            "derivatives": "Consideration (名詞), considerable (形容詞), considerate (形容詞), considering (前置詞)",
+            "pronunciation": "/kənˈsɪdər/ (コンシダー) アクセントは「si」に置かれる。しばしば「～とみなす」の意味で使われる。",
+            "examFrequency": "高（多義語として非常に頻出）"
+          },
+          {
+            "word": "sprinter",
+            "meaning": "短距離走者",
+            "usage": "Usain Bolt is a legendary sprinter known for his speed.",
+            "synonymsAntonyms": "Synonyms: runner, dash runner. Antonyms: long-distance runner.",
+            "derivatives": "Sprint (動詞、名詞)",
+            "pronunciation": "/ˈsprɪntər/ (スプリンター) アクセントは「sprin」に置かれる。",
+            "examFrequency": "低～中（スポーツ関連の文脈で出題）"
+          },
+          {
+            "word": "of all time",
+            "meaning": "史上、これまでで（一番…だ）",
+            "usage": "She is considered one of the greatest singers of all time.",
+            "synonymsAntonyms": "Synonyms: ever, throughout history.",
+            "derivatives": "なし（慣用句）",
+            "pronunciation": "/əv ɔːl taɪm/ (アヴ オール タイム)",
+            "examFrequency": "高（最上級を強調する表現として頻出）"
+          },
+          {
+            "word": "keep up ~",
+            "meaning": "～を維持する、～に遅れずについていく",
+            "usage": "It's hard to keep up with the latest fashion trends. / He managed to keep up his good grades.",
+            "synonymsAntonyms": "Synonyms: maintain, sustain, keep pace with. Antonyms: fall behind, neglect.",
+            "derivatives": "なし（句動詞）",
+            "pronunciation": "/kiːp ʌp/ (キープ アップ)",
+            "examFrequency": "高（会話・読解で頻出の句動詞）"
+          }
+        ],
+        "questions": [
+          {
+            "question": "What is Roger Federer's advice?",
+            "questionJapanese": "ロジャー・フェデラーの助言は何ですか？",
+            "answer": "Roger Federer's advice is to accept all the difficult thoughts and feelings and just stay focused on the game.",
+            "answerJapanese": "ロジャー・フェデラーの助言は、すべての困難な思考や感情を受け入れ、ただゲームに集中することです。",
+            "explanation": "本文の「So what is his advice? Accept all the difficult thoughts and feelings and just stay focused on the game.」から、彼の助言が「困難な思考や感情を受け入れ、ゲームに集中すること」であると明確に書かれています。",
+            "similarQuestion": "How does Federer suggest athletes handle negative emotions during a match?"
+          },
+          {
+            "question": "What does Usain Bolt do to stay focused?",
+            "questionJapanese": "ウサイン・ボルトは集中し続けるために何をしますか？",
+            "answer": "Usain Bolt tries to be himself, just be relaxed, and be a fun person. He also tries to find somebody he knows, talk and laugh, and just relax and not think about anything else.",
+            "answerJapanese": "ウサイン・ボルトは、自分らしくいること、ただリラックスして楽しい人でいることを心がけています。また、知っている人を見つけて、話したり笑ったりして、ただリラックスして他のことは何も考えないようにしています。",
+            "explanation": "本文の「Bolt says, \"I try to be myself, just be relaxed, and be a fun person. I try to find somebody who I know, try to talk and laugh and just relax and not think about anything else.\"」に彼の行動が具体的に述べられています。",
+            "similarQuestion": "According to Usain Bolt, what is 'the key to staying focused'?"
+          },
+          {
+            "question": "When Federer says, \"you just see negativity flying all around you,\" he means",
+            "questionJapanese": "フェデラーが「周りに否定的なものが飛び交っているようにしか見えない」と言うとき、彼は何を意味していますか？",
+            "answer": "b. he has all kinds of negative thoughts.",
+            "answerJapanese": "b. 彼にはあらゆる種類の否定的な考えがある。",
+            "explanation": "このフレーズの直前の文に「Roger Federer is sometimes plagued with negative thoughts.」とあり、彼自身がネガティブな思考に悩まされていることが説明されています。また、「No matter how positive you are, you just see negativity flying all around you.」という発言は、外からの否定的な状況ではなく、内面的な心の状態、つまり自分自身のネガティブな感情が原因で、あらゆるものが否定的に見えてしまうことを指しています。",
+            "similarQuestion": "What feeling does Federer describe when he says 'you just see negativity flying all around you'?"
+          }
+        ],
+        "lessonTitle": "Lesson 5 Mental Toughness Section 2"
+      }
     }
   ],
   "weekendBooth": {
