@@ -1,3 +1,4 @@
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDKWorker.js");
 // 予習ProMaster用の最小限のService Worker
 // 「アプリをインストール」を可能にするためだけに存在し、
 // 意図的にキャッシュは行わない（config.json等を常に最新の状態で取得するため）。
