@@ -24,6 +24,32 @@
     <!-- KaTeX: 公式Mode用の数式表示ライブラリ -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <!-- OneSignal: 端末が閉じていても届く本格的なプッシュ通知用のSDK -->
+    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <script>
+        // ▼▼▼ ここに、OneSignalの管理画面（Settings → Keys & IDs）で取得した「App ID」を貼り付けてください ▼▼▼
+        window.ONESIGNAL_APP_ID = '049db9fc-ec5f-4ec2-9cac-d7b264e6564a';
+        // ▲▲▲ ここまで ▲▲▲
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function (OneSignal) {
+            if (!window.ONESIGNAL_APP_ID || window.ONESIGNAL_APP_ID === 'YOUR_ONESIGNAL_APP_ID') {
+                console.warn('OneSignalのApp IDが未設定のため、プッシュ通知は無効です。');
+                return;
+            }
+            await OneSignal.init({
+                appId: window.ONESIGNAL_APP_ID,
+                // 通知許可のお願いは、アプリ側の「予定の通知」トグルからだけ行いたいので、
+                // OneSignal標準の丸い案内ボタンやスライドダウン案内は使わない
+                notifyButton: { enable: false },
+                promptOptions: { slidedown: { prompts: [] } },
+                // 既存のPWA用service-worker.jsにOneSignalの処理を統合しているため、そのパスを明示する
+                serviceWorkerParam: { scope: '/' },
+                serviceWorkerPath: 'service-worker.js',
+            });
+            window._oneSignalReady = true;
+            window.dispatchEvent(new CustomEvent('onesignal-ready'));
+        });
+    </script>
     <style>
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
@@ -381,7 +407,7 @@
                             </button>
                             <button onclick="toggleScheduleNotify()" id="schedule-notify-toggle-btn" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="bell" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
-                                <span id="schedule-notify-toggle-label" class="text-xs font-bold text-slate-700 dark:text-slate-200">予定の通知：オフ</span>
+                                <span id="schedule-notify-toggle-label" class="text-xs font-bold text-slate-700 dark:text-slate-200">予定のプッシュ通知：オフ</span>
                             </button>
                             <button onclick="closeSettingsMenu(); window.open('https://forms.gle/byfhaFViuqJkjoSY7','_blank')" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="send" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
@@ -5846,9 +5872,9 @@
         }
 
         // ===== 予定通知（開発者モードで設定した日時に、テスト・提出物の予定を通知） =====
-        // 「予定・通知」で notifyAt（通知日時）が設定された予定について、その日時になったら
-        // アプリを開いている端末でブラウザ通知を表示する。バックグラウンド配信ではないため、
-        // アプリを開いている（タブが生きている）間のみ動作する点に注意。
+        // ローカル通知（アプリ/タブが開いている間だけ動く）に加えて、OneSignalのプッシュ通知
+        // （ブラウザ／アプリを完全に閉じていても届く）にも同じトグルで購読する。
+        // 実際の配信は、GitHub Actionsが config.json の notifyAt を見てOneSignal側に予約する。
         function isScheduleNotifyEnabled() {
             return safeStorage.get('pm_notify_enabled') !== false; // デフォルトON
         }
@@ -5864,6 +5890,40 @@
             window._scheduleNotifyTimer = setInterval(checkScheduleNotifications, 60 * 1000);
         }
 
+        // OneSignalへのプッシュ通知の購読ON（通知許可のダイアログもここで出す）
+        function oneSignalOptIn() {
+            if (!window.OneSignalDeferred) return;
+            window.OneSignalDeferred.push(async function (OneSignal) {
+                try {
+                    await OneSignal.Notifications.requestPermission();
+                    await OneSignal.User.PushSubscription.optIn();
+                    syncOneSignalClassTag();
+                } catch (e) { console.warn('OneSignalの購読に失敗しました:', e); }
+            });
+        }
+        // OneSignalへのプッシュ通知の購読OFF
+        function oneSignalOptOut() {
+            if (!window.OneSignalDeferred) return;
+            window.OneSignalDeferred.push(async function (OneSignal) {
+                try { await OneSignal.User.PushSubscription.optOut(); }
+                catch (e) { console.warn('OneSignalの購読解除に失敗しました:', e); }
+            });
+        }
+        // 「対象クラス」を絞った予定通知を送れるように、購読者ごとに自分のクラスIDをタグとして登録する
+        function syncOneSignalClassTag() {
+            if (!window.OneSignalDeferred) return;
+            window.OneSignalDeferred.push(async function (OneSignal) {
+                try { await OneSignal.User.addTag('classId', window.currentUserClassId || ''); }
+                catch (e) { console.warn('classIdタグの同期に失敗しました:', e); }
+            });
+        }
+        window.addEventListener('app-class-changed', syncOneSignalClassTag);
+        window.addEventListener('onesignal-ready', () => {
+            if (isScheduleNotifyEnabled() && 'Notification' in window && Notification.permission === 'granted') {
+                syncOneSignalClassTag();
+            }
+        });
+
         function requestScheduleNotifyPermission() {
             if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
             Notification.requestPermission().then(perm => {
@@ -5871,6 +5931,7 @@
                     setScheduleNotifyEnabled(true);
                     showToast('予定の通知をオンにしました');
                     checkScheduleNotifications();
+                    oneSignalOptIn();
                 } else {
                     showToast('通知が許可されませんでした');
                 }
@@ -5888,16 +5949,21 @@
             setScheduleNotifyEnabled(next);
             showToast(next ? '予定の通知をオンにしました' : '予定の通知をオフにしました');
             updateScheduleNotifyToggleUI();
-            if (next) checkScheduleNotifications();
+            if (next) {
+                checkScheduleNotifications();
+                oneSignalOptIn();
+            } else {
+                oneSignalOptOut();
+            }
         }
 
         function updateScheduleNotifyToggleUI() {
             const label = document.getElementById('schedule-notify-toggle-label');
             if (!label) return;
-            if (!('Notification' in window)) { label.textContent = '予定の通知（非対応）'; return; }
-            if (Notification.permission === 'denied') { label.textContent = '予定の通知（ブラウザ設定でブロック中）'; return; }
+            if (!('Notification' in window)) { label.textContent = '予定のプッシュ通知（非対応）'; return; }
+            if (Notification.permission === 'denied') { label.textContent = '予定のプッシュ通知（ブラウザ設定でブロック中）'; return; }
             label.textContent = isScheduleNotifyEnabled() && Notification.permission === 'granted'
-                ? '予定の通知：オン' : '予定の通知：オフ';
+                ? '予定のプッシュ通知：オン' : '予定のプッシュ通知：オフ';
         }
 
         function checkScheduleNotifications() {
