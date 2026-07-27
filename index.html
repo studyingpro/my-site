@@ -5802,6 +5802,7 @@
             const myClassId = window.currentUserClassId || null;
             const remoteItems = (window._remoteGlobalSchedules || [])
                 .filter(s => {
+                    if (devUnlocked) return true; // 開発者モード中は対象クラスに関わらず全ての予定を表示（確認用）
                     const ids = scheduleClassIdsOf(s);
                     return ids.length === 0 || ids.includes(myClassId);
                 })
