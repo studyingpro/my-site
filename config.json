@@ -1,14 +1,14 @@
 {
   "announcements": [
     {
-      "badge": "不具合",
-      "badgeColor": "#e21212",
+      "badge": "修正",
+      "badgeColor": "#20cb34",
       "version": "dev-1785057035220",
-      "title": "不具合のお知らせ",
-      "body": "夏休み期間に表示している課題一覧で表示されていない課題、嘘の課題が記載されています。本当に申し訳ございません。騙されないでください。現在復旧に向けて最善を尽くしております。復旧ができましたら再度お知らせいたします。",
-      "link": "",
+      "title": "不具合復旧完了のお知らせ",
+      "body": "復旧を行いました。\nクラス設定をしていただけますと課題が正確に表示されます。\n嘘の予定などを発見した場合はこちらから",
+      "link": "https://docs.google.com/forms/d/e/1FAIpQLSeOqsafSKfjKV_QEub0Pa8tB8XAdjzehe_WbrDbu4oEPXQE8w/viewform?usp=dialog",
       "createdAt": "2026-07-26T09:10:35.220Z",
-      "updatedAt": "2026-07-26T09:10:35.220Z"
+      "updatedAt": "2026-07-27T03:18:40.952Z"
     },
     {
       "badge": "INFO",
@@ -18,7 +18,7 @@
       "body": "開発者側の都合によりプレリリース期間を無期限延長とさせていただきます。申し訳ございません。",
       "link": "https://docs.google.com/forms/d/e/1FAIpQLSeOqsafSKfjKV_QEub0Pa8tB8XAdjzehe_WbrDbu4oEPXQE8w/viewform?usp=dialog",
       "createdAt": "2026-07-07T05:38:15.552Z",
-      "updatedAt": "2026-07-16T00:13:21.848Z"
+      "updatedAt": "2026-07-27T03:18:31.832Z"
     }
   ],
   "globalSchedules": [
