@@ -95,14 +95,15 @@
     {
       "id": 1784599794213,
       "type": "submission",
-      "title": "完成ノート数B1【数列】",
+      "title": "完成ノート数学B1【数列】",
       "subject": "数学B",
-      "classId": null,
       "date": "2026-08-20",
       "memo": "P57〜104 (48ページ分)",
+      "classIds": [],
       "cornerIds": [
         "corner_1784461896715"
-      ]
+      ],
+      "notifyAt": null
     },
     {
       "id": 1784599884732,
@@ -119,14 +120,15 @@
     {
       "id": 1784599967937,
       "type": "submission",
-      "title": "数学II3【三角関数】",
+      "title": "完成ノート数学II3【三角関数】",
       "subject": "数学Ⅱ",
-      "classId": null,
       "date": "2026-08-20",
       "memo": "P14〜28 (15ページ分)",
+      "classIds": [],
       "cornerIds": [
         "corner_1784461896715"
-      ]
+      ],
+      "notifyAt": null
     },
     {
       "id": 1784600064619,
@@ -165,185 +167,6 @@
       ]
     },
     {
-      "id": 1784600408271,
-      "type": "submission",
-      "title": "枕草子鑑賞レポート",
-      "subject": "古典探究",
-      "classId": null,
-      "date": "2026-08-20",
-      "memo": "多分木曜？です。",
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600478275,
-      "type": "submission",
-      "title": "「山月記」と「人虎伝」の比較レポート",
-      "subject": "論理国語",
-      "classId": "c1783747972349",
-      "date": "2026-08-21",
-      "memo": null,
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600522582,
-      "type": "submission",
-      "title": "「山月記」と「人虎伝」の比較レポート",
-      "subject": "論理国語",
-      "classId": "c1783747990115",
-      "date": "2026-08-21",
-      "memo": null,
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600538617,
-      "type": "submission",
-      "title": "「山月記」と「人虎伝」の比較レポート",
-      "subject": "論理国語",
-      "classId": "c1783748002801",
-      "date": "2026-08-21",
-      "memo": null,
-      "cornerIds": []
-    },
-    {
-      "id": 1784600564450,
-      "type": "submission",
-      "title": "「山月記」と「人虎伝」の比較レポート",
-      "subject": "論理国語",
-      "classId": "c1783748009861",
-      "date": "2026-08-21",
-      "memo": null,
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600577804,
-      "type": "submission",
-      "title": "「山月記」と「人虎伝」の比較レポート",
-      "subject": "論理国語",
-      "classId": "c1783748019462",
-      "date": "2026-08-21",
-      "memo": null,
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600612317,
-      "type": "submission",
-      "title": "「山月記」と「人虎伝」の比較レポート",
-      "subject": "論理国語",
-      "classId": "c1783747980943",
-      "date": "2026-08-24",
-      "memo": null,
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600650128,
-      "type": "submission",
-      "title": "「山月記」と「人虎伝」の比較レポート",
-      "subject": "論理国語",
-      "classId": "c1783748029288",
-      "date": "2026-08-24",
-      "memo": null,
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600813556,
-      "type": "submission",
-      "title": "スクランブルプリント",
-      "subject": "論理表現",
-      "classId": "c1783747972349",
-      "date": "2026-08-20",
-      "memo": "第24章『動詞中心のイディオム』\n多分木曜？",
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784600861778,
-      "type": "submission",
-      "title": "スクランブルプリント",
-      "subject": null,
-      "classId": "c1783748002801",
-      "date": "2026-08-20",
-      "memo": "第24章『動詞中心のイディオム』\n多分木曜？",
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784601043602,
-      "type": "submission",
-      "title": "スクランブルプリント",
-      "subject": "論理表現",
-      "date": "2026-08-25",
-      "memo": "第24章『動詞中心のイディオム』",
-      "classId": "c1783747980943",
-      "cornerIds": [
-        "corner_1784461896715"
-      ],
-      "notifyAt": null
-    },
-    {
-      "id": 1784601132098,
-      "type": "submission",
-      "title": "スクランブルプリント",
-      "subject": "論理表現",
-      "classId": "c1783747990115",
-      "date": "2026-08-24",
-      "memo": "第24章『動詞中心のイディオム』",
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784601176660,
-      "type": "submission",
-      "title": "スクランブルプリント",
-      "subject": "論理表現",
-      "classId": "c1783748019462",
-      "date": "2026-08-24",
-      "memo": "第24章『動詞中心のイディオム』",
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784601289208,
-      "type": "submission",
-      "title": "スクランブルプリント",
-      "subject": "論理表現",
-      "classId": "c1783748009861",
-      "date": "2026-08-21",
-      "memo": "第24章『動詞中心のイディオム』",
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
-      "id": 1784601331206,
-      "type": "submission",
-      "title": "スクランブルプリント",
-      "subject": "論理表現",
-      "classId": "c1783748029288",
-      "date": "2026-08-21",
-      "memo": "第24章『動詞中心のイディオム』",
-      "cornerIds": [
-        "corner_1784461896715"
-      ]
-    },
-    {
       "id": 1784679277192,
       "type": "submission",
       "title": "公共レポート",
@@ -357,62 +180,203 @@
       "notifyAt": "2026-07-22T00:19:00.000Z"
     },
     {
-      "id": 1784864415836,
-      "type": "submission",
-      "title": "化学夏休み課題tokuMo",
-      "subject": "化学基礎",
-      "date": "2026-08-19",
-      "memo": "夏休みの課題①物質の量\n夏休みの課題②化学反応式\n夏休みの課題③酸と塩基",
-      "classId": "c1783747972349",
-      "cornerIds": [
-        "corner_1784461896715"
-      ],
-      "notifyAt": null
-    },
-    {
-      "id": 1784864446568,
-      "type": "submission",
-      "title": "化学夏休み課題tokuMo",
-      "subject": "化学基礎",
-      "date": "2026-08-19",
-      "memo": "夏休みの課題①物質の量\n夏休みの課題②化学反応式\n夏休みの課題③酸と塩基",
-      "classId": "c1783747980943",
-      "cornerIds": [
-        "corner_1784461896715"
-      ],
-      "notifyAt": null
-    },
-    {
       "id": 1784864483896,
       "type": "submission",
       "title": "化学夏休み課題tokuMo",
       "subject": "化学基礎",
       "date": "2026-08-19",
       "memo": "夏休みの課題①物質の量\n夏休みの課題②化学反応式\n夏休みの課題③酸と塩基",
-      "classId": "c1783747990115",
+      "classIds": [
+        "c1783747972349",
+        "c1783747980943",
+        "c1783747990115"
+      ],
       "cornerIds": [
         "corner_1784461896715"
       ],
       "notifyAt": null
     },
     {
-      "id": 1785115260980,
+      "id": 1785118407895,
       "type": "submission",
-      "title": "あああ",
-      "subject": null,
-      "date": "2026-07-27",
-      "memo": null,
+      "title": "スクランブルプリント",
+      "subject": "英語",
+      "date": "2026-08-24",
+      "memo": "第24章『動詞中心のイディオム』",
+      "classIds": [
+        "c1783747990115",
+        "c1783748009861",
+        "c1783748019462"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785118595210,
+      "type": "submission",
+      "title": "英単語ターゲット1900",
+      "subject": "英語",
+      "date": "2026-08-24",
+      "memo": "671〜871",
+      "classIds": [
+        "c1783747990115",
+        "c1783748009861",
+        "c1783748019462"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785118687983,
+      "type": "submission",
+      "title": "スクランブルプリント",
+      "subject": "英語",
+      "date": "2026-08-25",
+      "memo": "第24章『動詞中心のイディオム』",
       "classIds": [
         "c1783747972349",
+        "c1783747980943",
+        "c1783748002801"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785118985232,
+      "type": "submission",
+      "title": "英単語ターゲット1900",
+      "subject": "英語",
+      "date": "2026-08-25",
+      "memo": "671〜871",
+      "classIds": [
+        "c1783747972349",
+        "c1783747980943",
+        "c1783748002801"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785119060951,
+      "type": "submission",
+      "title": "スクランブルプリント",
+      "subject": "英語",
+      "date": "2026-08-26",
+      "memo": "第24章『動詞中心のイディオム』",
+      "classIds": [
+        "c1783748029288"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785119094474,
+      "type": "submission",
+      "title": "英単語ターゲット1900",
+      "subject": "英語",
+      "date": "2026-08-26",
+      "memo": "671〜871",
+      "classIds": [
+        "c1783748029288"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785119354508,
+      "type": "submission",
+      "title": "枕草子鑑賞レポート",
+      "subject": "古典探究",
+      "date": "2026-08-24",
+      "memo": null,
+      "classIds": [
         "c1783747980943",
         "c1783747990115",
         "c1783748002801",
         "c1783748009861",
-        "c1783748019462",
+        "c1783748019462"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785119391084,
+      "type": "submission",
+      "title": "枕草子鑑賞レポート",
+      "subject": "古典探究",
+      "date": "2026-08-25",
+      "memo": null,
+      "classIds": [
+        "c1783747972349",
         "c1783748029288"
       ],
-      "cornerIds": [],
-      "notifyAt": "2026-07-27T01:30:00.000Z"
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785119468342,
+      "type": "submission",
+      "title": "「山月記」と「人虎伝」の比較レポート",
+      "subject": "古典探究",
+      "date": "2026-08-24",
+      "memo": null,
+      "classIds": [
+        "c1783747980943",
+        "c1783748002801",
+        "c1783748029288"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785119491082,
+      "type": "submission",
+      "title": "「山月記」と「人虎伝」の比較レポート",
+      "subject": "古典探究",
+      "date": "2026-08-25",
+      "memo": null,
+      "classIds": [
+        "c1783747990115",
+        "c1783748019462"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1785119528741,
+      "type": "submission",
+      "title": "「山月記」と「人虎伝」の比較レポート",
+      "subject": "古典探究",
+      "date": "2026-08-26",
+      "memo": null,
+      "classIds": [
+        "c1783747972349",
+        "c1783748009861"
+      ],
+      "cornerIds": [
+        "corner_1784461896715"
+      ],
+      "notifyAt": null
     }
   ],
   "extraSections": [
