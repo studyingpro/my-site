@@ -4513,10 +4513,11 @@
             updateScanUI();
             const limTomEl = document.getElementById('limit-tomorrow');
             if (limTomEl) limTomEl.textContent = getTomorrowStr();
-            // 初期状態をHistory APIに登録
-            replaceState({ screen: 'top' }, '予習ProMaster');
-            // 初期表示: トップ画面を確実に表示
-            _showTopHome();
+            // 初期状態をHistory APIに登録（URLに画面ごとのハッシュが付いていれば、その画面から始める）
+            const initialScreen = hashToScreen(location.hash);
+            replaceState({ screen: initialScreen }, SCREEN_TITLE_MAP[initialScreen] || '予習ProMaster');
+            // 初期表示: URLに対応する画面（指定がなければトップ画面）を表示
+            _navigateTo(initialScreen, false);
             lucide.createIcons();
         });
 
@@ -13140,16 +13141,64 @@ const KOBUN_TANGO = [
         // ===== History API（ブラウザ戻る/進む対応）=====
         // 画面の状態を表すオブジェクト
         // state: { screen: 'top' | 'english' | 'scan' | 'target' }
+        //
+        // 画面ごとにURL（#/ハッシュ部分）も変えることで、
+        // ・ブラウザの戻る/進むでURLが変わって分かりやすくなる
+        // ・そのページのURLをブックマーク・共有し、再読み込みしても同じ画面から始められる
+        // という2つを実現する。GitHub Pagesはサーバー側のルーティングができないため、
+        // 実際のパスは変えず「#/画面名」というハッシュ部分だけを変える方式にしている。
+        const SCREEN_HASH_MAP = {
+            top: '',
+            english: 'english',
+            japanese: 'japanese',
+            math: 'math',
+            science: 'science',
+            social: 'social',
+            scan: 'scan',
+            'ronri-hyogen': 'ronri-hyogen',
+            'ronri-section-list': 'ronri-section-list',
+            'ronri-scan': 'ronri-scan',
+            target: 'target',
+            grades: 'grades',
+            calendar: 'calendar',
+        };
+        function screenToHash(screen) {
+            const h = SCREEN_HASH_MAP[screen] || '';
+            return '#/' + h;
+        }
+        function hashToScreen(hash) {
+            const clean = String(hash || '').replace(/^#\/?/, '');
+            const found = Object.keys(SCREEN_HASH_MAP).find(k => SCREEN_HASH_MAP[k] === clean);
+            return found || 'top';
+        }
+        // 初期表示（ページ読み込み時にURLから画面を判定する）にだけ使うタイトル一覧
+        const SCREEN_TITLE_MAP = {
+            top: '予習ProMaster',
+            english: '英語 - 予習ProMaster',
+            japanese: '国語 - 予習ProMaster',
+            math: '数学 - 予習ProMaster',
+            science: '理科 - 予習ProMaster',
+            social: '社会 - 予習ProMaster',
+            scan: '英語コミュニケーション - 予習ProMaster',
+            'ronri-hyogen': '論理・表現 - 予習ProMaster',
+            'ronri-section-list': 'Sectionを選ぶ - 論理・表現 - 予習ProMaster',
+            'ronri-scan': '論理・表現 - 予習ProMaster',
+            target: 'ターゲットモード - 予習ProMaster',
+            grades: '成績管理 - 予習ProMaster',
+            calendar: 'カレンダー - 予習ProMaster',
+        };
 
         function pushState(state, title) {
             try {
-                history.pushState(state, title);
+                history.pushState(state, title || '', screenToHash(state && state.screen));
+                if (title) document.title = title;
             } catch(e) {}
         }
 
         function replaceState(state, title) {
             try {
-                history.replaceState(state, title);
+                history.replaceState(state, title || '', screenToHash(state && state.screen));
+                if (title) document.title = title;
             } catch(e) {}
         }
 
