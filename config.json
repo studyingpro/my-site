@@ -1,6 +1,16 @@
 {
   "announcements": [
     {
+      "badge": "コンテンツ追加",
+      "badgeColor": "#ea57d2",
+      "version": "dev-1785123221610",
+      "title": "Lesson5-1,2を追加しました。",
+      "body": "",
+      "link": "",
+      "createdAt": "2026-07-27T03:33:41.610Z",
+      "updatedAt": "2026-07-27T03:33:59.013Z"
+    },
+    {
       "badge": "修正",
       "badgeColor": "#20cb34",
       "version": "dev-1785057035220",
