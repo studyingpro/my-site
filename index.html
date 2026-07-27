@@ -295,6 +295,25 @@
     </div>
 
     <!-- ==================================================
+         ProMasterアカウント作成（名前入力）モーダル
+         ================================================== -->
+    <div id="profile-setup-modal" class="fixed inset-0 z-[999] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-5 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-sm shadow-2xl border border-slate-200 dark:border-slate-700">
+            <div class="text-center mb-5">
+                <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white mb-3">
+                    <i data-lucide="user-plus" class="w-6 h-6"></i>
+                </div>
+                <h2 class="text-lg font-black text-slate-800 dark:text-white">ProMasterアカウントを作成</h2>
+                <p class="text-xs font-semibold text-slate-400 mt-1">表示するお名前を入力してください。予定・成績・進行度は、このアカウントで別の端末からも続きから使えるようになります。</p>
+            </div>
+            <input type="text" id="profile-setup-name" maxlength="20" placeholder="表示名（例：やまだ たろう）"
+                class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 mb-3">
+            <button onclick="submitProfileSetup()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">保存して始める</button>
+            <p id="profile-setup-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-2"></p>
+        </div>
+    </div>
+
+    <!-- ==================================================
          クラス選択モーダル
          ================================================== -->
     <div id="class-picker-modal" class="fixed inset-0 z-[998] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-5 hidden">
@@ -443,6 +462,10 @@
                             <button id="account-menu-link-google" onclick="closeAccountMenu(); AppAuthUI.loginWith('google')" class="hidden w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="link" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
                                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200">Googleアカウントと連携する</span>
+                            </button>
+                            <button id="account-menu-edit-profile" onclick="closeAccountMenu(); openProfileSetupModal(window.currentAppUser)" class="hidden w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <i data-lucide="pencil" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-200">プロフィールを編集</span>
                             </button>
                             <button onclick="closeAccountMenu(); AppAuthUI.logout()" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="log-out" class="w-4 h-4 text-rose-500 shrink-0"></i>
@@ -3406,6 +3429,52 @@
             }
         }
 
+        // クラウドに同期する対象のローカル保存キー（予定・成績・進行度など）
+        const CLOUD_SYNC_KEYS = [
+            'pm_schedule_items',          // 自分で追加した予定
+            'pm_grade_records',           // 成績
+            'pm_done_submissions',        // 提出物の完了チェック（進行度）
+            'pm_last_history_id',         // 直前に開いていた学習履歴（続きから、の進行度）
+            'pm_last_section_id',
+            'pm_scan_history',            // スキャン学習の履歴（進行度）
+            'pm_trash_history',
+            'pm_geo_puzzle_best_mistakes',
+            'pm_geo_puzzle_plays',
+        ];
+        let _syncTimers = {};
+        // ローカルの値が変わるたびに呼ばれ、少し待ってからFirestoreに書き込む（連続入力時の無駄打ち防止）
+        function queueSync(key, value) {
+            const user = auth.currentUser;
+            if (!user || !CLOUD_SYNC_KEYS.includes(key)) return;
+            clearTimeout(_syncTimers[key]);
+            _syncTimers[key] = setTimeout(async () => {
+                try {
+                    await setDoc(doc(db, 'users', user.uid, 'appData', key), {
+                        value: JSON.stringify(value),
+                        updatedAt: serverTimestamp(),
+                    });
+                } catch (e) {
+                    console.warn('クラウド同期に失敗しました:', key, e);
+                }
+            }, 1500);
+        }
+        // ログイン直後に、Firestoreに保存済みのデータをこの端末に読み込む（別端末からの続き利用）
+        async function pullCloudData(uid) {
+            let didLoadAny = false;
+            for (const key of CLOUD_SYNC_KEYS) {
+                try {
+                    const snap = await getDoc(doc(db, 'users', uid, 'appData', key));
+                    if (snap.exists() && snap.data().value != null) {
+                        localStorage.setItem(key, snap.data().value);
+                        didLoadAny = true;
+                    }
+                } catch (e) {
+                    console.warn('クラウドデータの取得に失敗しました:', key, e);
+                }
+            }
+            return didLoadAny;
+        }
+
         window.AppFirebase = {
             auth, db,
             async loginGuest() {
@@ -3430,6 +3499,15 @@
             },
             getUserDoc(uid) {
                 return getDoc(doc(db, 'users', uid));
+            },
+            queueSync,
+            pullCloudData,
+            // ProMasterアカウントの表示名を設定する（初回作成時・後からの変更どちらでも使う）
+            async setProfileName(name) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                await updateDoc(doc(db, 'users', user.uid), { profileName: name });
+                window.currentAppProfileName = name;
             },
             async setMyClass(classId) {
                 const user = auth.currentUser;
@@ -3460,7 +3538,7 @@
                     newStreak = 1;
                 }
                 let classId = window.currentUserClassId || null;
-                const displayName = user.displayName || (user.isAnonymous ? 'ゲスト' : '名無し');
+                const displayName = window.currentAppProfileName || user.displayName || (user.isAnonymous ? 'ゲスト' : '名無し');
                 await setDoc(ref, {
                     displayName,
                     classId,
@@ -3485,14 +3563,34 @@
             if (user) {
                 try {
                     const snap = await getDoc(doc(db, 'users', user.uid));
-                    const classId = snap.exists() ? (snap.data().classId || null) : null;
+                    const data = snap.exists() ? snap.data() : {};
+                    const classId = data.classId || null;
                     window.currentUserClassId = classId;
+                    window.currentAppProfileName = data.profileName || null;
                     window.dispatchEvent(new CustomEvent('app-class-changed', { detail: { classId } }));
+
+                    // このブラウザでまだクラウドの予定・成績・進行度を読み込んでいなければ、1度だけ読み込んで反映する
+                    // （別の端末で使っていた続きから始められるようにするため）
+                    const pulledFlagKey = 'pm_cloud_pulled_' + user.uid;
+                    if (!sessionStorage.getItem(pulledFlagKey)) {
+                        const changed = await pullCloudData(user.uid);
+                        sessionStorage.setItem(pulledFlagKey, '1');
+                        if (changed) {
+                            window.dispatchEvent(new CustomEvent('app-cloud-data-loaded'));
+                        }
+                    }
+
+                    // Googleアカウントでログイン済みなのに、まだProMasterアカウントの表示名を
+                    // 設定していない場合は、名前の入力（アカウント作成）を促す
+                    if (!user.isAnonymous && !data.profileName) {
+                        window.dispatchEvent(new CustomEvent('app-need-profile-setup', { detail: { user } }));
+                    }
                 } catch (e) {
-                    console.warn('classId取得に失敗', e);
+                    console.warn('ユーザー情報の取得に失敗', e);
                 }
             } else {
                 window.currentUserClassId = null;
+                window.currentAppProfileName = null;
             }
         });
     </script>
@@ -3539,6 +3637,47 @@
             if (!modal) return;
             modal.classList.toggle('hidden', !show);
         }
+
+        // ===== ProMasterアカウント作成（名前入力）モーダル =====
+        function openProfileSetupModal(user) {
+            const modal = document.getElementById('profile-setup-modal');
+            const input = document.getElementById('profile-setup-name');
+            const errEl = document.getElementById('profile-setup-error');
+            if (errEl) errEl.classList.add('hidden');
+            if (input) input.value = (window.currentAppProfileName) || (user && user.displayName) || '';
+            if (modal) modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeProfileSetupModal() {
+            const modal = document.getElementById('profile-setup-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        async function submitProfileSetup() {
+            const input = document.getElementById('profile-setup-name');
+            const errEl = document.getElementById('profile-setup-error');
+            const name = (input && input.value || '').trim();
+            if (!name) {
+                if (errEl) { errEl.textContent = '名前を入力してください'; errEl.classList.remove('hidden'); }
+                return;
+            }
+            try {
+                await window.AppFirebase.setProfileName(name);
+                closeProfileSetupModal();
+                showToast('ProMasterアカウントを作成しました');
+                updateAccountMenuDisplay(window.currentAppUser);
+            } catch (e) {
+                console.error(e);
+                if (errEl) { errEl.textContent = '保存に失敗しました。もう一度お試しください'; errEl.classList.remove('hidden'); }
+            }
+        }
+        window.addEventListener('app-need-profile-setup', (e) => {
+            openProfileSetupModal(e.detail && e.detail.user);
+        });
+        // クラウドに保存されていた予定・成績・進行度をこの端末に読み込んだら、画面に反映するため再読み込みする
+        window.addEventListener('app-cloud-data-loaded', () => {
+            showToast('クラウドに保存されたデータを読み込みました');
+            setTimeout(() => location.reload(), 1200);
+        });
 
         window.addEventListener('app-auth-changed', (e) => {
             const user = e.detail.user;
@@ -3837,7 +3976,14 @@
                 catch(e) { return null; }
             },
             set(key, val) {
-                try { localStorage.setItem(key, JSON.stringify(val)); return true; }
+                try {
+                    localStorage.setItem(key, JSON.stringify(val));
+                    // 予定・成績・進行度など対象のキーは、ログイン中ならクラウドにも同期する
+                    if (window.AppFirebase && typeof window.AppFirebase.queueSync === 'function') {
+                        window.AppFirebase.queueSync(key, val);
+                    }
+                    return true;
+                }
                 catch(e) { return false; }
             },
             remove(key) {
@@ -4918,6 +5064,7 @@
             const nameEl = document.getElementById('account-menu-name');
             const typeEl = document.getElementById('account-menu-type');
             const linkGoogleBtn = document.getElementById('account-menu-link-google');
+            const editProfileBtn = document.getElementById('account-menu-edit-profile');
             const classEl = document.getElementById('account-menu-class');
             if (!nameEl || !typeEl) return;
             if (classEl) {
@@ -4929,16 +5076,19 @@
                 nameEl.textContent = '未ログイン';
                 typeEl.textContent = '';
                 if (linkGoogleBtn) linkGoogleBtn.classList.add('hidden');
+                if (editProfileBtn) editProfileBtn.classList.add('hidden');
                 return;
             }
             if (user.isAnonymous) {
                 nameEl.textContent = 'ゲスト';
                 typeEl.textContent = 'ログインせずに利用中';
                 if (linkGoogleBtn) linkGoogleBtn.classList.remove('hidden');
+                if (editProfileBtn) editProfileBtn.classList.add('hidden');
             } else {
-                nameEl.textContent = user.displayName || (user.email || 'ログイン中');
-                typeEl.textContent = 'ログイン中';
+                nameEl.textContent = window.currentAppProfileName || user.displayName || (user.email || 'ログイン中');
+                typeEl.textContent = 'ログイン中（ProMasterアカウント）';
                 if (linkGoogleBtn) linkGoogleBtn.classList.add('hidden');
+                if (editProfileBtn) editProfileBtn.classList.remove('hidden');
             }
         }
 
