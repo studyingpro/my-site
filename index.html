@@ -424,9 +424,14 @@
                                 <i data-lucide="trophy" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
                                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200">単語ランキング</span>
                             </button>
-                            <button onclick="toggleScheduleNotify()" id="schedule-notify-toggle-btn" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
-                                <i data-lucide="bell" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
-                                <span id="schedule-notify-toggle-label" class="text-xs font-bold text-slate-700 dark:text-slate-200">予定のプッシュ通知：オフ</span>
+                            <button onclick="toggleScheduleNotify()" id="schedule-notify-toggle-btn" class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <span class="flex items-center space-x-3 min-w-0">
+                                    <i data-lucide="bell" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                    <span id="schedule-notify-toggle-label" class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">予定のプッシュ通知</span>
+                                </span>
+                                <span id="schedule-notify-toggle-switch" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 bg-slate-300 dark:bg-slate-600 shrink-0">
+                                    <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 translate-x-1"></span>
+                                </span>
                             </button>
                             <button onclick="closeSettingsMenu(); window.open('https://forms.gle/byfhaFViuqJkjoSY7','_blank')" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="send" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
@@ -2376,10 +2381,13 @@
 
                 <!-- コンテンツ編集への入口（すべて本体の実画面へ移動） -->
                 <div class="space-y-2">
-                    <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
-                        <i data-lucide="compass" class="w-4 h-4"></i><span>編集画面への移動</span>
-                    </h4>
-                    <div class="grid grid-cols-2 gap-2">
+                    <button type="button" onclick="toggleDevSection('nav')" class="w-full flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <i data-lucide="compass" class="w-4 h-4"></i><span>編集画面への移動</span>
+                        </h4>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform rotate-180" id="dev-section-chevron-nav"></i>
+                    </button>
+                    <div id="dev-section-content-nav" class="grid grid-cols-2 gap-2">
                         <button onclick="closeDevSettingsModal(); cmsManageAnnouncements();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
                             <i data-lucide="megaphone" class="w-4 h-4 text-cyan-500 mb-1"></i>
                             <p class="text-[11px] font-black text-slate-800 dark:text-white">お知らせ</p>
@@ -2407,12 +2415,29 @@
                     </div>
                 </div>
 
+                <!-- モード管理（点検・機能停止） -->
+                <div class="space-y-2">
+                    <button type="button" onclick="toggleDevSection('mode')" class="w-full flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <i data-lucide="toggle-left" class="w-4 h-4"></i><span>モード管理（点検・機能停止）</span>
+                        </h4>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="dev-section-chevron-mode"></i>
+                    </button>
+                    <div id="dev-section-content-mode" class="hidden bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-2.5">
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">停止にすると、一般のユーザーはそのモードを開けなくなります（開発者モード中は、点検のため停止していても自分では使えます）。「点検する」でそのモードにすぐ移動できます。</p>
+                        <div id="cms-mode-list" class="space-y-1.5"></div>
+                    </div>
+                </div>
+
                 <!-- GitHub連携 -->
                 <div class="space-y-2">
-                    <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
-                        <i data-lucide="github" class="w-4 h-4"></i><span>GitHub連携（config.json）</span>
-                    </h4>
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
+                    <button type="button" onclick="toggleDevSection('github')" class="w-full flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <i data-lucide="github" class="w-4 h-4"></i><span>GitHub連携（config.json）</span>
+                        </h4>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="dev-section-chevron-github"></i>
+                    </button>
+                    <div id="dev-section-content-github" class="hidden bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
                         <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">GitHub Personal Access Token（Fine-grained, Contents: Read &amp; write）でこのリポジトリの config.json を直接編集・公開できます。Tokenはこの端末のブラウザ内にのみ保存されます。</p>
 
                         <!-- 接続済みの場合はこちらを表示。保存済みの接続情報を使って自動で再接続されるため、毎回の入力は不要です -->
@@ -2452,17 +2477,21 @@
 
                 <!-- 利用制限 -->
                 <div class="space-y-2">
-                    <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
-                        <i data-lucide="shield" class="w-4 h-4"></i><span>利用制限</span>
-                    </h4>
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
+                    <button type="button" onclick="toggleDevSection('limit')" class="w-full flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <i data-lucide="shield" class="w-4 h-4"></i><span>利用制限</span>
+                        </h4>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="dev-section-chevron-limit"></i>
+                    </button>
+                    <div id="dev-section-content-limit" class="hidden bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-xs font-black text-slate-800 dark:text-slate-200">制限を無効化</p>
                                 <p class="text-[10px] text-slate-500 dark:text-slate-400">ONにすると回数制限なしで解析可能</p>
                             </div>
-                            <button onclick="devToggleLimit()" id="dev-limit-toggle"
-                                class="px-4 py-1.5 rounded-xl text-xs font-black transition-all bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300">OFF</button>
+                            <button onclick="devToggleLimit()" id="dev-limit-toggle" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 bg-slate-300 dark:bg-slate-600 shrink-0">
+                                <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 translate-x-1"></span>
+                            </button>
                         </div>
                         <div class="flex items-center justify-between">
                             <div>
@@ -2487,10 +2516,13 @@
 
                 <!-- パスワード変更 -->
                 <div class="space-y-2">
-                    <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
-                        <i data-lucide="key" class="w-4 h-4"></i><span>パスワード変更</span>
-                    </h4>
-                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
+                    <button type="button" onclick="toggleDevSection('password')" class="w-full flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <i data-lucide="key" class="w-4 h-4"></i><span>パスワード変更</span>
+                        </h4>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="dev-section-chevron-password"></i>
+                    </button>
+                    <div id="dev-section-content-password" class="hidden bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
                         <input type="password" id="dev-new-pw1" placeholder="新しいパスワード"
                             class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
                         <input type="password" id="dev-new-pw2" placeholder="新しいパスワード（確認）"
@@ -4802,9 +4834,40 @@
                 } else {
                     window._remoteTourSteps = [];
                 }
+                // ⑧ モードのON/OFF設定（開発者モードで各機能を点検・一時停止できる）
+                window._remoteFeatureFlags = (cfg.featureFlags && typeof cfg.featureFlags === 'object') ? cfg.featureFlags : {};
             } catch (e) {
                 console.warn('config.json の取得に失敗しました（オフラインまたは未配置）:', e);
             }
+        }
+
+        // ===== モードのON/OFF（機能停止） =====
+        // 開発者モードのダッシュボードから、各モード（教科・機能）ごとに点検・一時停止できる。
+        // ここで管理しているモードのキー・表示名の一覧（CMS側の一覧表示にも使う）
+        const FEATURE_MODE_LIST = [
+            { key: 'english', label: '英語' },
+            { key: 'japanese', label: '国語' },
+            { key: 'math', label: '数学' },
+            { key: 'science', label: '理科' },
+            { key: 'social', label: '社会' },
+            { key: 'target', label: 'ターゲットモード（単語帳）' },
+            { key: 'scan', label: '英語コミュニケーション（スキャン学習）' },
+            { key: 'ronri-hyogen', label: '論理・表現' },
+            { key: 'grades', label: '成績管理' },
+            { key: 'calendar', label: 'カレンダー' },
+            { key: 'aiChat', label: '何でも聞けるAIチャット' },
+            { key: 'timer', label: 'タイマー' },
+        ];
+        // そのモードが今使えるかどうか。開発者モード中は点検のため常に使える（停止設定を無視する）
+        function isModeEnabled(key) {
+            if (devUnlocked) return true;
+            const flags = window._remoteFeatureFlags || {};
+            return flags[key] !== false; // 明示的にfalseでない限り有効（デフォルトON）
+        }
+        function modeDisabledMessage(key) {
+            const found = FEATURE_MODE_LIST.find(m => m.key === key);
+            const name = found ? found.label : 'この機能';
+            return `${name}は現在、点検のため一時的に停止しています。`;
         }
 
         // ===== 新しいバージョンの検知 =====
@@ -6192,13 +6255,37 @@
             }
         }
 
+        // ===== 共通のオン/オフスイッチ（丸いつまみがスライドするタイプ） =====
+        // トラック（外側の丸いバー）のidを渡すと、中の.toggle-switch-knobも含めて色・位置を更新する。
+        // HTML側は以下の形を使う想定：
+        // <span id="xxx" class="toggle-switch-track ..."><span class="toggle-switch-knob ..."></span></span>
+        function setToggleSwitchUI(trackId, on) {
+            const track = document.getElementById(trackId);
+            if (!track) return;
+            track.classList.toggle('bg-emerald-500', on);
+            track.classList.toggle('bg-slate-300', !on);
+            track.classList.toggle('dark:bg-slate-600', !on);
+            const knob = track.querySelector('.toggle-switch-knob');
+            if (knob) {
+                knob.classList.toggle('translate-x-5', on);
+                knob.classList.toggle('translate-x-1', !on);
+            }
+        }
+        // トラック要素のHTMLをまとめて作る関数（動的にリスト生成する場所で使う）
+        function toggleSwitchHtml(on, extraTrackClass) {
+            return `<span class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 shrink-0 ${on ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'} ${extraTrackClass || ''}">
+                <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 ${on ? 'translate-x-5' : 'translate-x-1'}"></span>
+            </span>`;
+        }
+
         function updateScheduleNotifyToggleUI() {
             const label = document.getElementById('schedule-notify-toggle-label');
             if (!label) return;
-            if (!('Notification' in window)) { label.textContent = '予定のプッシュ通知（非対応）'; return; }
-            if (Notification.permission === 'denied') { label.textContent = '予定のプッシュ通知（ブラウザ設定でブロック中）'; return; }
-            label.textContent = isScheduleNotifyEnabled() && Notification.permission === 'granted'
-                ? '予定のプッシュ通知：オン' : '予定のプッシュ通知：オフ';
+            if (!('Notification' in window)) { label.textContent = '予定のプッシュ通知（非対応）'; setToggleSwitchUI('schedule-notify-toggle-switch', false); return; }
+            if (Notification.permission === 'denied') { label.textContent = '予定のプッシュ通知（ブラウザ設定でブロック中）'; setToggleSwitchUI('schedule-notify-toggle-switch', false); return; }
+            const on = isScheduleNotifyEnabled() && Notification.permission === 'granted';
+            label.textContent = '予定のプッシュ通知';
+            setToggleSwitchUI('schedule-notify-toggle-switch', on);
         }
 
         function checkScheduleNotifications() {
@@ -7589,6 +7676,7 @@
         let timerCountdownRemainMs = 0; // カウントダウンの残り時間（一時停止中も保持）
 
         function toggleTimerPanel() {
+            if (!isModeEnabled('timer')) { showToast(modeDisabledMessage('timer')); return; }
             const panel = document.getElementById('timer-panel');
             if (!panel) return;
             panel.classList.toggle('hidden');
@@ -7713,6 +7801,7 @@
         // 既存のAI予習アシスタントと同じAPIプロキシ（Cloudflare Workers）を利用する。
         // ==================================================
         function openGeneralAiChat() {
+            if (!isModeEnabled('aiChat')) { showToast(modeDisabledMessage('aiChat')); return; }
             const apiKey = getEffectiveApiKey();
             if (!apiKey) {
                 toggleKeyConfigModal(true);
@@ -13750,6 +13839,13 @@ const KOBUN_TANGO = [
         // 実際の画面遷移処理（pushStateあり/なしを選べる）
         function _navigateTo(screen, addHistory) {
             if (addHistory === undefined) addHistory = true;
+            // 'ronri-section-list' や 'ronri-scan' は「論理・表現」モードの一部として扱う
+            const modeKeyOf = { 'ronri-section-list': 'ronri-hyogen', 'ronri-scan': 'ronri-hyogen' };
+            const modeKey = modeKeyOf[screen] || screen;
+            if (modeKey !== 'top' && !isModeEnabled(modeKey)) {
+                showToast(modeDisabledMessage(modeKey));
+                return;
+            }
             switch(screen) {
                 case 'top':
                     if (addHistory) pushState({ screen: 'top' }, '予習ProMaster');
@@ -13826,6 +13922,7 @@ const KOBUN_TANGO = [
         function showTopHome() { _navigateTo('top'); }
 
         function _showEnglishHome() {
+            if (!isModeEnabled('english')) { showToast(modeDisabledMessage('english')); _showTopHome(); return; }
             currentSubject = 'english';
             hideAllPanels();
             if (!modeTabBar) modeTabBar = document.getElementById('mode-tab-bar');
@@ -13905,6 +14002,7 @@ const KOBUN_TANGO = [
         }
         // 入口：「セクションで選ぶ」「自分で画像をアップロード」の2択（英コと同じ）
         function openRonriHyogen(addHistory = true) {
+            if (!isModeEnabled('ronri-hyogen')) { showToast(modeDisabledMessage('ronri-hyogen')); _showTopHome(); return; }
             _prepareRonriScreen();
             document.getElementById('ronri-entry-selector')?.classList.remove('hidden');
             if (addHistory) pushState({ screen: 'ronri-hyogen' }, '論理・表現 - 予習ProMaster');
@@ -13913,6 +14011,7 @@ const KOBUN_TANGO = [
         function openRonriEntrySelector() { openRonriHyogen(); }
         // セクション一覧ページ
         function openRonriSectionListPage(addHistory = true) {
+            if (!isModeEnabled('ronri-hyogen')) { showToast(modeDisabledMessage('ronri-hyogen')); _showTopHome(); return; }
             _prepareRonriScreen();
             document.getElementById('ronri-section-list-panel')?.classList.remove('hidden');
             renderRonriSectionListPage();
@@ -13952,6 +14051,7 @@ const KOBUN_TANGO = [
         }
         // 画像アップロード（スキャン）ページ
         function openRonriScanPage(addHistory = true, skipReset = false) {
+            if (!isModeEnabled('ronri-hyogen')) { showToast(modeDisabledMessage('ronri-hyogen')); _showTopHome(); return; }
             _prepareRonriScreen();
             document.getElementById('ronri-hyogen-panel')?.classList.remove('hidden');
             if (!skipReset) {
@@ -14250,6 +14350,7 @@ const KOBUN_TANGO = [
         }
 
         function _showJapaneseHome() {
+            if (!isModeEnabled('japanese')) { showToast(modeDisabledMessage('japanese')); _showTopHome(); return; }
             currentSubject = 'japanese';
             hideAllPanels();
             const mc = document.getElementById('main-container');
@@ -14664,6 +14765,7 @@ const KOBUN_TANGO = [
         }
 
         function _showMathHome() {
+            if (!isModeEnabled('math')) { showToast(modeDisabledMessage('math')); _showTopHome(); return; }
             currentSubject = 'math';
             hideAllPanels();
             const mc = document.getElementById('main-container');
@@ -14683,6 +14785,7 @@ const KOBUN_TANGO = [
         }
 
         function _showScienceHome() {
+            if (!isModeEnabled('science')) { showToast(modeDisabledMessage('science')); _showTopHome(); return; }
             currentSubject = 'science';
             hideAllPanels();
             const mc = document.getElementById('main-container');
@@ -14700,6 +14803,7 @@ const KOBUN_TANGO = [
         }
 
         function _showSocialHome() {
+            if (!isModeEnabled('social')) { showToast(modeDisabledMessage('social')); _showTopHome(); return; }
             currentSubject = 'social';
             hideAllPanels();
             const mc = document.getElementById('main-container');
@@ -15522,6 +15626,7 @@ const KOBUN_TANGO = [
         }
 
         function _showScan() {
+            if (!isModeEnabled('scan')) { showToast(modeDisabledMessage('scan')); _showTopHome(); return; }
             currentSubject = 'english';
             showManualScanPanel();
         }
@@ -15547,6 +15652,7 @@ const KOBUN_TANGO = [
         }
 
         function _showTarget() {
+            if (!isModeEnabled('target')) { showToast(modeDisabledMessage('target')); _showTopHome(); return; }
             currentSubject = 'english';
             t19_currentGroup = 'english';
             if ((T19_BOOKS[t19_currentBook].group || 'english') !== 'english') t19_currentBook = 'T1900';
@@ -15562,6 +15668,7 @@ const KOBUN_TANGO = [
         }
 
         function _showGrades() {
+            if (!isModeEnabled('grades')) { showToast(modeDisabledMessage('grades')); _showTopHome(); return; }
             currentSubject = null;
             hideAllPanels();
             const mc = document.getElementById('main-container');
@@ -15573,6 +15680,7 @@ const KOBUN_TANGO = [
         }
 
         function _showCalendar() {
+            if (!isModeEnabled('calendar')) { showToast(modeDisabledMessage('calendar')); _showTopHome(); return; }
             currentSubject = null;
             hideAllPanels();
             const mc = document.getElementById('main-container');
@@ -16349,6 +16457,16 @@ const KOBUN_TANGO = [
             cmsGhRenderConnectionUI();
         }
 
+        // 開発者設定モーダル内の各セクション（モード管理・GitHub連携など）を開閉する。
+        // 「編集画面への移動」だけは最初から開いた状態、それ以外は畳んだ状態にして見通しをよくしている。
+        function toggleDevSection(key) {
+            const content = document.getElementById('dev-section-content-' + key);
+            const chevron = document.getElementById('dev-section-chevron-' + key);
+            if (!content) return;
+            const willShow = content.classList.contains('hidden');
+            content.classList.toggle('hidden', !willShow);
+            if (chevron) chevron.classList.toggle('rotate-180', willShow);
+        }
         function openDevDashboard() {
             const modal = document.getElementById('dev-settings-modal');
             const card  = document.getElementById('dev-settings-card');
@@ -16358,6 +16476,7 @@ const KOBUN_TANGO = [
             lockScroll();
             devRefreshDashboard();
             cmsTryAutoConnect();
+            cmsRenderModeList();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
@@ -16401,12 +16520,7 @@ const KOBUN_TANGO = [
         function devRefreshDashboard() {
             // 利用制限状態
             const limitDisabled = safeStorage.get('dev_limit_disabled') === true;
-            const limitBtn = document.getElementById('dev-limit-toggle');
-            if (limitBtn) {
-                limitBtn.textContent = limitDisabled ? 'ON' : 'OFF';
-                limitBtn.className = limitBtn.className.replace(/bg-\S+/g, '');
-                limitBtn.classList.add(limitDisabled ? 'bg-green-500' : 'bg-slate-200', limitDisabled ? 'text-white' : 'text-slate-600');
-            }
+            setToggleSwitchUI('dev-limit-toggle', limitDisabled);
             // 上限回数
             const currentLimit = safeStorage.get('dev_daily_limit') || 5;
             const limitInput = document.getElementById('dev-limit-input');
@@ -16499,7 +16613,7 @@ const KOBUN_TANGO = [
         // ===== CMS管理機能（旧admin.htmlを開発者モードに統合したもの） =====
         // ================================================================
         let cmsSession = null; // { token, repo, branch }
-        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [] };
+        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {} };
         let cmsCurrentSha = null;
         let cmsDirty = false;
         const CMS_SESSION_KEY = 'pm_cms_session_v1';
@@ -16530,6 +16644,46 @@ const KOBUN_TANGO = [
         function cmsMarkDirty() {
             cmsDirty = true;
             cmsSetSaveStatus('未保存の変更があります');
+        }
+
+        // ===== モード管理（点検・機能停止） =====
+        function cmsRenderModeList() {
+            const wrap = document.getElementById('cms-mode-list');
+            if (!wrap) return;
+            const flags = cmsConfigData.featureFlags || {};
+            wrap.innerHTML = FEATURE_MODE_LIST.map(m => {
+                const enabled = flags[m.key] !== false;
+                return `
+                <div class="flex items-center justify-between gap-2 bg-white dark:bg-slate-900 rounded-xl px-3 py-2.5 border border-slate-200 dark:border-slate-700">
+                    <div class="min-w-0 flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 rounded-full shrink-0 ${enabled ? 'bg-emerald-500' : 'bg-rose-500'}"></span>
+                        <span class="text-[11px] font-black text-slate-700 dark:text-slate-200 truncate">${escapeHtml(m.label)}</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button onclick="cmsJumpToMode('${m.key}')" class="text-[10px] font-black px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:opacity-80">点検する</button>
+                        <button onclick="cmsToggleModeFlag('${m.key}')" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 shrink-0 ${enabled ? 'bg-emerald-500' : 'bg-slate-300 dark:bg-slate-600'}">
+                            <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 ${enabled ? 'translate-x-5' : 'translate-x-1'}"></span>
+                        </button>
+                    </div>
+                </div>`;
+            }).join('');
+        }
+        function cmsToggleModeFlag(key) {
+            cmsConfigData.featureFlags = cmsConfigData.featureFlags || {};
+            const enabled = cmsConfigData.featureFlags[key] !== false;
+            cmsConfigData.featureFlags[key] = !enabled; // 反転
+            window._remoteFeatureFlags = Object.assign({}, cmsConfigData.featureFlags);
+            cmsRenderModeList();
+            cmsMarkDirty();
+            const found = FEATURE_MODE_LIST.find(m => m.key === key);
+            showToast(!enabled ? `「${found ? found.label : key}」を再開しました（公開して反映）` : `「${found ? found.label : key}」を停止しました（公開して反映）`);
+        }
+        // そのモードへ実際に移動して点検する（開発者モード中は停止していても入れる）
+        function cmsJumpToMode(key) {
+            closeDevSettingsModal();
+            if (key === 'aiChat') { openGeneralAiChat(); return; }
+            if (key === 'timer') { toggleTimerPanel(); return; }
+            _navigateTo(key);
         }
 
         function cmsGhApiUrl() {
@@ -16567,7 +16721,7 @@ const KOBUN_TANGO = [
             });
             if (res.status === 404) {
                 cmsCurrentSha = null;
-                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [] };
+                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {} };
                 cmsSyncAllRealDisplays();
                 cmsSetSaveStatus('config.json はまだリポジトリに存在しません。保存すると新規作成されます。', 'err');
                 if (statusEl) { statusEl.textContent = 'リポジトリに config.json がまだありません（新規作成されます）'; statusEl.className = 'text-[10px] font-bold text-amber-500'; }
@@ -16588,6 +16742,7 @@ const KOBUN_TANGO = [
             cmsConfigData.corners = cmsConfigData.corners || [];
             cmsConfigData.classes = cmsConfigData.classes || [];
             cmsConfigData.tourSteps = cmsConfigData.tourSteps || [];
+            cmsConfigData.featureFlags = cmsConfigData.featureFlags || {};
             cmsDirty = false;
             cmsSyncAllRealDisplays();
             cmsSetSaveStatus('GitHubの最新内容を読み込みました', 'ok');
@@ -16603,6 +16758,8 @@ const KOBUN_TANGO = [
             window._remoteClasses = (cmsConfigData.classes || []).slice();
             window._remoteRonriSections = (cmsConfigData.ronriSections || []).slice();
             window._remoteTourSteps = (cmsConfigData.tourSteps || []).slice();
+            window._remoteFeatureFlags = Object.assign({}, cmsConfigData.featureFlags || {});
+            cmsRenderModeList();
             (cmsConfigData.extraSections || []).forEach(sec => {
                 const idx = PRESET_SECTIONS.findIndex(p => p.id === sec.id);
                 if (idx >= 0) PRESET_SECTIONS[idx] = sec;
