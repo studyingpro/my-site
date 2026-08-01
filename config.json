@@ -4141,5 +4141,8 @@
       "color": "#f97316"
     }
   ],
-  "tourSteps": []
+  "tourSteps": [],
+  "featureFlags": {
+    "english": false
+  }
 }
