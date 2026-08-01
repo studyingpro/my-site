@@ -2814,6 +2814,61 @@
         </div>
     </div>
 
+    <!-- ==================================================
+         どの画面からでも使える「タイマー」「何でも聞けるAIチャット」
+         ================================================== -->
+    <div id="floating-tools" class="fixed bottom-24 right-5 z-40 flex flex-col gap-3 items-end">
+        <button onclick="toggleTimerPanel()" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="タイマー">
+            <i data-lucide="timer" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i>
+        </button>
+        <button onclick="openGeneralAiChat()" class="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="何でも聞けるAIチャット">
+            <i data-lucide="bot" class="w-5 h-5 text-white"></i>
+        </button>
+    </div>
+
+    <!-- タイマー（ストップウォッチ／カウントダウン）パネル -->
+    <div id="timer-panel" class="hidden fixed bottom-24 right-5 z-[9990] w-72 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-4">
+        <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5"><i data-lucide="timer" class="w-4 h-4"></i><span>タイマー</span></h3>
+            <button onclick="toggleTimerPanel()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <div class="flex gap-2 mb-3">
+            <button id="timer-mode-stopwatch-btn" onclick="setTimerMode('stopwatch')" class="flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all">ストップウォッチ</button>
+            <button id="timer-mode-countdown-btn" onclick="setTimerMode('countdown')" class="flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all">カウントダウン</button>
+        </div>
+        <div id="timer-countdown-setup" class="hidden mb-3">
+            <div class="flex items-center gap-2">
+                <input type="number" id="timer-countdown-minutes" min="1" max="180" value="25" oninput="updateCountdownPreview()"
+                    class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-black text-center text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                <span class="text-xs font-bold text-slate-400 shrink-0">分</span>
+            </div>
+        </div>
+        <div class="text-center py-4">
+            <p id="timer-display" class="text-4xl font-black tabular-nums text-slate-900 dark:text-white">00:00</p>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+            <button id="timer-start-btn" onclick="startPauseTimer()" class="py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">開始</button>
+            <button onclick="resetTimer()" class="py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90 transition-all">リセット</button>
+        </div>
+    </div>
+
+    <!-- 何でも聞けるAIチャット モーダル -->
+    <div id="general-ai-chat-modal" class="hidden fixed inset-0 z-[9995] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5">
+        <div class="bg-white dark:bg-[#0c1220] w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-2xl flex flex-col h-[85vh] sm:h-[600px]">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="bot" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i><span>何でも聞けるAIチャット</span></h3>
+                <button onclick="closeGeneralAiChat()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <div id="general-ai-chat-log" class="flex-1 overflow-y-auto px-4 py-4"></div>
+            <div class="p-3 border-t border-slate-200 dark:border-slate-800 flex items-center gap-2 shrink-0">
+                <input type="text" id="general-ai-chat-input" placeholder="なんでも聞いてください…"
+                    class="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400"
+                    onkeydown="if(event.key==='Enter'){ event.preventDefault(); sendGeneralAiChatQuery(); }">
+                <button onclick="sendGeneralAiChatQuery()" class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white flex items-center justify-center shrink-0 hover:opacity-90 transition-all"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+    </div>
+
     <!-- フラッシュカードモーダル -->
     <div id="flashcard-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-2xl w-full max-w-sm transform scale-95 transition-all duration-300" id="flashcard-modal-card">
@@ -3376,8 +3431,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import {
             getAuth, onAuthStateChanged, signInAnonymously,
-            signInWithPopup, GoogleAuthProvider,
-            linkWithPopup, signOut
+            signInWithRedirect, getRedirectResult, GoogleAuthProvider,
+            linkWithRedirect, signOut
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
         import {
             getFirestore, doc, getDoc, setDoc, updateDoc, serverTimestamp,
@@ -3484,15 +3539,16 @@
             },
             async loginGoogle() {
                 const user = auth.currentUser;
+                const provider = new GoogleAuthProvider();
+                // ポップアップ方式はChromebookや一部ブラウザでブロックされて失敗しやすいため、
+                // 同じタブ内でGoogleのログイン画面に移動する「リダイレクト方式」を使う。
+                // ログイン完了後、このページに戻ってきたタイミングで下のgetRedirectResult()が結果を拾う。
                 if (user && user.isAnonymous) {
-                    // ゲストからの昇格：データを引き継いでリンク
-                    const result = await linkWithPopup(user, new GoogleAuthProvider());
-                    await ensureUserDoc(result.user);
-                    return result.user;
+                    await linkWithRedirect(user, provider); // ゲストからの昇格（データ引き継ぎ）
+                } else {
+                    await signInWithRedirect(auth, provider);
                 }
-                const { user: newUser } = await signInWithPopup(auth, new GoogleAuthProvider());
-                await ensureUserDoc(newUser);
-                return newUser;
+                // ここから先はページ遷移が発生するため、通常は実行されない
             },
             async logout() {
                 await signOut(auth);
@@ -3593,6 +3649,24 @@
                 window.currentAppProfileName = null;
             }
         });
+
+        // リダイレクト方式のGoogleログイン画面から戻ってきた時に、その結果を受け取る処理。
+        // ページ読み込み時に一度だけ呼べばよく、ログインしていなければ何もしない（result が null）。
+        getRedirectResult(auth).then(async (result) => {
+            if (result && result.user) {
+                await ensureUserDoc(result.user);
+                // ensureUserDoc後、onAuthStateChangedが自動で発火してUIが更新される
+            }
+        }).catch((e) => {
+            console.error('Googleログインでエラーが発生しました:', e);
+            let message = 'ログインに失敗しました。時間をおいて再度お試しください。';
+            if (e && e.code === 'auth/unauthorized-domain') {
+                message = 'このサイトのURLがGoogleログインの許可設定に含まれていません（Firebaseの承認済みドメインを確認してください）。';
+            } else if (e && e.code === 'auth/account-exists-with-different-credential') {
+                message = 'このGoogleアカウントは別のログイン方法ですでに使われています。';
+            }
+            window.dispatchEvent(new CustomEvent('app-login-error', { detail: { message } }));
+        });
     </script>
 
     <!-- 
@@ -3672,6 +3746,15 @@
         }
         window.addEventListener('app-need-profile-setup', (e) => {
             openProfileSetupModal(e.detail && e.detail.user);
+        });
+        // Googleログイン（リダイレクト方式）でエラーが起きた時、ログイン画面にエラー内容を表示する
+        window.addEventListener('app-login-error', (e) => {
+            const errEl = document.getElementById('auth-gate-error');
+            if (errEl) {
+                errEl.textContent = (e.detail && e.detail.message) || 'ログインに失敗しました。時間をおいて再度お試しください。';
+                errEl.classList.remove('hidden');
+            }
+            showAuthGate(true);
         });
         // クラウドに保存されていた予定・成績・進行度をこの端末に読み込んだら、画面に反映するため再読み込みする
         window.addEventListener('app-cloud-data-loaded', () => {
@@ -7491,6 +7574,240 @@
                 return __gemini_api_key;
             }
             return globalApiKey || "";
+        }
+
+        // ==================================================
+        // タイマー（ストップウォッチ／カウントダウン）
+        // どの画面からでも右下のボタンから開ける、共通のタイマー機能。
+        // ==================================================
+        let timerMode = 'stopwatch'; // 'stopwatch' | 'countdown'
+        let timerInterval = null;
+        let timerRunning = false;
+        let timerElapsedMs = 0;         // ストップウォッチの経過時間（一時停止中も保持）
+        let timerStartTimestamp = 0;    // 直近で開始／再開した時刻
+        let timerCountdownTotalMs = 0;  // カウントダウンの合計時間
+        let timerCountdownRemainMs = 0; // カウントダウンの残り時間（一時停止中も保持）
+
+        function toggleTimerPanel() {
+            const panel = document.getElementById('timer-panel');
+            if (!panel) return;
+            panel.classList.toggle('hidden');
+            if (!panel.classList.contains('hidden')) {
+                updateTimerModeButtons();
+                if (timerMode === 'countdown' && !timerRunning && timerCountdownRemainMs === 0) updateCountdownPreview();
+                renderTimerDisplay();
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }
+        }
+        function setTimerMode(mode) {
+            if (timerRunning) { showToast('タイマーを停止してから切り替えてください'); return; }
+            timerMode = mode;
+            timerElapsedMs = 0;
+            timerCountdownTotalMs = 0;
+            timerCountdownRemainMs = 0;
+            updateTimerModeButtons();
+            if (mode === 'countdown') updateCountdownPreview();
+            renderTimerDisplay();
+        }
+        function updateTimerModeButtons() {
+            const swBtn = document.getElementById('timer-mode-stopwatch-btn');
+            const cdBtn = document.getElementById('timer-mode-countdown-btn');
+            const activeCls = 'bg-blue-500 dark:bg-cyan-500 text-white';
+            const inactiveCls = 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400';
+            if (swBtn) swBtn.className = 'flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all ' + (timerMode === 'stopwatch' ? activeCls : inactiveCls);
+            if (cdBtn) cdBtn.className = 'flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all ' + (timerMode === 'countdown' ? activeCls : inactiveCls);
+            document.getElementById('timer-countdown-setup')?.classList.toggle('hidden', timerMode !== 'countdown');
+        }
+        function updateCountdownPreview() {
+            if (timerMode !== 'countdown' || timerRunning) return;
+            const minsInput = document.getElementById('timer-countdown-minutes');
+            const mins = Math.max(1, parseInt(minsInput && minsInput.value) || 25);
+            timerCountdownTotalMs = mins * 60 * 1000;
+            timerCountdownRemainMs = timerCountdownTotalMs;
+            renderTimerDisplay();
+        }
+        function formatTimerMs(ms) {
+            ms = Math.max(0, ms);
+            const totalSec = Math.floor(ms / 1000);
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            const s = totalSec % 60;
+            if (h > 0) return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            return String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+        function renderTimerDisplay() {
+            const el = document.getElementById('timer-display');
+            if (!el) return;
+            el.textContent = formatTimerMs(timerMode === 'stopwatch' ? timerElapsedMs : timerCountdownRemainMs);
+        }
+        function startPauseTimer() {
+            const btn = document.getElementById('timer-start-btn');
+            if (timerRunning) {
+                // 一時停止：経過時間／残り時間を確定させて止める
+                timerRunning = false;
+                clearInterval(timerInterval);
+                if (timerMode === 'stopwatch') timerElapsedMs += Date.now() - timerStartTimestamp;
+                else timerCountdownRemainMs = Math.max(0, timerCountdownRemainMs - (Date.now() - timerStartTimestamp));
+                renderTimerDisplay();
+                if (btn) btn.textContent = '再開';
+                return;
+            }
+            if (timerMode === 'countdown' && timerCountdownRemainMs <= 0) updateCountdownPreview();
+            timerRunning = true;
+            timerStartTimestamp = Date.now();
+            if (btn) btn.textContent = '一時停止';
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timerMode === 'stopwatch') {
+                    const el = document.getElementById('timer-display');
+                    if (el) el.textContent = formatTimerMs(timerElapsedMs + (Date.now() - timerStartTimestamp));
+                } else {
+                    const remain = timerCountdownRemainMs - (Date.now() - timerStartTimestamp);
+                    if (remain <= 0) {
+                        clearInterval(timerInterval);
+                        timerRunning = false;
+                        timerCountdownRemainMs = 0;
+                        renderTimerDisplay();
+                        onTimerCountdownFinished();
+                        return;
+                    }
+                    const el = document.getElementById('timer-display');
+                    if (el) el.textContent = formatTimerMs(remain);
+                }
+            }, 250);
+        }
+        function onTimerCountdownFinished() {
+            showToast('⏰ タイマーが終了しました');
+            const btn = document.getElementById('timer-start-btn');
+            if (btn) btn.textContent = '開始';
+            try {
+                // 外部の音声ファイルを使わず、Web Audio APIでその場に短いビープ音を鳴らす
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const o = ctx.createOscillator();
+                const g = ctx.createGain();
+                o.connect(g); g.connect(ctx.destination);
+                o.frequency.value = 880;
+                g.gain.setValueAtTime(0.001, ctx.currentTime);
+                g.gain.exponentialRampToValueAtTime(0.2, ctx.currentTime + 0.02);
+                g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+                o.start();
+                o.stop(ctx.currentTime + 0.55);
+            } catch (e) {}
+            if ('Notification' in window && Notification.permission === 'granted' && document.hidden) {
+                try { new Notification('タイマー終了', { body: '設定した時間が経過しました' }); } catch (e) {}
+            }
+        }
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerRunning = false;
+            timerElapsedMs = 0;
+            if (timerMode === 'countdown') updateCountdownPreview();
+            else timerCountdownRemainMs = 0;
+            const btn = document.getElementById('timer-start-btn');
+            if (btn) btn.textContent = '開始';
+            renderTimerDisplay();
+        }
+
+        // ==================================================
+        // 何でも聞けるAIチャット（勉強に限らず、幅広い質問に答える汎用チャット）
+        // 既存のAI予習アシスタントと同じAPIプロキシ（Cloudflare Workers）を利用する。
+        // ==================================================
+        function openGeneralAiChat() {
+            const apiKey = getEffectiveApiKey();
+            if (!apiKey) {
+                toggleKeyConfigModal(true);
+                showToast('AI機能を利用するにはAPIキーを登録してください。');
+                return;
+            }
+            const modal = document.getElementById('general-ai-chat-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            const log = document.getElementById('general-ai-chat-log');
+            if (log && !log.dataset.greeted) {
+                log.dataset.greeted = '1';
+                log.innerHTML = `
+                    <div class="flex justify-start mb-3.5">
+                        <div class="max-w-[85%] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-none px-4 py-3 text-xs leading-relaxed font-bold shadow-sm border border-slate-200 dark:border-slate-700">
+                            こんにちは！勉強のことでも、それ以外のことでも、なんでも聞いてください。
+                        </div>
+                    </div>`;
+            }
+            setTimeout(() => document.getElementById('general-ai-chat-input')?.focus(), 100);
+        }
+        function closeGeneralAiChat() {
+            document.getElementById('general-ai-chat-modal')?.classList.add('hidden');
+        }
+        async function sendGeneralAiChatQuery() {
+            const apiKey = getEffectiveApiKey();
+            if (!apiKey) {
+                toggleKeyConfigModal(true);
+                showToast('AI機能を利用するにはAPIキーを登録してください。');
+                return;
+            }
+            const inputEl = document.getElementById('general-ai-chat-input');
+            const log = document.getElementById('general-ai-chat-log');
+            if (!inputEl || !log) return;
+            const userText = inputEl.value.trim();
+            if (userText === '') return;
+
+            const userMsgEl = document.createElement('div');
+            userMsgEl.className = 'flex justify-end mb-3.5 animate-fade-in';
+            userMsgEl.dataset.role = 'user';
+            userMsgEl.dataset.text = userText;
+            userMsgEl.innerHTML = `<div class="max-w-[85%] bg-blue-500 dark:bg-cyan-500 text-white rounded-2xl rounded-tr-none px-4 py-2.5 text-xs font-bold shadow-sm whitespace-pre-wrap">${escapeHtml(userText)}</div>`;
+            log.appendChild(userMsgEl);
+            inputEl.value = '';
+            log.scrollTop = log.scrollHeight;
+
+            const loadingEl = document.createElement('div');
+            loadingEl.className = 'flex justify-start mb-3.5 animate-fade-in';
+            loadingEl.id = 'general-ai-chat-loading';
+            loadingEl.innerHTML = `
+                <div class="max-w-[85%] bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-2xl rounded-tl-none px-4 py-2.5 text-xs font-bold shadow-sm flex items-center space-x-2">
+                    <span class="flex h-1.5 w-1.5 relative">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 dark:bg-cyan-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500 dark:bg-cyan-500"></span>
+                    </span>
+                    <span>考え中…</span>
+                </div>`;
+            log.appendChild(loadingEl);
+            log.scrollTop = log.scrollHeight;
+
+            const systemPrompt = 'あなたは何でも答えられる、親切で物知りなAIアシスタントです。日本の高校生に向けて、わかりやすく丁寧な日本語で回答してください。勉強の質問にはもちろん、それ以外の雑談や幅広い質問にも答えてください。ただし、暴力・自傷・違法行為など生徒にとって有害になりうる内容には配慮し、必要に応じて信頼できる大人や専門家に相談するよう案内してください。';
+            // これまでのやり取り（会話履歴）を、表示中のメッセージから組み立てる
+            const history = Array.from(log.querySelectorAll('[data-role]')).map(el => ({
+                role: el.dataset.role,
+                parts: [{ text: el.dataset.text }]
+            }));
+            const payload = {
+                contents: history,
+                systemInstruction: { parts: [{ text: systemPrompt }] }
+            };
+
+            try {
+                const response = await fetch('https://promaster-api.kawaa1456.workers.dev', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const responseData = await response.json();
+                document.getElementById('general-ai-chat-loading')?.remove();
+                if (!response.ok || responseData.error) throw new Error(responseData.error?.message || '通信エラーが発生しました');
+
+                const aiResponseText = responseData.candidates?.[0]?.content?.parts?.[0]?.text || '申し訳ありません。回答を生成できませんでした。';
+                const aiMsgEl = document.createElement('div');
+                aiMsgEl.className = 'flex justify-start mb-3.5 animate-fade-in';
+                aiMsgEl.dataset.role = 'model';
+                aiMsgEl.dataset.text = aiResponseText;
+                aiMsgEl.innerHTML = `<div class="max-w-[85%] bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-2xl rounded-tl-none px-4 py-3 text-xs leading-relaxed font-bold shadow-sm border border-slate-200 dark:border-slate-700 whitespace-pre-wrap select-text"></div>`;
+                aiMsgEl.querySelector('div').textContent = aiResponseText;
+                log.appendChild(aiMsgEl);
+                log.scrollTop = log.scrollHeight;
+            } catch (err) {
+                document.getElementById('general-ai-chat-loading')?.remove();
+                showToast(`エラーが発生しました: ${err.message}`);
+            }
         }
 
         // 11-1. 予習疑問質問チャット
@@ -13200,6 +13517,12 @@ const KOBUN_TANGO = [
                         <p class="text-xs font-bold text-slate-500 dark:text-slate-400">${label}</p>
                         <h3 class="text-2xl font-black text-slate-900 dark:text-white mt-2">${escapeHtml(question)}</h3>
                     </div>
+                    <div id="t19q-feedback2" class="hidden text-center py-2 px-3 rounded-xl text-sm font-black">
+                        <p id="t19q-feedback-text2"></p>
+                        <div class="mt-2 h-1 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+                            <div id="t19q-feedback-timerbar2" class="h-full bg-current rounded-full opacity-70" style="width:100%;"></div>
+                        </div>
+                    </div>
                     <div id="t19q-choices2" class="grid grid-cols-1 gap-2.5"></div>
                 </div>`;
             const grid = document.getElementById('t19q-choices2');
@@ -13225,11 +13548,15 @@ const KOBUN_TANGO = [
             const allBtns = btn.parentElement.querySelectorAll('button');
             allBtns.forEach(b => b.disabled = true);
             const isCorrect = selected === finalAnswer;
+            const fbEl = document.getElementById('t19q-feedback2');
+            const fbTextEl = document.getElementById('t19q-feedback-text2');
             if (isCorrect) {
                 t19_quizScore++;
                 t19_masteredSet[wordN] = true;
                 if (t19_weakSet[wordN] > 0) t19_weakSet[wordN] = Math.max(0, t19_weakSet[wordN] - 1);
                 btn.classList.add('bg-green-100','border-green-400','dark:bg-green-900/40','dark:border-green-600');
+                if (fbEl) fbEl.className = 'py-2 px-3 rounded-xl text-sm font-black bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400';
+                if (fbTextEl) fbTextEl.textContent = '◯ 正解！';
             } else {
                 t19_weakSet[wordN] = (t19_weakSet[wordN] || 0) + 1;
                 btn.classList.add('bg-blue-100','border-blue-400','dark:bg-rose-900/40','dark:border-rose-600');
@@ -13238,9 +13565,24 @@ const KOBUN_TANGO = [
                         b.classList.add('bg-green-100','border-green-400','dark:bg-green-900/40','dark:border-green-600');
                     }
                 });
+                if (fbEl) fbEl.className = 'py-2 px-3 rounded-xl text-sm font-black bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400';
+                if (fbTextEl) fbTextEl.textContent = '✕ 不正解…正解は「' + finalAnswer + '」';
             }
+            const scoreEl = document.getElementById('t19q-score2');
+            if (scoreEl) scoreEl.textContent = '正解: ' + t19_quizScore;
+            if (fbEl) fbEl.classList.remove('hidden');
             t19SaveData();
-            setTimeout(() => { t19_quizIdx++; t19qShowQuestion2(); }, 900);
+            // 不正解の時は、正解を確認する時間を長めに取る。あと何秒で次に進むかは、下のバーが縮んでいく様子でわかる。
+            const delay = isCorrect ? 900 : 2600;
+            const timerBar = document.getElementById('t19q-feedback-timerbar2');
+            if (timerBar) {
+                timerBar.style.transition = 'none';
+                timerBar.style.width = '100%';
+                void timerBar.offsetWidth; // 強制的に再描画させて、transitionを確実に効かせる
+                timerBar.style.transition = `width ${delay}ms linear`;
+                timerBar.style.width = '0%';
+            }
+            setTimeout(() => { t19_quizIdx++; t19qShowQuestion2(); }, delay);
         }
 
         function t19qComplete2() {
@@ -14618,17 +14960,21 @@ const KOBUN_TANGO = [
                 return;
             }
             sqaCorrectCount++;
-            // 正解時：勘だったか、わかっていたかを自己申告してもらう
+            // 正解時：まず「正解！」がひと目でわかるように表示してから、勘だったか確認する
             const area = document.getElementById('sqa-answer-area');
             if (!area) { goToNextSocialQA(); return; }
             area.innerHTML = `
                 <div class="w-full space-y-2.5">
+                    <div class="flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 text-sm font-black">
+                        <i data-lucide="check-circle" class="w-4 h-4"></i><span>◯ 正解！</span>
+                    </div>
                     <p class="text-[11px] font-bold text-slate-400">今の答え、どっちでしたか？</p>
                     <div class="grid grid-cols-2 gap-2.5">
                         <button onclick="markSocialQAConfidence('known')" class="py-2.5 bg-blue-500 dark:bg-cyan-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">💡 わかっていた</button>
                         <button onclick="markSocialQAConfidence('guess')" class="py-2.5 bg-slate-400 dark:bg-slate-600 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">🎲 勘だった</button>
                     </div>
                 </div>`;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
         function markSocialQAConfidence(kind) {
             if (kind === 'known') sqaKnownCount++;
