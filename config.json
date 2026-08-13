@@ -4143,6 +4143,9 @@
   ],
   "tourSteps": [],
   "featureFlags": {
-    "english": true
-  }
+    "english": true,
+    "examRange": true
+  },
+  "examRanges": [],
+  "examRangeTitle": "前期期末考査範囲"
 }
