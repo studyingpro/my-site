@@ -433,6 +433,30 @@
                                     <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 translate-x-1"></span>
                                 </span>
                             </button>
+                            <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
+                            <button onclick="toggleAiChatFabVisibility()" id="aichat-fab-toggle-btn" class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <span class="flex items-center space-x-3 min-w-0">
+                                    <i data-lucide="bot" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">AIチャットを表示</span>
+                                </span>
+                                <span id="aichat-fab-toggle-switch" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 bg-emerald-500 shrink-0">
+                                    <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 translate-x-5"></span>
+                                </span>
+                            </button>
+                            <button onclick="toggleTimerFabVisibility()" id="timer-fab-toggle-btn" class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <span class="flex items-center space-x-3 min-w-0">
+                                    <i data-lucide="timer" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">タイマーを表示</span>
+                                </span>
+                                <span id="timer-fab-toggle-switch" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 bg-emerald-500 shrink-0">
+                                    <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 translate-x-5"></span>
+                                </span>
+                            </button>
+                            <button onclick="closeSettingsMenu(); openExamRangeModal()" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <i data-lucide="clipboard-list" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                <span id="exam-range-menu-label" class="text-xs font-bold text-slate-700 dark:text-slate-200">定期考査の範囲</span>
+                            </button>
+                            <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
                             <button onclick="closeSettingsMenu(); window.open('https://forms.gle/byfhaFViuqJkjoSY7','_blank')" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="send" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
                                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200">フィードバックを送る</span>
@@ -792,6 +816,23 @@
                             </div>
                         </div>
                         <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-amber-500 group-hover:translate-x-1 transition-all shrink-0"></i>
+                    </button>
+
+                    <!-- 定期考査の範囲（クラスごとに表示内容が切り替わる掲示板／名前は開発者モードで変更可） -->
+                    <button onclick="openExamRangeModal()" id="exam-range-entry-card" class="mt-3 w-full p-5 bg-white dark:bg-[#0f172a] hover:bg-gradient-to-br hover:from-cyan-50 hover:to-blue-50 dark:hover:from-cyan-950/20 dark:hover:to-blue-950/20 border-2 border-slate-200 dark:border-slate-800 hover:border-cyan-400 dark:hover:border-cyan-500 rounded-2xl text-left transition-all duration-300 flex items-center justify-between group shadow-sm hover:-translate-y-0.5 hover:shadow-lg">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white shadow-md group-hover:scale-110 transition-transform duration-300 shrink-0">
+                                <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                            </div>
+                            <div>
+                                <p id="exam-range-entry-title" class="text-sm font-black text-slate-800 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">定期考査の範囲</p>
+                                <p id="exam-range-entry-sub" class="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-0.5">クラスごとの試験範囲をチェック</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 shrink-0">
+                            <span id="exam-range-entry-badge" class="hidden text-[10px] font-black px-2 py-1 rounded-full bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-700"></span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-cyan-500 group-hover:translate-x-1 transition-all"></i>
+                        </div>
                     </button>
 
                 </div>
@@ -2429,6 +2470,33 @@
                     </div>
                 </div>
 
+                <!-- 定期考査コーナーの設定（表示ON/OFF・名称） -->
+                <div class="space-y-2">
+                    <button type="button" onclick="toggleDevSection('examtitle')" class="w-full flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <i data-lucide="clipboard-list" class="w-4 h-4"></i><span>定期考査コーナーの設定</span>
+                        </h4>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="dev-section-chevron-examtitle"></i>
+                    </button>
+                    <div id="dev-section-content-examtitle" class="hidden bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
+                        <div class="flex items-center justify-between gap-2 bg-white dark:bg-slate-900 rounded-xl px-3 py-2.5 border border-slate-200 dark:border-slate-700">
+                            <div class="min-w-0">
+                                <p class="text-[11px] font-black text-slate-700 dark:text-slate-200">このコーナーを表示する</p>
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">OFFにすると、ホーム画面のカードとメニューが一般ユーザーから見えなくなります</p>
+                            </div>
+                            <button onclick="cmsToggleExamRangeEnabled()" id="cms-exam-enabled-toggle" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 shrink-0 bg-emerald-500">
+                                <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform duration-200 translate-x-5"></span>
+                            </button>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed mb-2">表示名は、実施時期に合わせて自由に変更できます（例：「1学期中間考査の範囲」「学年末考査の範囲」など）。ホーム画面のカード・メニュー・掲示画面すべてに反映されます。</p>
+                            <input type="text" id="cms-exam-title-input" placeholder="例：1学期期末考査の範囲"
+                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                            <button onclick="cmsSaveExamRangeTitle()" class="w-full mt-2 py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-lg text-xs font-black hover:opacity-90 transition-all">この名称に変更する</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- GitHub連携 -->
                 <div class="space-y-2">
                     <button type="button" onclick="toggleDevSection('github')" class="w-full flex items-center justify-between">
@@ -2850,10 +2918,10 @@
          どの画面からでも使える「タイマー」「何でも聞けるAIチャット」
          ================================================== -->
     <div id="floating-tools" class="fixed bottom-24 right-5 z-40 flex flex-col gap-3 items-end">
-        <button onclick="toggleTimerPanel()" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="タイマー">
+        <button id="floating-timer-btn" onclick="toggleTimerPanel()" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="タイマー">
             <i data-lucide="timer" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i>
         </button>
-        <button onclick="openGeneralAiChat()" class="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="何でも聞けるAIチャット">
+        <button id="floating-aichat-btn" onclick="openGeneralAiChat()" class="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 shadow-xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="何でも聞けるAIチャット">
             <i data-lucide="bot" class="w-5 h-5 text-white"></i>
         </button>
     </div>
@@ -2897,6 +2965,101 @@
                     class="flex-1 px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400"
                     onkeydown="if(event.key==='Enter'){ event.preventDefault(); sendGeneralAiChatQuery(); }">
                 <button onclick="sendGeneralAiChatQuery()" class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white flex items-center justify-center shrink-0 hover:opacity-90 transition-all"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 定期考査の範囲 モーダル（クラスごとに表示内容が切り替わる） -->
+    <div id="exam-range-modal" class="hidden fixed inset-0 z-[9994] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5">
+        <div class="bg-white dark:bg-[#0c1220] w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-2xl flex flex-col h-[85vh] sm:h-[600px]">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                <div class="min-w-0">
+                    <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="clipboard-list" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i><span id="exam-range-modal-title-text">定期考査の範囲</span></h3>
+                    <p id="exam-range-class-label" class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 ml-7"></p>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button id="exam-range-add-btn" style="display:none" onclick="cmsAddExamRangeFromReal()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" title="範囲を追加"><i data-lucide="plus" class="w-4 h-4 text-blue-500 dark:text-cyan-400"></i></button>
+                    <button onclick="closeExamRangeModal()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+            <div class="px-4 pt-3 pb-2 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl p-1">
+                    <button id="exam-range-tab-list" onclick="setExamRangeViewMode('list')" class="flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1">
+                        <i data-lucide="list" class="w-3.5 h-3.5"></i><span>一覧</span>
+                    </button>
+                    <button id="exam-range-tab-calendar" onclick="setExamRangeViewMode('calendar')" class="flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1">
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i><span>カレンダー</span>
+                    </button>
+                </div>
+                <div id="exam-range-subject-filters" class="flex flex-wrap gap-1.5 mt-2"></div>
+            </div>
+            <div id="exam-range-list" class="flex-1 overflow-y-auto px-4 py-4 space-y-3"></div>
+            <div id="exam-range-calendar" class="hidden flex-1 overflow-y-auto px-4 py-4"></div>
+        </div>
+    </div>
+
+    <!-- 開発者モード用：定期考査の範囲 追加・編集モーダル -->
+    <div id="cms-exam-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300" id="cms-exam-card">
+            <h3 class="text-base font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2"><i data-lucide="clipboard-list" class="w-4 h-4"></i>考査を編集</h3>
+            <div class="space-y-4">
+                <!-- ① まず考査名 -->
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">① 考査名 <span class="text-rose-500">必須</span></label>
+                    <input type="text" id="cms-exam-name" placeholder="例：1学期期末考査"
+                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                </div>
+
+                <!-- ② 対象クラス -->
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">② 対象クラス（未選択で全クラス共通）</label>
+                    <div id="cms-exam-class-checks" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+                    <div class="flex items-center gap-2 mt-1.5">
+                        <button type="button" onclick="cmsExamClassSelectAll()" class="text-[10px] font-black text-blue-500 dark:text-cyan-400 hover:opacity-70">すべて選択</button>
+                        <button type="button" onclick="cmsExamClassClear()" class="text-[10px] font-black text-slate-400 hover:opacity-70">選択解除</button>
+                    </div>
+                    <p id="cms-exam-class-summary" class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5"></p>
+                </div>
+
+                <!-- ③ 期日を選択（複数日追加できる。考査は最大4日間程度を想定） -->
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">③ 期日を選択（1日ずつ追加、最大4日間ほど）</label>
+                    <div class="flex gap-2 mt-1">
+                        <input type="date" id="cms-exam-date-input"
+                            class="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                        <button type="button" onclick="cmsAddExamDate()" class="px-4 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-xl text-xs font-black transition-all shrink-0">追加</button>
+                    </div>
+                    <div id="cms-exam-date-chips" class="flex flex-wrap gap-1.5 mt-2"></div>
+                </div>
+
+                <!-- ④ 選んだ期日ごとに、教科・範囲・時間割をどんどん追加 -->
+                <div id="cms-exam-day-tabs-wrap" class="hidden">
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">④ 日付ごとの教科・範囲・時間割</label>
+                    <div id="cms-exam-day-tabs" class="flex gap-1.5 mt-1.5 overflow-x-auto pb-1"></div>
+
+                    <div id="cms-exam-day-sessions" class="mt-2"></div>
+
+                    <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 mt-2 space-y-2">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="text" id="cms-exam-session-subject" placeholder="教科（例：英語）"
+                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                            <input type="text" id="cms-exam-session-time" placeholder="時間割（例：1限 9:00〜9:50）"
+                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                        </div>
+                        <textarea id="cms-exam-session-range" rows="3" placeholder="試験範囲（例：教科書 p.20〜35（Lesson2）、ワーク p.10〜18）"
+                            class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 resize-none"></textarea>
+                        <button type="button" onclick="cmsAddExamSession()" class="w-full py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg text-xs font-black transition-all flex items-center justify-center gap-1">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>この日に教科を追加</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2 mt-5">
+                <button onclick="cmsDeleteExamFromModal()" id="cms-exam-delete-btn" class="hidden items-center space-x-1.5 px-3 py-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl text-xs font-black transition-all">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>削除</span>
+                </button>
+                <button onclick="closeCmsExamModal()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90 transition-all">キャンセル</button>
+                <button onclick="cmsConfirmExam()" class="flex-1 py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">この考査を保存</button>
             </div>
         </div>
     </div>
@@ -4765,6 +4928,10 @@
             // 予定の通知（開発者が設定した日時に通知）の監視を開始
             initScheduleNotifications();
             updateScheduleNotifyToggleUI();
+            // タイマー・AIチャットの表示ON/OFF設定を反映
+            applyFabVisibility();
+            updateExamRangeEntryVisibility();
+            updateExamRangeEntryBadge();
             // GitHub上のHTML自体が新しいものに更新されていないかの監視を開始
             startVersionWatcher();
             // 初めて訪れた人には、少し間を置いてから使い方ツアーをそっと案内する
@@ -4836,6 +5003,13 @@
                 }
                 // ⑧ モードのON/OFF設定（開発者モードで各機能を点検・一時停止できる）
                 window._remoteFeatureFlags = (cfg.featureFlags && typeof cfg.featureFlags === 'object') ? cfg.featureFlags : {};
+                // ⑨ 定期考査の範囲（クラスごとに表示を切り替えられる掲示板／名称・表示ON/OFFは開発者が変更可）
+                window._remoteExams = Array.isArray(cfg.exams) ? cfg.exams : [];
+                window._remoteExamRangeTitle = (typeof cfg.examRangeTitle === 'string' && cfg.examRangeTitle.trim()) ? cfg.examRangeTitle.trim() : '';
+                window._remoteExamRangeEnabled = cfg.examRangeEnabled !== false;
+                applyExamRangeTitleToUI();
+                updateExamRangeEntryVisibility();
+                updateExamRangeEntryBadge();
             } catch (e) {
                 console.warn('config.json の取得に失敗しました（オフラインまたは未配置）:', e);
             }
@@ -4868,6 +5042,558 @@
             const found = FEATURE_MODE_LIST.find(m => m.key === key);
             const name = found ? found.label : 'この機能';
             return `${name}は現在、点検のため一時的に停止しています。`;
+        }
+
+        // ===== 右下フローティングボタン（タイマー／AIチャット）の表示ON/OFF =====
+        // 個人の好みで非表示にできる設定。端末（localStorage）に保存し、デフォルトは両方ON。
+        function isTimerFabVisible() {
+            const v = safeStorage.get('pm_show_timer_fab');
+            return v !== false; // 未設定・trueなら表示
+        }
+        function isAiChatFabVisible() {
+            const v = safeStorage.get('pm_show_aichat_fab');
+            return v !== false;
+        }
+        function applyFabVisibility() {
+            const timerBtn = document.getElementById('floating-timer-btn');
+            const aiBtn = document.getElementById('floating-aichat-btn');
+            const timerOn = isTimerFabVisible();
+            const aiOn = isAiChatFabVisible();
+            if (timerBtn) timerBtn.classList.toggle('hidden', !timerOn);
+            if (aiBtn) aiBtn.classList.toggle('hidden', !aiOn);
+            // 非表示にした状態で開いていたパネル・モーダルは念のため閉じる
+            if (!timerOn) document.getElementById('timer-panel')?.classList.add('hidden');
+            if (!aiOn) document.getElementById('general-ai-chat-modal')?.classList.add('hidden');
+            setToggleSwitchUI('timer-fab-toggle-switch', timerOn);
+            setToggleSwitchUI('aichat-fab-toggle-switch', aiOn);
+        }
+        function toggleTimerFabVisibility() {
+            const next = !isTimerFabVisible();
+            safeStorage.set('pm_show_timer_fab', next);
+            applyFabVisibility();
+            showToast(next ? 'タイマーを表示します' : 'タイマーを非表示にしました');
+        }
+        function toggleAiChatFabVisibility() {
+            const next = !isAiChatFabVisible();
+            safeStorage.set('pm_show_aichat_fab', next);
+            applyFabVisibility();
+            showToast(next ? 'AIチャットを表示します' : 'AIチャットを非表示にしました');
+        }
+
+        // ===== 定期考査の範囲（クラスごとに表示を切り替えられる掲示板） =====
+        // データは window._remoteExams（config.jsonのexams）に入る。
+        // 各考査は { id, name(考査名), classIds, dates(期日の配列), sessions(教科・範囲・時間割の配列) } の形。
+        // sessions の各要素は { id, date, subject, time, range } で、日付ごとにいくつでも追加できる。
+        // classIdsが空（未選択）なら全クラス共通表示、指定があればそのクラスに所属するユーザーにのみ表示する。
+        function getAllExamSessions() {
+            const exams = window._remoteExams || [];
+            const out = [];
+            exams.forEach(exam => {
+                (exam.sessions || []).forEach(s => {
+                    out.push({
+                        id: s.id,
+                        examId: exam.id,
+                        examName: exam.name || '',
+                        subject: s.subject || '',
+                        time: s.time || '',
+                        range: s.range || '',
+                        testDate: s.date || '',
+                        classIds: Array.isArray(exam.classIds) ? exam.classIds : [],
+                    });
+                });
+            });
+            return out;
+        }
+        function getVisibleExamRanges() {
+            const myClassId = window.currentUserClassId || null;
+            const list = getAllExamSessions();
+            return list.filter(e => {
+                if (devUnlocked) return true; // 開発者モード中は確認のため全件表示
+                const ids = Array.isArray(e.classIds) ? e.classIds : [];
+                return ids.length === 0 || ids.includes(myClassId);
+            }).slice().sort((a, b) => {
+                const da = a.testDate || '9999-99-99';
+                const db = b.testDate || '9999-99-99';
+                return da.localeCompare(db) || (a.time || '').localeCompare(b.time || '') || (a.subject || '').localeCompare(b.subject || '');
+            });
+        }
+        function examRangeClassNamesOf(e) {
+            const ids = Array.isArray(e.classIds) ? e.classIds : [];
+            if (ids.length === 0) return '全クラス共通';
+            const names = ids.map(id => {
+                const c = (window._remoteClasses || []).find(x => x.id === id);
+                return c ? c.name : '（削除済みクラス）';
+            });
+            return names.join('、');
+        }
+        // ホーム画面のカードに「〇件公開中」のようなバッジを出す
+        function updateExamRangeEntryBadge() {
+            const badge = document.getElementById('exam-range-entry-badge');
+            const sub = document.getElementById('exam-range-entry-sub');
+            if (!badge) return;
+            const list = getVisibleExamRanges();
+            if (list.length === 0) {
+                badge.classList.add('hidden');
+                if (sub) sub.textContent = 'クラスごとの試験範囲をチェック';
+                return;
+            }
+            badge.textContent = `${list.length}件公開中`;
+            badge.classList.remove('hidden');
+            if (sub) {
+                const next = list[0];
+                sub.textContent = `直近：${next.subject || ''}${next.testDate ? '（' + next.testDate + '）' : ''}`;
+            }
+        }
+        // コーナーの表示名（開発者が実施時期に合わせて自由に変更できる。未設定時は「定期考査の範囲」）
+        function getExamRangeTitle() {
+            const t = window._remoteExamRangeTitle;
+            return (typeof t === 'string' && t.trim()) ? t.trim() : '定期考査の範囲';
+        }
+        function applyExamRangeTitleToUI() {
+            const title = getExamRangeTitle();
+            const ids = ['exam-range-entry-title', 'exam-range-menu-label', 'exam-range-modal-title-text'];
+            ids.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = title; });
+        }
+        function cmsSaveExamRangeTitle() {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); return; }
+            const input = document.getElementById('cms-exam-title-input');
+            const newTitle = input ? input.value.trim() : '';
+            cmsConfigData.examRangeTitle = newTitle;
+            window._remoteExamRangeTitle = newTitle;
+            applyExamRangeTitleToUI();
+            renderExamRangeContent();
+            cmsMarkDirty();
+            showToast(`名称を「${getExamRangeTitle()}」に変更しました（GitHubへの保存が必要です）`);
+        }
+        // コーナー自体の表示ON/OFF（開発者モードのモード管理欄とは別の、専用スイッチ）
+        function isExamRangeEnabledFlag() {
+            return window._remoteExamRangeEnabled !== false; // 明示的にfalseでない限り表示
+        }
+        function isExamRangeEnabled() {
+            return devUnlocked || isExamRangeEnabledFlag(); // 開発者モード中は点検のため常に表示
+        }
+        function cmsToggleExamRangeEnabled() {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); return; }
+            const current = cmsConfigData.examRangeEnabled !== false;
+            cmsConfigData.examRangeEnabled = !current;
+            window._remoteExamRangeEnabled = cmsConfigData.examRangeEnabled;
+            updateExamRangeEnabledToggleUI();
+            updateExamRangeEntryVisibility();
+            cmsMarkDirty();
+            showToast(cmsConfigData.examRangeEnabled ? `${getExamRangeTitle()}を表示します（公開して反映）` : `${getExamRangeTitle()}を非表示にしました（公開して反映）`);
+        }
+        function updateExamRangeEnabledToggleUI() {
+            setToggleSwitchUI('cms-exam-enabled-toggle', cmsConfigData.examRangeEnabled !== false);
+        }
+        // ホーム画面のカードと設定メニューの項目を、表示設定に応じて出し分ける
+        function updateExamRangeEntryVisibility() {
+            const enabled = isExamRangeEnabled();
+            const card = document.getElementById('exam-range-entry-card');
+            if (card) card.classList.toggle('hidden', !enabled);
+            const menuLabel = document.getElementById('exam-range-menu-label');
+            const menuBtn = menuLabel ? menuLabel.closest('button') : null;
+            if (menuBtn) menuBtn.classList.toggle('hidden', !enabled);
+        }
+        function openExamRangeModal() {
+            if (!isExamRangeEnabled()) return;
+            const modal = document.getElementById('exam-range-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            const label = document.getElementById('exam-range-class-label');
+            if (label) {
+                const myClassId = window.currentUserClassId || null;
+                const cls = (window._remoteClasses || []).find(c => c.id === myClassId);
+                label.textContent = cls ? `表示中のクラス：${cls.name}` : 'クラス共通の内容を表示しています';
+            }
+            examRangeSubjectFilter = null;
+            examRangeCalendarSelectedDate = null;
+            setExamRangeViewMode('list');
+        }
+        function closeExamRangeModal() {
+            document.getElementById('exam-range-modal')?.classList.add('hidden');
+        }
+
+        // 一覧／カレンダーの表示切り替え
+        let examRangeViewMode = 'list';
+        let examRangeSubjectFilter = null;
+        let examRangeCalendarSelectedDate = null;
+        function setExamRangeViewMode(mode) {
+            examRangeViewMode = mode;
+            const listTab = document.getElementById('exam-range-tab-list');
+            const calTab = document.getElementById('exam-range-tab-calendar');
+            const listWrap = document.getElementById('exam-range-list');
+            const calWrap = document.getElementById('exam-range-calendar');
+            const activeCls = 'flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1 bg-white dark:bg-slate-900 text-cyan-600 dark:text-cyan-400 shadow-sm';
+            const inactiveCls = 'flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1 text-slate-500 dark:text-slate-400';
+            if (listTab) listTab.className = (mode === 'list') ? activeCls : inactiveCls;
+            if (calTab) calTab.className = (mode === 'calendar') ? activeCls : inactiveCls;
+            if (listWrap) listWrap.classList.toggle('hidden', mode !== 'list');
+            if (calWrap) calWrap.classList.toggle('hidden', mode !== 'calendar');
+            renderExamRangeContent();
+        }
+        function setExamRangeSubjectFilter(subject) {
+            examRangeSubjectFilter = subject;
+            renderExamRangeContent();
+        }
+        function selectExamRangeCalendarDate(dateStr) {
+            examRangeCalendarSelectedDate = dateStr;
+            renderExamRangeContent();
+        }
+        // 教科ごとの絞り込みチップ（教科が2種類以上ある時だけ表示）
+        function renderExamRangeSubjectFilters(list) {
+            const wrap = document.getElementById('exam-range-subject-filters');
+            if (!wrap) return;
+            const subjects = Array.from(new Set(list.map(e => e.subject).filter(Boolean)));
+            if (subjects.length <= 1) { wrap.innerHTML = ''; return; }
+            const chipCls = (active) => `text-[10px] font-black px-2.5 py-1 rounded-full border transition-all ${active ? 'bg-cyan-500 text-white border-cyan-500' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}`;
+            let html = `<button onclick="setExamRangeSubjectFilter(null)" class="${chipCls(examRangeSubjectFilter === null)}">すべて</button>`;
+            subjects.forEach(s => {
+                html += `<button onclick="setExamRangeSubjectFilter('${s.replace(/'/g, "\\'")}')" class="${chipCls(examRangeSubjectFilter === s)}">${escapeHtml(s)}</button>`;
+            });
+            wrap.innerHTML = html;
+        }
+        // 1件分のカードHTML（一覧・カレンダーどちらからも呼ばれる共通部品）
+        function examRangeCardHtml(e) {
+            const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
+            const daysLeft = e.testDate ? Math.ceil((new Date(e.testDate + 'T00:00:00') - new Date(todayStr + 'T00:00:00')) / 86400000) : null;
+            let dateBadge = '';
+            if (e.testDate) {
+                if (daysLeft > 0) dateBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300">試験日まであと${daysLeft}日</span>`;
+                else if (daysLeft === 0) dateBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-500 text-white">本日実施</span>`;
+                else dateBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300">実施済み</span>`;
+            }
+            return `
+            <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-3">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white">${escapeHtml(e.subject || '科目未設定')}</span>
+                            ${e.testDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(e.testDate)}</span>` : ''}
+                            ${e.time ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="clock" class="w-3 h-3"></i>${escapeHtml(e.time)}</span>` : ''}
+                            ${dateBadge}
+                        </div>
+                        <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5">${escapeHtml(e.examName || (e.subject || '') + 'の試験範囲')}</h4>
+                        <p class="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 mt-1 flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>対象：${escapeHtml(examRangeClassNamesOf(e))}</p>
+                    </div>
+                    ${devUnlocked ? `<div class="flex gap-1 shrink-0">
+                        <button onclick="cmsEditExamRangeFromReal('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.testDate))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="cmsRemoveExamSessionFromReal('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.id))}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>` : ''}
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <p class="text-xs text-slate-700 dark:text-slate-200 font-semibold whitespace-pre-wrap leading-relaxed">${escapeHtml(e.range || '')}</p>
+                </div>
+            </div>`;
+        }
+        // カレンダー表示（考査は最長4日間ほど続くため、日ごとにどの教科が実施されるかを一目で確認できるようにする）
+        function renderExamRangeCalendar(list) {
+            const wrap = document.getElementById('exam-range-calendar');
+            if (!wrap) return;
+            const dated = list.filter(e => e.testDate);
+            const undated = list.filter(e => !e.testDate);
+            if (dated.length === 0) {
+                wrap.innerHTML = `
+                    <div class="text-center py-14">
+                        <i data-lucide="calendar" class="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-400 dark:text-slate-500">日付が設定された${escapeHtml(getExamRangeTitle())}がありません</p>
+                    </div>`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+            const byDate = {};
+            dated.forEach(e => { (byDate[e.testDate] = byDate[e.testDate] || []).push(e); });
+            const sortedDates = Object.keys(byDate).sort();
+            if (!examRangeCalendarSelectedDate || !byDate[examRangeCalendarSelectedDate]) {
+                const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
+                examRangeCalendarSelectedDate = sortedDates.find(d => d >= todayStr) || sortedDates[0];
+            }
+            const months = Array.from(new Set(sortedDates.map(d => d.slice(0, 7)))).sort();
+            let html = '';
+            months.forEach(ym => {
+                const [y, m] = ym.split('-').map(Number);
+                const startWeekday = new Date(y, m - 1, 1).getDay();
+                const daysInMonth = new Date(y, m, 0).getDate();
+                html += `<div class="mb-5">
+                    <p class="text-xs font-black text-slate-600 dark:text-slate-300 mb-2">${y}年${m}月</p>
+                    <div class="grid grid-cols-7 gap-1 text-center mb-1">
+                        ${['日', '月', '火', '水', '木', '金', '土'].map(d => `<span class="text-[9px] font-bold text-slate-400">${d}</span>`).join('')}
+                    </div>
+                    <div class="grid grid-cols-7 gap-1">`;
+                for (let i = 0; i < startWeekday; i++) html += `<div></div>`;
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                    const entries = byDate[dateStr];
+                    const isSelected = dateStr === examRangeCalendarSelectedDate;
+                    const hasEntries = !!entries;
+                    html += `<button onclick="selectExamRangeCalendarDate('${dateStr}')" class="aspect-square rounded-lg flex flex-col items-center justify-center text-[11px] font-bold transition-all ${isSelected ? 'bg-cyan-500 text-white' : hasEntries ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-300' : 'text-slate-400 dark:text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800'}">
+                        <span>${d}</span>
+                        ${hasEntries ? `<span class="w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-cyan-500'} mt-0.5"></span>` : ''}
+                    </button>`;
+                }
+                html += `</div></div>`;
+            });
+            const selectedEntries = byDate[examRangeCalendarSelectedDate] || [];
+            html += `<div class="pt-3 border-t border-slate-200 dark:border-slate-700">
+                <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2">${escapeHtml(examRangeCalendarSelectedDate)} の試験</p>
+                ${selectedEntries.length === 0 ? `<p class="text-xs text-slate-400 font-bold">この日の試験はありません</p>` : selectedEntries.map(e => examRangeCardHtml(e)).join('')}
+            </div>`;
+            if (undated.length > 0) {
+                html += `<div class="mt-5 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    <p class="text-[11px] font-black text-slate-400 dark:text-slate-500 mb-2">日付未定</p>
+                    ${undated.map(e => examRangeCardHtml(e)).join('')}
+                </div>`;
+            }
+            wrap.innerHTML = html;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function renderExamRangeContent() {
+            const listWrap = document.getElementById('exam-range-list');
+            if (!listWrap) return;
+            const addBtn = document.getElementById('exam-range-add-btn');
+            if (addBtn) addBtn.style.display = devUnlocked ? 'flex' : 'none';
+            const all = getVisibleExamRanges();
+            renderExamRangeSubjectFilters(all);
+            const list = all.filter(e => !examRangeSubjectFilter || e.subject === examRangeSubjectFilter);
+            updateExamRangeEntryBadge();
+            if (examRangeViewMode === 'calendar') {
+                renderExamRangeCalendar(list);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+            if (list.length === 0) {
+                listWrap.innerHTML = `
+                    <div class="text-center py-14">
+                        <i data-lucide="clipboard-list" class="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-400 dark:text-slate-500">まだ${escapeHtml(getExamRangeTitle())}は公開されていません</p>
+                    </div>`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+            listWrap.innerHTML = list.map(e => examRangeCardHtml(e)).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ----- 定期考査の範囲：開発者モードでの追加・編集・削除 -----
+        // 考査名 → 対象クラス → 期日（複数）→ 各期日ごとの教科・範囲・時間割 の順で入力していく方式。
+        // 編集中の内容は cmsExamDraft に一時保存し、「この考査を保存」を押した時にまとめて確定する。
+        let cmsExamEditIdx = null;
+        let cmsExamDraft = null;
+        let cmsExamActiveDate = null;
+
+        function cmsAddExamRangeFromReal() {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            cmsOpenExamRangeModal(null);
+        }
+        function cmsEditExamRangeFromReal(examId, focusDate) {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            const idx = (cmsConfigData.exams || []).findIndex(x => String(x.id) === String(examId));
+            if (idx < 0) { showToast('データが見つかりませんでした。再読込してください'); return; }
+            cmsOpenExamRangeModal(idx, focusDate);
+        }
+        // カードの削除ボタンは「その日・その教科」の1件だけを削除する（考査全体はモーダル内の「削除」から）
+        function cmsRemoveExamSessionFromReal(examId, sessionId) {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            if (!confirm('この試験の予定を削除しますか？')) return;
+            cmsConfigData.exams = cmsConfigData.exams || [];
+            const exam = cmsConfigData.exams.find(x => String(x.id) === String(examId));
+            if (!exam) return;
+            exam.sessions = (exam.sessions || []).filter(s => String(s.id) !== String(sessionId));
+            window._remoteExams = cmsConfigData.exams.slice();
+            renderExamRangeContent();
+            cmsMarkDirty();
+            showToast('削除しました（GitHubへの保存が必要です）');
+        }
+        function cmsOpenExamRangeModal(idx, focusDate) {
+            cmsExamEditIdx = idx;
+            cmsConfigData.exams = cmsConfigData.exams || [];
+            const existing = idx != null ? cmsConfigData.exams[idx] : null;
+            cmsExamDraft = existing
+                ? { id: existing.id, name: existing.name || '', classIds: (existing.classIds || []).slice(), dates: (existing.dates || []).slice(), sessions: (existing.sessions || []).map(s => Object.assign({}, s)), createdAt: existing.createdAt }
+                : { id: Date.now(), name: '', classIds: [], dates: [], sessions: [] };
+            document.getElementById('cms-exam-name').value = cmsExamDraft.name || '';
+            const dateInput = document.getElementById('cms-exam-date-input');
+            if (dateInput) dateInput.value = '';
+            const subjInput = document.getElementById('cms-exam-session-subject');
+            const timeInput = document.getElementById('cms-exam-session-time');
+            const rangeInput = document.getElementById('cms-exam-session-range');
+            if (subjInput) subjInput.value = '';
+            if (timeInput) timeInput.value = '';
+            if (rangeInput) rangeInput.value = '';
+            cmsRenderExamClassChecks(cmsExamDraft.classIds || []);
+            cmsExamActiveDate = (focusDate && cmsExamDraft.dates.includes(focusDate)) ? focusDate : (cmsExamDraft.dates[0] || null);
+            cmsRenderExamDateChips();
+            cmsRenderExamDayTabs();
+            cmsRenderExamSessionsForActiveDate();
+            const delBtn = document.getElementById('cms-exam-delete-btn');
+            if (delBtn) delBtn.classList.toggle('hidden', idx == null);
+            cmsOpenModal('cms-exam-modal', 'cms-exam-card');
+        }
+        function closeCmsExamModal() { cmsCloseModal('cms-exam-modal', 'cms-exam-card'); }
+        function cmsDeleteExamFromModal() {
+            if (cmsExamEditIdx == null) return;
+            if (!confirm('この考査をまるごと削除しますか？（すべての日付・教科・範囲が削除されます）')) return;
+            cmsConfigData.exams.splice(cmsExamEditIdx, 1);
+            window._remoteExams = cmsConfigData.exams.slice();
+            closeCmsExamModal();
+            renderExamRangeContent();
+            cmsMarkDirty();
+            showToast('削除しました（GitHubへの保存が必要です）');
+        }
+        function cmsRenderExamClassChecks(selectedIds) {
+            const wrap = document.getElementById('cms-exam-class-checks');
+            if (!wrap) return;
+            const classes = cmsConfigData.classes || [];
+            if (classes.length === 0) {
+                wrap.innerHTML = '<p class="text-[10px] text-slate-400">クラスがまだありません（「クラス設定」から追加できます）</p>';
+            } else {
+                wrap.innerHTML = classes.map(c => `
+                    <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer text-[11px] font-bold">
+                        <input type="checkbox" class="cms-exam-class-check" value="${escapeHtml(c.id)}" onchange="cmsUpdateExamClassSummary()" ${selectedIds.includes(c.id) ? 'checked' : ''}>
+                        <span style="width:8px;height:8px;border-radius:50%;background:${classChipColor(c.id)};display:inline-block;"></span>
+                        ${escapeHtml(c.name)}
+                    </label>`).join('');
+            }
+            cmsUpdateExamClassSummary();
+        }
+        function cmsUpdateExamClassSummary() {
+            const summaryEl = document.getElementById('cms-exam-class-summary');
+            if (!summaryEl) return;
+            const n = document.querySelectorAll('.cms-exam-class-check:checked').length;
+            summaryEl.textContent = n === 0 ? '未選択：全クラス共通で表示されます' : `${n}クラスに表示されます`;
+        }
+        function cmsExamClassSelectAll() {
+            document.querySelectorAll('.cms-exam-class-check').forEach(el => { el.checked = true; });
+            cmsUpdateExamClassSummary();
+        }
+        function cmsExamClassClear() {
+            document.querySelectorAll('.cms-exam-class-check').forEach(el => { el.checked = false; });
+            cmsUpdateExamClassSummary();
+        }
+
+        // ③ 期日（複数日）の追加・削除
+        function cmsAddExamDate() {
+            if (!cmsExamDraft) return;
+            const input = document.getElementById('cms-exam-date-input');
+            const val = input ? input.value : '';
+            if (!val) { showToast('日付を選択してください'); return; }
+            if (!cmsExamDraft.dates.includes(val)) {
+                cmsExamDraft.dates.push(val);
+                cmsExamDraft.dates.sort();
+            }
+            cmsExamActiveDate = val;
+            if (input) input.value = '';
+            cmsRenderExamDateChips();
+            cmsRenderExamDayTabs();
+            cmsRenderExamSessionsForActiveDate();
+        }
+        function cmsRemoveExamDate(date) {
+            if (!cmsExamDraft) return;
+            if (!confirm(`${date} を期日から削除しますか？（この日の教科・範囲もすべて削除されます）`)) return;
+            cmsExamDraft.dates = cmsExamDraft.dates.filter(d => d !== date);
+            cmsExamDraft.sessions = cmsExamDraft.sessions.filter(s => s.date !== date);
+            if (cmsExamActiveDate === date) cmsExamActiveDate = cmsExamDraft.dates[0] || null;
+            cmsRenderExamDateChips();
+            cmsRenderExamDayTabs();
+            cmsRenderExamSessionsForActiveDate();
+        }
+        function cmsRenderExamDateChips() {
+            const wrap = document.getElementById('cms-exam-date-chips');
+            if (!wrap || !cmsExamDraft) return;
+            if (!cmsExamDraft.dates.length) {
+                wrap.innerHTML = '<p class="text-[10px] text-slate-400">まだ期日が追加されていません</p>';
+                return;
+            }
+            wrap.innerHTML = cmsExamDraft.dates.map(d => `
+                <span class="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-800">
+                    ${escapeHtml(d)}
+                    <button type="button" onclick="cmsRemoveExamDate('${d}')" class="hover:opacity-60 leading-none"><i data-lucide="x" class="w-3 h-3"></i></button>
+                </span>`).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        // ④ 日付タブ（横並びで切り替え）
+        function selectCmsExamDay(date) {
+            cmsExamActiveDate = date;
+            cmsRenderExamDayTabs();
+            cmsRenderExamSessionsForActiveDate();
+        }
+        function cmsRenderExamDayTabs() {
+            const wrap = document.getElementById('cms-exam-day-tabs');
+            const tabsWrap = document.getElementById('cms-exam-day-tabs-wrap');
+            if (!wrap || !cmsExamDraft) return;
+            if (!cmsExamDraft.dates.length) {
+                if (tabsWrap) tabsWrap.classList.add('hidden');
+                return;
+            }
+            if (tabsWrap) tabsWrap.classList.remove('hidden');
+            wrap.innerHTML = cmsExamDraft.dates.map((d, i) => {
+                const active = d === cmsExamActiveDate;
+                const count = cmsExamDraft.sessions.filter(s => s.date === d).length;
+                return `<button type="button" onclick="selectCmsExamDay('${d}')" class="shrink-0 px-3 py-2 rounded-xl text-center transition-all ${active ? 'bg-cyan-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400'}">
+                    <div class="text-[11px] font-black">${i + 1}日目</div>
+                    <div class="text-[9px] font-bold opacity-80">${d}${count ? `・${count}件` : ''}</div>
+                </button>`;
+            }).join('');
+        }
+        function cmsRenderExamSessionsForActiveDate() {
+            const listWrap = document.getElementById('cms-exam-day-sessions');
+            if (!listWrap || !cmsExamDraft) return;
+            if (!cmsExamActiveDate) { listWrap.innerHTML = '<p class="text-[10px] text-slate-400">先に③で期日を追加してください</p>'; return; }
+            const sessions = cmsExamDraft.sessions.filter(s => s.date === cmsExamActiveDate).sort((a, b) => (a.time || '').localeCompare(b.time || ''));
+            if (!sessions.length) {
+                listWrap.innerHTML = '<p class="text-[10px] text-slate-400">この日の教科はまだ追加されていません</p>';
+                return;
+            }
+            listWrap.innerHTML = sessions.map(s => `
+                <div class="flex items-start justify-between gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-2.5 mb-2">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-black text-slate-800 dark:text-white">${escapeHtml(s.subject || '')}${s.time ? ` <span class="text-slate-400 font-bold">・${escapeHtml(s.time)}</span>` : ''}</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 whitespace-pre-wrap">${escapeHtml(s.range || '')}</p>
+                    </div>
+                    <button type="button" onclick="cmsRemoveExamSessionDraft('${s.id}')" class="p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500 shrink-0"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>`).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function cmsRemoveExamSessionDraft(sessionId) {
+            if (!cmsExamDraft) return;
+            cmsExamDraft.sessions = cmsExamDraft.sessions.filter(s => String(s.id) !== String(sessionId));
+            cmsRenderExamSessionsForActiveDate();
+            cmsRenderExamDayTabs();
+        }
+        function cmsAddExamSession() {
+            if (!cmsExamDraft) return;
+            if (!cmsExamActiveDate) { showToast('先に③で期日を追加してください'); return; }
+            const subject = document.getElementById('cms-exam-session-subject').value.trim();
+            const time = document.getElementById('cms-exam-session-time').value.trim();
+            const range = document.getElementById('cms-exam-session-range').value.trim();
+            if (!subject || !range) { showToast('教科と試験範囲は必須です'); return; }
+            cmsExamDraft.sessions.push({ id: Date.now() + '-' + Math.random().toString(36).slice(2, 6), date: cmsExamActiveDate, subject, time, range });
+            document.getElementById('cms-exam-session-subject').value = '';
+            document.getElementById('cms-exam-session-time').value = '';
+            document.getElementById('cms-exam-session-range').value = '';
+            cmsRenderExamSessionsForActiveDate();
+            cmsRenderExamDayTabs();
+            showToast(`「${subject}」を${cmsExamActiveDate}に追加しました（続けて追加できます）`);
+        }
+        function cmsConfirmExam() {
+            if (!cmsExamDraft) return;
+            const name = document.getElementById('cms-exam-name').value.trim();
+            if (!name) { showToast('①考査名を入力してください'); return; }
+            if (!cmsExamDraft.dates.length) { showToast('③期日を1つ以上追加してください'); return; }
+            if (!cmsExamDraft.sessions.length) { showToast('④教科・範囲を1件以上追加してください'); return; }
+            const classIds = Array.from(document.querySelectorAll('.cms-exam-class-check:checked')).map(el => el.value);
+            const now = new Date().toISOString();
+            cmsExamDraft.name = name;
+            cmsExamDraft.classIds = classIds;
+            cmsExamDraft.updatedAt = now;
+            cmsExamDraft.createdAt = cmsExamDraft.createdAt || now;
+            cmsConfigData.exams = cmsConfigData.exams || [];
+            if (cmsExamEditIdx != null) cmsConfigData.exams[cmsExamEditIdx] = cmsExamDraft;
+            else cmsConfigData.exams.push(cmsExamDraft);
+            window._remoteExams = cmsConfigData.exams.slice();
+            closeCmsExamModal();
+            renderExamRangeContent();
+            cmsMarkDirty();
+            showToast(`「${name}」を保存しました（GitHubへの保存が必要です）`);
         }
 
         // ===== 新しいバージョンの検知 =====
@@ -16477,6 +17203,9 @@ const KOBUN_TANGO = [
             devRefreshDashboard();
             cmsTryAutoConnect();
             cmsRenderModeList();
+            const examTitleInput = document.getElementById('cms-exam-title-input');
+            if (examTitleInput) examTitleInput.value = getExamRangeTitle();
+            updateExamRangeEnabledToggleUI();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
@@ -16613,7 +17342,7 @@ const KOBUN_TANGO = [
         // ===== CMS管理機能（旧admin.htmlを開発者モードに統合したもの） =====
         // ================================================================
         let cmsSession = null; // { token, repo, branch }
-        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {} };
+        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true };
         let cmsCurrentSha = null;
         let cmsDirty = false;
         const CMS_SESSION_KEY = 'pm_cms_session_v1';
@@ -16721,7 +17450,7 @@ const KOBUN_TANGO = [
             });
             if (res.status === 404) {
                 cmsCurrentSha = null;
-                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {} };
+                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true };
                 cmsSyncAllRealDisplays();
                 cmsSetSaveStatus('config.json はまだリポジトリに存在しません。保存すると新規作成されます。', 'err');
                 if (statusEl) { statusEl.textContent = 'リポジトリに config.json がまだありません（新規作成されます）'; statusEl.className = 'text-[10px] font-bold text-amber-500'; }
@@ -16743,6 +17472,9 @@ const KOBUN_TANGO = [
             cmsConfigData.classes = cmsConfigData.classes || [];
             cmsConfigData.tourSteps = cmsConfigData.tourSteps || [];
             cmsConfigData.featureFlags = cmsConfigData.featureFlags || {};
+            cmsConfigData.exams = cmsConfigData.exams || [];
+            cmsConfigData.examRangeTitle = cmsConfigData.examRangeTitle || '';
+            cmsConfigData.examRangeEnabled = cmsConfigData.examRangeEnabled !== false;
             cmsDirty = false;
             cmsSyncAllRealDisplays();
             cmsSetSaveStatus('GitHubの最新内容を読み込みました', 'ok');
@@ -16759,6 +17491,16 @@ const KOBUN_TANGO = [
             window._remoteRonriSections = (cmsConfigData.ronriSections || []).slice();
             window._remoteTourSteps = (cmsConfigData.tourSteps || []).slice();
             window._remoteFeatureFlags = Object.assign({}, cmsConfigData.featureFlags || {});
+            window._remoteExams = (cmsConfigData.exams || []).slice();
+            window._remoteExamRangeTitle = cmsConfigData.examRangeTitle || '';
+            window._remoteExamRangeEnabled = cmsConfigData.examRangeEnabled !== false;
+            applyExamRangeTitleToUI();
+            updateExamRangeEnabledToggleUI();
+            updateExamRangeEntryVisibility();
+            renderExamRangeContent();
+            updateExamRangeEntryBadge();
+            const examTitleInput = document.getElementById('cms-exam-title-input');
+            if (examTitleInput) examTitleInput.value = getExamRangeTitle();
             cmsRenderModeList();
             (cmsConfigData.extraSections || []).forEach(sec => {
                 const idx = PRESET_SECTIONS.findIndex(p => p.id === sec.id);
