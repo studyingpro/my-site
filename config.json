@@ -4147,5 +4147,7 @@
     "examRange": true
   },
   "examRanges": [],
-  "examRangeTitle": "前期期末考査範囲"
+  "examRangeTitle": "テスト範囲",
+  "exams": [],
+  "examRangeEnabled": false
 }
