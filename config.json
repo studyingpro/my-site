@@ -4148,6 +4148,20 @@
   },
   "examRanges": [],
   "examRangeTitle": "テスト範囲",
-  "exams": [],
+  "exams": [
+    {
+      "id": 1786669076292,
+      "name": "前期期末考査",
+      "dates": [
+        "2026-09-03",
+        "2026-09-04",
+        "2026-09-07",
+        "2026-09-08"
+      ],
+      "sessions": [],
+      "updatedAt": "2026-08-14T00:58:38.449Z",
+      "createdAt": "2026-08-14T00:58:38.449Z"
+    }
+  ],
   "examRangeEnabled": false
 }
