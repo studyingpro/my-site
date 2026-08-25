@@ -335,6 +335,26 @@
     </div>
 
     <!-- ==================================================
+         確認メール送信済み（メールのリンクをクリックしてもらうまでの待機画面）
+         ================================================== -->
+    <div id="email-verify-pending-modal" class="fixed inset-0 z-[999] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-5 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-sm border border-slate-200 dark:border-slate-700 text-center">
+            <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white mb-3">
+                <i data-lucide="mail-check" class="w-6 h-6"></i>
+            </div>
+            <h2 class="text-lg font-black text-slate-800 dark:text-white">確認メールを送信しました</h2>
+            <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                <span id="email-verify-pending-address" class="font-black text-slate-700 dark:text-slate-200"></span> 宛にメールを送りました。<br>
+                メール内のリンクをクリックすると、登録が完了します。
+            </p>
+            <button onclick="checkEmailVerifiedNow()" class="w-full mt-4 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">確認しました</button>
+            <button onclick="resendEmailVerificationNow()" class="w-full mt-2 py-2.5 text-xs font-bold text-blue-500 dark:text-cyan-400 hover:opacity-70 transition-opacity">確認メールを再送信する</button>
+            <button onclick="closeEmailVerifyPendingModal()" class="w-full mt-1 py-2.5 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">あとで確認する</button>
+            <p id="email-verify-pending-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-2"></p>
+        </div>
+    </div>
+
+    <!-- ==================================================
          電話番号でのアカウント作成・ログイン（SMSコード認証）
          ================================================== -->
     <div id="phone-auth-modal" class="fixed inset-0 z-[999] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-5 hidden">
@@ -1065,6 +1085,10 @@
                                 <p id="account-menu-type" class="text-[10px] font-bold text-slate-400 mt-0.5">ログインせずに利用中</p>
                                 <p id="account-menu-class" class="text-[10px] font-bold text-slate-400 mt-0.5">クラス：未参加</p>
                             </div>
+                            <button id="account-menu-verify-email" onclick="resendEmailVerificationFromMenu()" class="hidden w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors bg-amber-50/60 dark:bg-amber-900/10">
+                                <i data-lucide="mail-warning" class="w-4 h-4 text-amber-500 shrink-0"></i>
+                                <span class="text-xs font-bold text-amber-600 dark:text-amber-400">メール未確認：タップして再送信</span>
+                            </button>
                             <button id="account-menu-link-email" onclick="openEmailAuthModal('signup')" class="hidden w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="mail" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
                                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200">学習ProMasterアカウントを作成する</span>
@@ -1190,6 +1214,9 @@
                             <button onclick="calShiftMonth(1)" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
                             <button onclick="openScheduleInputModal()" class="flex items-center space-x-1 px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-lg text-[11px] font-black transition-all">
                                 <i data-lucide="plus" class="w-3 h-3"></i><span>追加</span>
+                            </button>
+                            <button onclick="exportSchedulesToICS()" class="flex items-center space-x-1 px-2.5 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-lg text-[11px] font-black hover:bg-slate-200 dark:hover:bg-slate-700 transition-all" title="Googleカレンダーなどに一括で取り込めるファイルを書き出す">
+                                <i data-lucide="download" class="w-3 h-3"></i><span>Googleカレンダーへ書き出し</span>
                             </button>
                         </div>
                     </div>
@@ -3585,6 +3612,10 @@
                         <input type="checkbox" id="schedule-detail-done-checkbox" onchange="toggleSubmissionDone(_scheduleDetailCurrentId, event)" class="w-4 h-4 rounded accent-indigo-500 cursor-pointer">
                         <span class="text-xs font-black text-indigo-600 dark:text-indigo-300">提出済み・完了としてチェックする</span>
                     </label>
+                    <button onclick="addScheduleToGoogleCalendar(_scheduleDetailCurrentId)" class="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-black text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+                        <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i>
+                        <span>Googleカレンダーに追加</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -3732,7 +3763,8 @@
             getAuth, onAuthStateChanged, signInAnonymously, signOut,
             createUserWithEmailAndPassword, signInWithEmailAndPassword,
             linkWithCredential, EmailAuthProvider, sendPasswordResetEmail,
-            RecaptchaVerifier, signInWithPhoneNumber, linkWithPhoneNumber
+            RecaptchaVerifier, signInWithPhoneNumber, linkWithPhoneNumber,
+            sendEmailVerification
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
         import {
             getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp,
@@ -3850,15 +3882,32 @@
             // すでにゲスト（匿名）で使っている場合は、そのデータを引き継いだまま正式なアカウントに昇格させる。
             async signupEmail(email, password) {
                 const user = auth.currentUser;
+                let resultUser;
                 if (user && user.isAnonymous) {
                     const credential = EmailAuthProvider.credential(email, password);
                     const result = await linkWithCredential(user, credential);
-                    await ensureUserDoc(result.user);
-                    return result.user;
+                    resultUser = result.user;
+                } else {
+                    const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
+                    resultUser = newUser;
                 }
-                const { user: newUser } = await createUserWithEmailAndPassword(auth, email, password);
-                await ensureUserDoc(newUser);
-                return newUser;
+                await ensureUserDoc(resultUser);
+                // 登録した本人のメールアドレスであることを確認してもらうため、確認メールを送る
+                try { await sendEmailVerification(resultUser); } catch (e) { console.warn('確認メールの送信に失敗しました', e); }
+                return resultUser;
+            },
+            // 確認メールをもう一度送る
+            async resendEmailVerification() {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                await sendEmailVerification(user);
+            },
+            // メール内のリンクをクリックしたかどうか、最新の状態を取得し直す
+            async refreshEmailVerifiedState() {
+                const user = auth.currentUser;
+                if (!user) return false;
+                await user.reload();
+                return user.emailVerified;
             },
             // 学習ProMasterアカウントへのログイン
             async loginEmail(email, password) {
@@ -4124,6 +4173,7 @@
                 case 'auth/invalid-credential': return 'メールアドレス（またはユーザーネーム）・パスワードが正しくありません。';
                 case 'auth/too-many-requests': return '試行回数が多すぎます。しばらく時間をおいてお試しください。';
                 case 'auth/credential-already-in-use': return 'このメールアドレスはすでに別のアカウントで使われています。';
+                case 'auth/operation-not-allowed': return 'メール／パスワードでのログインが現在無効になっています。管理者に設定の確認を依頼してください（Firebaseコンソール →Authentication→Sign-in methodで「メール/パスワード」を有効にする必要があります）。';
                 case 'username/no-email': return 'このユーザーネームにはメールアドレスが登録されていません。メールアドレスでログインしてください。';
                 default: return '処理に失敗しました。時間をおいて再度お試しください。';
             }
@@ -4147,7 +4197,7 @@
                 if (emailAuthMode === 'signup') {
                     await window.AppFirebase.signupEmail(identifier, password);
                     closeEmailAuthModal();
-                    showToast('学習ProMasterアカウントを作成しました');
+                    openEmailVerifyPendingModal(identifier);
                 } else if (identifier.includes('@')) {
                     await window.AppFirebase.loginEmail(identifier, password);
                     closeEmailAuthModal();
@@ -4180,6 +4230,49 @@
             }
         }
 
+        // ===== 確認メール送信済み画面（メールのリンクをクリックしてもらうまでの待機） =====
+        function openEmailVerifyPendingModal(email) {
+            const modal = document.getElementById('email-verify-pending-modal');
+            const addrEl = document.getElementById('email-verify-pending-address');
+            const errEl = document.getElementById('email-verify-pending-error');
+            if (addrEl) addrEl.textContent = email || '';
+            if (errEl) errEl.classList.add('hidden');
+            if (modal) modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeEmailVerifyPendingModal() {
+            const modal = document.getElementById('email-verify-pending-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        async function checkEmailVerifiedNow() {
+            const errEl = document.getElementById('email-verify-pending-error');
+            if (errEl) errEl.classList.add('hidden');
+            try {
+                const verified = await window.AppFirebase.refreshEmailVerifiedState();
+                if (verified) {
+                    closeEmailVerifyPendingModal();
+                    showToast('メールの確認が完了しました。学習ProMasterアカウントを作成しました');
+                    updateAccountMenuDisplay(window.currentAppUser);
+                } else {
+                    if (errEl) { errEl.textContent = 'まだ確認が完了していません。メール内のリンクをクリックしてからもう一度お試しください'; errEl.classList.remove('hidden'); }
+                }
+            } catch (e) {
+                console.error('email verify check error', e);
+                if (errEl) { errEl.textContent = '確認状況の取得に失敗しました。もう一度お試しください'; errEl.classList.remove('hidden'); }
+            }
+        }
+        async function resendEmailVerificationNow() {
+            const errEl = document.getElementById('email-verify-pending-error');
+            if (errEl) errEl.classList.add('hidden');
+            try {
+                await window.AppFirebase.resendEmailVerification();
+                showToast('確認メールを再送信しました');
+            } catch (e) {
+                console.error('resend verification error', e);
+                if (errEl) { errEl.textContent = '再送信に失敗しました。時間をおいてお試しください'; errEl.classList.remove('hidden'); }
+            }
+        }
+
         // ===== 電話番号でのアカウント作成・ログイン（SMSコード認証） =====
         function openPhoneAuthModal() {
             const modal = document.getElementById('phone-auth-modal');
@@ -4208,6 +4301,7 @@
                 case 'auth/invalid-verification-code': return '確認コードが正しくありません。';
                 case 'auth/code-expired': return '確認コードの有効期限が切れました。もう一度送信してください。';
                 case 'auth/credential-already-in-use': return 'この電話番号はすでに別のアカウントで使われています。';
+                case 'auth/operation-not-allowed': return '電話番号でのログインが現在無効になっています。管理者に設定の確認を依頼してください（Firebaseコンソール →Authentication→Sign-in methodで「Phone」を有効にする必要があります）。';
                 default: return '処理に失敗しました。時間をおいて再度お試しください。';
             }
         }
@@ -6507,6 +6601,7 @@
             const linkEmailBtn = document.getElementById('account-menu-link-email');
             const linkPhoneBtn = document.getElementById('account-menu-link-phone');
             const editProfileBtn = document.getElementById('account-menu-edit-profile');
+            const verifyEmailBtn = document.getElementById('account-menu-verify-email');
             const classEl = document.getElementById('account-menu-class');
             if (!nameEl || !typeEl) return;
             if (classEl) {
@@ -6521,6 +6616,7 @@
                 if (linkEmailBtn) linkEmailBtn.classList.add('hidden');
                 if (linkPhoneBtn) linkPhoneBtn.classList.add('hidden');
                 if (editProfileBtn) editProfileBtn.classList.add('hidden');
+                if (verifyEmailBtn) verifyEmailBtn.classList.add('hidden');
                 return;
             }
             if (user.isAnonymous) {
@@ -6530,6 +6626,7 @@
                 if (linkEmailBtn) linkEmailBtn.classList.remove('hidden');
                 if (linkPhoneBtn) linkPhoneBtn.classList.remove('hidden');
                 if (editProfileBtn) editProfileBtn.classList.add('hidden');
+                if (verifyEmailBtn) verifyEmailBtn.classList.add('hidden');
             } else {
                 nameEl.textContent = window.currentAppProfileName || user.displayName || (user.email || 'ログイン中');
                 typeEl.textContent = 'ログイン中（学習ProMasterアカウント）';
@@ -6544,6 +6641,18 @@
                 if (linkEmailBtn) linkEmailBtn.classList.add('hidden');
                 if (linkPhoneBtn) linkPhoneBtn.classList.add('hidden');
                 if (editProfileBtn) editProfileBtn.classList.remove('hidden');
+                // メール／パスワードで登録していて、まだメールが確認されていない場合はバッジを出す
+                const hasEmailProvider = !!user.email;
+                if (verifyEmailBtn) verifyEmailBtn.classList.toggle('hidden', !(hasEmailProvider && !user.emailVerified));
+            }
+        }
+        async function resendEmailVerificationFromMenu() {
+            try {
+                await window.AppFirebase.resendEmailVerification();
+                showToast('確認メールを再送信しました。メール内のリンクを確認してください');
+            } catch (e) {
+                console.error('resend verification error', e);
+                showToast('再送信に失敗しました。時間をおいてお試しください');
             }
         }
 
@@ -7419,6 +7528,74 @@
         function getUpcomingSchedules() {
             const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
             return getAllSchedules().filter(s => s.date >= todayStr);
+        }
+
+        // ===== Googleカレンダー連携 =====
+        // このアプリの予定は「終日の予定（時間指定なし）」として扱っているため、
+        // Googleカレンダー側にも終日イベントとして追加する。
+        function scheduleTypeLabelJa(type) {
+            if (type === 'test') return 'テスト';
+            if (type === 'submission') return '提出物';
+            return 'タスク';
+        }
+        // YYYY-MM-DD → YYYYMMDD（ハイフンなし）に変換
+        function dateStrToCompact(dateStr) {
+            return (dateStr || '').replace(/-/g, '');
+        }
+        // 終日イベントの終了日は「翌日」を指定するのがiCalendar/Googleカレンダーの仕様
+        function nextDateCompact(dateStr) {
+            const d = new Date(dateStr + 'T00:00:00');
+            d.setDate(d.getDate() + 1);
+            return d.toISOString().slice(0, 10).replace(/-/g, '');
+        }
+        // 1件の予定を「Googleカレンダーに予定を追加」の画面で開く（新しいタブ）
+        function addScheduleToGoogleCalendar(id) {
+            const s = getAllSchedules().find(x => String(x.id) === String(id));
+            if (!s) { showToast('予定が見つかりませんでした'); return; }
+            const title = `【${scheduleTypeLabelJa(s.type)}】${s.title || ''}`;
+            const detailsParts = [];
+            if (s.subject) detailsParts.push(`教科：${s.subject}`);
+            if (s.memo) detailsParts.push(s.memo);
+            const params = new URLSearchParams({
+                action: 'TEMPLATE',
+                text: title,
+                dates: `${dateStrToCompact(s.date)}/${nextDateCompact(s.date)}`,
+                details: detailsParts.join('\n'),
+            });
+            window.open(`https://calendar.google.com/calendar/render?${params.toString()}`, '_blank');
+        }
+        // 今後の予定をまとめて .ics ファイルとして書き出す（Googleカレンダーの「設定→インポート」で一括取り込みできる）
+        function exportSchedulesToICS() {
+            const items = getUpcomingSchedules();
+            if (!items.length) { showToast('書き出せる今後の予定がありません'); return; }
+            const escapeICS = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n');
+            const nowStamp = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+            const lines = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//StudyBase//JP', 'CALSCALE:GREGORIAN'];
+            items.forEach(s => {
+                const detailsParts = [];
+                if (s.subject) detailsParts.push(`教科：${s.subject}`);
+                if (s.memo) detailsParts.push(s.memo);
+                lines.push('BEGIN:VEVENT');
+                lines.push('UID:' + s.id + '@studybase');
+                lines.push('DTSTAMP:' + nowStamp);
+                lines.push('DTSTART;VALUE=DATE:' + dateStrToCompact(s.date));
+                lines.push('DTEND;VALUE=DATE:' + nextDateCompact(s.date));
+                lines.push('SUMMARY:' + escapeICS(`【${scheduleTypeLabelJa(s.type)}】${s.title || ''}`));
+                if (detailsParts.length) lines.push('DESCRIPTION:' + escapeICS(detailsParts.join('\n')));
+                lines.push('END:VEVENT');
+            });
+            lines.push('END:VCALENDAR');
+            const icsContent = lines.join('\r\n');
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = '学習ProMaster_予定.ics';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`${items.length}件の予定を書き出しました。Googleカレンダーの「設定 → インポート」から取り込めます`);
         }
 
         // ===== 提出物の完了チェック（この端末だけに保存される個人的な記録） =====
@@ -15454,6 +15631,11 @@ const KOBUN_TANGO = [
             if (panel) panel.classList.remove('hidden');
             setBottomTabActive('mypage');
             refreshStudyProfile();
+            // メール確認リンクをクリックした後に戻ってきた場合、最新の確認状況を反映する
+            const u = window.currentAppUser;
+            if (u && !u.isAnonymous && u.email && !u.emailVerified && window.AppFirebase && window.AppFirebase.refreshEmailVerifiedState) {
+                window.AppFirebase.refreshEmailVerifiedState().then(() => updateAccountMenuDisplay(window.currentAppUser)).catch(() => {});
+            }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
