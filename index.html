@@ -1313,25 +1313,22 @@
                     </div>
                 </button>
 
-                <!-- コーナー（予定を仕分けるファイルのような機能） -->
-                <div id="corner-browser-card" class="hidden p-4 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800">
-                    <button type="button" onclick="toggleCornerBrowserCollapse()" class="w-full flex items-center justify-between mb-2.5">
-                        <span class="flex items-center space-x-1.5">
-                            <i data-lucide="folder" class="w-4 h-4 text-violet-500"></i>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">コーナー</span>
-                        </span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="corner-browser-collapse-icon"></i>
-                    </button>
-                    <div id="corner-browser-body">
-                        <div id="corner-pill-list" class="flex flex-wrap gap-1.5 mb-2.5"></div>
-                        <div id="corner-view-toggle" class="hidden mb-2.5 inline-flex p-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                            <button data-mode="date" onclick="setCornerViewMode('date')" class="corner-view-btn px-2.5 py-1 rounded-md text-[10px] font-black transition-all">日時順</button>
-                            <button data-mode="subject" onclick="setCornerViewMode('subject')" class="corner-view-btn px-2.5 py-1 rounded-md text-[10px] font-black transition-all">教科ごと</button>
+                <!-- 夏休みの課題一覧（クラスごとに表示内容が切り替わる） -->
+                <button onclick="openSummerTaskModal()" id="summer-task-entry-btn" class="w-full p-5 bg-white dark:bg-[#0f172a] hover:bg-gradient-to-br hover:from-amber-50 hover:to-yellow-50 dark:hover:from-amber-950/20 dark:hover:to-yellow-950/20 border-2 border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 rounded-2xl text-left transition-all duration-300 flex items-center justify-between group">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-500 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300 shrink-0">
+                            <i data-lucide="sun" class="w-6 h-6"></i>
                         </div>
-                        <div id="corner-item-list" class="space-y-1.5"></div>
-                        <p id="corner-empty-msg" class="hidden text-xs font-bold text-slate-400 text-center py-2">このコーナーにはまだ予定がありません</p>
+                        <div>
+                            <p id="summer-task-entry-title" class="text-sm font-black text-slate-800 dark:text-slate-100 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">夏休みの課題一覧</p>
+                            <p id="summer-task-entry-sub" class="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-0.5">クラスごとの課題をチェック</p>
+                        </div>
                     </div>
-                </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="summer-task-entry-badge" class="hidden text-[10px] font-black px-2 py-1 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-300 border border-amber-200 dark:border-amber-700"></span>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-amber-500 group-hover:translate-x-1 transition-all"></i>
+                    </div>
+                </button>
 
                 <p class="text-center text-xs font-bold text-slate-300 dark:text-slate-600 py-4">季節ごとの企画が増えたら、ここに並びます</p>
             </section>
@@ -2839,10 +2836,6 @@
                     <textarea id="cms-sch-memo" placeholder="範囲・持ち物など" rows="2"
                         class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400"></textarea>
                 </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">コーナー（任意・複数選択可）</label>
-                    <div id="cms-sch-corner-checks" class="flex flex-wrap gap-1.5"></div>
-                </div>
                 <div class="bg-cyan-50 dark:bg-cyan-950/30 border border-cyan-200 dark:border-cyan-800/40 rounded-xl p-3">
                     <label class="text-[10px] font-black text-cyan-700 dark:text-cyan-300 flex items-center gap-1.5 mb-1">
                         <i data-lucide="bell" class="w-3.5 h-3.5"></i><span>通知日時（任意）</span>
@@ -2856,33 +2849,6 @@
             <div class="grid grid-cols-2 gap-3 mt-5">
                 <button onclick="closeCmsScheduleModal()" class="py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90">キャンセル</button>
                 <button onclick="cmsConfirmSchedule()" class="py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90">反映する</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CMS: コーナー編集モーダル -->
-    <div id="cms-corner-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
-        <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-sm transform scale-95 transition-all duration-300" id="cms-corner-card">
-            <h3 class="text-sm font-black text-slate-900 dark:text-white mb-4">コーナーを編集</h3>
-            <div class="space-y-3">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">コーナー名</label>
-                    <input type="text" id="cms-corner-name" placeholder="例：英語コーナー"
-                        class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">カラー</label>
-                    <div id="cms-corner-color-picker" class="flex flex-wrap gap-2"></div>
-                </div>
-            </div>
-            <div class="flex items-center justify-between mt-5 gap-3">
-                <button onclick="cmsDeleteCornerFromModal()" id="cms-corner-delete-btn" class="hidden items-center space-x-1.5 px-3 py-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl text-xs font-black transition-all">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>削除</span>
-                </button>
-                <div class="flex gap-2 ml-auto">
-                    <button onclick="closeCmsCornerModal()" class="py-2.5 px-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90">キャンセル</button>
-                    <button onclick="cmsConfirmCorner()" class="py-2.5 px-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90">反映する</button>
-                </div>
             </div>
         </div>
     </div>
@@ -3221,6 +3187,68 @@
                 </button>
                 <button onclick="closeCmsExamModal()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90 transition-all">キャンセル</button>
                 <button onclick="cmsConfirmExam()" class="flex-1 py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">この考査を保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 夏休みの課題一覧（クラスごとに表示内容が切り替わる掲示板） -->
+    <div id="summer-task-modal" class="hidden fixed inset-0 z-[9994] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5">
+        <div class="bg-white dark:bg-[#0c1220] w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl flex flex-col h-[85vh] sm:h-[600px]">
+            <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                <div class="min-w-0">
+                    <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="sun" class="w-5 h-5 text-amber-500"></i><span id="summer-task-modal-title-text">夏休みの課題一覧</span></h3>
+                    <p id="summer-task-class-label" class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 ml-7"></p>
+                </div>
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button id="summer-task-add-btn" style="display:none" onclick="cmsAddSummerTaskFromReal()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" title="課題を追加"><i data-lucide="plus" class="w-4 h-4 text-amber-500"></i></button>
+                    <button onclick="closeSummerTaskModal()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+                </div>
+            </div>
+            <div id="summer-task-subject-filters" class="flex flex-wrap gap-1.5 px-4 pt-3"></div>
+            <div id="summer-task-list" class="flex-1 overflow-y-auto px-4 py-4 space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- 開発者モード用：夏休みの課題 追加・編集モーダル -->
+    <div id="cms-summer-task-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300" id="cms-summer-task-card">
+            <h3 class="text-base font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2"><i data-lucide="sun" class="w-4 h-4"></i>夏休みの課題を編集</h3>
+            <div class="space-y-3">
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">教科 <span class="text-rose-500">必須</span></label>
+                    <input type="text" id="cms-summer-task-subject" placeholder="例：数学"
+                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">タイトル（任意）</label>
+                    <input type="text" id="cms-summer-task-title" placeholder="例：夏期課題プリント"
+                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">提出期限（任意）</label>
+                    <input type="date" id="cms-summer-task-due"
+                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400">
+                </div>
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">課題の内容 <span class="text-rose-500">必須</span></label>
+                    <textarea id="cms-summer-task-content" rows="5" placeholder="例：ワークP.10〜30、自由研究1つ、読書感想文（原稿用紙3枚）"
+                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400 resize-none"></textarea>
+                </div>
+                <div>
+                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">対象クラス（未選択で全クラス共通）</label>
+                    <div id="cms-summer-task-class-checks" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+                    <div class="flex items-center gap-2 mt-1.5">
+                        <button type="button" onclick="cmsSummerTaskClassSelectAll()" class="text-[10px] font-black text-amber-600 dark:text-amber-400 hover:opacity-70">すべて選択</button>
+                        <button type="button" onclick="cmsSummerTaskClassClear()" class="text-[10px] font-black text-slate-400 hover:opacity-70">選択解除</button>
+                    </div>
+                </div>
+            </div>
+            <div class="flex gap-2 mt-5">
+                <button onclick="cmsDeleteSummerTaskFromModal()" id="cms-summer-task-delete-btn" class="hidden items-center space-x-1.5 px-3 py-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-xl text-xs font-black transition-all">
+                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>削除</span>
+                </button>
+                <button onclick="closeCmsSummerTaskModal()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90 transition-all">キャンセル</button>
+                <button onclick="cmsConfirmSummerTask()" class="flex-1 py-2.5 bg-gradient-to-r from-amber-400 to-yellow-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">保存する</button>
             </div>
         </div>
     </div>
@@ -3573,10 +3601,6 @@
                             </div>
                             <div id="schedule-input-class-checks" class="flex flex-wrap gap-1.5"></div>
                             <p id="schedule-input-class-summary" class="text-[10px] text-slate-400 dark:text-slate-500 mt-1.5"></p>
-                        </div>
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">コーナー（任意・複数選択可）</label>
-                            <div id="schedule-input-corner-checks" class="flex flex-wrap gap-1.5"></div>
                         </div>
                         <div>
                             <label class="text-[10px] font-black text-cyan-700 dark:text-cyan-300 flex items-center gap-1.5 mb-1">
@@ -5421,6 +5445,7 @@
             applyFabVisibility();
             updateExamRangeEntryVisibility();
             updateExamRangeEntryBadge();
+            updateSummerTaskEntryBadge();
             // GitHub上のHTML自体が新しいものに更新されていないかの監視を開始
             startVersionWatcher();
             // 初めて訪れた人には、少し間を置いてから使い方ツアーをそっと案内する
@@ -5466,12 +5491,6 @@
                         }
                     });
                 }
-                // ④ コーナー（予定を仕分けるファイルのような機能。管理サイトで作成）
-                if (Array.isArray(cfg.corners)) {
-                    window._remoteCorners = cfg.corners;
-                } else {
-                    window._remoteCorners = [];
-                }
                 // ⑤ クラス一覧（クラスごとの予定・教科の元データ）
                 if (Array.isArray(cfg.classes)) {
                     window._remoteClasses = cfg.classes;
@@ -5499,6 +5518,9 @@
                 applyExamRangeTitleToUI();
                 updateExamRangeEntryVisibility();
                 updateExamRangeEntryBadge();
+                // ⑩ 夏休みの課題一覧（クラスごとに表示を切り替えられる掲示板）
+                window._remoteSummerTasks = Array.isArray(cfg.summerTasks) ? cfg.summerTasks : [];
+                updateSummerTaskEntryBadge();
             } catch (e) {
                 console.warn('config.json の取得に失敗しました（オフラインまたは未配置）:', e);
             }
@@ -6284,6 +6306,228 @@
             showToast(hasSessions
                 ? `「${label}」を保存しました（GitHubへの保存が必要です）`
                 : `「${label}」を下書き保存しました。教科が0件のため、ユーザーにはまだ表示されません`);
+        }
+
+        // ==================================================
+        // 夏休みの課題一覧（クラスごとに表示内容が切り替わる掲示板）
+        // データは window._remoteSummerTasks（config.jsonのsummerTasks）に入る。
+        // 各項目は { id, subject, title, content, dueDate, classIds, createdAt, updatedAt } の形。
+        // classIdsが空（未選択）なら全クラス共通表示、指定があればそのクラスに所属するユーザーにのみ表示する。
+        // ==================================================
+        function getVisibleSummerTasks() {
+            const myClassId = window.currentUserClassId || null;
+            const list = window._remoteSummerTasks || [];
+            return list.filter(t => {
+                if (devUnlocked) return true; // 開発者モード中は確認のため全件表示
+                const ids = Array.isArray(t.classIds) ? t.classIds : [];
+                return ids.length === 0 || ids.includes(myClassId);
+            }).slice().sort((a, b) => {
+                const da = a.dueDate || '9999-99-99';
+                const db = b.dueDate || '9999-99-99';
+                return da.localeCompare(db) || (a.subject || '').localeCompare(b.subject || '');
+            });
+        }
+        function summerTaskClassNamesOf(t) {
+            const ids = Array.isArray(t.classIds) ? t.classIds : [];
+            if (ids.length === 0) return '全クラス共通';
+            const names = ids.map(id => {
+                const c = (window._remoteClasses || []).find(x => x.id === id);
+                return c ? c.name : '（削除済みクラス）';
+            });
+            return names.join('、');
+        }
+        function updateSummerTaskEntryBadge() {
+            const badge = document.getElementById('summer-task-entry-badge');
+            const sub = document.getElementById('summer-task-entry-sub');
+            if (!badge) return;
+            const list = getVisibleSummerTasks();
+            if (list.length === 0) {
+                badge.classList.add('hidden');
+                if (sub) sub.textContent = 'クラスごとの課題をチェック';
+                return;
+            }
+            badge.textContent = `${list.length}件公開中`;
+            badge.classList.remove('hidden');
+            if (sub) {
+                const next = list[0];
+                sub.textContent = `直近：${next.subject || ''}${next.dueDate ? '（期限 ' + next.dueDate + '）' : ''}`;
+            }
+        }
+        function openSummerTaskModal() {
+            const modal = document.getElementById('summer-task-modal');
+            if (!modal) return;
+            modal.classList.remove('hidden');
+            const label = document.getElementById('summer-task-class-label');
+            if (label) {
+                const myClassId = window.currentUserClassId || null;
+                const cls = (window._remoteClasses || []).find(c => c.id === myClassId);
+                label.textContent = cls ? `表示中のクラス：${cls.name}` : 'クラス共通の内容を表示しています';
+            }
+            summerTaskSubjectFilter = null;
+            renderSummerTaskContent();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeSummerTaskModal() {
+            document.getElementById('summer-task-modal')?.classList.add('hidden');
+        }
+        let summerTaskSubjectFilter = null;
+        function setSummerTaskSubjectFilter(subject) {
+            summerTaskSubjectFilter = subject;
+            renderSummerTaskContent();
+        }
+        function renderSummerTaskSubjectFilters(list) {
+            const wrap = document.getElementById('summer-task-subject-filters');
+            if (!wrap) return;
+            const subjects = Array.from(new Set(list.map(t => t.subject).filter(Boolean)));
+            if (subjects.length <= 1) { wrap.innerHTML = ''; return; }
+            const chipCls = (active) => `text-[10px] font-black px-2.5 py-1 rounded-full border transition-all ${active ? 'bg-amber-500 text-white border-amber-500' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}`;
+            let html = `<button onclick="setSummerTaskSubjectFilter(null)" class="${chipCls(summerTaskSubjectFilter === null)}">すべて</button>`;
+            subjects.forEach(s => {
+                html += `<button onclick="setSummerTaskSubjectFilter('${s.replace(/'/g, "\\'")}')" class="${chipCls(summerTaskSubjectFilter === s)}">${escapeHtml(s)}</button>`;
+            });
+            wrap.innerHTML = html;
+        }
+        function summerTaskCardHtml(t) {
+            const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
+            const daysLeft = t.dueDate ? Math.ceil((new Date(t.dueDate + 'T00:00:00') - new Date(todayStr + 'T00:00:00')) / 86400000) : null;
+            let dueBadge = '';
+            if (t.dueDate) {
+                if (daysLeft > 0) dueBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-300">提出まであと${daysLeft}日</span>`;
+                else if (daysLeft === 0) dueBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-500 text-white">本日締切</span>`;
+                else dueBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300">締切済み</span>`;
+            }
+            return `
+            <div class="bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-3">
+                <div class="flex items-start justify-between gap-2">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-white">${escapeHtml(t.subject || '教科未設定')}</span>
+                            ${t.dueDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(t.dueDate)}</span>` : ''}
+                            ${dueBadge}
+                        </div>
+                        <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5">${escapeHtml((t.title && t.title.trim()) ? t.title : (t.subject ? t.subject + 'の課題' : '課題名未設定'))}</h4>
+                        <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>対象：${escapeHtml(summerTaskClassNamesOf(t))}</p>
+                    </div>
+                    ${devUnlocked ? `<div class="flex gap-1 shrink-0">
+                        <button onclick="cmsEditSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="cmsRemoveSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                    </div>` : ''}
+                </div>
+                <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
+                    ${t.content ? `<p class="text-xs text-slate-700 dark:text-slate-200 font-semibold whitespace-pre-wrap leading-relaxed">${escapeHtml(t.content)}</p>` : `<p class="text-xs text-slate-400 dark:text-slate-500 italic font-semibold">まだ課題の内容は入力されていません</p>`}
+                </div>
+            </div>`;
+        }
+        function renderSummerTaskContent() {
+            const listWrap = document.getElementById('summer-task-list');
+            if (!listWrap) return;
+            const addBtn = document.getElementById('summer-task-add-btn');
+            if (addBtn) addBtn.style.display = devUnlocked ? 'flex' : 'none';
+            const all = getVisibleSummerTasks();
+            renderSummerTaskSubjectFilters(all);
+            const list = all.filter(t => !summerTaskSubjectFilter || t.subject === summerTaskSubjectFilter);
+            updateSummerTaskEntryBadge();
+            if (list.length === 0) {
+                listWrap.innerHTML = `
+                    <div class="text-center py-14">
+                        <i data-lucide="sun" class="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2"></i>
+                        <p class="text-xs font-bold text-slate-400 dark:text-slate-500">まだ夏休みの課題は公開されていません</p>
+                    </div>`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+            listWrap.innerHTML = list.map(t => summerTaskCardHtml(t)).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ----- 夏休みの課題：開発者モードでの追加・編集・削除 -----
+        let cmsSummerTaskEditId = null;
+        function cmsAddSummerTaskFromReal() {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            cmsOpenSummerTaskModal(null);
+        }
+        function cmsEditSummerTaskFromReal(id) {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            const idx = (cmsConfigData.summerTasks || []).findIndex(x => String(x.id) === String(id));
+            if (idx < 0) { showToast('データが見つかりませんでした。再読込してください'); return; }
+            cmsOpenSummerTaskModal(idx);
+        }
+        function cmsRemoveSummerTaskFromReal(id) {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            if (!confirm('この課題を削除しますか？')) return;
+            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
+            const idx = cmsConfigData.summerTasks.findIndex(x => String(x.id) === String(id));
+            if (idx < 0) return;
+            cmsConfigData.summerTasks.splice(idx, 1);
+            window._remoteSummerTasks = cmsConfigData.summerTasks.slice();
+            renderSummerTaskContent();
+            cmsMarkDirty();
+            showToast('削除しました（GitHubへの保存が必要です）');
+        }
+        function cmsOpenSummerTaskModal(idx) {
+            cmsSummerTaskEditId = idx;
+            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
+            const t = idx != null ? cmsConfigData.summerTasks[idx] : { subject: '', title: '', content: '', dueDate: '', classIds: [] };
+            document.getElementById('cms-summer-task-subject').value = t.subject || '';
+            document.getElementById('cms-summer-task-title').value = t.title || '';
+            document.getElementById('cms-summer-task-due').value = t.dueDate || '';
+            document.getElementById('cms-summer-task-content').value = t.content || '';
+            cmsRenderSummerTaskClassChecks(t.classIds || []);
+            const delBtn = document.getElementById('cms-summer-task-delete-btn');
+            if (delBtn) delBtn.classList.toggle('hidden', idx == null);
+            cmsOpenModal('cms-summer-task-modal', 'cms-summer-task-card');
+        }
+        function closeCmsSummerTaskModal() { cmsCloseModal('cms-summer-task-modal', 'cms-summer-task-card'); }
+        function cmsDeleteSummerTaskFromModal() {
+            if (cmsSummerTaskEditId == null) return;
+            const t = cmsConfigData.summerTasks[cmsSummerTaskEditId];
+            closeCmsSummerTaskModal();
+            if (t) cmsRemoveSummerTaskFromReal(t.id);
+        }
+        function cmsRenderSummerTaskClassChecks(selectedIds) {
+            const wrap = document.getElementById('cms-summer-task-class-checks');
+            if (!wrap) return;
+            const classes = cmsConfigData.classes || [];
+            if (classes.length === 0) {
+                wrap.innerHTML = '<p class="text-[10px] text-slate-400">クラスがまだありません（「クラス設定」から追加できます）</p>';
+                return;
+            }
+            wrap.innerHTML = classes.map(c => `
+                <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer text-[11px] font-bold">
+                    <input type="checkbox" class="cms-summer-task-class-check" value="${escapeHtml(c.id)}" ${selectedIds.includes(c.id) ? 'checked' : ''}>
+                    <span style="width:8px;height:8px;border-radius:50%;background:${classChipColor(c.id)};display:inline-block;"></span>
+                    ${escapeHtml(c.name)}
+                </label>`).join('');
+        }
+        function cmsSummerTaskClassSelectAll() {
+            document.querySelectorAll('.cms-summer-task-class-check').forEach(el => { el.checked = true; });
+        }
+        function cmsSummerTaskClassClear() {
+            document.querySelectorAll('.cms-summer-task-class-check').forEach(el => { el.checked = false; });
+        }
+        function cmsConfirmSummerTask() {
+            const subject = document.getElementById('cms-summer-task-subject').value.trim();
+            const title = document.getElementById('cms-summer-task-title').value.trim();
+            const dueDate = document.getElementById('cms-summer-task-due').value;
+            const content = document.getElementById('cms-summer-task-content').value.trim();
+            const classIds = Array.from(document.querySelectorAll('.cms-summer-task-class-check:checked')).map(el => el.value);
+            if (!subject || !content) { showToast('教科と課題の内容は必須です'); return; }
+            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
+            const now = new Date().toISOString();
+            const existing = cmsSummerTaskEditId != null ? cmsConfigData.summerTasks[cmsSummerTaskEditId] : null;
+            const entry = {
+                id: (existing && existing.id) || Date.now(),
+                subject, title, content, dueDate, classIds,
+                createdAt: (existing && existing.createdAt) || now,
+                updatedAt: now,
+            };
+            if (cmsSummerTaskEditId != null) cmsConfigData.summerTasks[cmsSummerTaskEditId] = entry;
+            else cmsConfigData.summerTasks.push(entry);
+            window._remoteSummerTasks = cmsConfigData.summerTasks.slice();
+            closeCmsSummerTaskModal();
+            renderSummerTaskContent();
+            cmsMarkDirty();
+            showToast('夏休みの課題を保存しました（GitHubへの保存が必要です）');
         }
 
         // ===== 新しいバージョンの検知 =====
@@ -7544,7 +7788,6 @@
                     memo: s.memo || null,
                     classIds: scheduleClassIdsOf(s),
                     classId: s.classId || null,
-                    cornerIds: Array.isArray(s.cornerIds) ? s.cornerIds : [],
                     notifyAt: s.notifyAt || null,
                     isRemote: true,
                 }));
@@ -7650,7 +7893,6 @@
         // 画面すべてのチェック状態を更新する
         function refreshSubmissionDoneViews() {
             if (typeof renderScheduleSection === 'function') renderScheduleSection();
-            if (typeof renderCornerBrowser === 'function') renderCornerBrowser();
             if (typeof renderCalendarDayList === 'function') renderCalendarDayList();
             if (typeof renderCalendarPanel === 'function') renderCalendarPanel();
             const detailCheckbox = document.getElementById('schedule-detail-done-checkbox');
@@ -7811,168 +8053,9 @@
             if (changed) safeStorage.set('pm_notify_fired', fired.slice(-200));
         }
 
-        // コーナー選択状態（HOME画面でどのコーナーを表示中か）
-        let selectedCornerId = null;
-        let cornerViewMode = 'date'; // 'date' = 日時順, 'subject' = 教科ごと
-        function setCornerViewMode(mode) {
-            cornerViewMode = mode;
-            renderCornerBrowser();
-        }
-        function selectCornerPill(cornerId) {
-            selectedCornerId = cornerId;
-            renderCornerBrowser();
-        }
-        // コーナー欄の折りたたみ（端末に好みを記憶する）
-        function isCornerBrowserCollapsed() {
-            return safeStorage.get('pm_corner_browser_collapsed') === true;
-        }
-        function applyCornerBrowserCollapseState() {
-            const body = document.getElementById('corner-browser-body');
-            const icon = document.getElementById('corner-browser-collapse-icon');
-            const collapsed = isCornerBrowserCollapsed();
-            if (body) body.classList.toggle('hidden', collapsed);
-            if (icon) icon.classList.toggle('-rotate-90', collapsed);
-        }
-        function toggleCornerBrowserCollapse() {
-            const next = !isCornerBrowserCollapsed();
-            safeStorage.set('pm_corner_browser_collapsed', next);
-            applyCornerBrowserCollapseState();
-        }
-        function renderCornerBrowser() {
-            const card = document.getElementById('corner-browser-card');
-            const pillList = document.getElementById('corner-pill-list');
-            const itemList = document.getElementById('corner-item-list');
-            const emptyMsg = document.getElementById('corner-empty-msg');
-            const viewToggle = document.getElementById('corner-view-toggle');
-            if (!card || !pillList || !itemList || !emptyMsg) return;
-
-            const corners = window._remoteCorners || [];
-            if (corners.length === 0 && !devUnlocked) {
-                card.classList.add('hidden');
-                return;
-            }
-            card.classList.remove('hidden');
-            applyCornerBrowserCollapseState();
-
-            if (corners.length > 0 && (!selectedCornerId || !corners.find(c => c.id === selectedCornerId))) {
-                selectedCornerId = corners[0].id;
-            }
-
-            const pillsHtml = corners.map(c => {
-                const active = c.id === selectedCornerId;
-                const editIcon = devUnlocked
-                    ? `<i data-lucide="pencil" onclick="event.stopPropagation(); cmsEditCornerFromHome('${c.id}')" class="w-3 h-3 opacity-70 hover:opacity-100"></i>`
-                    : '';
-                return `
-                <button onclick="selectCornerPill('${c.id}')" class="px-3 py-1.5 rounded-full text-[11px] font-black transition-all flex items-center gap-1.5" style="${active ? `background:${c.color};color:#fff;` : `background:${c.color}18;color:${c.color};`}">
-                    <span style="width:6px;height:6px;border-radius:50%;background:${active ? '#fff' : c.color};display:inline-block;"></span>
-                    ${escapeHtml(c.name)}
-                    ${editIcon}
-                </button>`;
-            }).join('');
-            const addPill = devUnlocked
-                ? `<button onclick="cmsAddCornerFromHome()" class="px-3 py-1.5 rounded-full text-[11px] font-black border border-dashed border-slate-300 dark:border-slate-600 text-slate-400 hover:text-cyan-500 hover:border-cyan-400 transition-all flex items-center gap-1">
-                    <i data-lucide="plus" class="w-3 h-3"></i><span>コーナーを追加</span>
-                   </button>`
-                : '';
-            pillList.innerHTML = pillsHtml + addPill;
-            if (corners.length === 0) {
-                itemList.innerHTML = '';
-                if (viewToggle) viewToggle.classList.add('hidden');
-                emptyMsg.classList.remove('hidden');
-                emptyMsg.textContent = 'コーナーはまだありません（上の「＋ コーナーを追加」から作成できます）';
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                return;
-            }
-
-            const allItems = getAllSchedules().filter(s => Array.isArray(s.cornerIds) && s.cornerIds.includes(selectedCornerId));
-            const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
-            allItems.sort((a, b) => a.date.localeCompare(b.date));
-
-            if (allItems.length === 0) {
-                itemList.innerHTML = '';
-                if (viewToggle) viewToggle.classList.add('hidden');
-                emptyMsg.textContent = 'このコーナーにはまだ予定がありません';
-                emptyMsg.classList.remove('hidden');
-                return;
-            }
-            emptyMsg.classList.add('hidden');
-            if (viewToggle) {
-                viewToggle.classList.remove('hidden');
-                viewToggle.querySelectorAll('.corner-view-btn').forEach(btn => {
-                    const active = btn.getAttribute('data-mode') === cornerViewMode;
-                    btn.classList.toggle('bg-white', active);
-                    btn.classList.toggle('dark:bg-slate-700', active);
-                    btn.classList.toggle('text-slate-800', active);
-                    btn.classList.toggle('dark:text-white', active);
-                    btn.classList.toggle('text-slate-400', !active);
-                });
-            }
-
-            const typeIcon = { test: 'file-edit', submission: 'package-check' };
-            const typeLabel = { test: 'テスト', submission: '提出物' };
-            const renderItemRow = (item) => {
-                const isPast = item.date < todayStr;
-                const isToday = item.date === todayStr;
-                const done = item.type === 'submission' && isSubmissionDone(item.id);
-                const openCall = item.isRemote ? `openScheduleViewModal('${item.id}')` : `openScheduleViewModal(${item.id})`;
-                const d = daysUntil(item.date);
-                const daysLabel = d === 0 ? '当日' : (d > 0 ? `あと${d}日` : `${Math.abs(d)}日前`);
-                const daysColor = d === 0 ? 'text-rose-500' : (d > 0 ? 'text-cyan-500 dark:text-cyan-400' : 'text-slate-400 dark:text-slate-500');
-                return `
-                <div onclick="${openCall}" class="group flex items-center gap-2.5 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${(isPast || done) ? 'opacity-50' : ''} bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-700/60 active:scale-[0.99]">
-                    ${renderSubmissionCheckbox(item)}
-                    <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${item.type === 'test' ? 'bg-rose-100 dark:bg-rose-900/30 text-rose-500' : 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-500'}">
-                        <i data-lucide="${typeIcon[item.type] || 'file-edit'}" class="w-3.5 h-3.5"></i>
-                    </div>
-                    <div class="min-w-0 flex-1">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-xs font-black text-slate-700 dark:text-slate-200 truncate ${done ? 'line-through' : ''}">${escapeHtml(item.title)}</span>
-                            ${isToday ? `<span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-rose-500 text-white shrink-0">今日</span>` : ''}
-                            ${done ? `<span class="text-[9px] font-black px-1.5 py-0.5 rounded-full bg-emerald-500 text-white shrink-0">完了</span>` : ''}
-                        </div>
-                        <div class="flex items-center gap-1.5 mt-0.5">
-                            <span class="text-[10px] font-bold text-slate-400">${typeLabel[item.type] || ''}</span>
-                            ${item.subject ? `<span class="text-[10px] font-bold text-slate-400">・${escapeHtml(item.subject)}</span>` : ''}
-                        </div>
-                    </div>
-                    <div class="flex flex-col items-end gap-0.5 shrink-0">
-                        <span class="text-[10px] font-black text-slate-400">${escapeHtml(item.date)}</span>
-                        ${done ? '' : `<span class="text-[9px] font-black ${daysColor}">${daysLabel}</span>`}
-                    </div>
-                    <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-300 group-hover:text-slate-500 shrink-0"></i>
-                </div>`;
-            };
-
-            if (cornerViewMode === 'subject') {
-                const groups = {};
-                const order = [];
-                allItems.forEach(item => {
-                    const key = item.subject || 'その他';
-                    if (!groups[key]) { groups[key] = []; order.push(key); }
-                    groups[key].push(item);
-                });
-                order.sort((a, b) => {
-                    if (a === 'その他') return 1;
-                    if (b === 'その他') return -1;
-                    return a.localeCompare(b, 'ja');
-                });
-                itemList.innerHTML = order.map(subject => `
-                    <div class="mb-2.5 last:mb-0">
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1.5 px-0.5">${escapeHtml(subject)}</p>
-                        <div class="space-y-1.5">${groups[subject].map(renderItemRow).join('')}</div>
-                    </div>`).join('');
-            } else {
-                itemList.innerHTML = `<div class="space-y-1.5">${allItems.map(renderItemRow).join('')}</div>`;
-            }
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
 
         function renderScheduleSection() {
             const upcoming = getUpcomingSchedules();
-
-            // ----- コーナー（予定を仕分けるファイルのような機能） -----
-            renderCornerBrowser();
 
             // ----- 直近の提出物 / 直近のテスト（左右2列） -----
             const nextSubmission = upcoming.find(s => s.type === 'submission');
@@ -8426,7 +8509,6 @@
                 scheduleSelectedType = s.type || 'test';
                 if (deleteBtn) deleteBtn.classList.remove('hidden');
                 setSchedulePublishToggle(false);
-                populateScheduleInputCornerChecks([]);
             } else if (editId != null && remoteMatch) {
                 // 学校全体に公開されている予定を開発者として編集
                 const s = remoteMatch;
@@ -8441,7 +8523,6 @@
                 if (deleteBtn) deleteBtn.classList.remove('hidden');
                 setSchedulePublishToggle(true);
                 document.getElementById('schedule-input-notify').value = s.notifyAt ? s.notifyAt.slice(0, 16) : '';
-                populateScheduleInputCornerChecks(s.cornerIds || []);
             } else {
                 titleEl.textContent = '予定を追加';
                 document.getElementById('schedule-edit-id').value = '';
@@ -8463,7 +8544,6 @@
                 scheduleSelectedType = 'test';
                 if (deleteBtn) deleteBtn.classList.add('hidden');
                 setSchedulePublishToggle(false);
-                populateScheduleInputCornerChecks([]);
             }
             selectScheduleType(scheduleSelectedType);
 
@@ -8524,18 +8604,6 @@
             document.querySelectorAll('.schedule-input-class-check').forEach(el => { el.checked = false; });
             updateScheduleInputClassSummary();
         }
-        function populateScheduleInputCornerChecks(selectedIds) {
-            const wrap = document.getElementById('schedule-input-corner-checks');
-            if (!wrap) return;
-            const corners = window._remoteCorners || [];
-            if (corners.length === 0) { wrap.innerHTML = '<p class="text-[10px] text-slate-400">コーナーがまだありません（開発者ダッシュボードから作成できます）</p>'; return; }
-            wrap.innerHTML = corners.map(c => `
-                <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer text-[11px] font-bold bg-white dark:bg-slate-900">
-                    <input type="checkbox" class="schedule-input-corner-check" value="${escapeHtml(c.id)}" ${selectedIds.includes(c.id) ? 'checked' : ''}>
-                    <span style="width:8px;height:8px;border-radius:50%;background:${escapeHtml(c.color)};display:inline-block;"></span>
-                    ${escapeHtml(c.name)}
-                </label>`).join('');
-        }
 
         function saveScheduleEntry() {
             const errorEl = document.getElementById('schedule-input-error');
@@ -8561,7 +8629,6 @@
                     showError('学校全体に公開するには、先に開発者ダッシュボードでGitHubへ接続してください');
                     return;
                 }
-                const cornerIds = Array.from(document.querySelectorAll('.schedule-input-corner-check:checked')).map(el => el.value);
                 const classIds = Array.from(document.querySelectorAll('.schedule-input-class-check:checked')).map(el => el.value);
                 const notifyRaw = document.getElementById('schedule-input-notify').value;
                 const entry = {
@@ -8572,7 +8639,6 @@
                     date,
                     memo: memo || null,
                     classIds,
-                    cornerIds,
                     notifyAt: notifyRaw ? new Date(notifyRaw).toISOString() : null,
                 };
                 cmsUpsertGlobalSchedule(entry, wasRemote);
@@ -15677,7 +15743,7 @@ const KOBUN_TANGO = [
             updateExamRangeEntryBadge();
             updateExamRangeEntryVisibility();
             applyExamRangeTitleToUI();
-            if (typeof renderCornerBrowser === 'function') renderCornerBrowser();
+            updateSummerTaskEntryBadge();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
@@ -18211,7 +18277,6 @@ const KOBUN_TANGO = [
         // 開発者モードのON/OFFや接続状況が変わった時に、現在表示されている可能性がある
         // 実画面すべての「編集アイコン」表示を更新する
         function refreshAllDevEditableViews() {
-            if (typeof renderCornerBrowser === 'function') renderCornerBrowser();
             if (typeof renderPresetSectionGrid === 'function') renderPresetSectionGrid();
             if (typeof renderRonriSectionListPage === 'function') renderRonriSectionListPage();
             if (typeof renderClassPickerList === 'function') renderClassPickerList();
@@ -18395,7 +18460,7 @@ const KOBUN_TANGO = [
         // ===== CMS管理機能（旧admin.htmlを開発者モードに統合したもの） =====
         // ================================================================
         let cmsSession = null; // { token, repo, branch }
-        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true };
+        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true, summerTasks: [] };
         let cmsCurrentSha = null;
         let cmsDirty = false;
         const CMS_SESSION_KEY = 'pm_cms_session_v1';
@@ -18503,7 +18568,7 @@ const KOBUN_TANGO = [
             });
             if (res.status === 404) {
                 cmsCurrentSha = null;
-                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], corners: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true };
+                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true, summerTasks: [] };
                 cmsSyncAllRealDisplays();
                 cmsSetSaveStatus('config.json はまだリポジトリに存在しません。保存すると新規作成されます。', 'err');
                 if (statusEl) { statusEl.textContent = 'リポジトリに config.json がまだありません（新規作成されます）'; statusEl.className = 'text-[10px] font-bold text-amber-500'; }
@@ -18521,13 +18586,13 @@ const KOBUN_TANGO = [
             cmsConfigData.globalSchedules = cmsConfigData.globalSchedules || [];
             cmsConfigData.extraSections = cmsConfigData.extraSections || [];
             cmsConfigData.ronriSections = cmsConfigData.ronriSections || [];
-            cmsConfigData.corners = cmsConfigData.corners || [];
             cmsConfigData.classes = cmsConfigData.classes || [];
             cmsConfigData.tourSteps = cmsConfigData.tourSteps || [];
             cmsConfigData.featureFlags = cmsConfigData.featureFlags || {};
             cmsConfigData.exams = cmsConfigData.exams || [];
             cmsConfigData.examRangeTitle = cmsConfigData.examRangeTitle || '';
             cmsConfigData.examRangeEnabled = cmsConfigData.examRangeEnabled !== false;
+            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
             cmsDirty = false;
             cmsSyncAllRealDisplays();
             cmsSetSaveStatus('GitHubの最新内容を読み込みました', 'ok');
@@ -18539,7 +18604,6 @@ const KOBUN_TANGO = [
         function cmsSyncAllRealDisplays() {
             window._remoteAnnouncements = (cmsConfigData.announcements || []).slice();
             window._remoteGlobalSchedules = (cmsConfigData.globalSchedules || []).slice();
-            window._remoteCorners = (cmsConfigData.corners || []).slice();
             window._remoteClasses = (cmsConfigData.classes || []).slice();
             window._remoteRonriSections = (cmsConfigData.ronriSections || []).slice();
             window._remoteTourSteps = (cmsConfigData.tourSteps || []).slice();
@@ -18555,6 +18619,9 @@ const KOBUN_TANGO = [
             const examTitleInput = document.getElementById('cms-exam-title-input');
             if (examTitleInput) examTitleInput.value = getExamRangeTitle();
             cmsRenderModeList();
+            window._remoteSummerTasks = (cmsConfigData.summerTasks || []).slice();
+            renderSummerTaskContent();
+            updateSummerTaskEntryBadge();
             (cmsConfigData.extraSections || []).forEach(sec => {
                 const idx = PRESET_SECTIONS.findIndex(p => p.id === sec.id);
                 if (idx >= 0) PRESET_SECTIONS[idx] = sec;
@@ -18563,7 +18630,6 @@ const KOBUN_TANGO = [
             if (typeof renderAnnouncementContent === 'function') renderAnnouncementContent();
             if (typeof renderScheduleSection === 'function') renderScheduleSection();
             if (typeof refreshCalendarIfVisible === 'function') refreshCalendarIfVisible();
-            if (typeof renderCornerBrowser === 'function') renderCornerBrowser();
             if (typeof renderClassPickerList === 'function') renderClassPickerList();
             if (typeof renderPresetSectionGrid === 'function') renderPresetSectionGrid();
             if (typeof renderRonriSectionListPage === 'function') renderRonriSectionListPage();
@@ -18687,7 +18753,6 @@ const KOBUN_TANGO = [
             cmsRenderAnnouncements();
             cmsRenderClasses();
             cmsRenderSchedules();
-            cmsRenderCorners();
             cmsRenderSections();
             cmsRenderRonriSections();
         }
@@ -18937,7 +19002,6 @@ const KOBUN_TANGO = [
             document.getElementById('cms-sch-notify').value = s.notifyAt ? s.notifyAt.slice(0, 16) : '';
             cmsSetSchType(s.type || 'test');
             cmsRenderScheduleClassChecks(idx != null ? scheduleClassIdsOf(s) : []);
-            cmsRenderScheduleCornerChecks();
             cmsOpenModal('cms-schedule-modal', 'cms-schedule-card');
         }
         function cmsSetSchType(type) {
@@ -18955,21 +19019,7 @@ const KOBUN_TANGO = [
             });
         }
         function closeCmsScheduleModal() { cmsCloseModal('cms-schedule-modal', 'cms-schedule-card'); }
-        function cmsRenderScheduleCornerChecks() {
-            const wrap = document.getElementById('cms-sch-corner-checks');
-            if (!wrap) return;
-            const corners = cmsConfigData.corners || [];
-            if (corners.length === 0) { wrap.innerHTML = '<p class="text-[10px] text-slate-400">コーナーがまだありません</p>'; return; }
-            const currentIds = (cmsSchEditIdx != null && cmsConfigData.globalSchedules[cmsSchEditIdx].cornerIds) || [];
-            wrap.innerHTML = corners.map(c => `
-                <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer text-[11px] font-bold">
-                    <input type="checkbox" class="cms-sch-corner-check" value="${escapeHtml(c.id)}" ${currentIds.includes(c.id) ? 'checked' : ''}>
-                    <span style="width:8px;height:8px;border-radius:50%;background:${escapeHtml(c.color)};display:inline-block;"></span>
-                    ${escapeHtml(c.name)}
-                </label>`).join('');
-        }
         function cmsConfirmSchedule() {
-            const cornerIds = Array.from(document.querySelectorAll('.cms-sch-corner-check:checked')).map(el => el.value);
             const classIds = Array.from(document.querySelectorAll('.cms-sch-class-check:checked')).map(el => el.value);
             const notifyRaw = document.getElementById('cms-sch-notify').value;
             const entry = {
@@ -18980,7 +19030,6 @@ const KOBUN_TANGO = [
                 classIds,
                 date: document.getElementById('cms-sch-date').value,
                 memo: document.getElementById('cms-sch-memo').value.trim() || null,
-                cornerIds,
                 notifyAt: notifyRaw ? new Date(notifyRaw).toISOString() : null,
             };
             if (!entry.title || !entry.date) { showToast('タイトルと日付は必須です'); return; }
@@ -19054,102 +19103,6 @@ const KOBUN_TANGO = [
             cmsEditRonriSection(idx);
         }
 
-        // ----- コーナー -----
-        const CMS_CORNER_COLORS = ['#a855f7','#8b5cf6','#6366f1','#0ea5e9','#06b6d4','#10b981','#f59e0b','#f97316','#ef4444','#ec4899'];
-        let cmsCornerEditIdx = null;
-        let cmsCornerSelectedColor = CMS_CORNER_COLORS[0];
-        function cmsRenderCorners() {
-            const wrap = document.getElementById('cms-corner-list');
-            const empty = document.getElementById('cms-corner-empty');
-            if (!wrap) return;
-            const list = cmsConfigData.corners || [];
-            if (list.length === 0) { wrap.innerHTML = ''; empty.classList.remove('hidden'); return; }
-            empty.classList.add('hidden');
-            wrap.innerHTML = list.map((c, idx) => {
-                const count = (cmsConfigData.globalSchedules || []).filter(s => (s.cornerIds || []).includes(c.id)).length;
-                return `
-                <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-3 flex items-center justify-between gap-2 cursor-pointer" onclick="cmsEditCorner(${idx})">
-                    <div class="flex items-center gap-2 min-w-0">
-                        <span style="width:14px;height:14px;border-radius:50%;background:${escapeHtml(c.color)};display:inline-block;flex-shrink:0;"></span>
-                        <div class="min-w-0">
-                            <span class="text-xs font-black text-slate-800 dark:text-white">${escapeHtml(c.name)}</span>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400">${count}件の予定</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-1 shrink-0">
-                        <button onclick="event.stopPropagation(); cmsEditCorner(${idx})" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-                        <button onclick="event.stopPropagation(); cmsRemoveCorner(${idx})" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                    </div>
-                </div>`;
-            }).join('');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-        function cmsAddCorner() { cmsOpenCornerModal(null); }
-        function cmsEditCorner(idx) { cmsOpenCornerModal(idx); }
-        // 本体アプリのホーム画面（見た目そのまま）のコーナー欄から呼ばれる、追加・編集の入口
-        function cmsAddCornerFromHome() {
-            if (!cmsSession) { showToast('先に開発者ダッシュボードでGitHubへ接続してください'); openDevDashboard(); return; }
-            cmsOpenCornerModal(null);
-        }
-        function cmsEditCornerFromHome(cornerId) {
-            if (!cmsSession) { showToast('先に開発者ダッシュボードでGitHubへ接続してください'); openDevDashboard(); return; }
-            const idx = (cmsConfigData.corners || []).findIndex(c => c.id === cornerId);
-            if (idx < 0) { showToast('このコーナーのデータが見つかりませんでした。再読込してください'); return; }
-            cmsOpenCornerModal(idx);
-        }
-        function cmsOpenCornerModal(idx) {
-            cmsCornerEditIdx = idx;
-            const c = idx != null ? cmsConfigData.corners[idx] : { name: '', color: CMS_CORNER_COLORS[(cmsConfigData.corners||[]).length % CMS_CORNER_COLORS.length] };
-            document.getElementById('cms-corner-name').value = c.name || '';
-            cmsCornerSelectedColor = c.color || CMS_CORNER_COLORS[0];
-            cmsRenderCornerColorPicker();
-            const delBtn = document.getElementById('cms-corner-delete-btn');
-            if (delBtn) delBtn.classList.toggle('hidden', idx == null);
-            cmsOpenModal('cms-corner-modal', 'cms-corner-card');
-        }
-        function cmsDeleteCornerFromModal() {
-            if (cmsCornerEditIdx == null) return;
-            const idx = cmsCornerEditIdx;
-            closeCmsCornerModal();
-            cmsRemoveCorner(idx);
-        }
-        function closeCmsCornerModal() { cmsCloseModal('cms-corner-modal', 'cms-corner-card'); }
-        function cmsRenderCornerColorPicker() {
-            const wrap = document.getElementById('cms-corner-color-picker');
-            if (!wrap) return;
-            wrap.innerHTML = CMS_CORNER_COLORS.map(color => `
-                <button type="button" onclick="cmsSelectCornerColor('${color}')" style="width:26px;height:26px;border-radius:50%;background:${color};border:2px solid ${color === cmsCornerSelectedColor ? '#fff' : 'transparent'};box-shadow:${color === cmsCornerSelectedColor ? '0 0 0 2px ' + color : 'none'};cursor:pointer;"></button>`).join('');
-        }
-        function cmsSelectCornerColor(color) { cmsCornerSelectedColor = color; cmsRenderCornerColorPicker(); }
-        function cmsConfirmCorner() {
-            const name = document.getElementById('cms-corner-name').value.trim();
-            if (!name) { showToast('コーナー名を入力してください'); return; }
-            const entry = {
-                id: (cmsCornerEditIdx != null && cmsConfigData.corners[cmsCornerEditIdx].id) || ('corner_' + Date.now()),
-                name,
-                color: cmsCornerSelectedColor,
-            };
-            if (cmsCornerEditIdx != null) cmsConfigData.corners[cmsCornerEditIdx] = entry;
-            else cmsConfigData.corners.push(entry);
-            window._remoteCorners = cmsConfigData.corners.slice();
-            closeCmsCornerModal();
-            cmsRenderCorners();
-            renderCornerBrowser();
-            cmsMarkDirty();
-            showToast('コーナーを保存しました（GitHubへの保存が必要です）');
-        }
-        function cmsRemoveCorner(idx) {
-            if (!confirm('このコーナーを削除しますか？')) return;
-            const removedId = cmsConfigData.corners[idx].id;
-            cmsConfigData.corners.splice(idx, 1);
-            (cmsConfigData.globalSchedules || []).forEach(s => {
-                if (Array.isArray(s.cornerIds)) s.cornerIds = s.cornerIds.filter(id => id !== removedId);
-            });
-            window._remoteCorners = cmsConfigData.corners.slice();
-            cmsRenderCorners();
-            renderCornerBrowser();
-            cmsMarkDirty();
-        }
 
         // ----- 英コミュ セクション（AI解析） -----
         const CMS_GEMINI_ENDPOINT = 'https://promaster-api.kawaa1456.workers.dev';
