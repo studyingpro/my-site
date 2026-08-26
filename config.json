@@ -4298,7 +4298,7 @@
           "subject": "保健",
           "period": 3,
           "time": "",
-          "range": "",
+          "range": "試験範囲\n教科書P82～83、P86～99（7の後ろのADVANCE含む）",
           "classIds": []
         },
         {
@@ -4346,7 +4346,7 @@
         }
       ],
       "createdAt": "2026-08-14T01:10:44.425Z",
-      "updatedAt": "2026-08-26T01:42:48.641Z"
+      "updatedAt": "2026-08-26T01:52:50.982Z"
     }
   ],
   "examRangeEnabled": true
