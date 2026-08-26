@@ -1167,10 +1167,6 @@
                                     <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-5"></span>
                                 </span>
                             </button>
-                            <button onclick="openExamRangeModal()" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
-                                <i data-lucide="clipboard-list" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
-                                <span id="exam-range-menu-label" class="text-xs font-bold text-slate-700 dark:text-slate-200">定期考査の範囲</span>
-                            </button>
                             <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
                             <button onclick="window.open('https://forms.gle/byfhaFViuqJkjoSY7','_blank')" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="send" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
@@ -1235,26 +1231,6 @@
                     <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
                 </div>
 
-                <!-- コーナー（予定を仕分けるファイルのような機能） -->
-                <div id="corner-browser-card" class="hidden p-4 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800">
-                    <button type="button" onclick="toggleCornerBrowserCollapse()" class="w-full flex items-center justify-between mb-2.5">
-                        <span class="flex items-center space-x-1.5">
-                            <i data-lucide="folder" class="w-4 h-4 text-violet-500"></i>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">コーナー</span>
-                        </span>
-                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="corner-browser-collapse-icon"></i>
-                    </button>
-                    <div id="corner-browser-body">
-                        <div id="corner-pill-list" class="flex flex-wrap gap-1.5 mb-2.5"></div>
-                        <div id="corner-view-toggle" class="hidden mb-2.5 inline-flex p-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                            <button data-mode="date" onclick="setCornerViewMode('date')" class="corner-view-btn px-2.5 py-1 rounded-md text-[10px] font-black transition-all">日時順</button>
-                            <button data-mode="subject" onclick="setCornerViewMode('subject')" class="corner-view-btn px-2.5 py-1 rounded-md text-[10px] font-black transition-all">教科ごと</button>
-                        </div>
-                        <div id="corner-item-list" class="space-y-1.5"></div>
-                        <p id="corner-empty-msg" class="hidden text-xs font-bold text-slate-400 text-center py-2">このコーナーにはまだ予定がありません</p>
-                    </div>
-                </div>
-
                 <!-- 直近の提出物 / 直近のテスト（左右2列） -->
                 <div class="grid grid-cols-2 gap-3">
                     <div id="home-next-submission" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-indigo-50 dark:bg-indigo-900/10 border-indigo-200 dark:border-indigo-800/50 hover:border-indigo-400 flex items-center justify-between gap-2">
@@ -1308,6 +1284,56 @@
                     <div id="cal-day-list" class="space-y-2"></div>
                     <p id="cal-day-empty" class="hidden text-xs text-slate-400 dark:text-slate-600 text-center py-6">この日の予定はありません</p>
                 </div>
+            </section>
+
+            <!-- ===== 期間限定コーナー（テスト範囲・夏休みなど、その時期にしか必要ないものをまとめる場所） ===== -->
+            <section id="seasonal-corner-panel" class="hidden w-full max-w-2xl mx-auto space-y-4 animate-fade-in">
+                <button onclick="showTopHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
+                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i><span>学習コンテンツに戻る</span>
+                </button>
+                <div class="flex items-center gap-2 mb-1">
+                    <i data-lucide="sparkles" class="w-6 h-6 text-amber-500"></i>
+                    <h2 class="text-lg font-black text-slate-800 dark:text-white">期間限定コーナー</h2>
+                </div>
+                <p class="text-xs font-semibold text-slate-400 -mt-2 mb-2">定期考査の範囲・コーナーなど、その時期だけ使うものはここにまとまります</p>
+
+                <button onclick="openExamRangeModal()" class="w-full p-5 bg-white dark:bg-[#0f172a] hover:bg-gradient-to-br hover:from-cyan-50 hover:to-blue-50 dark:hover:from-cyan-950/20 dark:hover:to-blue-950/20 border-2 border-slate-200 dark:border-slate-800 hover:border-cyan-400 dark:hover:border-cyan-500 rounded-2xl text-left transition-all duration-300 flex items-center justify-between group">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-300 shrink-0">
+                            <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <p id="seasonal-exam-range-title" class="text-sm font-black text-slate-800 dark:text-slate-100 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">定期考査の範囲</p>
+                            <p id="seasonal-exam-range-sub" class="text-[11px] text-slate-400 dark:text-slate-500 font-semibold mt-0.5">クラスごとの試験範囲をチェック</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <span id="seasonal-exam-range-badge" class="hidden text-[10px] font-black px-2 py-1 rounded-full bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-700"></span>
+                        <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-cyan-500 group-hover:translate-x-1 transition-all"></i>
+                    </div>
+                </button>
+
+                <!-- コーナー（予定を仕分けるファイルのような機能） -->
+                <div id="corner-browser-card" class="hidden p-4 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800">
+                    <button type="button" onclick="toggleCornerBrowserCollapse()" class="w-full flex items-center justify-between mb-2.5">
+                        <span class="flex items-center space-x-1.5">
+                            <i data-lucide="folder" class="w-4 h-4 text-violet-500"></i>
+                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">コーナー</span>
+                        </span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="corner-browser-collapse-icon"></i>
+                    </button>
+                    <div id="corner-browser-body">
+                        <div id="corner-pill-list" class="flex flex-wrap gap-1.5 mb-2.5"></div>
+                        <div id="corner-view-toggle" class="hidden mb-2.5 inline-flex p-0.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                            <button data-mode="date" onclick="setCornerViewMode('date')" class="corner-view-btn px-2.5 py-1 rounded-md text-[10px] font-black transition-all">日時順</button>
+                            <button data-mode="subject" onclick="setCornerViewMode('subject')" class="corner-view-btn px-2.5 py-1 rounded-md text-[10px] font-black transition-all">教科ごと</button>
+                        </div>
+                        <div id="corner-item-list" class="space-y-1.5"></div>
+                        <p id="corner-empty-msg" class="hidden text-xs font-bold text-slate-400 text-center py-2">このコーナーにはまだ予定がありません</p>
+                    </div>
+                </div>
+
+                <p class="text-center text-xs font-bold text-slate-300 dark:text-slate-600 py-4">季節ごとの企画が増えたら、ここに並びます</p>
             </section>
 
             <div id="english-home" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
@@ -3031,6 +3057,10 @@
         <button id="bottom-tab-study" onclick="_navigateTo('top')" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
             <i data-lucide="book-open" class="w-5 h-5"></i>
             <span class="text-[10px] font-bold">学習コンテンツ</span>
+        </button>
+        <button id="bottom-tab-seasonal" onclick="showSeasonalCornerScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
+            <i data-lucide="sparkles" class="w-5 h-5"></i>
+            <span class="text-[10px] font-bold">期間限定</span>
         </button>
     </nav>
 
@@ -5586,10 +5616,10 @@
             });
             return names.join('、');
         }
-        // ホーム画面のカードに「〇件公開中」のようなバッジを出す
+        // 期間限定コーナーのカードに「〇件公開中」のようなバッジを出す
         function updateExamRangeEntryBadge() {
-            const badge = document.getElementById('exam-range-entry-badge');
-            const sub = document.getElementById('exam-range-entry-sub');
+            const badge = document.getElementById('seasonal-exam-range-badge');
+            const sub = document.getElementById('seasonal-exam-range-sub');
             if (!badge) return;
             const list = getVisibleExamRanges();
             if (list.length === 0) {
@@ -5624,7 +5654,7 @@
         }
         function applyExamRangeTitleToUI() {
             const title = getExamRangeTitle();
-            const ids = ['exam-range-entry-title', 'exam-range-menu-label', 'exam-range-modal-title-text'];
+            const ids = ['seasonal-exam-range-title', 'exam-range-modal-title-text'];
             ids.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = title; });
         }
         function cmsSaveExamRangeTitle() {
@@ -5658,14 +5688,12 @@
         function updateExamRangeEnabledToggleUI() {
             setToggleSwitchUI('cms-exam-enabled-toggle', cmsConfigData.examRangeEnabled !== false);
         }
-        // ホーム画面のカードと設定メニューの項目を、表示設定に応じて出し分ける
+        // 期間限定コーナー内の「定期考査の範囲」カードを、表示設定に応じて出し分ける
         function updateExamRangeEntryVisibility() {
             const enabled = isExamRangeEnabled();
-            const card = document.getElementById('exam-range-entry-card');
-            if (card) card.classList.toggle('hidden', !enabled);
-            const menuLabel = document.getElementById('exam-range-menu-label');
-            const menuBtn = menuLabel ? menuLabel.closest('button') : null;
-            if (menuBtn) menuBtn.classList.toggle('hidden', !enabled);
+            const card = document.getElementById('seasonal-exam-range-title');
+            const btn = card ? card.closest('button') : null;
+            if (btn) btn.classList.toggle('hidden', !enabled);
         }
         function openExamRangeModal() {
             if (!isExamRangeEnabled()) return;
@@ -15394,7 +15422,7 @@ const KOBUN_TANGO = [
         }
 
         // ===== 全パネル管理（干渉防止）=====
-        const ALL_PANELS = ['home-container','english-home','ronri-entry-selector','ronri-section-list-panel','ronri-hyogen-panel','japanese-home','kobun-home','kobun-reader-panel','kobun-vocab-panel','kobun-katsuyou-panel','math-home','science-home','social-home','social-qa-panel','geo-puzzle-panel','formula-panel','target1900-panel','scan-panel-wrapper','image-upload-panel','right-content-panel','notebook-interface','grades-panel','preset-section-selector','english-entry-selector','calendar-panel','mypage-panel'];
+        const ALL_PANELS = ['home-container','english-home','ronri-entry-selector','ronri-section-list-panel','ronri-hyogen-panel','japanese-home','kobun-home','kobun-reader-panel','kobun-vocab-panel','kobun-katsuyou-panel','math-home','science-home','social-home','social-qa-panel','geo-puzzle-panel','formula-panel','target1900-panel','scan-panel-wrapper','image-upload-panel','right-content-panel','notebook-interface','grades-panel','preset-section-selector','english-entry-selector','calendar-panel','mypage-panel','seasonal-corner-panel'];
 
         function hideAllPanels() {
             ALL_PANELS.forEach(id => {
@@ -15602,10 +15630,10 @@ const KOBUN_TANGO = [
             updateBottomTabActive(screen);
         }
 
-        // ===== 下部固定タブバー（マイページ／カレンダー／成績管理／学習コンテンツ）のハイライト管理 =====
+        // ===== 下部固定タブバー（マイページ／カレンダー／成績管理／学習コンテンツ／期間限定）のハイライト管理 =====
         const BOTTOM_TAB_STUDY_SCREENS = new Set(['top','english','japanese','math','science','social','scan','ronri-hyogen','ronri-section-list','ronri-scan','target']);
         function setBottomTabActive(key) {
-            ['mypage','calendar','grades','study'].forEach(k => {
+            ['mypage','calendar','grades','study','seasonal'].forEach(k => {
                 const btn = document.getElementById('bottom-tab-' + k);
                 if (!btn) return;
                 const active = (k === key);
@@ -15636,6 +15664,20 @@ const KOBUN_TANGO = [
             if (u && !u.isAnonymous && u.email && !u.emailVerified && window.AppFirebase && window.AppFirebase.refreshEmailVerifiedState) {
                 window.AppFirebase.refreshEmailVerifiedState().then(() => updateAccountMenuDisplay(window.currentAppUser)).catch(() => {});
             }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        // 期間限定コーナー（定期考査の範囲など、その時期にしか使わないものをまとめた画面）を開く
+        function showSeasonalCornerScreen() {
+            hideAllPanels();
+            const mc = document.getElementById('main-container');
+            if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
+            const panel = document.getElementById('seasonal-corner-panel');
+            if (panel) panel.classList.remove('hidden');
+            setBottomTabActive('seasonal');
+            updateExamRangeEntryBadge();
+            updateExamRangeEntryVisibility();
+            applyExamRangeTitleToUI();
+            if (typeof renderCornerBrowser === 'function') renderCornerBrowser();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
