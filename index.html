@@ -3094,8 +3094,8 @@
     </div>
 
     <!-- 定期考査の範囲 モーダル（クラスごとに表示内容が切り替わる） -->
-    <div id="exam-range-modal" class="hidden fixed inset-0 z-[9994] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-5">
-        <div class="bg-white dark:bg-[#0c1220] w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl flex flex-col h-[85vh] sm:h-[600px]">
+    <div id="exam-range-modal" class="hidden fixed inset-0 z-[9994] bg-white dark:bg-[#0c1220] flex flex-col">
+        <div class="flex flex-col h-full">
             <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
                 <div class="min-w-0">
                     <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="clipboard-list" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i><span id="exam-range-modal-title-text">定期考査の範囲</span></h3>
@@ -3107,19 +3107,20 @@
                 </div>
             </div>
             <div class="px-4 pt-3 pb-2 border-b border-slate-200 dark:border-slate-800 shrink-0">
-                <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl p-1">
+                <div class="flex gap-1.5 bg-slate-100 dark:bg-slate-800 rounded-xl p-1 max-w-lg mx-auto">
                     <button id="exam-range-tab-list" onclick="setExamRangeViewMode('list')" class="flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1">
                         <i data-lucide="list" class="w-3.5 h-3.5"></i><span>一覧</span>
                     </button>
                     <button id="exam-range-tab-calendar" onclick="setExamRangeViewMode('calendar')" class="flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1">
-                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i><span>カレンダー</span>
+                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i><span>スケジュール</span>
                     </button>
                 </div>
-                <div id="exam-range-subject-filters" class="flex flex-wrap gap-1.5 mt-2"></div>
+                <div id="exam-range-subject-filters" class="flex flex-wrap gap-1.5 mt-2 max-w-lg mx-auto"></div>
             </div>
-            <div id="exam-range-list" class="flex-1 overflow-y-auto px-4 py-4 space-y-3"></div>
-            <div id="exam-range-calendar" class="hidden flex-1 overflow-y-auto px-4 py-4"></div>
+            <div id="exam-range-list" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 max-w-lg w-full mx-auto"></div>
+            <div id="exam-range-calendar" class="hidden flex-1 overflow-y-auto px-4 py-4 max-w-lg w-full mx-auto"></div>
         </div>
+
     </div>
 
     <!-- 開発者モード用：定期考査の範囲 追加・編集モーダル -->
@@ -5730,6 +5731,8 @@
             }
             examRangeSubjectFilter = null;
             examRangeCalendarSelectedDate = null;
+            examRangeCalendarStep = 'dates';
+            examRangeCalendarSelectedSessionId = null;
             setExamRangeViewMode('list');
         }
         function closeExamRangeModal() {
@@ -5740,8 +5743,14 @@
         let examRangeViewMode = 'list';
         let examRangeSubjectFilter = null;
         let examRangeCalendarSelectedDate = null;
+        let examRangeCalendarStep = 'dates'; // 'dates'（考査がある日の一覧）→ 'timetable'（その日の時間割）→ 'detail'（1教科の内容）
+        let examRangeCalendarSelectedSessionId = null;
         function setExamRangeViewMode(mode) {
             examRangeViewMode = mode;
+            if (mode === 'calendar') {
+                examRangeCalendarStep = 'dates';
+                examRangeCalendarSelectedSessionId = null;
+            }
             const listTab = document.getElementById('exam-range-tab-list');
             const calTab = document.getElementById('exam-range-tab-calendar');
             const listWrap = document.getElementById('exam-range-list');
@@ -5758,8 +5767,25 @@
             examRangeSubjectFilter = subject;
             renderExamRangeContent();
         }
-        function selectExamRangeCalendarDate(dateStr) {
+        // カレンダー内の画面遷移（日付一覧 → その日の時間割 → 1教科の詳細）
+        function examRangeCalendarShowTimetable(dateStr) {
             examRangeCalendarSelectedDate = dateStr;
+            examRangeCalendarStep = 'timetable';
+            renderExamRangeContent();
+        }
+        function examRangeCalendarShowDetail(sessionId) {
+            examRangeCalendarSelectedSessionId = sessionId;
+            examRangeCalendarStep = 'detail';
+            renderExamRangeContent();
+        }
+        function examRangeCalendarBackToDates() {
+            examRangeCalendarStep = 'dates';
+            examRangeCalendarSelectedDate = null;
+            renderExamRangeContent();
+        }
+        function examRangeCalendarBackToTimetable() {
+            examRangeCalendarStep = 'timetable';
+            examRangeCalendarSelectedSessionId = null;
             renderExamRangeContent();
         }
         // 教科ごとの絞り込みチップ（教科が2種類以上ある時だけ表示）
@@ -5817,6 +5843,7 @@
             </div>`;
         }
         // カレンダー表示（考査は最長4日間ほど続くため、日ごとにどの教科が実施されるかを一目で確認できるようにする）
+        // カレンダー表示：考査がある日だけをスケジュール風に一覧表示 → 押すとその日の時間割 → 押すと1教科の詳細
         function renderExamRangeCalendar(list) {
             const wrap = document.getElementById('exam-range-calendar');
             if (!wrap) return;
@@ -5833,41 +5860,79 @@
             const byDate = {};
             dated.forEach(e => { (byDate[e.testDate] = byDate[e.testDate] || []).push(e); });
             const sortedDates = Object.keys(byDate).sort();
-            if (!examRangeCalendarSelectedDate || !byDate[examRangeCalendarSelectedDate]) {
-                const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
-                examRangeCalendarSelectedDate = sortedDates.find(d => d >= todayStr) || sortedDates[0];
-            }
-            const months = Array.from(new Set(sortedDates.map(d => d.slice(0, 7)))).sort();
-            let html = '';
-            months.forEach(ym => {
-                const [y, m] = ym.split('-').map(Number);
-                const startWeekday = new Date(y, m - 1, 1).getDay();
-                const daysInMonth = new Date(y, m, 0).getDate();
-                html += `<div class="mb-5">
-                    <p class="text-xs font-black text-slate-600 dark:text-slate-300 mb-2">${y}年${m}月</p>
-                    <div class="grid grid-cols-7 gap-1 text-center mb-1">
-                        ${['日', '月', '火', '水', '木', '金', '土'].map(d => `<span class="text-[9px] font-bold text-slate-400">${d}</span>`).join('')}
-                    </div>
-                    <div class="grid grid-cols-7 gap-1">`;
-                for (let i = 0; i < startWeekday; i++) html += `<div></div>`;
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                    const entries = byDate[dateStr];
-                    const isSelected = dateStr === examRangeCalendarSelectedDate;
-                    const hasEntries = !!entries;
-                    html += `<button onclick="selectExamRangeCalendarDate('${dateStr}')" class="aspect-square rounded-lg flex flex-col items-center justify-center text-[11px] font-bold transition-all ${isSelected ? 'bg-cyan-500 text-white' : hasEntries ? 'bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-300' : 'text-slate-400 dark:text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800'}">
-                        <span>${d}</span>
-                        ${hasEntries ? `<span class="w-1 h-1 rounded-full ${isSelected ? 'bg-white' : 'bg-cyan-500'} mt-0.5"></span>` : ''}
-                    </button>`;
+            const weekdayJa = ['日', '月', '火', '水', '木', '金', '土'];
+
+            // ----- ③ 1教科の詳細 -----
+            if (examRangeCalendarStep === 'detail' && examRangeCalendarSelectedSessionId) {
+                const entry = dated.find(e => String(e.id) === String(examRangeCalendarSelectedSessionId));
+                if (entry) {
+                    wrap.innerHTML = `
+                        <button onclick="examRangeCalendarBackToTimetable()" class="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white mb-3">
+                            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i><span>時間割に戻る</span>
+                        </button>
+                        ${examRangeCardHtml(entry)}`;
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    return;
                 }
-                html += `</div></div>`;
-            });
-            const selectedEntries = byDate[examRangeCalendarSelectedDate] || [];
-            html += `<div class="pt-3 border-t border-slate-200 dark:border-slate-700">
-                <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2">${escapeHtml(examRangeCalendarSelectedDate)} の試験</p>
-                ${selectedEntries.length === 0 ? `<p class="text-xs text-slate-400 font-bold">この日の試験はありません</p>` : selectedEntries.map(e => examRangeCardHtml(e)).join('')}
-            </div>`;
-            wrap.innerHTML = html;
+                examRangeCalendarStep = 'timetable'; // 見つからなければ時間割へフォールバック
+            }
+
+            // ----- ② その日の時間割（教科の一覧） -----
+            if (examRangeCalendarStep === 'timetable' && examRangeCalendarSelectedDate && byDate[examRangeCalendarSelectedDate]) {
+                const entries = byDate[examRangeCalendarSelectedDate].slice().sort((a, b) => (a.period || 99) - (b.period || 99) || (a.time || '').localeCompare(b.time || ''));
+                const d = new Date(examRangeCalendarSelectedDate + 'T00:00:00');
+                const dateLabel = `${d.getMonth() + 1}月${d.getDate()}日（${weekdayJa[d.getDay()]}）`;
+                wrap.innerHTML = `
+                    <button onclick="examRangeCalendarBackToDates()" class="flex items-center gap-1 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white mb-3">
+                        <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i><span>日付一覧に戻る</span>
+                    </button>
+                    <p class="text-sm font-black text-slate-800 dark:text-white mb-3">${escapeHtml(dateLabel)} の時間割</p>
+                    <div class="space-y-2">
+                        ${entries.map(e => {
+                            const scheduleLabel = examSessionScheduleLabel(e);
+                            return `
+                            <button onclick="examRangeCalendarShowDetail('${escapeHtml(String(e.id))}')" class="w-full flex items-center justify-between gap-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-2xl p-3.5 text-left hover:border-cyan-400 dark:hover:border-cyan-500 transition-all">
+                                <div class="flex items-center gap-3 min-w-0">
+                                    <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white shrink-0">
+                                        <i data-lucide="book-open" class="w-4 h-4"></i>
+                                    </div>
+                                    <div class="min-w-0">
+                                        <p class="text-xs font-black text-slate-800 dark:text-white">${escapeHtml(e.subject || '科目未設定')}</p>
+                                        ${scheduleLabel ? `<p class="text-[10px] font-bold text-slate-400 mt-0.5">${escapeHtml(scheduleLabel)}</p>` : ''}
+                                    </div>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                            </button>`;
+                        }).join('')}
+                    </div>`;
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                return;
+            }
+
+            // ----- ① 考査がある日だけをスケジュール風に一覧表示（既定表示） -----
+            examRangeCalendarStep = 'dates';
+            const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
+            wrap.innerHTML = sortedDates.map(dateStr => {
+                const entries = byDate[dateStr];
+                const d = new Date(dateStr + 'T00:00:00');
+                const dateLabel = `${d.getMonth() + 1}月${d.getDate()}日（${weekdayJa[d.getDay()]}）`;
+                const isToday = dateStr === todayStr;
+                const isPast = dateStr < todayStr;
+                return `
+                <button onclick="examRangeCalendarShowTimetable('${dateStr}')" class="w-full flex items-center justify-between gap-2 bg-white dark:bg-slate-900 border ${isToday ? 'border-cyan-400 dark:border-cyan-500' : 'border-slate-200 dark:border-slate-700'} rounded-2xl p-4 mb-2.5 text-left hover:border-cyan-400 dark:hover:border-cyan-500 transition-all ${isPast ? 'opacity-50' : ''}">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl ${isToday ? 'bg-gradient-to-br from-cyan-400 to-blue-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300'} flex flex-col items-center justify-center shrink-0">
+                            <span class="text-[9px] font-bold leading-none">${d.getMonth() + 1}月</span>
+                            <span class="text-base font-black leading-none mt-0.5">${d.getDate()}</span>
+                        </div>
+                        <div>
+                            <p class="text-xs font-black text-slate-800 dark:text-white">${escapeHtml(dateLabel)}</p>
+                            <p class="text-[10px] font-bold text-slate-400 mt-0.5">${entries.length}教科</p>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-right" class="w-5 h-5 text-slate-300 dark:text-slate-600 shrink-0"></i>
+                </button>`;
+            }).join('');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
         // 開発者だけに見える下書き（教科がまだ1件も無く、ユーザーには表示されない考査）を編集し直せるようにする
@@ -5909,14 +5974,17 @@
             const addBtn = document.getElementById('exam-range-add-btn');
             if (addBtn) addBtn.style.display = devUnlocked ? 'flex' : 'none';
             const all = getVisibleExamRanges();
-            renderExamRangeSubjectFilters(all);
-            const list = all.filter(e => !examRangeSubjectFilter || e.subject === examRangeSubjectFilter);
             updateExamRangeEntryBadge();
+            const filterWrap = document.getElementById('exam-range-subject-filters');
             if (examRangeViewMode === 'calendar') {
-                renderExamRangeCalendar(list);
+                // カレンダーの時は教科の絞り込みチップを出さず、全教科をそのまま表示する
+                if (filterWrap) filterWrap.innerHTML = '';
+                renderExamRangeCalendar(all);
                 if (typeof lucide !== 'undefined') lucide.createIcons();
                 return;
             }
+            renderExamRangeSubjectFilters(all);
+            const list = all.filter(e => !examRangeSubjectFilter || e.subject === examRangeSubjectFilter);
             const draftHtml = getDraftExams().map(examDraftCardHtml).join('');
             if (list.length === 0) {
                 listWrap.innerHTML = draftHtml + `
