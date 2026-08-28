@@ -4349,7 +4349,7 @@
       "updatedAt": "2026-08-27T01:38:22.579Z"
     }
   ],
-  "examRangeEnabled": false,
+  "examRangeEnabled": true,
   "summerTasks": [],
-  "summerTaskEnabled": false
+  "summerTaskEnabled": true
 }
