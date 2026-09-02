@@ -18969,29 +18969,7 @@ const KOBUN_TANGO = [
             btn.textContent = '保存中…';
             if (floatBtnLabel) floatBtnLabel.textContent = '保存中…';
             try {
-                const content = JSON.stringify(cmsConfigData, null, 2);
-                const encoded = btoa(unescape(encodeURIComponent(content)));
-                const body = {
-                    message: `config.json を更新 (${new Date().toLocaleString('ja-JP')})`,
-                    content: encoded,
-                    branch: cmsSession.branch,
-                };
-                if (cmsCurrentSha) body.sha = cmsCurrentSha;
-                const res = await fetch(`https://api.github.com/repos/${cmsSession.repo}/contents/config.json`, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `Bearer ${cmsSession.token}`,
-                        'Accept': 'application/vnd.github+json',
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(body),
-                });
-                if (!res.ok) {
-                    const errBody = await res.text();
-                    throw new Error(`保存に失敗しました (${res.status}): ${errBody.slice(0,200)}`);
-                }
-                const json = await res.json();
-                cmsCurrentSha = json.content.sha;
+                await cmsPutConfigToGitHub();
                 cmsDirty = false;
                 cmsSetSaveStatus('保存しました。ユーザーは次回アプリ起動時にこの内容が反映されます。', 'ok');
                 showToast('GitHubに保存しました');
@@ -19003,6 +18981,45 @@ const KOBUN_TANGO = [
                 btn.textContent = origText;
                 if (floatBtnLabel && origFloatLabel != null) floatBtnLabel.textContent = origFloatLabel;
             }
+        }
+        // 実際にGitHubへPUTする部分。409（他の変更とのすれ違い）が起きた場合は、
+        // 今この画面で編集中の内容（cmsConfigData）は消さずに、最新のsha（更新の指紋のようなもの）だけを
+        // 取り直して自動で1回だけ再送する。それでもダメならエラーとして表示する。
+        async function cmsPutConfigToGitHub(isRetry = false) {
+            const content = JSON.stringify(cmsConfigData, null, 2);
+            const encoded = btoa(unescape(encodeURIComponent(content)));
+            const body = {
+                message: `config.json を更新 (${new Date().toLocaleString('ja-JP')})`,
+                content: encoded,
+                branch: cmsSession.branch,
+            };
+            if (cmsCurrentSha) body.sha = cmsCurrentSha;
+            const res = await fetch(`https://api.github.com/repos/${cmsSession.repo}/contents/config.json`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${cmsSession.token}`,
+                    'Accept': 'application/vnd.github+json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
+            if (!res.ok) {
+                if (res.status === 409 && !isRetry) {
+                    // 最新のshaだけを取り直して、編集中の内容はそのまま1回だけ再送する
+                    const latest = await fetch(cmsGhApiUrl(), {
+                        headers: { 'Authorization': `Bearer ${cmsSession.token}`, 'Accept': 'application/vnd.github+json' }
+                    });
+                    if (latest.ok) {
+                        const latestJson = await latest.json();
+                        cmsCurrentSha = latestJson.sha;
+                        return cmsPutConfigToGitHub(true);
+                    }
+                }
+                const errBody = await res.text();
+                throw new Error(`保存に失敗しました (${res.status}): ${errBody.slice(0,200)}`);
+            }
+            const json = await res.json();
+            cmsCurrentSha = json.content.sha;
         }
 
         // 開発者ダッシュボードを開いたとき、保存済みのGitHubセッションがあれば自動で接続する。
