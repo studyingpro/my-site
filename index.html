@@ -3753,7 +3753,7 @@
     <div id="error-toast" class="fixed bottom-6 right-6 bg-white dark:bg-slate-900 border border-rose-300 dark:border-rose-700 text-slate-800 dark:text-slate-100 px-4 py-3.5 rounded-2xl max-w-xs flex flex-col gap-2 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none z-50 font-sans">
         <div class="flex items-start space-x-2.5">
             <div class="p-1.5 bg-blue-100 dark:bg-rose-900/40 rounded-full text-blue-500 dark:text-rose-400 shrink-0 mt-0.5">
-                <i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i>
+                <i data-lucide="triangle-alert" class="w-3.5 h-3.5"></i>
             </div>
             <p class="text-[11px] font-bold text-rose-700 dark:text-rose-300 leading-relaxed" id="error-toast-message">エラー</p>
         </div>
@@ -5942,13 +5942,13 @@
                             ${e.testDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(e.testDate)}</span>` : ''}
                             ${scheduleLabel ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="clock" class="w-3 h-3"></i>${escapeHtml(scheduleLabel)}</span>` : ''}
                             ${dateBadge}
-                            ${e.unverified ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 flex items-center gap-0.5"><i data-lucide="alert-triangle" class="w-3 h-3"></i>情報が不確かな可能性があります</span>` : ''}
+                            ${e.unverified ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 flex items-center gap-0.5"><i data-lucide="triangle-alert" class="w-3 h-3"></i>情報が不確かな可能性があります</span>` : ''}
                         </div>
                         <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5">${escapeHtml((e.examName && e.examName.trim()) ? e.examName : (e.subject ? e.subject + 'の試験範囲' : '考査名未設定'))}</h4>
                         <p class="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 mt-1 flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>対象：${escapeHtml(examRangeClassNamesOf(e))}</p>
                     </div>
                     ${devUnlocked ? `<div class="flex gap-1 shrink-0">
-                        <button onclick="cmsToggleExamSessionUnverified('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.id))}')" class="p-1.5 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 ${e.unverified ? 'text-amber-500' : 'text-slate-400'}" title="「情報が不確かかも」マークを切り替え"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="cmsToggleExamSessionUnverified('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.id))}')" class="p-1.5 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 ${e.unverified ? 'text-amber-500' : 'text-slate-400'}" title="「情報が不確かかも」マークを切り替え"><i data-lucide="triangle-alert" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsEditExamRangeFromReal('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.testDate))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsRemoveExamSessionFromReal('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.id))}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>` : ''}
@@ -6603,13 +6603,13 @@
                             <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-white">${escapeHtml(t.subject || '教科未設定')}</span>
                             ${t.dueDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(t.dueDate)}</span>` : ''}
                             ${dueBadge}
-                            ${t.unverified ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 flex items-center gap-0.5"><i data-lucide="alert-triangle" class="w-3 h-3"></i>情報が不確かな可能性があります</span>` : ''}
+                            ${t.unverified ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 flex items-center gap-0.5"><i data-lucide="triangle-alert" class="w-3 h-3"></i>情報が不確かな可能性があります</span>` : ''}
                         </div>
                         <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5">${escapeHtml((t.title && t.title.trim()) ? t.title : (t.subject ? t.subject + 'の課題' : '課題名未設定'))}</h4>
                         <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>対象：${escapeHtml(summerTaskClassNamesOf(t))}</p>
                     </div>
                     ${devUnlocked ? `<div class="flex gap-1 shrink-0">
-                        <button onclick="cmsToggleSummerTaskUnverified('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 ${t.unverified ? 'text-amber-500' : 'text-slate-400'}" title="「情報が不確かかも」マークを切り替え"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i></button>
+                        <button onclick="cmsToggleSummerTaskUnverified('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 ${t.unverified ? 'text-amber-500' : 'text-slate-400'}" title="「情報が不確かかも」マークを切り替え"><i data-lucide="triangle-alert" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsEditSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsRemoveSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>` : ''}
@@ -10460,7 +10460,7 @@
                                 </div>
                                 ${item.commonMistake ? `
                                 <div class="text-xs text-rose-600 dark:text-rose-400 font-bold leading-relaxed pt-3 border-t border-blue-200 dark:border-slate-800 flex items-start space-x-2">
-                                    <i data-lucide="alert-triangle" class="w-4 h-4 text-rose-500 shrink-0 mt-0.5"></i>
+                                    <i data-lucide="triangle-alert" class="w-4 h-4 text-rose-500 shrink-0 mt-0.5"></i>
                                     <span><strong>間違えやすいポイント:</strong> ${formatSentenceBreaks(item.commonMistake)}</span>
                                 </div>` : ''}
                             </div>
