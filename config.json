@@ -4223,7 +4223,8 @@
             "c1783747972349",
             "c1783747980943"
           ],
-          "period": 2
+          "period": 2,
+          "unverified": true
         },
         {
           "id": "1786670371565-21su",
@@ -4351,5 +4352,6 @@
   ],
   "examRangeEnabled": true,
   "summerTasks": [],
-  "summerTaskEnabled": true
+  "summerTaskEnabled": true,
+  "summerTaskTitle": ""
 }
