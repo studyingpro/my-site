@@ -2635,6 +2635,33 @@
                     </div>
                 </div>
 
+                <!-- 長期休暇課題コーナーの設定（表示ON/OFF・名称） -->
+                <div class="space-y-2">
+                    <button type="button" onclick="toggleDevSection('summertitle')" class="w-full flex items-center justify-between">
+                        <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center space-x-2">
+                            <i data-lucide="sun" class="w-4 h-4"></i><span>長期休暇課題コーナーの設定</span>
+                        </h4>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 transition-transform" id="dev-section-chevron-summertitle"></i>
+                    </button>
+                    <div id="dev-section-content-summertitle" class="hidden bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
+                        <div class="flex items-center justify-between gap-2 bg-white dark:bg-slate-900 rounded-xl px-3 py-2.5 border border-slate-200 dark:border-slate-700">
+                            <div class="min-w-0">
+                                <p class="text-[11px] font-black text-slate-700 dark:text-slate-200">このコーナーを表示する</p>
+                                <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">OFFにすると、ホーム画面のカードとメニューが一般ユーザーから見えなくなります</p>
+                            </div>
+                            <button onclick="cmsToggleSummerTaskEnabled()" id="cms-summer-enabled-toggle" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 shrink-0 bg-emerald-500">
+                                <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-5"></span>
+                            </button>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed mb-2">ホーム画面のカード・メニュー・掲示画面のタイトルに使われる名称です（例：「夏休みの課題一覧」「冬休みの課題一覧」）。</p>
+                            <input type="text" id="cms-summer-title-input" placeholder="例：冬休みの課題一覧"
+                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400">
+                            <button onclick="cmsSaveSummerTaskTitle()" class="w-full mt-2 py-2 bg-gradient-to-r from-amber-400 to-yellow-500 text-white rounded-lg text-xs font-black hover:opacity-90 transition-all">この名称に変更する</button>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- GitHub連携 -->
                 <div class="space-y-2">
                     <button type="button" onclick="toggleDevSection('github')" class="w-full flex items-center justify-between">
@@ -5472,11 +5499,17 @@
             updateScanUI();
             const limTomEl = document.getElementById('limit-tomorrow');
             if (limTomEl) limTomEl.textContent = getTomorrowStr();
-            // 初期状態をHistory APIに登録（URLに画面ごとのハッシュが付いていれば、その画面から始める）
-            const initialScreen = hashToScreen(location.hash);
-            replaceState({ screen: initialScreen }, SCREEN_TITLE_MAP[initialScreen] || '学習ProMaster');
-            // 初期表示: URLに対応する画面（指定がなければトップ画面）を表示
-            _navigateTo(initialScreen, false);
+            // 初期状態をHistory APIに登録（URLに画面ごとのハッシュが付いていれば、その画面から始める。
+            // 指定が無い通常のアプリ起動時は「マイページ」を最初の画面にする）
+            let initialScreen = hashToScreen(location.hash);
+            if (!location.hash) initialScreen = 'mypage';
+            replaceState({ screen: initialScreen }, SCREEN_TITLE_MAP[initialScreen] || 'マイページ - 学習ProMaster');
+            // 初期表示: URLに対応する画面（指定がなければマイページ）を表示
+            if (initialScreen === 'mypage') {
+                showMyPageScreen();
+            } else {
+                _navigateTo(initialScreen, false);
+            }
             lucide.createIcons();
         });
 
@@ -5538,6 +5571,8 @@
                 // ⑩ 長期休暇課題（クラスごとに表示を切り替えられる掲示板／表示ON/OFFは開発者が変更可）
                 window._remoteSummerTasks = Array.isArray(cfg.summerTasks) ? cfg.summerTasks : [];
                 window._remoteSummerTaskEnabled = cfg.summerTaskEnabled !== false;
+                window._remoteSummerTaskTitle = (typeof cfg.summerTaskTitle === 'string' && cfg.summerTaskTitle.trim()) ? cfg.summerTaskTitle.trim() : '';
+                applySummerTaskTitleToUI();
                 updateSummerTaskEntryVisibility();
                 updateSummerTaskEntryBadge();
             } catch (e) {
@@ -5756,7 +5791,31 @@
             showToast(cmsConfigData.summerTaskEnabled ? '長期休暇課題を表示します（公開して反映）' : '長期休暇課題を非表示にしました（公開して反映）');
         }
         function updateSummerTaskEnabledToggleUI() {
-            setToggleSwitchUI('seasonal-summer-enabled-toggle', cmsConfigData.summerTaskEnabled !== false);
+            const on = cmsConfigData.summerTaskEnabled !== false;
+            setToggleSwitchUI('seasonal-summer-enabled-toggle', on);
+            setToggleSwitchUI('cms-summer-enabled-toggle', on);
+        }
+        // 長期休暇課題コーナーの表示名（例：「夏休みの課題一覧」「冬休みの課題一覧」）。
+        // 定期考査コーナーの名称設定（getExamRangeTitle）と同じ仕組み。
+        function getSummerTaskTitle() {
+            const t = window._remoteSummerTaskTitle;
+            return (typeof t === 'string' && t.trim()) ? t.trim() : '夏休みの課題一覧';
+        }
+        function applySummerTaskTitleToUI() {
+            const title = getSummerTaskTitle();
+            const ids = ['summer-task-entry-title', 'summer-task-modal-title-text'];
+            ids.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = title; });
+        }
+        function cmsSaveSummerTaskTitle() {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); return; }
+            const input = document.getElementById('cms-summer-title-input');
+            const newTitle = input ? input.value.trim() : '';
+            cmsConfigData.summerTaskTitle = newTitle;
+            window._remoteSummerTaskTitle = newTitle;
+            applySummerTaskTitleToUI();
+            renderSummerTaskContent();
+            cmsMarkDirty();
+            showToast(`名称を「${getSummerTaskTitle()}」に変更しました（GitHubへの保存が必要です）`);
         }
         // 期間限定コーナー内の「長期休暇課題」カードを、表示設定に応じて出し分ける
         function updateSummerTaskEntryVisibility() {
@@ -5883,11 +5942,13 @@
                             ${e.testDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(e.testDate)}</span>` : ''}
                             ${scheduleLabel ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="clock" class="w-3 h-3"></i>${escapeHtml(scheduleLabel)}</span>` : ''}
                             ${dateBadge}
+                            ${e.unverified ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 flex items-center gap-0.5"><i data-lucide="alert-triangle" class="w-3 h-3"></i>情報が不確かな可能性があります</span>` : ''}
                         </div>
                         <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5">${escapeHtml((e.examName && e.examName.trim()) ? e.examName : (e.subject ? e.subject + 'の試験範囲' : '考査名未設定'))}</h4>
                         <p class="text-[11px] font-bold text-cyan-600 dark:text-cyan-400 mt-1 flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>対象：${escapeHtml(examRangeClassNamesOf(e))}</p>
                     </div>
                     ${devUnlocked ? `<div class="flex gap-1 shrink-0">
+                        <button onclick="cmsToggleExamSessionUnverified('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.id))}')" class="p-1.5 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 ${e.unverified ? 'text-amber-500' : 'text-slate-400'}" title="「情報が不確かかも」マークを切り替え"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsEditExamRangeFromReal('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.testDate))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsRemoveExamSessionFromReal('${escapeHtml(String(e.examId))}', '${escapeHtml(String(e.id))}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>` : ''}
@@ -6087,6 +6148,20 @@
             renderExamRangeContent();
             cmsMarkDirty();
             showToast('削除しました（GitHubへの保存が必要です）');
+        }
+        // 「この情報は不確かかも」マークのON/OFF切り替え（内容自体は変えず、閲覧者への注意喚起バッジを出すだけ）
+        function cmsToggleExamSessionUnverified(examId, sessionId) {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            cmsConfigData.exams = cmsConfigData.exams || [];
+            const exam = cmsConfigData.exams.find(x => String(x.id) === String(examId));
+            if (!exam) return;
+            const s = (exam.sessions || []).find(x => String(x.id) === String(sessionId));
+            if (!s) return;
+            s.unverified = !s.unverified;
+            window._remoteExams = cmsConfigData.exams.slice();
+            renderExamRangeContent();
+            cmsMarkDirty();
+            showToast(s.unverified ? '「情報が不確かかも」マークをつけました（GitHubへの保存が必要です）' : 'マークを外しました（GitHubへの保存が必要です）');
         }
         function cmsOpenExamRangeModal(idx, focusDate) {
             cmsExamEditIdx = idx;
@@ -6528,11 +6603,13 @@
                             <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-gradient-to-r from-amber-400 to-yellow-500 text-white">${escapeHtml(t.subject || '教科未設定')}</span>
                             ${t.dueDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(t.dueDate)}</span>` : ''}
                             ${dueBadge}
+                            ${t.unverified ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 border border-amber-300 dark:border-amber-700 flex items-center gap-0.5"><i data-lucide="alert-triangle" class="w-3 h-3"></i>情報が不確かな可能性があります</span>` : ''}
                         </div>
                         <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5">${escapeHtml((t.title && t.title.trim()) ? t.title : (t.subject ? t.subject + 'の課題' : '課題名未設定'))}</h4>
                         <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>対象：${escapeHtml(summerTaskClassNamesOf(t))}</p>
                     </div>
                     ${devUnlocked ? `<div class="flex gap-1 shrink-0">
+                        <button onclick="cmsToggleSummerTaskUnverified('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-900/40 ${t.unverified ? 'text-amber-500' : 'text-slate-400'}" title="「情報が不確かかも」マークを切り替え"><i data-lucide="alert-triangle" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsEditSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
                         <button onclick="cmsRemoveSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                     </div>` : ''}
@@ -6587,6 +6664,18 @@
             renderSummerTaskContent();
             cmsMarkDirty();
             showToast('削除しました（GitHubへの保存が必要です）');
+        }
+        // 「この情報は不確かかも」マークのON/OFF切り替え
+        function cmsToggleSummerTaskUnverified(id) {
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard(); return; }
+            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
+            const t = cmsConfigData.summerTasks.find(x => String(x.id) === String(id));
+            if (!t) return;
+            t.unverified = !t.unverified;
+            window._remoteSummerTasks = cmsConfigData.summerTasks.slice();
+            renderSummerTaskContent();
+            cmsMarkDirty();
+            showToast(t.unverified ? '「情報が不確かかも」マークをつけました（GitHubへの保存が必要です）' : 'マークを外しました（GitHubへの保存が必要です）');
         }
         function cmsOpenSummerTaskModal(idx) {
             cmsSummerTaskEditId = idx;
@@ -7302,31 +7391,88 @@
             }
         }
 
+        // 撮影したままの大きな写真（最大5MB）を、AI解析に十分な画質を保ったまま
+        // 長辺1600px・JPEG品質0.85程度まで自動で縮小・圧縮する。
+        // これにより通信量が減り、AI側の処理失敗（応答なし・タイムアウト）が起きにくくなる。
+        function compressImageFile(file, maxDimension = 1600, quality = 0.85) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('画像の読み込みに失敗しました。'));
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('画像の読み込みに失敗しました。'));
+                    img.onload = () => {
+                        let { width, height } = img;
+                        if (width > maxDimension || height > maxDimension) {
+                            if (width >= height) {
+                                height = Math.round(height * (maxDimension / width));
+                                width = maxDimension;
+                            } else {
+                                width = Math.round(width * (maxDimension / height));
+                                height = maxDimension;
+                            }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        // 透過PNGはJPEG化すると背景が黒くなるため、その場合のみPNGのまま維持する
+                        const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
+                        const dataUrl = canvas.toDataURL(outputType, quality);
+                        resolve({ dataUrl, mimeType: outputType });
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
         function handleFile(file) {
             if (file.size > 5 * 1024 * 1024) {
                 showToast("画像サイズが大きすぎます。5MB以下のファイルを選択してください。");
                 return;
             }
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const result = event.target.result;
-                const base64 = result.split(',')[1];
-                const imageData = { base64: base64, mimeType: file.type, name: file.name, previewUrl: result };
+            compressImageFile(file).then(({ dataUrl, mimeType }) => {
+                const base64 = dataUrl.split(',')[1];
+                const imageData = { base64: base64, mimeType: mimeType, name: file.name, previewUrl: dataUrl };
                 currentUploadedImage = { ...imageData };
                 if (modeStates[activeTabIndex]) modeStates[activeTabIndex].uploadedImage = { ...imageData };
-                
+
                 const imagePreview = document.getElementById('image-preview');
                 const imageName = document.getElementById('image-name');
                 const uploadPlaceholder = document.getElementById('upload-placeholder');
                 const imagePreviewContainer = document.getElementById('image-preview-container');
 
-                if (imagePreview) imagePreview.src = result;
+                if (imagePreview) imagePreview.src = dataUrl;
                 if (imageName) imageName.textContent = file.name;
                 if (uploadPlaceholder) uploadPlaceholder.classList.add('hidden');
                 if (imagePreviewContainer) imagePreviewContainer.classList.remove('hidden');
                 checkInputValidity();
-            };
-            reader.readAsDataURL(file);
+            }).catch((err) => {
+                console.warn('画像の圧縮に失敗したため、元の画像をそのまま使用します:', err);
+                // 圧縮に失敗した場合は、従来通り元画像をそのまま使う（機能を止めないためのフォールバック）
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const result = event.target.result;
+                    const base64 = result.split(',')[1];
+                    const imageData = { base64: base64, mimeType: file.type, name: file.name, previewUrl: result };
+                    currentUploadedImage = { ...imageData };
+                    if (modeStates[activeTabIndex]) modeStates[activeTabIndex].uploadedImage = { ...imageData };
+
+                    const imagePreview = document.getElementById('image-preview');
+                    const imageName = document.getElementById('image-name');
+                    const uploadPlaceholder = document.getElementById('upload-placeholder');
+                    const imagePreviewContainer = document.getElementById('image-preview-container');
+
+                    if (imagePreview) imagePreview.src = result;
+                    if (imageName) imageName.textContent = file.name;
+                    if (uploadPlaceholder) uploadPlaceholder.classList.add('hidden');
+                    if (imagePreviewContainer) imagePreviewContainer.classList.remove('hidden');
+                    checkInputValidity();
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
         function clearSelectedImage() {
@@ -7431,7 +7577,20 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
-                    if (response.ok) return await response.json();
+                    if (response.ok) {
+                        const data = await response.json();
+                        // 明確なブロック（安全フィルター等）は再試行しても解決しないので、そのまま返す。
+                        // それ以外で解析結果（candidates）が空の場合は、一時的な不具合の可能性があるため
+                        // ここでは即座にエラー扱いにせず、間を置いて自動で再試行する。
+                        const hasCandidate = data && data.candidates && data.candidates[0];
+                        const isExplicitBlock = data && data.promptFeedback && data.promptFeedback.blockReason;
+                        const isExplicitError = data && data.error;
+                        if (hasCandidate || isExplicitBlock || isExplicitError || i === retries - 1) return data;
+                        console.warn(`解析結果が空でした。自動で再試行します（${i + 1}/${retries}）`);
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                        continue;
+                    }
                     if (response.status === 429 || response.status >= 500) {
                         await new Promise(res => setTimeout(res, delay));
                         delay *= 2; 
@@ -15672,6 +15831,7 @@ const KOBUN_TANGO = [
         // 初期表示（ページ読み込み時にURLから画面を判定する）にだけ使うタイトル一覧
         const SCREEN_TITLE_MAP = {
             top: '学習ProMaster',
+            mypage: 'マイページ - 学習ProMaster',
             english: '英語 - 学習ProMaster',
             japanese: '国語 - 学習ProMaster',
             math: '数学 - 学習ProMaster',
@@ -15688,14 +15848,16 @@ const KOBUN_TANGO = [
 
         function pushState(state, title) {
             try {
-                history.pushState(state, title || '', screenToHash(state && state.screen));
+                // URL（アドレスバーの表示）は変更せず、画面の状態だけを履歴に積む。
+                // これにより「戻る/進む」ボタンでの画面切り替えはそのまま機能する。
+                history.pushState(state, title || '');
                 if (title) document.title = title;
             } catch(e) {}
         }
 
         function replaceState(state, title) {
             try {
-                history.replaceState(state, title || '', screenToHash(state && state.screen));
+                history.replaceState(state, title || '');
                 if (title) document.title = title;
             } catch(e) {}
         }
@@ -15711,6 +15873,9 @@ const KOBUN_TANGO = [
             switch(state.screen) {
                 case 'top':
                     _navigateTo('top', false);
+                    break;
+                case 'mypage':
+                    showMyPageScreen();
                     break;
                 case 'english':
                     _navigateTo('english', false);
@@ -16041,18 +16206,29 @@ const KOBUN_TANGO = [
             const file = e.target.files && e.target.files[0];
             if (!file) return;
             if (file.size > 6 * 1024 * 1024) { showToast('画像サイズが大きすぎます（6MB以下にしてください）'); return; }
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const result = ev.target.result;
-                ronriPhotoImage = { base64: result.split(',')[1], mimeType: file.type };
+            compressImageFile(file).then(({ dataUrl, mimeType }) => {
+                ronriPhotoImage = { base64: dataUrl.split(',')[1], mimeType: mimeType };
                 const img = document.getElementById('rh-photo-preview-img');
-                if (img) img.src = result;
+                if (img) img.src = dataUrl;
                 document.getElementById('rh-photo-upload-area')?.classList.add('hidden');
                 document.getElementById('rh-photo-preview-area')?.classList.remove('hidden');
                 const info = document.getElementById('rh-info-text');
                 if (info) info.textContent = '準備OK！「この写真を読み取る」を押してね';
-            };
-            reader.readAsDataURL(file);
+            }).catch((err) => {
+                console.warn('画像の圧縮に失敗したため、元の画像をそのまま使用します:', err);
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const result = ev.target.result;
+                    ronriPhotoImage = { base64: result.split(',')[1], mimeType: file.type };
+                    const img = document.getElementById('rh-photo-preview-img');
+                    if (img) img.src = result;
+                    document.getElementById('rh-photo-upload-area')?.classList.add('hidden');
+                    document.getElementById('rh-photo-preview-area')?.classList.remove('hidden');
+                    const info = document.getElementById('rh-info-text');
+                    if (info) info.textContent = '準備OK！「この写真を読み取る」を押してね';
+                };
+                reader.readAsDataURL(file);
+            });
         }
         function clearRonriPhoto() {
             ronriPhotoImage = { base64: null, mimeType: null };
@@ -16395,16 +16571,25 @@ const KOBUN_TANGO = [
             const file = e.target.files && e.target.files[0];
             if (!file) return;
             if (file.size > 6 * 1024 * 1024) { showToast('画像サイズが大きすぎます（6MB以下にしてください）'); return; }
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-                const result = ev.target.result;
-                kobunPhotoImage = { base64: result.split(',')[1], mimeType: file.type };
+            compressImageFile(file).then(({ dataUrl, mimeType }) => {
+                kobunPhotoImage = { base64: dataUrl.split(',')[1], mimeType: mimeType };
                 const img = document.getElementById('kobun-photo-preview-img');
-                if (img) img.src = result;
+                if (img) img.src = dataUrl;
                 document.getElementById('kobun-photo-upload-area')?.classList.add('hidden');
                 document.getElementById('kobun-photo-preview-area')?.classList.remove('hidden');
-            };
-            reader.readAsDataURL(file);
+            }).catch((err) => {
+                console.warn('画像の圧縮に失敗したため、元の画像をそのまま使用します:', err);
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    const result = ev.target.result;
+                    kobunPhotoImage = { base64: result.split(',')[1], mimeType: file.type };
+                    const img = document.getElementById('kobun-photo-preview-img');
+                    if (img) img.src = result;
+                    document.getElementById('kobun-photo-upload-area')?.classList.add('hidden');
+                    document.getElementById('kobun-photo-preview-area')?.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            });
         }
         function clearKobunPhoto() {
             kobunPhotoImage = { base64: null, mimeType: null };
@@ -18450,6 +18635,9 @@ const KOBUN_TANGO = [
             const examTitleInput = document.getElementById('cms-exam-title-input');
             if (examTitleInput) examTitleInput.value = getExamRangeTitle();
             updateExamRangeEnabledToggleUI();
+            const summerTitleInput = document.getElementById('cms-summer-title-input');
+            if (summerTitleInput) summerTitleInput.value = cmsConfigData.summerTaskTitle || '';
+            updateSummerTaskEnabledToggleUI();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
@@ -18586,7 +18774,7 @@ const KOBUN_TANGO = [
         // ===== CMS管理機能（旧admin.htmlを開発者モードに統合したもの） =====
         // ================================================================
         let cmsSession = null; // { token, repo, branch }
-        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true, summerTasks: [], summerTaskEnabled: true };
+        let cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true, summerTasks: [], summerTaskEnabled: true, summerTaskTitle: '' };
         let cmsCurrentSha = null;
         let cmsDirty = false;
         const CMS_SESSION_KEY = 'pm_cms_session_v1';
@@ -18694,7 +18882,7 @@ const KOBUN_TANGO = [
             });
             if (res.status === 404) {
                 cmsCurrentSha = null;
-                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true, summerTasks: [], summerTaskEnabled: true };
+                cmsConfigData = { announcements: [], globalSchedules: [], extraSections: [], classes: [], ronriSections: [], tourSteps: [], featureFlags: {}, exams: [], examRangeTitle: '', examRangeEnabled: true, summerTasks: [], summerTaskEnabled: true, summerTaskTitle: '' };
                 cmsSyncAllRealDisplays();
                 cmsSetSaveStatus('config.json はまだリポジトリに存在しません。保存すると新規作成されます。', 'err');
                 if (statusEl) { statusEl.textContent = 'リポジトリに config.json がまだありません（新規作成されます）'; statusEl.className = 'text-[10px] font-bold text-amber-500'; }
@@ -18720,6 +18908,7 @@ const KOBUN_TANGO = [
             cmsConfigData.examRangeEnabled = cmsConfigData.examRangeEnabled !== false;
             cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
             cmsConfigData.summerTaskEnabled = cmsConfigData.summerTaskEnabled !== false;
+            cmsConfigData.summerTaskTitle = cmsConfigData.summerTaskTitle || '';
             cmsDirty = false;
             cmsSyncAllRealDisplays();
             cmsSetSaveStatus('GitHubの最新内容を読み込みました', 'ok');
@@ -18748,6 +18937,11 @@ const KOBUN_TANGO = [
             cmsRenderModeList();
             window._remoteSummerTasks = (cmsConfigData.summerTasks || []).slice();
             window._remoteSummerTaskEnabled = cmsConfigData.summerTaskEnabled !== false;
+            window._remoteSummerTaskTitle = cmsConfigData.summerTaskTitle || '';
+            applySummerTaskTitleToUI();
+            updateSummerTaskEnabledToggleUI();
+            const summerTitleInput = document.getElementById('cms-summer-title-input');
+            if (summerTitleInput) summerTitleInput.value = cmsConfigData.summerTaskTitle || '';
             renderSummerTaskContent();
             updateSummerTaskEntryBadge();
             refreshSeasonalCornerDevManage();
@@ -18813,6 +19007,7 @@ const KOBUN_TANGO = [
 
         // 開発者ダッシュボードを開いたとき、保存済みのGitHubセッションがあれば自動で接続する。
         // 既に接続済み（devLogin時のcmsSilentAutoConnectで接続済みなど）の場合は再接続しない。
+        // 保存済みのものが無い場合は、埋め込まれた既定の接続情報にフォールバックする。
         // これにより、Token・リポジトリ名などを毎回入力し直す必要がなくなる。
         async function cmsTryAutoConnect() {
             const saved = safeStorage.get(CMS_SESSION_KEY);
