@@ -5665,6 +5665,7 @@
                         range: s.range || '',
                         testDate: s.date || '',
                         classIds: Array.isArray(s.classIds) ? s.classIds : (Array.isArray(exam.classIds) ? exam.classIds : []),
+                        unverified: !!s.unverified,
                     });
                 });
             });
