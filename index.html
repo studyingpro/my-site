@@ -337,6 +337,25 @@
     <!-- ==================================================
          確認メール送信済み（メールのリンクをクリックしてもらうまでの待機画面）
          ================================================== -->
+    <!-- ==================================================
+         志望校の編集
+         ================================================== -->
+    <div id="target-schools-modal" class="fixed inset-0 z-[999] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-5 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 w-full max-w-sm border border-slate-200 dark:border-slate-700 max-h-[85vh] flex flex-col">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="text-base font-black text-slate-800 dark:text-white">志望校を編集</h2>
+                <button onclick="closeTargetSchoolsModal()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+            </div>
+            <p class="text-[11px] font-semibold text-slate-400 mb-3">上から第一志望の順に並びます。あなただけに表示され、他の人からは見えません。</p>
+            <div id="target-schools-edit-list" class="space-y-2 overflow-y-auto flex-1 -mx-1 px-1"></div>
+            <div class="flex gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+                <input type="text" id="target-school-new-name" placeholder="学校名・学部（例：会津大学 コンピュータ理工学部）" onkeydown="if(event.key==='Enter'){addTargetSchoolFromInput();}"
+                    class="flex-1 min-w-0 px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                <button onclick="addTargetSchoolFromInput()" class="shrink-0 px-3.5 py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">追加</button>
+            </div>
+        </div>
+    </div>
+
     <div id="email-verify-pending-modal" class="fixed inset-0 z-[999] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-5 hidden">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-sm border border-slate-200 dark:border-slate-700 text-center">
             <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white mb-3">
@@ -396,6 +415,8 @@
                 <p class="text-xs font-semibold text-slate-400 mt-1">表示するお名前を入力してください。予定・成績・進行度は、このアカウントで別の端末からも続きから使えるようになります。</p>
             </div>
             <input type="text" id="profile-setup-name" maxlength="20" placeholder="表示名（例：やまだ たろう）"
+                class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 mb-3">
+            <input type="text" id="profile-setup-bio" maxlength="40" placeholder="一言コメント（例：テストで100位以内）"
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 mb-3">
             <div class="mb-3">
                 <div class="flex items-center px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus-within:border-blue-400">
@@ -1007,35 +1028,68 @@
 
             <!-- ===== マイページ（アカウント・各種設定をまとめた画面） ===== -->
             <section id="mypage-panel" class="hidden w-full max-w-2xl mx-auto space-y-4 animate-fade-in">
-                <div class="flex items-center gap-2 mb-1">
-                    <i data-lucide="user-circle" class="w-6 h-6 text-blue-500 dark:text-cyan-400"></i>
-                    <h2 class="text-lg font-black text-slate-800 dark:text-white">マイページ</h2>
+                <div class="flex items-center justify-between gap-2 mb-1">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="user-circle" class="w-6 h-6 text-blue-500 dark:text-cyan-400"></i>
+                        <h2 class="text-lg font-black text-slate-800 dark:text-white">マイページ</h2>
+                    </div>
+                    <button onclick="toggleAnnouncementModal(true)" class="relative p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" title="お知らせ">
+                        <i data-lucide="bell" class="w-5 h-5 text-slate-500 dark:text-slate-400"></i>
+                        <span id="mypage-announcement-dot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-rose-500 border border-white dark:border-[#0b1120]"></span>
+                    </button>
                 </div>
 
-                <!-- プロフィールカード（アイコン・名前・レベル） -->
+                <!-- プロフィールカード（アイコン・名前・一言コメント・レベル） -->
                 <div class="p-5 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-violet-500 text-white">
-                    <div class="flex items-center gap-4">
+                    <div class="flex items-start justify-between gap-3">
                         <div class="relative shrink-0">
-                            <div id="study-profile-avatar" class="w-16 h-16 rounded-full bg-white/20 border-2 border-white/60 flex items-center justify-center text-2xl font-black shrink-0 bg-cover bg-center overflow-hidden">?</div>
-                            <button onclick="document.getElementById('profile-photo-input').click()" class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-white text-blue-600 border-2 border-blue-400 flex items-center justify-center shadow-md hover:scale-110 transition-transform" title="プロフィール画像を変更">
+                            <div id="study-profile-avatar" class="w-20 h-20 rounded-full bg-white/20 border-2 border-white/60 flex items-center justify-center text-3xl font-black shrink-0 bg-cover bg-center overflow-hidden">?</div>
+                            <button onclick="document.getElementById('profile-photo-input').click()" class="absolute -bottom-1 -right-1 w-7 h-7 rounded-full bg-white text-blue-600 border-2 border-blue-400 flex items-center justify-center shadow-md hover:scale-110 transition-transform" title="プロフィール画像を変更">
                                 <i data-lucide="camera" class="w-3.5 h-3.5"></i>
                             </button>
                             <input type="file" id="profile-photo-input" accept="image/*" class="hidden" onchange="handleProfilePhotoSelect(event)">
                         </div>
-                        <div class="min-w-0 flex-1">
-                            <p id="study-profile-name" class="text-base font-black truncate">ゲスト</p>
-                            <div class="flex items-center gap-1.5 mt-1">
-                                <span id="study-profile-level-badge" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-white/25">Lv.1</span>
-                                <span id="study-profile-streak-badge" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-white/25 flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i>0日連続</span>
+                        <button onclick="openProfileSetupModal(window.currentAppUser)" class="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-[11px] font-black transition-colors">
+                            <i data-lucide="pencil" class="w-3 h-3"></i><span>編集</span>
+                        </button>
+                    </div>
+                    <div class="mt-3 min-w-0">
+                        <p id="study-profile-name" class="text-lg font-black truncate">ゲスト</p>
+                        <p id="study-profile-bio" onclick="openProfileSetupModal(window.currentAppUser)" class="text-xs font-bold text-white/85 mt-0.5 truncate cursor-pointer hover:underline">目標をひとことで書いてみよう</p>
+                        <div class="flex items-center gap-1.5 mt-2">
+                            <span id="study-profile-level-badge" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-white/25">Lv.1</span>
+                            <span id="study-profile-streak-badge" class="text-[10px] font-black px-2 py-0.5 rounded-full bg-white/25 flex items-center gap-1"><i data-lucide="flame" class="w-3 h-3"></i>0日連続</span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="h-1.5 w-full bg-white/25 rounded-full overflow-hidden">
+                                <div id="study-profile-level-bar" class="h-full bg-white rounded-full transition-all" style="width:0%"></div>
                             </div>
-                            <div class="mt-2">
-                                <div class="h-1.5 w-full bg-white/25 rounded-full overflow-hidden">
-                                    <div id="study-profile-level-bar" class="h-full bg-white rounded-full transition-all" style="width:0%"></div>
-                                </div>
-                                <p id="study-profile-level-caption" class="text-[10px] font-bold text-white/80 mt-1">次のレベルまで あと5時間0分</p>
-                            </div>
+                            <p id="study-profile-level-caption" class="text-[10px] font-bold text-white/80 mt-1">次のレベルまで あと5時間0分</p>
                         </div>
                     </div>
+                </div>
+
+                <!-- 直近の予定 -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5 ml-1">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">直近の予定</p>
+                        <button onclick="_navigateTo('calendar')" class="text-[11px] font-black text-cyan-600 dark:text-cyan-400">カレンダーを見る</button>
+                    </div>
+                    <div id="mypage-upcoming-schedule" class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden">
+                        <p class="text-xs font-bold text-slate-400 text-center py-6">予定なし</p>
+                    </div>
+                </div>
+
+                <!-- 志望校 -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5 ml-1">
+                        <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">志望校</p>
+                        <button onclick="openTargetSchoolsModal()" class="text-[11px] font-black text-cyan-600 dark:text-cyan-400">編集</button>
+                    </div>
+                    <div id="target-schools-list" class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden"></div>
+                    <button onclick="openTargetSchoolsModal()" id="target-schools-empty" class="hidden w-full text-xs font-bold text-slate-400 text-center py-6 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                        ＋ 志望校を追加する
+                    </button>
                 </div>
 
                 <!-- 統計（総勉強時間・連続記録・今週の勉強時間） -->
@@ -1133,10 +1187,6 @@
                 <div>
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 ml-1">設定</p>
                         <div id="settings-menu" class="w-full bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl py-1.5">
-                            <button onclick="toggleAnnouncementModal(true)" id="announcement-toggle-btn" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
-                                <i data-lucide="megaphone" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
-                                <span class="text-xs font-bold text-slate-700 dark:text-slate-200">お知らせ</span>
-                            </button>
                             <button onclick="openClassPickerModal()" id="class-setting-toggle-btn" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="users" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
                                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200">クラス設定</span>
@@ -3996,8 +4046,17 @@
                     resultUser = newUser;
                 }
                 await ensureUserDoc(resultUser);
-                // 登録した本人のメールアドレスであることを確認してもらうため、確認メールを送る
-                try { await sendEmailVerification(resultUser); } catch (e) { console.warn('確認メールの送信に失敗しました', e); }
+                // 登録した本人のメールアドレスであることを確認してもらうため、確認メールを送る。
+                // ここで失敗しても、アカウント自体はすでに作成済みなので握りつぶさずに
+                // 「送信できたかどうか」を呼び出し元に伝える（画面側で案内を出し分けるため）。
+                let verificationEmailSent = true;
+                try {
+                    await sendEmailVerification(resultUser);
+                } catch (e) {
+                    console.warn('確認メールの送信に失敗しました', e);
+                    verificationEmailSent = false;
+                }
+                resultUser._verificationEmailSent = verificationEmailSent;
                 return resultUser;
             },
             // 確認メールをもう一度送る
@@ -4101,6 +4160,23 @@
                 await updateDoc(doc(db, 'users', user.uid), { profileName: name });
                 window.currentAppProfileName = name;
             },
+            // マイページに表示する一言コメント（目標など）
+            async setBio(bio) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                const trimmed = (bio || '').trim().slice(0, 40);
+                await updateDoc(doc(db, 'users', user.uid), { bio: trimmed });
+                window.currentAppBio = trimmed;
+            },
+            // 志望校リスト（本人だけに見える、上から第一志望順の学校名の配列）を保存する
+            async setTargetSchools(list) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                const cleaned = (list || []).map(s => String(s).trim()).filter(Boolean).slice(0, 20);
+                await updateDoc(doc(db, 'users', user.uid), { targetSchools: cleaned });
+                window.currentAppTargetSchools = cleaned;
+                return cleaned;
+            },
             // プロフィール画像を保存する（軽量化済みのdata URL文字列を受け取る想定）。
             // Firebase Storageは使わず、小さく圧縮した画像をFirestoreのユーザードキュメントにそのまま保存する。
             async setProfilePhoto(dataUrl) {
@@ -4174,6 +4250,8 @@
                     window.currentUserClassId = classId;
                     window.currentAppProfileName = data.profileName || null;
                     window.currentAppProfilePhoto = data.profilePhoto || null;
+                    window.currentAppBio = data.bio || null;
+                    window.currentAppTargetSchools = Array.isArray(data.targetSchools) ? data.targetSchools : [];
                     window.currentAppUsername = data.username || null;
                     window.dispatchEvent(new CustomEvent('app-class-changed', { detail: { classId } }));
 
@@ -4203,6 +4281,8 @@
                 window.currentUserClassId = null;
                 window.currentAppProfileName = null;
                 window.currentAppProfilePhoto = null;
+                window.currentAppBio = null;
+                window.currentAppTargetSchools = [];
             }
         });
     </script>
@@ -4233,10 +4313,13 @@
                 }
             },
             async logout() {
+                if (!confirm('ログアウトしますか？')) return;
                 try {
                     await window.AppFirebase.logout();
+                    if (typeof showToast === 'function') showToast('ログアウトしました');
                 } catch (e) {
                     console.error('logout error', e);
+                    if (typeof showToast === 'function') showToast('ログアウトに失敗しました。時間をおいて再度お試しください');
                 }
             }
         };
@@ -4318,9 +4401,9 @@
             }
             try {
                 if (emailAuthMode === 'signup') {
-                    await window.AppFirebase.signupEmail(identifier, password);
+                    const newUser = await window.AppFirebase.signupEmail(identifier, password);
                     closeEmailAuthModal();
-                    openEmailVerifyPendingModal(identifier);
+                    openEmailVerifyPendingModal(identifier, newUser && newUser._verificationEmailSent === false);
                 } else if (identifier.includes('@')) {
                     await window.AppFirebase.loginEmail(identifier, password);
                     closeEmailAuthModal();
@@ -4346,7 +4429,7 @@
             }
             try {
                 await window.AppFirebase.resetPassword(email);
-                showToast(`${email} にパスワード再設定メールを送りました`);
+                showToast(`${email} 宛にパスワード再設定メールを送信しました（該当するアカウントが無い場合は、迷惑メール対策のためメールは送信されません。心当たりがなければ登録時のメールアドレスをご確認ください）`);
             } catch (e) {
                 console.error('reset password error', e);
                 if (errEl) { errEl.textContent = emailAuthErrorMessage(e); errEl.classList.remove('hidden'); }
@@ -4354,12 +4437,21 @@
         }
 
         // ===== 確認メール送信済み画面（メールのリンクをクリックしてもらうまでの待機） =====
-        function openEmailVerifyPendingModal(email) {
+        function openEmailVerifyPendingModal(email, sendFailed) {
             const modal = document.getElementById('email-verify-pending-modal');
             const addrEl = document.getElementById('email-verify-pending-address');
             const errEl = document.getElementById('email-verify-pending-error');
             if (addrEl) addrEl.textContent = email || '';
-            if (errEl) errEl.classList.add('hidden');
+            if (errEl) {
+                if (sendFailed) {
+                    // アカウント作成は成功しているが、確認メールの送信自体には失敗している状態。
+                    // 「送信済みのはずなのに来ない」と勘違いさせないよう、失敗したことをはっきり伝える。
+                    errEl.textContent = 'アカウントは作成されましたが、確認メールの送信には失敗しました。下の「確認メールを再送信」をお試しください。';
+                    errEl.classList.remove('hidden');
+                } else {
+                    errEl.classList.add('hidden');
+                }
+            }
             if (modal) modal.classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -4389,10 +4481,13 @@
             if (errEl) errEl.classList.add('hidden');
             try {
                 await window.AppFirebase.resendEmailVerification();
-                showToast('確認メールを再送信しました');
+                showToast('確認メールを再送信しました。数分待っても届かない場合は迷惑メールフォルダもご確認ください');
             } catch (e) {
                 console.error('resend verification error', e);
-                if (errEl) { errEl.textContent = '再送信に失敗しました。時間をおいてお試しください'; errEl.classList.remove('hidden'); }
+                const msg = (e && e.code === 'auth/too-many-requests')
+                    ? '短時間に何度も再送信されています。数分待ってからもう一度お試しください'
+                    : '再送信に失敗しました。時間をおいてお試しください';
+                if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); }
             }
         }
 
@@ -4425,6 +4520,8 @@
                 case 'auth/code-expired': return '確認コードの有効期限が切れました。もう一度送信してください。';
                 case 'auth/credential-already-in-use': return 'この電話番号はすでに別のアカウントで使われています。';
                 case 'auth/operation-not-allowed': return '電話番号でのログインが現在無効になっています。管理者に設定の確認を依頼してください（Firebaseコンソール →Authentication→Sign-in methodで「Phone」を有効にする必要があります）。';
+                case 'auth/billing-not-enabled': return '電話番号でのログインには、Firebaseプロジェクトの「Blazeプラン」（従量課金プラン）への切り替えが必要です。管理者にFirebaseコンソールでの設定を依頼してください。';
+                case 'auth/quota-exceeded': return '本日のSMS送信可能数の上限に達しました。時間をおいて再度お試しください。';
                 default: return '処理に失敗しました。時間をおいて再度お試しください。';
             }
         }
@@ -4470,10 +4567,12 @@
         function openProfileSetupModal(user) {
             const modal = document.getElementById('profile-setup-modal');
             const input = document.getElementById('profile-setup-name');
+            const bioInput = document.getElementById('profile-setup-bio');
             const usernameInput = document.getElementById('profile-setup-username');
             const errEl = document.getElementById('profile-setup-error');
             if (errEl) errEl.classList.add('hidden');
             if (input) input.value = (window.currentAppProfileName) || (user && user.displayName) || '';
+            if (bioInput) bioInput.value = window.currentAppBio || '';
             if (usernameInput) usernameInput.value = window.currentAppUsername || '';
             if (modal) modal.classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -4492,9 +4591,11 @@
         }
         async function submitProfileSetup() {
             const input = document.getElementById('profile-setup-name');
+            const bioInput = document.getElementById('profile-setup-bio');
             const usernameInput = document.getElementById('profile-setup-username');
             const errEl = document.getElementById('profile-setup-error');
             const name = (input && input.value || '').trim();
+            const bio = (bioInput && bioInput.value || '').trim();
             const username = (usernameInput && usernameInput.value || '').trim();
             if (!name) {
                 if (errEl) { errEl.textContent = '名前を入力してください'; errEl.classList.remove('hidden'); }
@@ -4502,6 +4603,8 @@
             }
             try {
                 await window.AppFirebase.setProfileName(name);
+                try { await window.AppFirebase.setBio(bio); } catch (be) { console.warn('bio save error', be); }
+                if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
                 if (username) {
                     try {
                         await window.AppFirebase.setUsername(username);
@@ -4865,6 +4968,15 @@
         function getLatestAnnouncementVersion() {
             const list = getActiveAnnouncements();
             return list.length > 0 ? (list[0].version || LATEST_ANNOUNCEMENT_VERSION) : LATEST_ANNOUNCEMENT_VERSION;
+        }
+        // マイページのベルアイコンに、未読のお知らせがあるかどうかを反映する
+        function updateAnnouncementBellBadge() {
+            const dot = document.getElementById('mypage-announcement-dot');
+            if (!dot) return;
+            const latest = getLatestAnnouncementVersion();
+            const seen = safeStorage.get('pm_announcement_seen');
+            const hasUnread = !!latest && seen !== latest;
+            dot.classList.toggle('hidden', !hasUnread);
         }
 
         function renderAnnouncementContent() {
@@ -5553,6 +5665,7 @@
                 // ① お知らせ
                 if (Array.isArray(cfg.announcements)) {
                     window._remoteAnnouncements = cfg.announcements;
+                    if (typeof updateAnnouncementBellBadge === 'function') updateAnnouncementBellBadge();
                 }
                 // ② 全体カウントダウン（運営側が全ユーザー向けに設定する予定）
                 if (Array.isArray(cfg.globalSchedules)) {
@@ -6908,6 +7021,9 @@
                 announcementModalCard.classList.remove('scale-95');
                 announcementModalCard.classList.add('scale-100');
                 lockScroll();
+                // 開いたタイミングで既読にする
+                safeStorage.set('pm_announcement_seen', getLatestAnnouncementVersion());
+                updateAnnouncementBellBadge();
             } else {
                 announcementModal.classList.add('opacity-0', 'pointer-events-none');
                 announcementModalCard.classList.remove('scale-100');
@@ -9854,9 +9970,124 @@
             { id: 'earlybird', icon: 'sunrise', label: '早起き勉強', check: (logs) => logs.some(l => new Date(l.endedAt).getHours() < 6) },
         ];
         // マイページのプロフィールカード・統計・グラフ・バッジ・記録一覧をまとめて再描画する
+        // ===== 志望校（マイページ） =====
+        function renderTargetSchoolsList() {
+            const listEl = document.getElementById('target-schools-list');
+            const emptyEl = document.getElementById('target-schools-empty');
+            if (!listEl || !emptyEl) return;
+            const schools = window.currentAppTargetSchools || [];
+            if (schools.length === 0) {
+                listEl.innerHTML = '';
+                listEl.classList.add('hidden');
+                emptyEl.classList.remove('hidden');
+                return;
+            }
+            listEl.classList.remove('hidden');
+            emptyEl.classList.add('hidden');
+            const rankColors = ['bg-amber-400', 'bg-slate-300 dark:bg-slate-600', 'bg-orange-300'];
+            listEl.innerHTML = schools.map((name, i) => `
+                <div class="flex items-center gap-3 px-3.5 py-3">
+                    <span class="shrink-0 w-6 h-6 rounded-full ${rankColors[i] || 'bg-slate-200 dark:bg-slate-700'} text-white text-[11px] font-black flex items-center justify-center">${i + 1}</span>
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex-1 min-w-0 truncate">${escapeHtml(name)}</span>
+                </div>
+            `).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function openTargetSchoolsModal() {
+            if (!window.currentAppUser) { showToast('先にログイン（またはゲスト利用開始）してください'); return; }
+            renderTargetSchoolsEditList();
+            const modal = document.getElementById('target-schools-modal');
+            if (modal) modal.classList.remove('hidden');
+            const input = document.getElementById('target-school-new-name');
+            if (input) input.value = '';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeTargetSchoolsModal() {
+            const modal = document.getElementById('target-schools-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        function renderTargetSchoolsEditList() {
+            const wrap = document.getElementById('target-schools-edit-list');
+            if (!wrap) return;
+            const schools = window.currentAppTargetSchools || [];
+            if (schools.length === 0) {
+                wrap.innerHTML = '<p class="text-[11px] font-bold text-slate-400 text-center py-4">まだ志望校が登録されていません</p>';
+                return;
+            }
+            wrap.innerHTML = schools.map((name, i) => `
+                <div class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl px-2.5 py-2">
+                    <span class="shrink-0 w-5 h-5 rounded-full bg-slate-300 dark:bg-slate-600 text-white text-[10px] font-black flex items-center justify-center">${i + 1}</span>
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex-1 min-w-0 truncate">${escapeHtml(name)}</span>
+                    <button onclick="moveTargetSchool(${i}, -1)" ${i === 0 ? 'disabled' : ''} class="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30"><i data-lucide="chevron-up" class="w-3.5 h-3.5"></i></button>
+                    <button onclick="moveTargetSchool(${i}, 1)" ${i === schools.length - 1 ? 'disabled' : ''} class="p-1 rounded hover:bg-slate-200 dark:hover:bg-slate-700 disabled:opacity-30"><i data-lucide="chevron-down" class="w-3.5 h-3.5"></i></button>
+                    <button onclick="removeTargetSchool(${i})" class="p-1 rounded hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                </div>
+            `).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        async function saveTargetSchoolsList(list) {
+            try {
+                await window.AppFirebase.setTargetSchools(list);
+                renderTargetSchoolsEditList();
+                renderTargetSchoolsList();
+            } catch (e) {
+                console.error('target schools save error', e);
+                showToast('保存に失敗しました。時間をおいて再度お試しください');
+            }
+        }
+        function addTargetSchoolFromInput() {
+            const input = document.getElementById('target-school-new-name');
+            const name = (input && input.value || '').trim();
+            if (!name) { showToast('学校名を入力してください'); return; }
+            const list = (window.currentAppTargetSchools || []).slice();
+            list.push(name);
+            if (input) input.value = '';
+            saveTargetSchoolsList(list);
+        }
+        function removeTargetSchool(index) {
+            const list = (window.currentAppTargetSchools || []).slice();
+            list.splice(index, 1);
+            saveTargetSchoolsList(list);
+        }
+        function moveTargetSchool(index, dir) {
+            const list = (window.currentAppTargetSchools || []).slice();
+            const target = index + dir;
+            if (target < 0 || target >= list.length) return;
+            [list[index], list[target]] = [list[target], list[index]];
+            saveTargetSchoolsList(list);
+        }
+
+        // ===== 直近の予定（マイページ） =====
+        function renderUpcomingScheduleOnMyPage() {
+            const wrap = document.getElementById('mypage-upcoming-schedule');
+            if (!wrap) return;
+            const items = (typeof getUpcomingSchedules === 'function' ? getUpcomingSchedules() : []).slice(0, 3);
+            if (items.length === 0) {
+                wrap.innerHTML = '<p class="text-xs font-bold text-slate-400 text-center py-6">予定なし</p>';
+                return;
+            }
+            const typeColor = { test: 'text-rose-500 bg-rose-50 dark:bg-rose-900/20', submission: 'text-amber-500 bg-amber-50 dark:bg-amber-900/20', task: 'text-blue-500 bg-blue-50 dark:bg-blue-900/20' };
+            wrap.innerHTML = items.map(s => {
+                const cls = typeColor[s.type] || typeColor.task;
+                const label = scheduleTypeLabelJa(s.type);
+                const dateLabel = (s.date || '').slice(5).replace('-', '/');
+                const openCall = s.isRemote ? `openScheduleViewModal('${s.id}')` : `openScheduleViewModal(${s.id})`;
+                return `
+                <button onclick="${openCall}" class="w-full flex items-center gap-3 px-3.5 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
+                    <span class="shrink-0 text-[10px] font-black px-2 py-1 rounded-full ${cls}">${label}</span>
+                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex-1 min-w-0 truncate">${escapeHtml(s.title || '')}</span>
+                    <span class="shrink-0 text-[10px] font-bold text-slate-400">${dateLabel}</span>
+                </button>`;
+            }).join('');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
         function refreshStudyProfile() {
             const panel = document.getElementById('mypage-panel');
             if (!panel) return; // まだDOMが無い初期化前は何もしない
+            renderTargetSchoolsList();
+            renderUpcomingScheduleOnMyPage();
+            updateAnnouncementBellBadge();
 
             const logs = getStudyLogs();
             const streak = getStudyStreakDays();
@@ -9868,8 +10099,10 @@
 
             const nameEl = document.getElementById('study-profile-name');
             const avatarEl = document.getElementById('study-profile-avatar');
+            const bioEl = document.getElementById('study-profile-bio');
             const displayName = window.currentAppProfileName || (window.currentAppUser && window.currentAppUser.displayName) || 'ゲスト';
             if (nameEl) nameEl.textContent = displayName;
+            if (bioEl) bioEl.textContent = window.currentAppBio || '目標をひとことで書いてみよう';
             if (avatarEl) {
                 if (window.currentAppProfilePhoto) {
                     avatarEl.style.backgroundImage = `url("${window.currentAppProfilePhoto}")`;
