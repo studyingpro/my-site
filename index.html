@@ -4368,7 +4368,7 @@
         import {
             getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp,
             collection, getDocs, increment, addDoc, query, where, orderBy, limit, writeBatch,
-            getCountFromServer
+            getCountFromServer, onSnapshot
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -4815,6 +4815,46 @@
                 const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(max));
                 const snaps = await getDocs(q);
                 return snaps.docs.map(d => ({ id: d.id, ...d.data() }));
+            },
+            // ===== リアルタイム購読（更新操作なしで自動的に画面へ反映するため） =====
+            // 戻り値は購読解除用の関数。画面を離れるときは必ず呼び出して購読を止めること。
+            subscribeFeed({ mode = 'all', max = 30 } = {}, callback) {
+                const user = auth.currentUser;
+                if (mode === 'following') {
+                    if (!user) { callback([]); return () => {}; }
+                    let unsubPosts = null;
+                    let cancelled = false;
+                    const followingQuery = query(collection(db, 'follows'), where('followerUid', '==', user.uid), limit(30));
+                    getDocs(followingQuery).then(followingSnap => {
+                        if (cancelled) return;
+                        const followeeUids = followingSnap.docs.map(d => d.data().followeeUid);
+                        if (followeeUids.length === 0) { callback([]); return; }
+                        const q = query(collection(db, 'posts'), where('uid', 'in', followeeUids.slice(0, 30)), orderBy('createdAt', 'desc'), limit(max));
+                        unsubPosts = onSnapshot(q, snap => {
+                            callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                        }, err => console.error('subscribeFeed(following) error', err));
+                    }).catch(err => console.error('subscribeFeed(following) initial fetch error', err));
+                    return () => { cancelled = true; if (unsubPosts) unsubPosts(); };
+                }
+                const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(max));
+                return onSnapshot(q, snap => {
+                    callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, err => console.error('subscribeFeed(all) error', err));
+            },
+            // 特定ユーザーの投稿一覧をリアルタイム購読する（公開プロフィール画面で使う）
+            subscribeUserPosts(uid, callback, max = 50) {
+                const q = query(collection(db, 'posts'), where('uid', '==', uid), orderBy('createdAt', 'desc'), limit(max));
+                return onSnapshot(q, snap => {
+                    callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, err => console.error('subscribeUserPosts error', err));
+            },
+            // 投稿1件のいいね（件数・自分が押しているか）をリアルタイム購読する
+            subscribeLikes(postId, callback) {
+                const user = auth.currentUser;
+                return onSnapshot(collection(db, 'posts', postId, 'likes'), snap => {
+                    const likedByMe = user ? snap.docs.some(d => d.id === user.uid) : false;
+                    callback({ count: snap.size, likedByMe });
+                }, err => console.error('subscribeLikes error', err));
             },
             // ===== いいね =====
             async getLikeInfo(postId) {
@@ -17366,8 +17406,18 @@ const KOBUN_TANGO = [
                 if (el) el.classList.add('hidden');
             });
             // タイムライン画面（全画面オーバーレイ）が開いたままだと他の画面に戻れなくなるので、必ず閉じる
-            const timelineScreen = document.getElementById('timeline-screen');
-            if (timelineScreen) timelineScreen.classList.add('hidden');
+            // （closeTimelineScreen()はリアルタイム購読の解除も行う）
+            if (typeof closeTimelineScreen === 'function') {
+                closeTimelineScreen();
+            } else {
+                const timelineScreen = document.getElementById('timeline-screen');
+                if (timelineScreen) timelineScreen.classList.add('hidden');
+            }
+            // タイムライン内から開く公開プロフィール／検索／フォロー一覧／投稿作成も同様に必ず閉じる
+            if (typeof closePublicProfileScreen === 'function') closePublicProfileScreen();
+            if (typeof closeUserSearchModal === 'function') closeUserSearchModal();
+            if (typeof closeFollowListModal === 'function') closeFollowListModal();
+            if (typeof closeComposePostModal === 'function') closeComposePostModal();
             // タブバーも隠す
             if (!modeTabBar) modeTabBar = document.getElementById('mode-tab-bar');
             if (modeTabBar) modeTabBar.classList.add('hidden');
@@ -17616,6 +17666,12 @@ const KOBUN_TANGO = [
         // タイムライン（SNS機能：フォロー・投稿・いいね）
         // ==================================================
         let timelineMode = 'all';
+        let timelineFeedUnsubscribe = null;
+        let timelineLikeUnsubscribes = [];
+        function clearTimelineLikeSubscriptions() {
+            timelineLikeUnsubscribes.forEach(unsub => { try { unsub(); } catch (e) {} });
+            timelineLikeUnsubscribes = [];
+        }
         function timeAgoLabel(ts) {
             if (!ts) return '';
             const date = ts.toDate ? ts.toDate() : new Date(ts);
@@ -17659,46 +17715,57 @@ const KOBUN_TANGO = [
             div.textContent = text;
             return div.innerHTML;
         }
-        async function loadTimelineFeed() {
+        // いいねボタンの見た目（件数・塗りつぶし）を更新する。
+        // lucideアイコンは <i data-lucide="heart"> を実際の <svg> に置き換えるので、
+        // 探すときは 'i' ではなく 'svg' を指定する必要がある点に注意。
+        function updateLikeButtonUI(postId, info) {
+            const card = document.querySelector(`[data-post-id="${postId}"]`);
+            if (!card) return;
+            const btn = card.querySelector('[data-like-btn]');
+            const countEl = card.querySelector('[data-like-count]');
+            if (countEl) countEl.textContent = info.count;
+            if (btn) {
+                btn.classList.toggle('text-rose-500', info.likedByMe);
+                btn.classList.toggle('text-slate-400', !info.likedByMe);
+                const icon = btn.querySelector('svg');
+                if (icon) icon.setAttribute('fill', info.likedByMe ? 'currentColor' : 'none');
+            }
+        }
+        function subscribeLikesForPosts(posts) {
+            clearTimelineLikeSubscriptions();
+            posts.forEach(p => {
+                const unsub = window.AppFirebase.subscribeLikes(p.id, (info) => updateLikeButtonUI(p.id, info));
+                timelineLikeUnsubscribes.push(unsub);
+            });
+        }
+        function loadTimelineFeed() {
             const feedEl = document.getElementById('timeline-feed');
             if (!feedEl) return;
+            if (timelineFeedUnsubscribe) { timelineFeedUnsubscribe(); timelineFeedUnsubscribe = null; }
+            clearTimelineLikeSubscriptions();
             feedEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-10">読み込み中…</p>';
             try {
-                const posts = await window.AppFirebase.getFeed({ mode: timelineMode, max: 30 });
-                if (posts.length === 0) {
-                    feedEl.innerHTML = `<p class="text-center text-xs font-bold text-slate-400 py-10">${timelineMode === 'following' ? 'フォロー中の人の投稿はまだありません。\\nユーザーを検索してフォローしてみましょう。' : 'まだ投稿がありません。最初の投稿をしてみましょう！'}</p>`;
-                    return;
-                }
-                feedEl.innerHTML = posts.map(renderPostCard).join('');
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                posts.forEach(p => refreshLikeButton(p.id));
+                timelineFeedUnsubscribe = window.AppFirebase.subscribeFeed({ mode: timelineMode, max: 30 }, (posts) => {
+                    if (posts.length === 0) {
+                        feedEl.innerHTML = `<p class="text-center text-xs font-bold text-slate-400 py-10 whitespace-pre-line">${timelineMode === 'following' ? 'フォロー中の人の投稿はまだありません。\nユーザーを検索してフォローしてみましょう。' : 'まだ投稿がありません。最初の投稿をしてみましょう！'}</p>`;
+                        clearTimelineLikeSubscriptions();
+                        return;
+                    }
+                    feedEl.innerHTML = posts.map(renderPostCard).join('');
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    subscribeLikesForPosts(posts);
+                });
             } catch (e) {
                 console.error('load feed error', e);
                 feedEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-10">読み込みに失敗しました。時間をおいて再度お試しください。</p>';
             }
         }
-        async function refreshLikeButton(postId) {
-            try {
-                const info = await window.AppFirebase.getLikeInfo(postId);
-                const card = document.querySelector(`[data-post-id="${postId}"]`);
-                if (!card) return;
-                const btn = card.querySelector('[data-like-btn]');
-                const countEl = card.querySelector('[data-like-count]');
-                if (countEl) countEl.textContent = info.count;
-                if (btn) {
-                    btn.classList.toggle('text-rose-500', info.likedByMe);
-                    btn.classList.toggle('text-slate-400', !info.likedByMe);
-                    const icon = btn.querySelector('i');
-                    if (icon) icon.setAttribute('fill', info.likedByMe ? 'currentColor' : 'none');
-                }
-            } catch (e) { console.error('like info error', e); }
-        }
         async function onLikeButtonClick(postId, btnEl) {
             if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
             btnEl.disabled = true;
             try {
+                // 画面の更新自体はリアルタイム購読（subscribeLikes）が自動で行う
                 await window.AppFirebase.toggleLike(postId);
-                await refreshLikeButton(postId);
             } catch (e) {
                 console.error('toggle like error', e);
                 showToast('いいねに失敗しました。時間をおいて再度お試しください');
@@ -17710,7 +17777,7 @@ const KOBUN_TANGO = [
             if (!confirm('この投稿を削除しますか？')) return;
             try {
                 await window.AppFirebase.deletePost(postId);
-                loadTimelineFeed();
+                // フィードの更新自体はリアルタイム購読が自動で行うため、ここでの再読み込みは不要
             } catch (e) {
                 console.error('delete post error', e);
                 showToast('削除に失敗しました。時間をおいて再度お試しください');
@@ -17737,6 +17804,9 @@ const KOBUN_TANGO = [
         function closeTimelineScreen() {
             const screen = document.getElementById('timeline-screen');
             if (screen) screen.classList.add('hidden');
+            // 画面を離れたら購読を止め、不要な読み取りが続かないようにする
+            if (timelineFeedUnsubscribe) { timelineFeedUnsubscribe(); timelineFeedUnsubscribe = null; }
+            clearTimelineLikeSubscriptions();
         }
 
         // ----- 投稿作成 -----
@@ -17855,6 +17925,12 @@ const KOBUN_TANGO = [
 
         // ----- 公開プロフィール -----
         let currentPublicProfileUid = null;
+        let publicProfilePostsUnsubscribe = null;
+        let publicProfileLikeUnsubscribes = [];
+        function clearPublicProfileLikeSubscriptions() {
+            publicProfileLikeUnsubscribes.forEach(unsub => { try { unsub(); } catch (e) {} });
+            publicProfileLikeUnsubscribes = [];
+        }
         async function openPublicProfileScreen(uid) {
             if (window.currentAppUser && uid === window.currentAppUser.uid) { closeUserSearchModal(); showMyPageScreen(); return; }
             currentPublicProfileUid = uid;
@@ -17863,26 +17939,36 @@ const KOBUN_TANGO = [
             document.getElementById('public-profile-nickname').textContent = '読み込み中…';
             document.getElementById('public-profile-username').textContent = '';
             document.getElementById('public-profile-posts').innerHTML = '';
+            if (publicProfilePostsUnsubscribe) { publicProfilePostsUnsubscribe(); publicProfilePostsUnsubscribe = null; }
+            clearPublicProfileLikeSubscriptions();
             try {
                 const profile = await window.AppFirebase.getPublicProfile(uid);
+                if (currentPublicProfileUid !== uid) return; // その間に別のプロフィールが開かれていたら反映しない
                 document.getElementById('public-profile-avatar-wrap').innerHTML = renderAvatarHtml(profile.photo, profile.nickname, 'w-16 h-16 text-xl');
                 document.getElementById('public-profile-nickname').textContent = profile.nickname || '名無しさん';
                 document.getElementById('public-profile-username').textContent = profile.username ? '@' + profile.username : '';
-                const [followerCount, followingCount, following, posts] = await Promise.all([
+                const [followerCount, followingCount, following] = await Promise.all([
                     window.AppFirebase.getFollowerCount(uid),
                     window.AppFirebase.getFollowingCount(uid),
                     window.AppFirebase.isFollowing(uid),
-                    window.AppFirebase.getFeed({ mode: 'all', max: 100 }).then(all => all.filter(p => p.uid === uid)),
                 ]);
+                if (currentPublicProfileUid !== uid) return;
                 document.getElementById('public-profile-follower-count').textContent = followerCount;
                 document.getElementById('public-profile-following-count').textContent = followingCount;
                 const followBtn = document.getElementById('public-profile-follow-btn');
                 followBtn.textContent = following ? 'フォロー中' : 'フォローする';
                 followBtn.className = 'w-full mt-4 py-2.5 rounded-xl font-black text-sm transition-all ' + (following ? 'border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white');
-                const postsEl = document.getElementById('public-profile-posts');
-                postsEl.innerHTML = posts.length ? posts.map(renderPostCard).join('') : '<p class="text-center text-xs font-bold text-slate-400 py-6">まだ投稿がありません</p>';
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                posts.forEach(p => refreshLikeButton(p.id));
+                publicProfilePostsUnsubscribe = window.AppFirebase.subscribeUserPosts(uid, (posts) => {
+                    if (currentPublicProfileUid !== uid) return;
+                    const postsEl = document.getElementById('public-profile-posts');
+                    postsEl.innerHTML = posts.length ? posts.map(renderPostCard).join('') : '<p class="text-center text-xs font-bold text-slate-400 py-6">まだ投稿がありません</p>';
+                    if (typeof lucide !== 'undefined') lucide.createIcons();
+                    clearPublicProfileLikeSubscriptions();
+                    posts.forEach(p => {
+                        const unsub = window.AppFirebase.subscribeLikes(p.id, (info) => updateLikeButtonUI(p.id, info));
+                        publicProfileLikeUnsubscribes.push(unsub);
+                    });
+                });
             } catch (e) {
                 console.error('load public profile error', e);
                 document.getElementById('public-profile-nickname').textContent = '読み込みに失敗しました';
@@ -17892,6 +17978,8 @@ const KOBUN_TANGO = [
             const screen = document.getElementById('public-profile-screen');
             if (screen) screen.classList.add('hidden');
             currentPublicProfileUid = null;
+            if (publicProfilePostsUnsubscribe) { publicProfilePostsUnsubscribe(); publicProfilePostsUnsubscribe = null; }
+            clearPublicProfileLikeSubscriptions();
         }
         async function togglePublicProfileFollow() {
             if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
