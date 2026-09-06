@@ -778,6 +778,89 @@
     </div>
 
     <!-- ==================================================
+         タイムライン（SNS機能：フォロー・投稿・いいね）
+         ================================================== -->
+    <div id="timeline-screen" class="fixed inset-0 z-[900] bg-white dark:bg-[#0b1120] hidden flex flex-col">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <h2 class="text-base font-black text-slate-800 dark:text-white">タイムライン</h2>
+            <div class="flex items-center gap-1">
+                <button onclick="openUserSearchModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="search" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <button onclick="openComposePostModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="square-pen" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+            </div>
+        </div>
+        <div class="flex gap-1.5 px-4 pt-3 pb-1 shrink-0">
+            <button id="timeline-tab-all" onclick="setTimelineMode('all')" class="flex-1 py-2 rounded-xl text-xs font-black transition-all">すべて</button>
+            <button id="timeline-tab-following" onclick="setTimelineMode('following')" class="flex-1 py-2 rounded-xl text-xs font-black transition-all">フォロー中</button>
+        </div>
+        <div id="timeline-feed" class="flex-1 overflow-y-auto px-4 pb-24 pt-2 space-y-3"></div>
+    </div>
+
+    <!-- 投稿作成 -->
+    <div id="compose-post-modal" class="fixed inset-0 z-[1001] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-5 hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl w-full max-w-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800">
+                <button onclick="closeComposePostModal()" class="p-1"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+                <h3 class="text-sm font-black text-slate-800 dark:text-white">投稿する</h3>
+                <button id="compose-post-submit-btn" onclick="submitComposePost()" class="text-xs font-black text-blue-500 dark:text-cyan-400 px-2">投稿</button>
+            </div>
+            <div class="p-4">
+                <textarea id="compose-post-text" maxlength="280" rows="4" placeholder="今日の学習について共有しよう…"
+                    class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 resize-none" oninput="updateComposePostCount()"></textarea>
+                <p id="compose-post-count" class="text-right text-[10px] font-bold text-slate-400 mt-1">0/280</p>
+                <p id="compose-post-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-1"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ユーザー検索 -->
+    <div id="user-search-modal" class="fixed inset-0 z-[1001] bg-white dark:bg-[#0b1120] hidden flex flex-col">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <button onclick="closeUserSearchModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+            <input type="text" id="user-search-input" oninput="runUserSearch()" placeholder="ユーザーネームで検索"
+                class="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+        </div>
+        <div id="user-search-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+    </div>
+
+    <!-- 公開プロフィール -->
+    <div id="public-profile-screen" class="fixed inset-0 z-[1001] bg-white dark:bg-[#0b1120] hidden flex flex-col">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <button onclick="closePublicProfileScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+            <h2 class="text-sm font-black text-slate-800 dark:text-white">プロフィール</h2>
+        </div>
+        <div class="flex-1 overflow-y-auto">
+            <div class="p-5 text-center border-b border-slate-100 dark:border-slate-800">
+                <div id="public-profile-avatar-wrap" class="w-16 h-16 mx-auto mb-2">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white text-xl font-black" id="public-profile-avatar">?</div>
+                </div>
+                <p id="public-profile-nickname" class="text-base font-black text-slate-800 dark:text-white"></p>
+                <p id="public-profile-username" class="text-xs font-bold text-slate-400 mt-0.5"></p>
+                <div class="flex items-center justify-center gap-6 mt-4">
+                    <button onclick="openFollowListModal('followers')" class="text-center">
+                        <p id="public-profile-follower-count" class="text-base font-black text-slate-800 dark:text-white">0</p>
+                        <p class="text-[10px] font-bold text-slate-400">フォロワー</p>
+                    </button>
+                    <button onclick="openFollowListModal('following')" class="text-center">
+                        <p id="public-profile-following-count" class="text-base font-black text-slate-800 dark:text-white">0</p>
+                        <p class="text-[10px] font-bold text-slate-400">フォロー中</p>
+                    </button>
+                </div>
+                <button id="public-profile-follow-btn" onclick="togglePublicProfileFollow()" class="w-full mt-4 py-2.5 rounded-xl font-black text-sm transition-all">フォローする</button>
+            </div>
+            <div id="public-profile-posts" class="px-4 py-3 space-y-3"></div>
+        </div>
+    </div>
+
+    <!-- フォロワー／フォロー中 一覧 -->
+    <div id="follow-list-modal" class="fixed inset-0 z-[1002] bg-white dark:bg-[#0b1120] hidden flex flex-col">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <button onclick="closeFollowListModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+            <h2 id="follow-list-title" class="text-sm font-black text-slate-800 dark:text-white">フォロワー</h2>
+        </div>
+        <div id="follow-list-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+    </div>
+
+    <!-- ==================================================
          クラス選択モーダル
          ================================================== -->
     <div id="class-picker-modal" class="fixed inset-0 z-[998] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-5 hidden">
@@ -1411,6 +1494,16 @@
                                 <div id="study-profile-level-bar" class="h-full bg-white rounded-full transition-all" style="width:0%"></div>
                             </div>
                             <p id="study-profile-level-caption" class="text-[10px] font-bold text-white/80 mt-1">次のレベルまで あと5時間0分</p>
+                        </div>
+                        <div class="flex items-center gap-4 mt-3">
+                            <button onclick="openFollowListModal('followers')" class="flex items-baseline gap-1">
+                                <span id="mypage-follower-count" class="text-sm font-black">0</span>
+                                <span class="text-[10px] font-bold text-white/80">フォロワー</span>
+                            </button>
+                            <button onclick="openFollowListModal('following')" class="flex items-baseline gap-1">
+                                <span id="mypage-following-count" class="text-sm font-black">0</span>
+                                <span class="text-[10px] font-bold text-white/80">フォロー中</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -3456,6 +3549,10 @@
          ================================================== -->
     <!-- ===== 下部固定タブバー（マイページ／カレンダー／成績管理／学習コンテンツ） ===== -->
     <nav id="bottom-tab-bar" class="fixed bottom-0 left-0 right-0 z-[9980] bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 flex items-stretch justify-around px-1 pb-[env(safe-area-inset-bottom)]" style="display:none;">
+        <button id="bottom-tab-timeline" onclick="showTimelineScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
+            <i data-lucide="rss" class="w-5 h-5"></i>
+            <span class="text-[10px] font-bold">タイムライン</span>
+        </button>
         <button id="bottom-tab-mypage" onclick="showMyPageScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
             <i data-lucide="user-circle" class="w-5 h-5"></i>
             <span class="text-[10px] font-bold">マイページ</span>
@@ -4270,7 +4367,8 @@
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-auth.js";
         import {
             getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp,
-            collection, getDocs, increment
+            collection, getDocs, increment, addDoc, query, where, orderBy, limit, writeBatch,
+            getCountFromServer
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -4505,6 +4603,9 @@
                 await setDoc(mapRef, { uid: user.uid, email: user.email || null }, { merge: true });
                 await updateDoc(doc(db, 'users', user.uid), { username: key });
                 window.currentAppUsername = key;
+                try {
+                    await setDoc(doc(db, 'publicProfiles', user.uid), { username: key, uid: user.uid }, { merge: true });
+                } catch (e) { /* 検索用データの更新に失敗しても致命的ではない */ }
             },
             // ユーザーネームでログイン（裏側では、登録されたメールアドレスに引き当ててログインする）
             async loginWithUsername(usernameRaw, password) {
@@ -4597,12 +4698,157 @@
                 await updateDoc(doc(db, 'users', user.uid), { achievementGoals: cleaned });
                 window.currentAppAchievementGoals = cleaned;
             },
+
+            // ==================================================
+            // SNS機能：フォロー／タイムライン投稿／いいね
+            // 公開してよい最小限の情報だけを publicProfiles コレクションに置き、
+            // users コレクション（個人情報）は非公開のまま保つ。
+            // ==================================================
+            async ensurePublicProfile() {
+                const user = auth.currentUser;
+                if (!user) return;
+                try {
+                    await setDoc(doc(db, 'publicProfiles', user.uid), {
+                        uid: user.uid,
+                        nickname: window.currentAppProfileName || user.displayName || '名無しさん',
+                        username: window.currentAppUsername || null,
+                        photo: window.currentAppProfilePhoto || null,
+                    }, { merge: true });
+                } catch (e) { console.warn('publicProfile更新に失敗', e); }
+            },
+            async getPublicProfile(uid) {
+                const snap = await getDoc(doc(db, 'publicProfiles', uid));
+                return snap.exists() ? { uid, ...snap.data() } : { uid, nickname: '名無しさん', username: null };
+            },
+            // ユーザーネームの前方一致でユーザーを検索する
+            async searchUsers(text) {
+                const key = (text || '').trim().toLowerCase();
+                if (!key) return [];
+                const q = query(
+                    collection(db, 'publicProfiles'),
+                    where('username', '>=', key),
+                    where('username', '<=', key + '\uf8ff'),
+                    limit(20)
+                );
+                const snaps = await getDocs(q);
+                return snaps.docs.map(d => ({ uid: d.id, ...d.data() })).filter(p => p.uid !== auth.currentUser?.uid);
+            },
+            followDocId(followerUid, followeeUid) { return followerUid + '_' + followeeUid; },
+            async isFollowing(targetUid) {
+                const user = auth.currentUser;
+                if (!user) return false;
+                const snap = await getDoc(doc(db, 'follows', this.followDocId(user.uid, targetUid)));
+                return snap.exists();
+            },
+            async followUser(targetUid) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                if (targetUid === user.uid) throw new Error('cannot follow yourself');
+                await setDoc(doc(db, 'follows', this.followDocId(user.uid, targetUid)), {
+                    followerUid: user.uid,
+                    followeeUid: targetUid,
+                    createdAt: serverTimestamp(),
+                });
+            },
+            async unfollowUser(targetUid) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                await deleteDoc(doc(db, 'follows', this.followDocId(user.uid, targetUid)));
+            },
+            async getFollowerCount(uid) {
+                const q = query(collection(db, 'follows'), where('followeeUid', '==', uid));
+                const res = await getCountFromServer(q);
+                return res.data().count;
+            },
+            async getFollowingCount(uid) {
+                const q = query(collection(db, 'follows'), where('followerUid', '==', uid));
+                const res = await getCountFromServer(q);
+                return res.data().count;
+            },
+            // フォロワー／フォロー中の一覧（それぞれの公開プロフィールも合わせて取得する）
+            async getFollowerList(uid, max = 50) {
+                const q = query(collection(db, 'follows'), where('followeeUid', '==', uid), limit(max));
+                const snaps = await getDocs(q);
+                const uids = snaps.docs.map(d => d.data().followerUid);
+                return Promise.all(uids.map(u => this.getPublicProfile(u)));
+            },
+            async getFollowingList(uid, max = 50) {
+                const q = query(collection(db, 'follows'), where('followerUid', '==', uid), limit(max));
+                const snaps = await getDocs(q);
+                const uids = snaps.docs.map(d => d.data().followeeUid);
+                return Promise.all(uids.map(u => this.getPublicProfile(u)));
+            },
+            // ===== タイムライン投稿 =====
+            async createPost(text) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                const trimmed = (text || '').trim().slice(0, 280);
+                if (!trimmed) throw new Error('empty post');
+                await this.ensurePublicProfile();
+                const ref = await addDoc(collection(db, 'posts'), {
+                    uid: user.uid,
+                    authorName: window.currentAppProfileName || user.displayName || '名無しさん',
+                    authorUsername: window.currentAppUsername || null,
+                    authorPhoto: window.currentAppProfilePhoto || null,
+                    text: trimmed,
+                    createdAt: serverTimestamp(),
+                });
+                return ref.id;
+            },
+            async deletePost(postId) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                await deleteDoc(doc(db, 'posts', postId));
+            },
+            // mode: 'all'（みんなの投稿） または 'following'（フォロー中の人の投稿）
+            async getFeed({ mode = 'all', max = 30 } = {}) {
+                const user = auth.currentUser;
+                if (mode === 'following') {
+                    if (!user) return [];
+                    const followingSnap = await getDocs(query(collection(db, 'follows'), where('followerUid', '==', user.uid), limit(30)));
+                    const followeeUids = followingSnap.docs.map(d => d.data().followeeUid);
+                    if (followeeUids.length === 0) return [];
+                    const q = query(collection(db, 'posts'), where('uid', 'in', followeeUids.slice(0, 30)), orderBy('createdAt', 'desc'), limit(max));
+                    const snaps = await getDocs(q);
+                    return snaps.docs.map(d => ({ id: d.id, ...d.data() }));
+                }
+                const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(max));
+                const snaps = await getDocs(q);
+                return snaps.docs.map(d => ({ id: d.id, ...d.data() }));
+            },
+            // ===== いいね =====
+            async getLikeInfo(postId) {
+                const user = auth.currentUser;
+                const countRes = await getCountFromServer(collection(db, 'posts', postId, 'likes'));
+                let likedByMe = false;
+                if (user) {
+                    const mySnap = await getDoc(doc(db, 'posts', postId, 'likes', user.uid));
+                    likedByMe = mySnap.exists();
+                }
+                return { count: countRes.data().count, likedByMe };
+            },
+            async toggleLike(postId) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                const likeRef = doc(db, 'posts', postId, 'likes', user.uid);
+                const snap = await getDoc(likeRef);
+                if (snap.exists()) {
+                    await deleteDoc(likeRef);
+                } else {
+                    await setDoc(likeRef, { uid: user.uid, createdAt: serverTimestamp() });
+                }
+                return this.getLikeInfo(postId);
+            },
+
             // 学習ProMasterアカウントの表示名を設定する（初回作成時・後からの変更どちらでも使う）
             async setProfileName(name) {
                 const user = auth.currentUser;
                 if (!user) throw new Error('not logged in');
                 await updateDoc(doc(db, 'users', user.uid), { profileName: name });
                 window.currentAppProfileName = name;
+                try {
+                    await setDoc(doc(db, 'publicProfiles', user.uid), { nickname: name, uid: user.uid }, { merge: true });
+                } catch (e) { /* 検索用データの更新に失敗しても致命的ではない */ }
             },
             // マイページに表示する一言コメント（目標など）
             async setBio(bio) {
@@ -4628,12 +4874,18 @@
                 if (!user) throw new Error('not logged in');
                 await updateDoc(doc(db, 'users', user.uid), { profilePhoto: dataUrl });
                 window.currentAppProfilePhoto = dataUrl;
+                try {
+                    await setDoc(doc(db, 'publicProfiles', user.uid), { photo: dataUrl, uid: user.uid }, { merge: true });
+                } catch (e) { /* 検索用データの更新に失敗しても致命的ではない */ }
             },
             async removeProfilePhoto() {
                 const user = auth.currentUser;
                 if (!user) throw new Error('not logged in');
                 await updateDoc(doc(db, 'users', user.uid), { profilePhoto: null });
                 window.currentAppProfilePhoto = null;
+                try {
+                    await setDoc(doc(db, 'publicProfiles', user.uid), { photo: null, uid: user.uid }, { merge: true });
+                } catch (e) { /* 検索用データの更新に失敗しても致命的ではない */ }
             },
             async setMyClass(classId) {
                 const user = auth.currentUser;
@@ -4722,6 +4974,11 @@
                     // プロフィール名・画像はここまでの非同期取得で確定するため、
                     // マイページの表示（アバター等）を最新の状態に更新する
                     if (typeof window.refreshStudyProfile === 'function') window.refreshStudyProfile();
+                    // タイムライン機能用の公開プロフィール（ニックネーム・ユーザーネーム・写真）も
+                    // 最新の値が確定したこのタイミングで同期する
+                    if (window.AppFirebase && typeof window.AppFirebase.ensurePublicProfile === 'function') {
+                        window.AppFirebase.ensurePublicProfile();
+                    }
                 } catch (e) {
                     console.warn('ユーザー情報の取得に失敗', e);
                 }
@@ -11077,12 +11334,27 @@
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
+        async function updateMyPageFollowCounts() {
+            const user = window.currentAppUser;
+            const followerEl = document.getElementById('mypage-follower-count');
+            const followingEl = document.getElementById('mypage-following-count');
+            if (!user || !followerEl || !followingEl || !window.AppFirebase) return;
+            try {
+                const [followerCount, followingCount] = await Promise.all([
+                    window.AppFirebase.getFollowerCount(user.uid),
+                    window.AppFirebase.getFollowingCount(user.uid),
+                ]);
+                followerEl.textContent = followerCount;
+                followingEl.textContent = followingCount;
+            } catch (e) { console.error('follow counts error', e); }
+        }
         function refreshStudyProfile() {
             const panel = document.getElementById('mypage-panel');
             if (!panel) return; // まだDOMが無い初期化前は何もしない
             renderTargetSchoolsList();
             renderUpcomingScheduleOnMyPage();
             updateAnnouncementBellBadge();
+            updateMyPageFollowCounts();
 
             const logs = getStudyLogs();
             const streak = getStudyStreakDays();
@@ -17093,6 +17365,9 @@ const KOBUN_TANGO = [
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
             });
+            // タイムライン画面（全画面オーバーレイ）が開いたままだと他の画面に戻れなくなるので、必ず閉じる
+            const timelineScreen = document.getElementById('timeline-screen');
+            if (timelineScreen) timelineScreen.classList.add('hidden');
             // タブバーも隠す
             if (!modeTabBar) modeTabBar = document.getElementById('mode-tab-bar');
             if (modeTabBar) modeTabBar.classList.add('hidden');
@@ -17303,7 +17578,7 @@ const KOBUN_TANGO = [
         // ===== 下部固定タブバー（マイページ／カレンダー／成績管理／学習コンテンツ／期間限定）のハイライト管理 =====
         const BOTTOM_TAB_STUDY_SCREENS = new Set(['top','english','japanese','math','science','social','scan','ronri-hyogen','ronri-section-list','ronri-scan','target']);
         function setBottomTabActive(key) {
-            ['mypage','calendar','grades','study','seasonal'].forEach(k => {
+            ['timeline','mypage','calendar','grades','study','seasonal'].forEach(k => {
                 const btn = document.getElementById('bottom-tab-' + k);
                 if (!btn) return;
                 const active = (k === key);
@@ -17336,6 +17611,333 @@ const KOBUN_TANGO = [
             }
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
+
+        // ==================================================
+        // タイムライン（SNS機能：フォロー・投稿・いいね）
+        // ==================================================
+        let timelineMode = 'all';
+        function timeAgoLabel(ts) {
+            if (!ts) return '';
+            const date = ts.toDate ? ts.toDate() : new Date(ts);
+            const diffSec = Math.floor((Date.now() - date.getTime()) / 1000);
+            if (diffSec < 60) return 'たった今';
+            if (diffSec < 3600) return Math.floor(diffSec / 60) + '分前';
+            if (diffSec < 86400) return Math.floor(diffSec / 3600) + '時間前';
+            if (diffSec < 2592000) return Math.floor(diffSec / 86400) + '日前';
+            return date.toLocaleDateString('ja-JP');
+        }
+        // 設定されているプロフィール画像があればそれを、無ければ頭文字入りの丸アイコンを描画する
+        function renderAvatarHtml(photo, name, sizeClass) {
+            const initial = (name || '?').charAt(0);
+            if (photo) {
+                return `<img src="${photo}" alt="" class="${sizeClass} rounded-full object-cover shrink-0 bg-slate-100 dark:bg-slate-800">`;
+            }
+            return `<div class="${sizeClass} rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white font-black shrink-0">${initial}</div>`;
+        }
+        function renderPostCard(post) {
+            return `
+            <div class="rounded-2xl border border-slate-100 dark:border-slate-800 p-4" data-post-id="${post.id}">
+                <div class="flex items-center gap-2.5 mb-2 cursor-pointer" onclick="openPublicProfileScreen('${post.uid}')">
+                    ${renderAvatarHtml(post.authorPhoto, post.authorName, 'w-9 h-9 text-sm')}
+                    <div class="min-w-0">
+                        <p class="text-sm font-black text-slate-800 dark:text-white truncate">${post.authorName || '名無しさん'}</p>
+                        <p class="text-[10px] font-bold text-slate-400">${post.authorUsername ? '@' + post.authorUsername + ' · ' : ''}${timeAgoLabel(post.createdAt)}</p>
+                    </div>
+                </div>
+                <p class="text-sm font-bold text-slate-700 dark:text-slate-200 whitespace-pre-wrap leading-relaxed mb-2">${escapeHtmlText(post.text || '')}</p>
+                <div class="flex items-center gap-4">
+                    <button onclick="onLikeButtonClick('${post.id}', this)" class="flex items-center gap-1.5 text-slate-400 hover:text-rose-500 transition-colors" data-like-btn>
+                        <i data-lucide="heart" class="w-4 h-4"></i>
+                        <span class="text-xs font-black" data-like-count>-</span>
+                    </button>
+                    ${post.uid === (window.currentAppUser && window.currentAppUser.uid) ? `<button onclick="onDeletePostClick('${post.id}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+                </div>
+            </div>`;
+        }
+        function escapeHtmlText(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        async function loadTimelineFeed() {
+            const feedEl = document.getElementById('timeline-feed');
+            if (!feedEl) return;
+            feedEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-10">読み込み中…</p>';
+            try {
+                const posts = await window.AppFirebase.getFeed({ mode: timelineMode, max: 30 });
+                if (posts.length === 0) {
+                    feedEl.innerHTML = `<p class="text-center text-xs font-bold text-slate-400 py-10">${timelineMode === 'following' ? 'フォロー中の人の投稿はまだありません。\\nユーザーを検索してフォローしてみましょう。' : 'まだ投稿がありません。最初の投稿をしてみましょう！'}</p>`;
+                    return;
+                }
+                feedEl.innerHTML = posts.map(renderPostCard).join('');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                posts.forEach(p => refreshLikeButton(p.id));
+            } catch (e) {
+                console.error('load feed error', e);
+                feedEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-10">読み込みに失敗しました。時間をおいて再度お試しください。</p>';
+            }
+        }
+        async function refreshLikeButton(postId) {
+            try {
+                const info = await window.AppFirebase.getLikeInfo(postId);
+                const card = document.querySelector(`[data-post-id="${postId}"]`);
+                if (!card) return;
+                const btn = card.querySelector('[data-like-btn]');
+                const countEl = card.querySelector('[data-like-count]');
+                if (countEl) countEl.textContent = info.count;
+                if (btn) {
+                    btn.classList.toggle('text-rose-500', info.likedByMe);
+                    btn.classList.toggle('text-slate-400', !info.likedByMe);
+                    const icon = btn.querySelector('i');
+                    if (icon) icon.setAttribute('fill', info.likedByMe ? 'currentColor' : 'none');
+                }
+            } catch (e) { console.error('like info error', e); }
+        }
+        async function onLikeButtonClick(postId, btnEl) {
+            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
+            btnEl.disabled = true;
+            try {
+                await window.AppFirebase.toggleLike(postId);
+                await refreshLikeButton(postId);
+            } catch (e) {
+                console.error('toggle like error', e);
+                showToast('いいねに失敗しました。時間をおいて再度お試しください');
+            } finally {
+                btnEl.disabled = false;
+            }
+        }
+        async function onDeletePostClick(postId) {
+            if (!confirm('この投稿を削除しますか？')) return;
+            try {
+                await window.AppFirebase.deletePost(postId);
+                loadTimelineFeed();
+            } catch (e) {
+                console.error('delete post error', e);
+                showToast('削除に失敗しました。時間をおいて再度お試しください');
+            }
+        }
+        function setTimelineMode(mode) {
+            timelineMode = mode;
+            const allBtn = document.getElementById('timeline-tab-all');
+            const followingBtn = document.getElementById('timeline-tab-following');
+            const activeCls = 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-blue-500 text-white';
+            const inactiveCls = 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400';
+            if (allBtn) allBtn.className = (mode === 'all') ? activeCls : inactiveCls;
+            if (followingBtn) followingBtn.className = (mode === 'following') ? activeCls : inactiveCls;
+            loadTimelineFeed();
+        }
+        function showTimelineScreen() {
+            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
+            const screen = document.getElementById('timeline-screen');
+            if (screen) screen.classList.remove('hidden');
+            setBottomTabActive('timeline');
+            setTimelineMode(timelineMode);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeTimelineScreen() {
+            const screen = document.getElementById('timeline-screen');
+            if (screen) screen.classList.add('hidden');
+        }
+
+        // ----- 投稿作成 -----
+        function openComposePostModal() {
+            const textEl = document.getElementById('compose-post-text');
+            const errEl = document.getElementById('compose-post-error');
+            if (textEl) textEl.value = '';
+            if (errEl) errEl.classList.add('hidden');
+            updateComposePostCount();
+            const modal = document.getElementById('compose-post-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeComposePostModal() {
+            const modal = document.getElementById('compose-post-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        function updateComposePostCount() {
+            const textEl = document.getElementById('compose-post-text');
+            const countEl = document.getElementById('compose-post-count');
+            if (countEl) countEl.textContent = ((textEl && textEl.value.length) || 0) + '/280';
+        }
+        async function submitComposePost() {
+            const textEl = document.getElementById('compose-post-text');
+            const errEl = document.getElementById('compose-post-error');
+            const btn = document.getElementById('compose-post-submit-btn');
+            const text = (textEl && textEl.value || '').trim();
+            if (errEl) errEl.classList.add('hidden');
+            if (!text) {
+                if (errEl) { errEl.textContent = '投稿内容を入力してください'; errEl.classList.remove('hidden'); }
+                return;
+            }
+            if (btn) { btn.disabled = true; }
+            try {
+                await window.AppFirebase.createPost(text);
+                closeComposePostModal();
+                showToast('投稿しました');
+                setTimelineMode('all');
+            } catch (e) {
+                console.error('create post error', e);
+                if (errEl) { errEl.textContent = '投稿に失敗しました。時間をおいて再度お試しください'; errEl.classList.remove('hidden'); }
+            } finally {
+                if (btn) { btn.disabled = false; }
+            }
+        }
+
+        // ----- ユーザー検索 -----
+        function openUserSearchModal() {
+            const input = document.getElementById('user-search-input');
+            if (input) input.value = '';
+            document.getElementById('user-search-results').innerHTML = '';
+            const modal = document.getElementById('user-search-modal');
+            if (modal) modal.classList.remove('hidden');
+            if (input) input.focus();
+        }
+        function closeUserSearchModal() {
+            const modal = document.getElementById('user-search-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        function renderUserRow(profile, showFollowBtn) {
+            return `
+            <div class="flex items-center gap-3 py-3">
+                <div class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer" onclick="openPublicProfileScreen('${profile.uid}')">
+                    ${renderAvatarHtml(profile.photo, profile.nickname, 'w-10 h-10 text-sm')}
+                    <div class="min-w-0">
+                        <p class="text-sm font-black text-slate-800 dark:text-white truncate">${profile.nickname || '名無しさん'}</p>
+                        <p class="text-[11px] font-bold text-slate-400 truncate">${profile.username ? '@' + profile.username : ''}</p>
+                    </div>
+                </div>
+                ${showFollowBtn && window.currentAppUser && profile.uid !== window.currentAppUser.uid ? `<button data-follow-btn data-uid="${profile.uid}" onclick="onInlineFollowClick(this)" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-black border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">…</button>` : ''}
+            </div>`;
+        }
+        async function runUserSearch() {
+            const input = document.getElementById('user-search-input');
+            const resultsEl = document.getElementById('user-search-results');
+            const q = (input && input.value || '').trim();
+            if (!q) { resultsEl.innerHTML = ''; return; }
+            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">検索中…</p>';
+            try {
+                const results = await window.AppFirebase.searchUsers(q);
+                if (results.length === 0) {
+                    resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">見つかりませんでした</p>';
+                    return;
+                }
+                resultsEl.innerHTML = results.map(p => renderUserRow(p, true)).join('');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                results.forEach(p => refreshInlineFollowButton(p.uid));
+            } catch (e) {
+                console.error('search users error', e);
+                resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-6">検索に失敗しました</p>';
+            }
+        }
+        async function refreshInlineFollowButton(uid) {
+            const btn = document.querySelector(`[data-follow-btn][data-uid="${uid}"]`);
+            if (!btn) return;
+            try {
+                const following = await window.AppFirebase.isFollowing(uid);
+                btn.textContent = following ? 'フォロー中' : 'フォロー';
+                btn.className = 'shrink-0 px-3 py-1.5 rounded-full text-xs font-black border ' + (following ? 'border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400' : 'bg-blue-500 border-blue-500 text-white');
+            } catch (e) { console.error(e); }
+        }
+        async function onInlineFollowClick(btn) {
+            const uid = btn.getAttribute('data-uid');
+            btn.disabled = true;
+            try {
+                const following = await window.AppFirebase.isFollowing(uid);
+                if (following) { await window.AppFirebase.unfollowUser(uid); } else { await window.AppFirebase.followUser(uid); }
+                await refreshInlineFollowButton(uid);
+            } catch (e) {
+                console.error('follow toggle error', e);
+                showToast('操作に失敗しました。時間をおいて再度お試しください');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ----- 公開プロフィール -----
+        let currentPublicProfileUid = null;
+        async function openPublicProfileScreen(uid) {
+            if (window.currentAppUser && uid === window.currentAppUser.uid) { closeUserSearchModal(); showMyPageScreen(); return; }
+            currentPublicProfileUid = uid;
+            const screen = document.getElementById('public-profile-screen');
+            if (screen) screen.classList.remove('hidden');
+            document.getElementById('public-profile-nickname').textContent = '読み込み中…';
+            document.getElementById('public-profile-username').textContent = '';
+            document.getElementById('public-profile-posts').innerHTML = '';
+            try {
+                const profile = await window.AppFirebase.getPublicProfile(uid);
+                document.getElementById('public-profile-avatar-wrap').innerHTML = renderAvatarHtml(profile.photo, profile.nickname, 'w-16 h-16 text-xl');
+                document.getElementById('public-profile-nickname').textContent = profile.nickname || '名無しさん';
+                document.getElementById('public-profile-username').textContent = profile.username ? '@' + profile.username : '';
+                const [followerCount, followingCount, following, posts] = await Promise.all([
+                    window.AppFirebase.getFollowerCount(uid),
+                    window.AppFirebase.getFollowingCount(uid),
+                    window.AppFirebase.isFollowing(uid),
+                    window.AppFirebase.getFeed({ mode: 'all', max: 100 }).then(all => all.filter(p => p.uid === uid)),
+                ]);
+                document.getElementById('public-profile-follower-count').textContent = followerCount;
+                document.getElementById('public-profile-following-count').textContent = followingCount;
+                const followBtn = document.getElementById('public-profile-follow-btn');
+                followBtn.textContent = following ? 'フォロー中' : 'フォローする';
+                followBtn.className = 'w-full mt-4 py-2.5 rounded-xl font-black text-sm transition-all ' + (following ? 'border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white');
+                const postsEl = document.getElementById('public-profile-posts');
+                postsEl.innerHTML = posts.length ? posts.map(renderPostCard).join('') : '<p class="text-center text-xs font-bold text-slate-400 py-6">まだ投稿がありません</p>';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                posts.forEach(p => refreshLikeButton(p.id));
+            } catch (e) {
+                console.error('load public profile error', e);
+                document.getElementById('public-profile-nickname').textContent = '読み込みに失敗しました';
+            }
+        }
+        function closePublicProfileScreen() {
+            const screen = document.getElementById('public-profile-screen');
+            if (screen) screen.classList.add('hidden');
+            currentPublicProfileUid = null;
+        }
+        async function togglePublicProfileFollow() {
+            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
+            if (!currentPublicProfileUid) return;
+            const btn = document.getElementById('public-profile-follow-btn');
+            btn.disabled = true;
+            try {
+                const following = await window.AppFirebase.isFollowing(currentPublicProfileUid);
+                if (following) { await window.AppFirebase.unfollowUser(currentPublicProfileUid); } else { await window.AppFirebase.followUser(currentPublicProfileUid); }
+                await openPublicProfileScreen(currentPublicProfileUid);
+            } catch (e) {
+                console.error('follow toggle error', e);
+                showToast('操作に失敗しました。時間をおいて再度お試しください');
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        // ----- フォロワー／フォロー中 一覧 -----
+        async function openFollowListModal(kind) {
+            const uid = currentPublicProfileUid || (window.currentAppUser && window.currentAppUser.uid);
+            if (!uid) return;
+            document.getElementById('follow-list-title').textContent = kind === 'followers' ? 'フォロワー' : 'フォロー中';
+            const resultsEl = document.getElementById('follow-list-results');
+            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">読み込み中…</p>';
+            const modal = document.getElementById('follow-list-modal');
+            if (modal) modal.classList.remove('hidden');
+            try {
+                const list = kind === 'followers' ? await window.AppFirebase.getFollowerList(uid) : await window.AppFirebase.getFollowingList(uid);
+                if (list.length === 0) {
+                    resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">まだいません</p>';
+                    return;
+                }
+                resultsEl.innerHTML = list.map(p => renderUserRow(p, true)).join('');
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                list.forEach(p => refreshInlineFollowButton(p.uid));
+            } catch (e) {
+                console.error('load follow list error', e);
+                resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-6">読み込みに失敗しました</p>';
+            }
+        }
+        function closeFollowListModal() {
+            const modal = document.getElementById('follow-list-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
         // 期間限定コーナー（定期考査の範囲など、その時期にしか使わないものをまとめた画面）を開く
         function showSeasonalCornerScreen() {
             hideAllPanels();
