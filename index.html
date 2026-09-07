@@ -4971,19 +4971,59 @@
                 const trimmed = (text || '').trim().slice(0, 280);
                 if (!trimmed) throw new Error('empty post');
                 await this.ensurePublicProfile();
-                const ref = await addDoc(collection(db, 'posts'), {
+                const isPrivate = !!window.currentAppIsPrivate;
+                const postData = {
                     uid: user.uid,
                     authorName: window.currentAppProfileName || user.displayName || '名無しさん',
                     authorUsername: window.currentAppUsername || null,
                     authorPhoto: window.currentAppProfilePhoto || null,
                     text: trimmed,
+                    authorIsPrivate: isPrivate,
                     createdAt: serverTimestamp(),
-                });
+                };
+                const ref = await addDoc(collection(db, 'posts'), postData);
+                if (isPrivate) {
+                    // 非公開アカウントの投稿は、posts コレクションからは本人以外読めないようにしてあるため、
+                    // 今フォローし合っている相手（相互フォロー）の手元にもコピーを配って見られるようにする。
+                    // ※ この時点で相互フォローしている人だけが対象（あとから相互になった人には過去分は届かない）
+                    try {
+                        const followingSnap = await getDocs(query(collection(db, 'follows'), where('followerUid', '==', user.uid), limit(200)));
+                        const candidateUids = followingSnap.docs.map(d => d.data().followeeUid);
+                        if (candidateUids.length > 0) {
+                            const mutualChecks = await Promise.all(candidateUids.map(uid => getDoc(doc(db, 'follows', this.followDocId(uid, user.uid)))));
+                            const mutualUids = candidateUids.filter((uid, i) => mutualChecks[i].exists());
+                            if (mutualUids.length > 0) {
+                                const batch = writeBatch(db);
+                                mutualUids.forEach(followerUid => {
+                                    batch.set(doc(db, 'users', followerUid, 'privateFeedPosts', ref.id), postData);
+                                });
+                                await batch.commit();
+                                // 削除時にコピーも一緒に消せるよう、配布先を投稿自体にも記録しておく
+                                await updateDoc(ref, { fannedOutTo: mutualUids });
+                            }
+                        }
+                    } catch (e) {
+                        console.warn('非公開投稿のファンアウトに失敗しました（投稿自体は作成済みです）', e);
+                    }
+                }
                 return ref.id;
             },
             async deletePost(postId) {
                 const user = auth.currentUser;
                 if (!user) throw new Error('not logged in');
+                const snap = await getDoc(doc(db, 'posts', postId));
+                const fannedOutTo = snap.exists() ? (snap.data().fannedOutTo || []) : [];
+                if (fannedOutTo.length > 0) {
+                    try {
+                        const batch = writeBatch(db);
+                        fannedOutTo.forEach(followerUid => {
+                            batch.delete(doc(db, 'users', followerUid, 'privateFeedPosts', postId));
+                        });
+                        await batch.commit();
+                    } catch (e) {
+                        console.warn('ファンアウトしたコピーの削除に失敗しました（投稿本体の削除は続行します）', e);
+                    }
+                }
                 await deleteDoc(doc(db, 'posts', postId));
             },
             // mode: 'all'（みんなの投稿） または 'following'（フォロー中の人の投稿）
@@ -4994,41 +5034,88 @@
                     const followingSnap = await getDocs(query(collection(db, 'follows'), where('followerUid', '==', user.uid), limit(30)));
                     const followeeUids = followingSnap.docs.map(d => d.data().followeeUid);
                     if (followeeUids.length === 0) return [];
-                    const q = query(collection(db, 'posts'), where('uid', 'in', followeeUids.slice(0, 30)), orderBy('createdAt', 'desc'), limit(max));
-                    const snaps = await getDocs(q);
-                    return snaps.docs.map(d => ({ id: d.id, ...d.data() }));
+                    const [publicSnaps, privateSnaps] = await Promise.all([
+                        getDocs(query(collection(db, 'posts'), where('uid', 'in', followeeUids.slice(0, 30)), orderBy('createdAt', 'desc'), limit(max))),
+                        getDocs(query(collection(db, 'users', user.uid, 'privateFeedPosts'), orderBy('createdAt', 'desc'), limit(max))),
+                    ]);
+                    return this._mergeAndSortPosts(publicSnaps, privateSnaps, max);
                 }
                 const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(max));
                 const snaps = await getDocs(q);
                 return snaps.docs.map(d => ({ id: d.id, ...d.data() }));
             },
+            _mergeAndSortPosts(publicSnaps, privateSnaps, max) {
+                const merged = [
+                    ...publicSnaps.docs.map(d => ({ id: d.id, ...d.data() })),
+                    ...privateSnaps.docs.map(d => ({ id: d.id, ...d.data() })),
+                ];
+                merged.sort((a, b) => {
+                    const ta = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+                    const tb = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+                    return tb - ta;
+                });
+                return merged.slice(0, max);
+            },
             // ===== リアルタイム購読（更新操作なしで自動的に画面へ反映するため） =====
             // 戻り値は購読解除用の関数。画面を離れるときは必ず呼び出して購読を止めること。
-            subscribeFeed({ mode = 'all', max = 30 } = {}, callback) {
+            //
+            // 【非公開アカウントの投稿について】
+            // Firestoreのセキュリティルールには「1回のクエリで参照できる他ドキュメントの数に上限がある」
+            // という制約があるため、投稿一覧を1件ずつ「相互フォローか」を判定する方式は使えない。
+            // そこで、非公開アカウントが投稿した瞬間に、その時点の相互フォロワー全員の
+            // users/{相手のuid}/privateFeedPosts に投稿のコピーを配っておき（＝ファンアウト）、
+            // 読む側は「自分のprivateFeedPostsを見る」というシンプルで軽い方法で閲覧できるようにしている。
+            // （そのため、あとから相互フォローになった相手には、それより前の非公開投稿は表示されない）
+            subscribeFeed({ mode = 'all', max = 30 } = {}, callback, onError) {
                 const user = auth.currentUser;
+                const reportError = (label, err) => { console.error(label, err); if (onError) onError(err); };
                 if (mode === 'following') {
                     if (!user) { callback([]); return () => {}; }
-                    let unsubPosts = null;
+                    let unsubPublic = null;
+                    let unsubPrivate = null;
                     let cancelled = false;
+                    let latestPublic = [];
+                    let latestPrivate = [];
+                    const emit = () => callback(this._mergeAndSortPosts({ docs: latestPublic }, { docs: latestPrivate }, max));
+                    const privateQuery = query(collection(db, 'users', user.uid, 'privateFeedPosts'), orderBy('createdAt', 'desc'), limit(max));
+                    unsubPrivate = onSnapshot(privateQuery, snap => {
+                        latestPrivate = snap.docs;
+                        emit();
+                    }, err => reportError('subscribeFeed(following/private) error', err));
                     const followingQuery = query(collection(db, 'follows'), where('followerUid', '==', user.uid), limit(30));
                     getDocs(followingQuery).then(followingSnap => {
                         if (cancelled) return;
                         const followeeUids = followingSnap.docs.map(d => d.data().followeeUid);
-                        if (followeeUids.length === 0) { callback([]); return; }
+                        if (followeeUids.length === 0) { emit(); return; }
                         const q = query(collection(db, 'posts'), where('uid', 'in', followeeUids.slice(0, 30)), orderBy('createdAt', 'desc'), limit(max));
-                        unsubPosts = onSnapshot(q, snap => {
-                            callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-                        }, err => console.error('subscribeFeed(following) error', err));
-                    }).catch(err => console.error('subscribeFeed(following) initial fetch error', err));
-                    return () => { cancelled = true; if (unsubPosts) unsubPosts(); };
+                        unsubPublic = onSnapshot(q, snap => {
+                            latestPublic = snap.docs;
+                            emit();
+                        }, err => reportError('subscribeFeed(following/public) error', err));
+                    }).catch(err => reportError('subscribeFeed(following) initial fetch error', err));
+                    return () => { cancelled = true; if (unsubPublic) unsubPublic(); if (unsubPrivate) unsubPrivate(); };
                 }
                 const q = query(collection(db, 'posts'), orderBy('createdAt', 'desc'), limit(max));
                 return onSnapshot(q, snap => {
                     callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-                }, err => console.error('subscribeFeed(all) error', err));
+                }, err => reportError('subscribeFeed(all) error', err));
             },
             // 特定ユーザーの投稿一覧をリアルタイム購読する（公開プロフィール画面で使う）
-            subscribeUserPosts(uid, callback, max = 50) {
+            // 相手が非公開アカウントの場合は、自分のprivateFeedPosts（ファンアウトされたコピー）を見る。
+            async subscribeUserPosts(uid, callback, max = 50) {
+                const user = auth.currentUser;
+                let isPrivateAuthor = false;
+                try {
+                    const profileSnap = await getDoc(doc(db, 'publicProfiles', uid));
+                    isPrivateAuthor = !!(profileSnap.exists() && profileSnap.data().private);
+                } catch (e) { console.error('subscribeUserPosts profile check error', e); }
+                if (isPrivateAuthor) {
+                    if (!user) { callback([]); return () => {}; }
+                    const q = query(collection(db, 'users', user.uid, 'privateFeedPosts'), where('uid', '==', uid), orderBy('createdAt', 'desc'), limit(max));
+                    return onSnapshot(q, snap => {
+                        callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                    }, err => console.error('subscribeUserPosts(private) error', err));
+                }
                 const q = query(collection(db, 'posts'), where('uid', '==', uid), orderBy('createdAt', 'desc'), limit(max));
                 return onSnapshot(q, snap => {
                     callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -18000,6 +18087,8 @@ const KOBUN_TANGO = [
                     feedEl.innerHTML = posts.map(renderPostCard).join('');
                     if (typeof lucide !== 'undefined') lucide.createIcons();
                     subscribeLikesForPosts(posts);
+                }, (err) => {
+                    feedEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-10">読み込みに失敗しました。時間をおいて再度お試しください。</p>';
                 });
             } catch (e) {
                 console.error('load feed error', e);
@@ -18218,7 +18307,7 @@ const KOBUN_TANGO = [
                 const canSeePosts = !profile.private || mutual;
                 document.getElementById('public-profile-private-notice').classList.toggle('hidden', canSeePosts);
                 if (!canSeePosts) return;
-                publicProfilePostsUnsubscribe = window.AppFirebase.subscribeUserPosts(uid, (posts) => {
+                publicProfilePostsUnsubscribe = await window.AppFirebase.subscribeUserPosts(uid, (posts) => {
                     if (currentPublicProfileUid !== uid) return;
                     const postsEl = document.getElementById('public-profile-posts');
                     postsEl.innerHTML = posts.length ? posts.map(renderPostCard).join('') : '<p class="text-center text-xs font-bold text-slate-400 py-6">まだ投稿がありません</p>';
