@@ -269,6 +269,15 @@
     <!-- ==================================================
          ログイン / ゲスト選択モーダル
          ================================================== -->
+    <!-- ==================================================
+         起動時の読み込み画面（Firebaseのログイン状態が確定するまでの間だけ表示）
+         これが無いと、実際はログイン済みの人にも一瞬「ログイン画面」がちらついてしまう。
+         ================================================== -->
+    <div id="auth-loading-screen" class="fixed inset-0 z-[1005] bg-white dark:bg-[#0b1120] flex flex-col items-center justify-center gap-4">
+        <img src="data:image/png;base64,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" alt="学習ProMaster" class="w-14 h-14 object-contain">
+        <div class="w-6 h-6 border-2 border-slate-200 dark:border-slate-700 border-t-blue-500 rounded-full animate-spin"></div>
+    </div>
+
     <div id="auth-gate-modal" class="fixed inset-0 z-[999] bg-white dark:bg-[#0b1120] flex flex-col overflow-y-auto">
         <div class="flex-1 flex flex-col px-6 pt-10 pb-6 max-w-sm mx-auto w-full">
             <!-- ロゴ -->
@@ -785,6 +794,7 @@
             <h2 class="text-base font-black text-slate-800 dark:text-white">タイムライン</h2>
             <div class="flex items-center gap-1">
                 <button onclick="openUserSearchModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="search" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <button onclick="showChatListScreen()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="message-circle" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
                 <button onclick="openComposePostModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="square-pen" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
             </div>
         </div>
@@ -824,16 +834,27 @@
 
     <!-- 公開プロフィール -->
     <div id="public-profile-screen" class="fixed inset-0 z-[1001] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <button onclick="closePublicProfileScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-            <h2 class="text-sm font-black text-slate-800 dark:text-white">プロフィール</h2>
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="flex items-center gap-2">
+                <button onclick="closePublicProfileScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <h2 class="text-sm font-black text-slate-800 dark:text-white">プロフィール</h2>
+            </div>
+            <div class="relative">
+                <button onclick="togglePublicProfileMenu()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="more-vertical" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <div id="public-profile-menu" class="hidden absolute right-0 top-9 w-44 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg overflow-hidden z-20">
+                    <button id="public-profile-block-btn" onclick="onBlockButtonClick()" class="w-full flex items-center gap-2 px-3.5 py-2.5 text-left hover:bg-rose-50 dark:hover:bg-rose-900/20">
+                        <i data-lucide="shield-off" class="w-4 h-4 text-rose-500"></i>
+                        <span class="text-xs font-bold text-rose-600 dark:text-rose-400">ブロックする</span>
+                    </button>
+                </div>
+            </div>
         </div>
         <div class="flex-1 overflow-y-auto">
             <div class="p-5 text-center border-b border-slate-100 dark:border-slate-800">
                 <div id="public-profile-avatar-wrap" class="w-16 h-16 mx-auto mb-2">
                     <div class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white text-xl font-black" id="public-profile-avatar">?</div>
                 </div>
-                <p id="public-profile-nickname" class="text-base font-black text-slate-800 dark:text-white"></p>
+                <p id="public-profile-nickname" class="text-base font-black text-slate-800 dark:text-white flex items-center justify-center gap-1.5"></p>
                 <p id="public-profile-username" class="text-xs font-bold text-slate-400 mt-0.5"></p>
                 <div class="flex items-center justify-center gap-6 mt-4">
                     <button onclick="openFollowListModal('followers')" class="text-center">
@@ -845,7 +866,14 @@
                         <p class="text-[10px] font-bold text-slate-400">フォロー中</p>
                     </button>
                 </div>
-                <button id="public-profile-follow-btn" onclick="togglePublicProfileFollow()" class="w-full mt-4 py-2.5 rounded-xl font-black text-sm transition-all">フォローする</button>
+                <div class="flex gap-2 mt-4">
+                    <button id="public-profile-follow-btn" onclick="togglePublicProfileFollow()" class="flex-1 py-2.5 rounded-xl font-black text-sm transition-all">フォローする</button>
+                    <button id="public-profile-message-btn" onclick="onMessageButtonClick()" class="hidden flex-1 py-2.5 rounded-xl font-black text-sm border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 transition-all">メッセージ</button>
+                </div>
+            </div>
+            <div id="public-profile-private-notice" class="hidden px-5 py-10 text-center">
+                <i data-lucide="lock" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+                <p class="text-xs font-bold text-slate-400">このアカウントは非公開です。<br>お互いにフォローすると投稿が見られるようになります。</p>
             </div>
             <div id="public-profile-posts" class="px-4 py-3 space-y-3"></div>
         </div>
@@ -858,6 +886,42 @@
             <h2 id="follow-list-title" class="text-sm font-black text-slate-800 dark:text-white">フォロワー</h2>
         </div>
         <div id="follow-list-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+    </div>
+
+    <!-- ブロック中のユーザー一覧 -->
+    <div id="block-list-modal" class="fixed inset-0 z-[1002] bg-white dark:bg-[#0b1120] hidden flex flex-col">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <button onclick="closeBlockListModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+            <h2 class="text-sm font-black text-slate-800 dark:text-white">ブロック中のユーザー</h2>
+        </div>
+        <div id="block-list-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+    </div>
+
+    <!-- チャット一覧 -->
+    <div id="chat-list-screen" class="fixed inset-0 z-[900] bg-white dark:bg-[#0b1120] hidden flex flex-col">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <button onclick="closeChatListScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+            <h2 class="text-sm font-black text-slate-800 dark:text-white">メッセージ</h2>
+        </div>
+        <div id="chat-list-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+        <p class="text-[10px] font-bold text-slate-400 text-center py-3">お互いにフォローしている人とだけメッセージができます。</p>
+    </div>
+
+    <!-- チャットルーム -->
+    <div id="chat-room-screen" class="fixed inset-0 z-[1001] bg-white dark:bg-[#0b1120] hidden flex flex-col">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <button onclick="closeChatRoomScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+            <div class="flex items-center gap-2 min-w-0 cursor-pointer" id="chat-room-header" onclick="openPublicProfileScreen(chatRoomOtherUid)">
+                <div id="chat-room-avatar-wrap" class="w-8 h-8"></div>
+                <h2 id="chat-room-title" class="text-sm font-black text-slate-800 dark:text-white truncate"></h2>
+            </div>
+        </div>
+        <div id="chat-room-messages" class="flex-1 overflow-y-auto px-4 py-3 space-y-2"></div>
+        <div class="border-t border-slate-100 dark:border-slate-800 p-3 flex items-center gap-2 shrink-0">
+            <input type="text" id="chat-room-input" placeholder="メッセージを入力" maxlength="500" onkeydown="if(event.key==='Enter'){sendChatMessage();}"
+                class="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+            <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white flex items-center justify-center shrink-0"><i data-lucide="send" class="w-4 h-4"></i></button>
+        </div>
     </div>
 
     <!-- ==================================================
@@ -1595,6 +1659,23 @@
                             <button id="account-menu-edit-profile" onclick="openProfileSetupModal(window.currentAppUser)" class="hidden w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="pencil" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
                                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200">プロフィールを編集</span>
+                            </button>
+                            <button id="account-menu-messages" onclick="showChatListScreen()" class="hidden w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <i data-lucide="message-circle" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-200">メッセージ</span>
+                            </button>
+                            <button id="account-menu-privacy-toggle" onclick="toggleAccountPrivacy()" class="hidden w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <span class="flex items-center space-x-3">
+                                    <i data-lucide="lock" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200">非公開アカウント</span>
+                                </span>
+                                <span id="account-menu-privacy-switch" class="relative inline-block w-9 h-5 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors shrink-0">
+                                    <span id="account-menu-privacy-knob" class="absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform"></span>
+                                </span>
+                            </button>
+                            <button id="account-menu-blocklist" onclick="openBlockListModal()" class="hidden w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <i data-lucide="shield-off" class="w-4 h-4 text-slate-400 shrink-0"></i>
+                                <span class="text-xs font-bold text-slate-700 dark:text-slate-200">ブロック中のユーザー</span>
                             </button>
                             <button onclick="AppAuthUI.logout()" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <i data-lucide="log-out" class="w-4 h-4 text-rose-500 shrink-0"></i>
@@ -4713,8 +4794,17 @@
                         nickname: window.currentAppProfileName || user.displayName || '名無しさん',
                         username: window.currentAppUsername || null,
                         photo: window.currentAppProfilePhoto || null,
+                        private: !!window.currentAppIsPrivate,
                     }, { merge: true });
                 } catch (e) { console.warn('publicProfile更新に失敗', e); }
+            },
+            // ===== 非公開アカウント設定 =====
+            async setAccountPrivate(isPrivate) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                await updateDoc(doc(db, 'users', user.uid), { isPrivate: !!isPrivate });
+                window.currentAppIsPrivate = !!isPrivate;
+                await setDoc(doc(db, 'publicProfiles', user.uid), { private: !!isPrivate }, { merge: true });
             },
             async getPublicProfile(uid) {
                 const snap = await getDoc(doc(db, 'publicProfiles', uid));
@@ -4754,6 +4844,102 @@
                 const user = auth.currentUser;
                 if (!user) throw new Error('not logged in');
                 await deleteDoc(doc(db, 'follows', this.followDocId(user.uid, targetUid)));
+            },
+            // 相互フォロー（お互いにフォローし合っている）かどうかを判定する
+            async isMutualFollow(targetUid) {
+                const user = auth.currentUser;
+                if (!user) return false;
+                const [a, b] = await Promise.all([
+                    getDoc(doc(db, 'follows', this.followDocId(user.uid, targetUid))),
+                    getDoc(doc(db, 'follows', this.followDocId(targetUid, user.uid))),
+                ]);
+                return a.exists() && b.exists();
+            },
+            // ===== ブロック機能 =====
+            blockDocId(blockerUid, blockedUid) { return blockerUid + '_' + blockedUid; },
+            async isBlockedByMe(targetUid) {
+                const user = auth.currentUser;
+                if (!user) return false;
+                const snap = await getDoc(doc(db, 'blocks', this.blockDocId(user.uid, targetUid)));
+                return snap.exists();
+            },
+            async blockUser(targetUid) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                if (targetUid === user.uid) throw new Error('cannot block yourself');
+                const batch = writeBatch(db);
+                batch.set(doc(db, 'blocks', this.blockDocId(user.uid, targetUid)), {
+                    blockerUid: user.uid, blockedUid: targetUid, createdAt: serverTimestamp(),
+                });
+                // ブロックすると同時に、お互いのフォロー関係も解除しておく
+                batch.delete(doc(db, 'follows', this.followDocId(user.uid, targetUid)));
+                batch.delete(doc(db, 'follows', this.followDocId(targetUid, user.uid)));
+                await batch.commit();
+            },
+            async unblockUser(targetUid) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                await deleteDoc(doc(db, 'blocks', this.blockDocId(user.uid, targetUid)));
+            },
+            async getBlockedList() {
+                const user = auth.currentUser;
+                if (!user) return [];
+                const snaps = await getDocs(query(collection(db, 'blocks'), where('blockerUid', '==', user.uid)));
+                const uids = snaps.docs.map(d => d.data().blockedUid);
+                return Promise.all(uids.map(u => this.getPublicProfile(u)));
+            },
+            // ===== 個人チャット（お互いにフォローし合っている人とだけ） =====
+            chatDocId(uidA, uidB) { return [uidA, uidB].sort().join('_'); },
+            async openOrCreateChat(targetUid) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                const mutual = await this.isMutualFollow(targetUid);
+                if (!mutual) throw Object.assign(new Error('not mutual follow'), { code: 'chat/not-mutual' });
+                const chatId = this.chatDocId(user.uid, targetUid);
+                const ref = doc(db, 'chats', chatId);
+                const snap = await getDoc(ref);
+                if (!snap.exists()) {
+                    await setDoc(ref, {
+                        participants: [user.uid, targetUid].sort(),
+                        createdAt: serverTimestamp(),
+                        lastMessage: null,
+                        lastMessageAt: serverTimestamp(),
+                        lastSenderUid: null,
+                    });
+                }
+                return chatId;
+            },
+            // 自分が参加している会話一覧をリアルタイム購読する
+            subscribeChatList(callback) {
+                const user = auth.currentUser;
+                if (!user) { callback([]); return () => {}; }
+                const q = query(collection(db, 'chats'), where('participants', 'array-contains', user.uid), orderBy('lastMessageAt', 'desc'), limit(50));
+                return onSnapshot(q, snap => {
+                    callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, err => console.error('subscribeChatList error', err));
+            },
+            // 1つの会話のメッセージをリアルタイム購読する
+            subscribeChatMessages(chatId, callback, max = 200) {
+                const q = query(collection(db, 'chats', chatId, 'messages'), orderBy('createdAt', 'asc'), limit(max));
+                return onSnapshot(q, snap => {
+                    callback(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+                }, err => console.error('subscribeChatMessages error', err));
+            },
+            async sendChatMessage(chatId, text) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                const trimmed = (text || '').trim().slice(0, 500);
+                if (!trimmed) return;
+                await addDoc(collection(db, 'chats', chatId, 'messages'), {
+                    senderUid: user.uid,
+                    text: trimmed,
+                    createdAt: serverTimestamp(),
+                });
+                await updateDoc(doc(db, 'chats', chatId), {
+                    lastMessage: trimmed,
+                    lastMessageAt: serverTimestamp(),
+                    lastSenderUid: user.uid,
+                });
             },
             async getFollowerCount(uid) {
                 const q = query(collection(db, 'follows'), where('followeeUid', '==', uid));
@@ -4977,6 +5163,13 @@
         };
 
         onAuthStateChanged(auth, async (user) => {
+            if (user && user.isAnonymous) {
+                // 以前ゲストとして使っていたセッションがブラウザに残っている場合、
+                // 強制的にサインアウトしてログイン画面に戻す。
+                // signOut()が完了すると、この関数がuser=nullで再度呼ばれるのでそちらで処理する。
+                try { await signOut(auth); } catch (e) { console.error('anonymous auto-signout error', e); }
+                return;
+            }
             window.dispatchEvent(new CustomEvent('app-auth-changed', { detail: { user } }));
             if (user) {
                 try {
@@ -4993,6 +5186,7 @@
                     window.currentAppHighSchool = data.highSchool || null;
                     window.currentAppAchievementGoals = Array.isArray(data.achievementGoals) ? data.achievementGoals : [];
                     window.currentAppFullName = { lastName: data.lastName || '', firstName: data.firstName || '', lastNameKana: data.lastNameKana || '', firstNameKana: data.firstNameKana || '' };
+                    window.currentAppIsPrivate = !!data.isPrivate;
                     window.dispatchEvent(new CustomEvent('app-class-changed', { detail: { classId } }));
 
                     // このブラウザでまだクラウドの予定・成績・進行度を読み込んでいなければ、1度だけ読み込んで反映する
@@ -5032,6 +5226,7 @@
                 window.currentAppHighSchool = null;
                 window.currentAppAchievementGoals = [];
                 window.currentAppFullName = null;
+                window.currentAppIsPrivate = false;
             }
         });
     </script>
@@ -5931,7 +6126,25 @@
             setTimeout(() => location.reload(), 1200);
         });
 
+        // 起動時の読み込み画面は、Firebaseのログイン状態が最初に確定した時点で一度だけ隠す。
+        // （匿名ユーザーは自動サインアウトされて user=null で再度呼ばれるので、そちらで隠れる）
+        let authLoadingScreenHidden = false;
+        function hideAuthLoadingScreenOnce() {
+            if (authLoadingScreenHidden) return;
+            authLoadingScreenHidden = true;
+            const el = document.getElementById('auth-loading-screen');
+            if (el) el.classList.add('hidden');
+        }
+        // 万一Firebaseの応答が来ない場合に備えて、一定時間で強制的にログイン画面へフォールバックする
+        setTimeout(() => {
+            if (!authLoadingScreenHidden) {
+                hideAuthLoadingScreenOnce();
+                showAuthGate(true);
+            }
+        }, 6000);
+
         window.addEventListener('app-auth-changed', (e) => {
+            hideAuthLoadingScreenOnce();
             const user = e.detail.user;
             window.currentAppUser = user;
             if (typeof updateAccountMenuDisplay === 'function') { updateAccountMenuDisplay(user); }
@@ -8521,6 +8734,9 @@
             const editProfileBtn = document.getElementById('account-menu-edit-profile');
             const verifyEmailBtn = document.getElementById('account-menu-verify-email');
             const deleteBtn = document.getElementById('account-menu-delete');
+            const messagesBtn = document.getElementById('account-menu-messages');
+            const privacyToggle = document.getElementById('account-menu-privacy-toggle');
+            const blocklistBtn = document.getElementById('account-menu-blocklist');
             const classEl = document.getElementById('account-menu-class');
             if (!nameEl || !typeEl) return;
             if (classEl) {
@@ -8536,6 +8752,9 @@
                 if (editProfileBtn) editProfileBtn.classList.add('hidden');
                 if (verifyEmailBtn) verifyEmailBtn.classList.add('hidden');
                 if (deleteBtn) deleteBtn.classList.add('hidden');
+                if (messagesBtn) messagesBtn.classList.add('hidden');
+                if (privacyToggle) privacyToggle.classList.add('hidden');
+                if (blocklistBtn) blocklistBtn.classList.add('hidden');
                 return;
             }
             if (user.isAnonymous) {
@@ -8546,6 +8765,9 @@
                 if (editProfileBtn) editProfileBtn.classList.add('hidden');
                 if (verifyEmailBtn) verifyEmailBtn.classList.add('hidden');
                 if (deleteBtn) deleteBtn.classList.add('hidden');
+                if (messagesBtn) messagesBtn.classList.add('hidden');
+                if (privacyToggle) privacyToggle.classList.add('hidden');
+                if (blocklistBtn) blocklistBtn.classList.add('hidden');
             } else {
                 nameEl.textContent = window.currentAppProfileName || user.displayName || (user.email || 'ログイン中');
                 typeEl.textContent = 'ログイン中（学習ProMasterアカウント）';
@@ -8560,9 +8782,30 @@
                 if (linkEmailBtn) linkEmailBtn.classList.add('hidden');
                 if (editProfileBtn) editProfileBtn.classList.remove('hidden');
                 if (deleteBtn) deleteBtn.classList.remove('hidden');
+                if (messagesBtn) messagesBtn.classList.remove('hidden');
+                if (privacyToggle) privacyToggle.classList.remove('hidden');
+                if (blocklistBtn) blocklistBtn.classList.remove('hidden');
+                updateAccountPrivacySwitchUI(!!window.currentAppIsPrivate);
                 // メール／パスワードで登録していて、まだメールが確認されていない場合はバッジを出す
                 const hasEmailProvider = !!user.email;
                 if (verifyEmailBtn) verifyEmailBtn.classList.toggle('hidden', !(hasEmailProvider && !user.emailVerified));
+            }
+        }
+        function updateAccountPrivacySwitchUI(isPrivate) {
+            const sw = document.getElementById('account-menu-privacy-switch');
+            const knob = document.getElementById('account-menu-privacy-knob');
+            if (sw) sw.className = 'relative inline-block w-9 h-5 rounded-full transition-colors shrink-0 ' + (isPrivate ? 'bg-blue-500' : 'bg-slate-200 dark:bg-slate-700');
+            if (knob) knob.style.transform = isPrivate ? 'translateX(16px)' : 'translateX(0)';
+        }
+        async function toggleAccountPrivacy() {
+            const next = !window.currentAppIsPrivate;
+            try {
+                await window.AppFirebase.setAccountPrivate(next);
+                updateAccountPrivacySwitchUI(next);
+                showToast(next ? '非公開アカウントにしました' : '公開アカウントに戻しました');
+            } catch (e) {
+                console.error('toggle privacy error', e);
+                showToast('変更に失敗しました。時間をおいて再度お試しください');
             }
         }
         async function resendEmailVerificationFromMenu() {
@@ -17418,6 +17661,9 @@ const KOBUN_TANGO = [
             if (typeof closeUserSearchModal === 'function') closeUserSearchModal();
             if (typeof closeFollowListModal === 'function') closeFollowListModal();
             if (typeof closeComposePostModal === 'function') closeComposePostModal();
+            if (typeof closeChatListScreen === 'function') closeChatListScreen();
+            if (typeof closeChatRoomScreen === 'function') closeChatRoomScreen();
+            if (typeof closeBlockListModal === 'function') closeBlockListModal();
             // タブバーも隠す
             if (!modeTabBar) modeTabBar = document.getElementById('mode-tab-bar');
             if (modeTabBar) modeTabBar.classList.add('hidden');
@@ -17931,33 +18177,47 @@ const KOBUN_TANGO = [
             publicProfileLikeUnsubscribes.forEach(unsub => { try { unsub(); } catch (e) {} });
             publicProfileLikeUnsubscribes = [];
         }
+        function togglePublicProfileMenu() {
+            const menu = document.getElementById('public-profile-menu');
+            if (menu) menu.classList.toggle('hidden');
+        }
         async function openPublicProfileScreen(uid) {
+            if (!uid) return;
             if (window.currentAppUser && uid === window.currentAppUser.uid) { closeUserSearchModal(); showMyPageScreen(); return; }
             currentPublicProfileUid = uid;
             const screen = document.getElementById('public-profile-screen');
             if (screen) screen.classList.remove('hidden');
-            document.getElementById('public-profile-nickname').textContent = '読み込み中…';
+            document.getElementById('public-profile-menu').classList.add('hidden');
+            document.getElementById('public-profile-nickname').innerHTML = '読み込み中…';
             document.getElementById('public-profile-username').textContent = '';
             document.getElementById('public-profile-posts').innerHTML = '';
+            document.getElementById('public-profile-private-notice').classList.add('hidden');
+            document.getElementById('public-profile-message-btn').classList.add('hidden');
             if (publicProfilePostsUnsubscribe) { publicProfilePostsUnsubscribe(); publicProfilePostsUnsubscribe = null; }
             clearPublicProfileLikeSubscriptions();
             try {
                 const profile = await window.AppFirebase.getPublicProfile(uid);
                 if (currentPublicProfileUid !== uid) return; // その間に別のプロフィールが開かれていたら反映しない
                 document.getElementById('public-profile-avatar-wrap').innerHTML = renderAvatarHtml(profile.photo, profile.nickname, 'w-16 h-16 text-xl');
-                document.getElementById('public-profile-nickname').textContent = profile.nickname || '名無しさん';
+                document.getElementById('public-profile-nickname').innerHTML = escapeHtmlText(profile.nickname || '名無しさん') + (profile.private ? ' <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>' : '');
                 document.getElementById('public-profile-username').textContent = profile.username ? '@' + profile.username : '';
-                const [followerCount, followingCount, following] = await Promise.all([
+                const [followerCount, followingCount, following, mutual] = await Promise.all([
                     window.AppFirebase.getFollowerCount(uid),
                     window.AppFirebase.getFollowingCount(uid),
                     window.AppFirebase.isFollowing(uid),
+                    window.AppFirebase.isMutualFollow(uid),
                 ]);
                 if (currentPublicProfileUid !== uid) return;
                 document.getElementById('public-profile-follower-count').textContent = followerCount;
                 document.getElementById('public-profile-following-count').textContent = followingCount;
                 const followBtn = document.getElementById('public-profile-follow-btn');
                 followBtn.textContent = following ? 'フォロー中' : 'フォローする';
-                followBtn.className = 'w-full mt-4 py-2.5 rounded-xl font-black text-sm transition-all ' + (following ? 'border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white');
+                followBtn.className = 'flex-1 py-2.5 rounded-xl font-black text-sm transition-all ' + (following ? 'border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white');
+                document.getElementById('public-profile-message-btn').classList.toggle('hidden', !mutual);
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+                const canSeePosts = !profile.private || mutual;
+                document.getElementById('public-profile-private-notice').classList.toggle('hidden', canSeePosts);
+                if (!canSeePosts) return;
                 publicProfilePostsUnsubscribe = window.AppFirebase.subscribeUserPosts(uid, (posts) => {
                     if (currentPublicProfileUid !== uid) return;
                     const postsEl = document.getElementById('public-profile-posts');
@@ -17977,6 +18237,8 @@ const KOBUN_TANGO = [
         function closePublicProfileScreen() {
             const screen = document.getElementById('public-profile-screen');
             if (screen) screen.classList.add('hidden');
+            const menu = document.getElementById('public-profile-menu');
+            if (menu) menu.classList.add('hidden');
             currentPublicProfileUid = null;
             if (publicProfilePostsUnsubscribe) { publicProfilePostsUnsubscribe(); publicProfilePostsUnsubscribe = null; }
             clearPublicProfileLikeSubscriptions();
@@ -17992,9 +18254,168 @@ const KOBUN_TANGO = [
                 await openPublicProfileScreen(currentPublicProfileUid);
             } catch (e) {
                 console.error('follow toggle error', e);
-                showToast('操作に失敗しました。時間をおいて再度お試しください');
+                const msg = (e && e.code === 'permission-denied') ? 'この人をフォローすることはできません' : '操作に失敗しました。時間をおいて再度お試しください';
+                showToast(msg);
             } finally {
                 btn.disabled = false;
+            }
+        }
+        async function onBlockButtonClick() {
+            if (!window.currentAppUser || !currentPublicProfileUid) return;
+            togglePublicProfileMenu();
+            if (!confirm('このユーザーをブロックしますか？お互いのフォローが解除され、今後フォロー・メッセージができなくなります。')) return;
+            try {
+                await window.AppFirebase.blockUser(currentPublicProfileUid);
+                showToast('ブロックしました');
+                closePublicProfileScreen();
+            } catch (e) {
+                console.error('block error', e);
+                showToast('ブロックに失敗しました。時間をおいて再度お試しください');
+            }
+        }
+        async function onMessageButtonClick() {
+            if (!currentPublicProfileUid) return;
+            try {
+                const chatId = await window.AppFirebase.openOrCreateChat(currentPublicProfileUid);
+                const profile = await window.AppFirebase.getPublicProfile(currentPublicProfileUid);
+                openChatRoomScreen(chatId, currentPublicProfileUid, profile);
+            } catch (e) {
+                console.error('open chat error', e);
+                showToast(e && e.code === 'chat/not-mutual' ? 'お互いにフォローしている人とだけメッセージができます' : 'メッセージを開けませんでした');
+            }
+        }
+
+        // ----- ブロック中のユーザー一覧 -----
+        async function openBlockListModal() {
+            const resultsEl = document.getElementById('block-list-results');
+            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">読み込み中…</p>';
+            const modal = document.getElementById('block-list-modal');
+            if (modal) modal.classList.remove('hidden');
+            try {
+                const list = await window.AppFirebase.getBlockedList();
+                if (list.length === 0) {
+                    resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">ブロック中のユーザーはいません</p>';
+                    return;
+                }
+                resultsEl.innerHTML = list.map(p => `
+                    <div class="flex items-center gap-3 py-3">
+                        <div class="flex items-center gap-3 flex-1 min-w-0">
+                            ${renderAvatarHtml(p.photo, p.nickname, 'w-10 h-10 text-sm')}
+                            <div class="min-w-0">
+                                <p class="text-sm font-black text-slate-800 dark:text-white truncate">${p.nickname || '名無しさん'}</p>
+                                <p class="text-[11px] font-bold text-slate-400 truncate">${p.username ? '@' + p.username : ''}</p>
+                            </div>
+                        </div>
+                        <button onclick="onUnblockClick('${p.uid}')" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-black border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">解除</button>
+                    </div>`).join('');
+            } catch (e) {
+                console.error('load block list error', e);
+                resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-6">読み込みに失敗しました</p>';
+            }
+        }
+        function closeBlockListModal() {
+            const modal = document.getElementById('block-list-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+        async function onUnblockClick(uid) {
+            try {
+                await window.AppFirebase.unblockUser(uid);
+                showToast('ブロックを解除しました');
+                openBlockListModal();
+            } catch (e) {
+                console.error('unblock error', e);
+                showToast('解除に失敗しました。時間をおいて再度お試しください');
+            }
+        }
+
+        // ----- 個人チャット（DM） -----
+        let chatListUnsubscribe = null;
+        let chatRoomMessagesUnsubscribe = null;
+        let chatRoomOtherUid = null;
+        let currentChatId = null;
+        function chatTimeLabel(ts) {
+            if (!ts) return '';
+            const date = ts.toDate ? ts.toDate() : new Date(ts);
+            return date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' }) + ' ' + date.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
+        }
+        function showChatListScreen() {
+            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
+            const screen = document.getElementById('chat-list-screen');
+            if (screen) screen.classList.remove('hidden');
+            const resultsEl = document.getElementById('chat-list-results');
+            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-10">読み込み中…</p>';
+            if (chatListUnsubscribe) { chatListUnsubscribe(); chatListUnsubscribe = null; }
+            chatListUnsubscribe = window.AppFirebase.subscribeChatList(async (chats) => {
+                if (chats.length === 0) {
+                    resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-10">まだメッセージがありません。<br>プロフィール画面からメッセージを送ってみましょう。</p>';
+                    return;
+                }
+                const myUid = window.currentAppUser.uid;
+                const rows = await Promise.all(chats.map(async (chat) => {
+                    const otherUid = chat.participants.find(p => p !== myUid);
+                    const profile = await window.AppFirebase.getPublicProfile(otherUid);
+                    return { chat, otherUid, profile };
+                }));
+                resultsEl.innerHTML = rows.map(({ chat, otherUid, profile }) => `
+                    <button onclick='openChatRoomScreen(${JSON.stringify(chat.id)}, ${JSON.stringify(otherUid)}, ${JSON.stringify(profile)})' class="w-full flex items-center gap-3 py-3 text-left">
+                        ${renderAvatarHtml(profile.photo, profile.nickname, 'w-11 h-11 text-sm')}
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-black text-slate-800 dark:text-white truncate">${profile.nickname || '名無しさん'}</p>
+                            <p class="text-xs font-bold text-slate-400 truncate">${chat.lastMessage ? escapeHtmlText(chat.lastMessage) : 'メッセージを送ってみましょう'}</p>
+                        </div>
+                    </button>`).join('');
+            });
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeChatListScreen() {
+            const screen = document.getElementById('chat-list-screen');
+            if (screen) screen.classList.add('hidden');
+            if (chatListUnsubscribe) { chatListUnsubscribe(); chatListUnsubscribe = null; }
+        }
+        function openChatRoomScreen(chatId, otherUid, profile) {
+            currentChatId = chatId;
+            chatRoomOtherUid = otherUid;
+            document.getElementById('chat-room-avatar-wrap').innerHTML = renderAvatarHtml(profile.photo, profile.nickname, 'w-8 h-8 text-xs');
+            document.getElementById('chat-room-title').textContent = profile.nickname || '名無しさん';
+            document.getElementById('chat-room-input').value = '';
+            const screen = document.getElementById('chat-room-screen');
+            if (screen) screen.classList.remove('hidden');
+            if (chatRoomMessagesUnsubscribe) { chatRoomMessagesUnsubscribe(); chatRoomMessagesUnsubscribe = null; }
+            const messagesEl = document.getElementById('chat-room-messages');
+            messagesEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">読み込み中…</p>';
+            chatRoomMessagesUnsubscribe = window.AppFirebase.subscribeChatMessages(chatId, (messages) => {
+                const myUid = window.currentAppUser && window.currentAppUser.uid;
+                messagesEl.innerHTML = messages.map(m => {
+                    const mine = m.senderUid === myUid;
+                    return `<div class="flex ${mine ? 'justify-end' : 'justify-start'}">
+                        <div class="max-w-[75%] px-3.5 py-2 rounded-2xl text-sm font-bold whitespace-pre-wrap break-words ${mine ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-sm'}">
+                            ${escapeHtmlText(m.text || '')}
+                            <div class="text-[9px] font-bold mt-0.5 ${mine ? 'text-white/70' : 'text-slate-400'}">${chatTimeLabel(m.createdAt)}</div>
+                        </div>
+                    </div>`;
+                }).join('');
+                messagesEl.scrollTop = messagesEl.scrollHeight;
+            });
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function closeChatRoomScreen() {
+            const screen = document.getElementById('chat-room-screen');
+            if (screen) screen.classList.add('hidden');
+            if (chatRoomMessagesUnsubscribe) { chatRoomMessagesUnsubscribe(); chatRoomMessagesUnsubscribe = null; }
+            currentChatId = null;
+            chatRoomOtherUid = null;
+        }
+        async function sendChatMessage() {
+            const input = document.getElementById('chat-room-input');
+            const text = (input && input.value || '').trim();
+            if (!text || !currentChatId) return;
+            input.value = '';
+            try {
+                await window.AppFirebase.sendChatMessage(currentChatId, text);
+            } catch (e) {
+                console.error('send message error', e);
+                showToast('送信に失敗しました。時間をおいて再度お試しください');
+                input.value = text;
             }
         }
 
