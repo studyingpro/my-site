@@ -18469,6 +18469,9 @@ const KOBUN_TANGO = [
             document.getElementById('chat-room-input').value = '';
             const screen = document.getElementById('chat-room-screen');
             if (screen) screen.classList.remove('hidden');
+            // タブバー（z-indexが非常に高い）が入力欄の上に重なって隠れてしまうため、開いている間は非表示にする
+            const tabBar = document.getElementById('bottom-tab-bar');
+            if (tabBar) tabBar.style.display = 'none';
             if (chatRoomMessagesUnsubscribe) { chatRoomMessagesUnsubscribe(); chatRoomMessagesUnsubscribe = null; }
             const messagesEl = document.getElementById('chat-room-messages');
             messagesEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">読み込み中…</p>';
@@ -18490,6 +18493,9 @@ const KOBUN_TANGO = [
         function closeChatRoomScreen() {
             const screen = document.getElementById('chat-room-screen');
             if (screen) screen.classList.add('hidden');
+            // ログイン中であれば、閉じたらタブバーを再び表示する
+            const tabBar = document.getElementById('bottom-tab-bar');
+            if (tabBar && window.currentAppUser) tabBar.style.display = '';
             if (chatRoomMessagesUnsubscribe) { chatRoomMessagesUnsubscribe(); chatRoomMessagesUnsubscribe = null; }
             currentChatId = null;
             chatRoomOtherUid = null;
