@@ -918,6 +918,8 @@
         </div>
         <div id="chat-room-messages" class="flex-1 overflow-y-auto px-4 py-3 space-y-2"></div>
         <div class="border-t border-slate-100 dark:border-slate-800 p-3 flex items-center gap-2 shrink-0">
+            <input type="file" id="chat-room-media-input" accept="image/*" class="hidden" onchange="onChatMediaSelected(event)">
+            <button onclick="document.getElementById('chat-room-media-input').click()" class="w-10 h-10 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center shrink-0" title="画像を送る"><i data-lucide="image-plus" class="w-5 h-5"></i></button>
             <input type="text" id="chat-room-input" placeholder="メッセージを入力" maxlength="500" onkeydown="if(event.key==='Enter'){sendChatMessage();}"
                 class="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
             <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white flex items-center justify-center shrink-0"><i data-lucide="send" class="w-4 h-4"></i></button>
@@ -4941,6 +4943,29 @@
                     lastSenderUid: user.uid,
                 });
             },
+            // 画像・動画をFirebase Storageにアップロードしてメッセージとして送信する
+            // 画像をFirestoreに直接保存してメッセージとして送信する（無料プランのままでOK。動画は非対応）
+            // dataUrl は呼び出し側（画面のJS）で、あらかじめリサイズ・圧縮したものを渡す
+            async sendChatImage(chatId, dataUrl) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('not logged in');
+                if (!dataUrl) return;
+                // Firestoreの1ドキュメントあたりの上限（1MiB）に安全マージンを持たせて収まっているか確認
+                if (dataUrl.length > 900 * 1024) {
+                    throw Object.assign(new Error('image too large'), { code: 'chat/media-too-large' });
+                }
+                await addDoc(collection(db, 'chats', chatId, 'messages'), {
+                    senderUid: user.uid,
+                    text: null,
+                    imageData: dataUrl,
+                    createdAt: serverTimestamp(),
+                });
+                await updateDoc(doc(db, 'chats', chatId), {
+                    lastMessage: '📷 画像',
+                    lastMessageAt: serverTimestamp(),
+                    lastSenderUid: user.uid,
+                });
+            },
             async getFollowerCount(uid) {
                 const q = query(collection(db, 'follows'), where('followeeUid', '==', uid));
                 const res = await getCountFromServer(q);
@@ -7231,7 +7256,7 @@
             // 初期状態をHistory APIに登録（URLに画面ごとのハッシュが付いていれば、その画面から始める。
             // 指定が無い通常のアプリ起動時は「マイページ」を最初の画面にする）
             let initialScreen = hashToScreen(location.hash);
-            if (!location.hash) initialScreen = 'mypage';
+            if (!location.hash || initialScreen === 'top') initialScreen = 'mypage';
             replaceState({ screen: initialScreen }, SCREEN_TITLE_MAP[initialScreen] || 'マイページ - 学習ProMaster');
             // 初期表示: URLに対応する画面（指定がなければマイページ）を表示
             if (initialScreen === 'mypage') {
@@ -18479,16 +18504,75 @@ const KOBUN_TANGO = [
                 const myUid = window.currentAppUser && window.currentAppUser.uid;
                 messagesEl.innerHTML = messages.map(m => {
                     const mine = m.senderUid === myUid;
+                    const bubbleCls = mine ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-sm';
+                    let bodyHtml;
+                    if (m.imageData) {
+                        bodyHtml = `<img src="${m.imageData}" alt="画像" class="rounded-xl max-w-full max-h-72 object-contain cursor-zoom-in" onclick="window.open('${m.imageData}', '_blank')">`;
+                    } else {
+                        bodyHtml = escapeHtmlText(m.text || '');
+                    }
+                    const paddingCls = m.imageData ? 'p-1.5' : 'px-3.5 py-2';
                     return `<div class="flex ${mine ? 'justify-end' : 'justify-start'}">
-                        <div class="max-w-[75%] px-3.5 py-2 rounded-2xl text-sm font-bold whitespace-pre-wrap break-words ${mine ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-sm'}">
-                            ${escapeHtmlText(m.text || '')}
-                            <div class="text-[9px] font-bold mt-0.5 ${mine ? 'text-white/70' : 'text-slate-400'}">${chatTimeLabel(m.createdAt)}</div>
+                        <div class="max-w-[75%] ${paddingCls} rounded-2xl text-sm font-bold whitespace-pre-wrap break-words ${bubbleCls}">
+                            ${bodyHtml}
+                            <div class="text-[9px] font-bold mt-0.5 ${m.imageData ? 'px-1.5 pb-0.5' : ''} ${mine ? 'text-white/70' : 'text-slate-400'}">${chatTimeLabel(m.createdAt)}</div>
                         </div>
                     </div>`;
                 }).join('');
                 messagesEl.scrollTop = messagesEl.scrollHeight;
             });
             if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        // チャット送信用に、アスペクト比を保ったまま長辺を縮小・圧縮する（Firestoreの1MB上限に収めるため）
+        function compressChatImageFile(file, maxDim = 1280, quality = 0.7) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('画像の読み込みに失敗しました。'));
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('画像の読み込みに失敗しました。'));
+                    img.onload = () => {
+                        let { width, height } = img;
+                        if (width > maxDim || height > maxDim) {
+                            if (width >= height) { height = Math.round(height * (maxDim / width)); width = maxDim; }
+                            else { width = Math.round(width * (maxDim / height)); height = maxDim; }
+                        }
+                        const canvas = document.createElement('canvas');
+                        canvas.width = width;
+                        canvas.height = height;
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, width, height);
+                        resolve(canvas.toDataURL('image/jpeg', quality));
+                    };
+                    img.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        async function onChatMediaSelected(event) {
+            const input = event.target;
+            const file = input.files && input.files[0];
+            input.value = '';
+            if (!file || !currentChatId) return;
+            if (!file.type.startsWith('image/')) { showToast('画像ファイルを選んでください（動画は送れません）'); return; }
+            const messagesEl = document.getElementById('chat-room-messages');
+            const loadingId = 'chat-media-uploading-' + Date.now();
+            messagesEl.insertAdjacentHTML('beforeend', `<div id="${loadingId}" class="flex justify-end"><div class="max-w-[75%] px-3.5 py-2 rounded-2xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-400">送信中…</div></div>`);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+            try {
+                // 段階的に圧縮を強めながら、Firestoreの1ドキュメント上限に収まるサイズまで縮小する
+                let dataUrl = await compressChatImageFile(file, 1280, 0.7);
+                if (dataUrl.length > 900 * 1024) dataUrl = await compressChatImageFile(file, 900, 0.6);
+                if (dataUrl.length > 900 * 1024) dataUrl = await compressChatImageFile(file, 640, 0.5);
+                await window.AppFirebase.sendChatImage(currentChatId, dataUrl);
+            } catch (e) {
+                console.error('send image error', e);
+                const msg = (e && e.code === 'chat/media-too-large') ? '画像サイズが大きすぎます。別の画像でお試しください' : '送信に失敗しました。時間をおいて再度お試しください';
+                showToast(msg);
+            } finally {
+                const el = document.getElementById(loadingId);
+                if (el) el.remove();
+            }
         }
         function closeChatRoomScreen() {
             const screen = document.getElementById('chat-room-screen');
