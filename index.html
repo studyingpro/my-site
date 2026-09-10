@@ -798,8 +798,8 @@
                 <h2 class="text-base font-black text-slate-800 dark:text-white">タイムライン</h2>
                 <div class="flex items-center gap-1">
                     <button onclick="openUserSearchModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="search" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                    <button onclick="showChatListScreen()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="message-circle" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                    <button onclick="openComposePostModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="square-pen" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                    <button id="timeline-messages-btn" onclick="showChatListScreen()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="message-circle" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                    <button id="timeline-compose-btn" onclick="openComposePostModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="square-pen" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
                 </div>
             </div>
         </div>
@@ -18075,6 +18075,16 @@ const KOBUN_TANGO = [
         // ==================================================
         // タイムライン（SNS機能：フォロー・投稿・いいね）
         // ==================================================
+        // SNS機能で「投稿・いいね・フォロー・メッセージ」などの操作をする前に呼ぶ。
+        // ゲスト（匿名）の場合は操作をブロックし、案内を出してfalseを返す。
+        function requireRealAccountForSns() {
+            if (!window.currentAppUser) { showToast('先にログインしてください'); return false; }
+            if (window.currentAppUser.isAnonymous) {
+                showToast('ゲストは閲覧のみです。投稿・いいね・フォローなどをするには、アカウントを作成してください');
+                return false;
+            }
+            return true;
+        }
         let timelineMode = 'all';
         let timelineFeedUnsubscribe = null;
         let timelineLikeUnsubscribes = [];
@@ -18173,7 +18183,7 @@ const KOBUN_TANGO = [
             }
         }
         async function onLikeButtonClick(postId, btnEl) {
-            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
+            if (!requireRealAccountForSns()) return;
             btnEl.disabled = true;
             try {
                 // 画面の更新自体はリアルタイム購読（subscribeLikes）が自動で行う
@@ -18201,8 +18211,12 @@ const KOBUN_TANGO = [
             const followingBtn = document.getElementById('timeline-tab-following');
             const activeCls = 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-blue-500 text-white';
             const inactiveCls = 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400';
+            const isGuest = !!(window.currentAppUser && window.currentAppUser.isAnonymous);
             if (allBtn) allBtn.className = (mode === 'all') ? activeCls : inactiveCls;
-            if (followingBtn) followingBtn.className = (mode === 'following') ? activeCls : inactiveCls;
+            if (followingBtn) {
+                followingBtn.className = (mode === 'following') ? activeCls : inactiveCls;
+                followingBtn.classList.toggle('hidden', isGuest);
+            }
             loadTimelineFeed();
         }
         function showTimelineScreen() {
@@ -18210,6 +18224,15 @@ const KOBUN_TANGO = [
             const screen = document.getElementById('timeline-screen');
             if (screen) screen.classList.remove('hidden');
             setBottomTabActive('timeline');
+            // ゲスト（匿名）は閲覧のみ：投稿・メッセージ・フォロー中タブは表示しない
+            const isGuest = !!window.currentAppUser.isAnonymous;
+            const messagesBtn = document.getElementById('timeline-messages-btn');
+            const composeBtn = document.getElementById('timeline-compose-btn');
+            const followingTab = document.getElementById('timeline-tab-following');
+            if (messagesBtn) messagesBtn.classList.toggle('hidden', isGuest);
+            if (composeBtn) composeBtn.classList.toggle('hidden', isGuest);
+            if (followingTab) followingTab.classList.toggle('hidden', isGuest);
+            if (isGuest && timelineMode === 'following') timelineMode = 'all';
             setTimelineMode(timelineMode);
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
@@ -18223,6 +18246,7 @@ const KOBUN_TANGO = [
 
         // ----- 投稿作成 -----
         function openComposePostModal() {
+            if (!requireRealAccountForSns()) return;
             const textEl = document.getElementById('compose-post-text');
             const errEl = document.getElementById('compose-post-error');
             if (textEl) textEl.value = '';
@@ -18288,7 +18312,7 @@ const KOBUN_TANGO = [
                         <p class="text-[11px] font-bold text-slate-400 truncate">${profile.username ? '@' + profile.username : ''}</p>
                     </div>
                 </div>
-                ${showFollowBtn && window.currentAppUser && profile.uid !== window.currentAppUser.uid ? `<button data-follow-btn data-uid="${profile.uid}" onclick="onInlineFollowClick(this)" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-black border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">…</button>` : ''}
+                ${showFollowBtn && window.currentAppUser && !window.currentAppUser.isAnonymous && profile.uid !== window.currentAppUser.uid ? `<button data-follow-btn data-uid="${profile.uid}" onclick="onInlineFollowClick(this)" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-black border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">…</button>` : ''}
             </div>`;
         }
         async function runUserSearch() {
@@ -18321,6 +18345,7 @@ const KOBUN_TANGO = [
             } catch (e) { console.error(e); }
         }
         async function onInlineFollowClick(btn) {
+            if (!requireRealAccountForSns()) return;
             const uid = btn.getAttribute('data-uid');
             btn.disabled = true;
             try {
@@ -18410,7 +18435,7 @@ const KOBUN_TANGO = [
             clearPublicProfileLikeSubscriptions();
         }
         async function togglePublicProfileFollow() {
-            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
+            if (!requireRealAccountForSns()) return;
             if (!currentPublicProfileUid) return;
             const btn = document.getElementById('public-profile-follow-btn');
             btn.disabled = true;
@@ -18427,7 +18452,8 @@ const KOBUN_TANGO = [
             }
         }
         async function onBlockButtonClick() {
-            if (!window.currentAppUser || !currentPublicProfileUid) return;
+            if (!requireRealAccountForSns()) return;
+            if (!currentPublicProfileUid) return;
             togglePublicProfileMenu();
             if (!confirm('このユーザーをブロックしますか？お互いのフォローが解除され、今後フォロー・メッセージができなくなります。')) return;
             try {
@@ -18440,6 +18466,7 @@ const KOBUN_TANGO = [
             }
         }
         async function onMessageButtonClick() {
+            if (!requireRealAccountForSns()) return;
             if (!currentPublicProfileUid) return;
             try {
                 const chatId = await window.AppFirebase.openOrCreateChat(currentPublicProfileUid);
@@ -18505,7 +18532,7 @@ const KOBUN_TANGO = [
             return date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' }) + ' ' + date.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
         }
         function showChatListScreen() {
-            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
+            if (!requireRealAccountForSns()) return;
             const screen = document.getElementById('chat-list-screen');
             if (screen) screen.classList.remove('hidden');
             const resultsEl = document.getElementById('chat-list-results');
