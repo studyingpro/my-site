@@ -4331,8 +4331,8 @@
       "updatedAt": "2026-08-27T01:38:22.579Z"
     }
   ],
-  "examRangeEnabled": true,
+  "examRangeEnabled": false,
   "summerTasks": [],
-  "summerTaskEnabled": true,
+  "summerTaskEnabled": false,
   "summerTaskTitle": ""
 }
