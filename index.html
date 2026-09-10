@@ -333,6 +333,9 @@
                 <button id="auth-btn-login" onclick="openEmailAuthModal('login')" class="w-full py-3 text-sm font-black text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
                     ログイン
                 </button>
+                <button id="auth-btn-guest" onclick="AppAuthUI.loginWith('guest')" class="w-full py-2 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
+                    ゲストとして入る
+                </button>
             </div>
             <p id="auth-gate-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-3"></p>
         </div>
@@ -790,19 +793,23 @@
          タイムライン（SNS機能：フォロー・投稿・いいね）
          ================================================== -->
     <div id="timeline-screen" class="fixed inset-0 z-[900] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center justify-between border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <h2 class="text-base font-black text-slate-800 dark:text-white">タイムライン</h2>
-            <div class="flex items-center gap-1">
-                <button onclick="openUserSearchModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="search" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                <button onclick="showChatListScreen()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="message-circle" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                <button onclick="openComposePostModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="square-pen" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between">
+                <h2 class="text-base font-black text-slate-800 dark:text-white">タイムライン</h2>
+                <div class="flex items-center gap-1">
+                    <button onclick="openUserSearchModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="search" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                    <button onclick="showChatListScreen()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="message-circle" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                    <button onclick="openComposePostModal()" class="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="square-pen" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                </div>
             </div>
         </div>
-        <div class="flex gap-1.5 px-4 pt-3 pb-1 shrink-0">
+        <div class="max-w-md mx-auto w-full flex gap-1.5 px-4 pt-3 pb-1 shrink-0">
             <button id="timeline-tab-all" onclick="setTimelineMode('all')" class="flex-1 py-2 rounded-xl text-xs font-black transition-all">すべて</button>
             <button id="timeline-tab-following" onclick="setTimelineMode('following')" class="flex-1 py-2 rounded-xl text-xs font-black transition-all">フォロー中</button>
         </div>
-        <div id="timeline-feed" class="flex-1 overflow-y-auto px-4 pb-24 pt-2 space-y-3"></div>
+        <div class="flex-1 overflow-y-auto">
+            <div id="timeline-feed" class="max-w-md mx-auto px-4 pb-24 pt-2 space-y-3"></div>
+        </div>
     </div>
 
     <!-- 投稿作成 -->
@@ -824,105 +831,121 @@
 
     <!-- ユーザー検索 -->
     <div id="user-search-modal" class="fixed inset-0 z-[1001] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <button onclick="closeUserSearchModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-            <input type="text" id="user-search-input" oninput="runUserSearch()" placeholder="ユーザーネームで検索"
-                class="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+                <button onclick="closeUserSearchModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <input type="text" id="user-search-input" oninput="runUserSearch()" placeholder="ユーザーネームで検索"
+                    class="flex-1 px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+            </div>
         </div>
-        <div id="user-search-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+        <div id="user-search-results" class="flex-1 overflow-y-auto max-w-md w-full mx-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
     </div>
 
     <!-- 公開プロフィール -->
     <div id="public-profile-screen" class="fixed inset-0 z-[1003] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <div class="flex items-center gap-2">
-                <button onclick="closePublicProfileScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                <h2 class="text-sm font-black text-slate-800 dark:text-white">プロフィール</h2>
-            </div>
-            <div class="relative">
-                <button onclick="togglePublicProfileMenu()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="more-vertical" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                <div id="public-profile-menu" class="hidden absolute right-0 top-9 w-44 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg overflow-hidden z-20">
-                    <button id="public-profile-block-btn" onclick="onBlockButtonClick()" class="w-full flex items-center gap-2 px-3.5 py-2.5 text-left hover:bg-rose-50 dark:hover:bg-rose-900/20">
-                        <i data-lucide="shield-off" class="w-4 h-4 text-rose-500"></i>
-                        <span class="text-xs font-bold text-rose-600 dark:text-rose-400">ブロックする</span>
-                    </button>
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="max-w-md mx-auto px-4 py-3 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <button onclick="closePublicProfileScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                    <h2 class="text-sm font-black text-slate-800 dark:text-white">プロフィール</h2>
+                </div>
+                <div class="relative">
+                    <button onclick="togglePublicProfileMenu()" class="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="more-vertical" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                    <div id="public-profile-menu" class="hidden absolute right-0 top-9 w-44 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl shadow-lg overflow-hidden z-20">
+                        <button id="public-profile-block-btn" onclick="onBlockButtonClick()" class="w-full flex items-center gap-2 px-3.5 py-2.5 text-left hover:bg-rose-50 dark:hover:bg-rose-900/20">
+                            <i data-lucide="shield-off" class="w-4 h-4 text-rose-500"></i>
+                            <span class="text-xs font-bold text-rose-600 dark:text-rose-400">ブロックする</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="flex-1 overflow-y-auto">
-            <div class="p-5 text-center border-b border-slate-100 dark:border-slate-800">
-                <div id="public-profile-avatar-wrap" class="w-16 h-16 mx-auto mb-2">
-                    <div class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white text-xl font-black" id="public-profile-avatar">?</div>
+            <div class="max-w-md mx-auto">
+                <div class="p-5 text-center border-b border-slate-100 dark:border-slate-800">
+                    <div id="public-profile-avatar-wrap" class="w-16 h-16 mx-auto mb-2">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white text-xl font-black" id="public-profile-avatar">?</div>
+                    </div>
+                    <p id="public-profile-nickname" class="text-base font-black text-slate-800 dark:text-white flex items-center justify-center gap-1.5"></p>
+                    <p id="public-profile-username" class="text-xs font-bold text-slate-400 mt-0.5"></p>
+                    <div class="flex items-center justify-center gap-6 mt-4">
+                        <button onclick="openFollowListModal('followers')" class="text-center">
+                            <p id="public-profile-follower-count" class="text-base font-black text-slate-800 dark:text-white">0</p>
+                            <p class="text-[10px] font-bold text-slate-400">フォロワー</p>
+                        </button>
+                        <button onclick="openFollowListModal('following')" class="text-center">
+                            <p id="public-profile-following-count" class="text-base font-black text-slate-800 dark:text-white">0</p>
+                            <p class="text-[10px] font-bold text-slate-400">フォロー中</p>
+                        </button>
+                    </div>
+                    <div class="flex gap-2 mt-4">
+                        <button id="public-profile-follow-btn" onclick="togglePublicProfileFollow()" class="flex-1 py-2.5 rounded-xl font-black text-sm transition-all">フォローする</button>
+                        <button id="public-profile-message-btn" onclick="onMessageButtonClick()" class="hidden flex-1 py-2.5 rounded-xl font-black text-sm border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 transition-all">メッセージ</button>
+                    </div>
                 </div>
-                <p id="public-profile-nickname" class="text-base font-black text-slate-800 dark:text-white flex items-center justify-center gap-1.5"></p>
-                <p id="public-profile-username" class="text-xs font-bold text-slate-400 mt-0.5"></p>
-                <div class="flex items-center justify-center gap-6 mt-4">
-                    <button onclick="openFollowListModal('followers')" class="text-center">
-                        <p id="public-profile-follower-count" class="text-base font-black text-slate-800 dark:text-white">0</p>
-                        <p class="text-[10px] font-bold text-slate-400">フォロワー</p>
-                    </button>
-                    <button onclick="openFollowListModal('following')" class="text-center">
-                        <p id="public-profile-following-count" class="text-base font-black text-slate-800 dark:text-white">0</p>
-                        <p class="text-[10px] font-bold text-slate-400">フォロー中</p>
-                    </button>
+                <div id="public-profile-private-notice" class="hidden px-5 py-10 text-center">
+                    <i data-lucide="lock" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
+                    <p class="text-xs font-bold text-slate-400">このアカウントは非公開です。<br>お互いにフォローすると投稿が見られるようになります。</p>
                 </div>
-                <div class="flex gap-2 mt-4">
-                    <button id="public-profile-follow-btn" onclick="togglePublicProfileFollow()" class="flex-1 py-2.5 rounded-xl font-black text-sm transition-all">フォローする</button>
-                    <button id="public-profile-message-btn" onclick="onMessageButtonClick()" class="hidden flex-1 py-2.5 rounded-xl font-black text-sm border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 transition-all">メッセージ</button>
-                </div>
+                <div id="public-profile-posts" class="px-4 py-3 space-y-3"></div>
             </div>
-            <div id="public-profile-private-notice" class="hidden px-5 py-10 text-center">
-                <i data-lucide="lock" class="w-8 h-8 text-slate-300 mx-auto mb-2"></i>
-                <p class="text-xs font-bold text-slate-400">このアカウントは非公開です。<br>お互いにフォローすると投稿が見られるようになります。</p>
-            </div>
-            <div id="public-profile-posts" class="px-4 py-3 space-y-3"></div>
         </div>
     </div>
 
     <!-- フォロワー／フォロー中 一覧 -->
     <div id="follow-list-modal" class="fixed inset-0 z-[1002] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <button onclick="closeFollowListModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-            <h2 id="follow-list-title" class="text-sm font-black text-slate-800 dark:text-white">フォロワー</h2>
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+                <button onclick="closeFollowListModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <h2 id="follow-list-title" class="text-sm font-black text-slate-800 dark:text-white">フォロワー</h2>
+            </div>
         </div>
-        <div id="follow-list-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+        <div id="follow-list-results" class="flex-1 overflow-y-auto max-w-md w-full mx-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
     </div>
 
     <!-- ブロック中のユーザー一覧 -->
     <div id="block-list-modal" class="fixed inset-0 z-[1002] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <button onclick="closeBlockListModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-            <h2 class="text-sm font-black text-slate-800 dark:text-white">ブロック中のユーザー</h2>
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+                <button onclick="closeBlockListModal()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <h2 class="text-sm font-black text-slate-800 dark:text-white">ブロック中のユーザー</h2>
+            </div>
         </div>
-        <div id="block-list-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+        <div id="block-list-results" class="flex-1 overflow-y-auto max-w-md w-full mx-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
     </div>
 
     <!-- チャット一覧 -->
     <div id="chat-list-screen" class="fixed inset-0 z-[900] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <button onclick="closeChatListScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-            <h2 class="text-sm font-black text-slate-800 dark:text-white">メッセージ</h2>
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+                <button onclick="closeChatListScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <h2 class="text-sm font-black text-slate-800 dark:text-white">メッセージ</h2>
+            </div>
         </div>
-        <div id="chat-list-results" class="flex-1 overflow-y-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
-        <p class="text-[10px] font-bold text-slate-400 text-center py-3">お互いにフォローしている人とだけメッセージができます。</p>
+        <div id="chat-list-results" class="flex-1 overflow-y-auto max-w-md w-full mx-auto px-4 py-2 divide-y divide-slate-100 dark:divide-slate-800"></div>
+        <p class="text-[10px] font-bold text-slate-400 text-center py-3 shrink-0">お互いにフォローしている人とだけメッセージができます。</p>
     </div>
 
     <!-- チャットルーム -->
     <div id="chat-room-screen" class="fixed inset-0 z-[1004] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
-            <button onclick="closeChatRoomScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-            <div class="flex items-center gap-2 min-w-0 cursor-pointer" id="chat-room-header" onclick="openPublicProfileScreen(chatRoomOtherUid)">
-                <div id="chat-room-avatar-wrap" class="w-8 h-8"></div>
-                <h2 id="chat-room-title" class="text-sm font-black text-slate-800 dark:text-white truncate"></h2>
+        <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur border-b border-slate-100 dark:border-slate-800 z-10 shrink-0">
+            <div class="max-w-md mx-auto px-4 py-3 flex items-center gap-2">
+                <button onclick="closeChatRoomScreen()" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
+                <div class="flex items-center gap-2 min-w-0 cursor-pointer" id="chat-room-header" onclick="openPublicProfileScreen(chatRoomOtherUid)">
+                    <div id="chat-room-avatar-wrap" class="w-8 h-8"></div>
+                    <h2 id="chat-room-title" class="text-sm font-black text-slate-800 dark:text-white truncate"></h2>
+                </div>
             </div>
         </div>
-        <div id="chat-room-messages" class="flex-1 overflow-y-auto px-4 py-3 space-y-2"></div>
-        <div class="border-t border-slate-100 dark:border-slate-800 p-3 flex items-center gap-2 shrink-0">
-            <input type="file" id="chat-room-media-input" accept="image/*" class="hidden" onchange="onChatMediaSelected(event)">
-            <button onclick="document.getElementById('chat-room-media-input').click()" class="w-10 h-10 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center shrink-0" title="画像を送る"><i data-lucide="image-plus" class="w-5 h-5"></i></button>
-            <input type="text" id="chat-room-input" placeholder="メッセージを入力" maxlength="500" onkeydown="if(event.key==='Enter'){sendChatMessage();}"
-                class="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-            <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white flex items-center justify-center shrink-0"><i data-lucide="send" class="w-4 h-4"></i></button>
+        <div id="chat-room-messages" class="flex-1 overflow-y-auto max-w-md w-full mx-auto px-4 py-3 space-y-2"></div>
+        <div class="border-t border-slate-100 dark:border-slate-800 p-3 shrink-0">
+            <div class="max-w-md mx-auto flex items-center gap-2">
+                <input type="file" id="chat-room-media-input" accept="image/*" class="hidden" onchange="onChatMediaSelected(event)">
+                <button onclick="document.getElementById('chat-room-media-input').click()" class="w-10 h-10 rounded-full text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-center shrink-0" title="画像を送る"><i data-lucide="image-plus" class="w-5 h-5"></i></button>
+                <input type="text" id="chat-room-input" placeholder="メッセージを入力" maxlength="500" onkeydown="if(event.key==='Enter'){sendChatMessage();}"
+                    class="flex-1 px-3.5 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-full text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                <button onclick="sendChatMessage()" class="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white flex items-center justify-center shrink-0"><i data-lucide="send" class="w-4 h-4"></i></button>
+            </div>
         </div>
     </div>
 
@@ -3137,6 +3160,15 @@
                     お知らせ・予定・コーナー・クラス・セクションの追加編集は、この設定画面ではなく<b>本体アプリの各画面をそのまま</b>使って行います。下のボタンからそれぞれの画面へ移動できます。ここではGitHub連携・利用制限・パスワードなど、アプリ全体に関わる設定のみを行います。
                 </p>
 
+                <!-- 利用状況（登録アカウント数） -->
+                <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4">
+                    <div class="flex items-center gap-2">
+                        <i data-lucide="users-round" class="w-4 h-4 text-blue-500 dark:text-cyan-400"></i>
+                        <span class="text-xs font-black text-slate-700 dark:text-slate-200">学習ProMasterアカウントの数</span>
+                    </div>
+                    <span id="dev-user-count" class="text-sm font-black text-slate-800 dark:text-white">-</span>
+                </div>
+
                 <!-- コンテンツ編集への入口（すべて本体の実画面へ移動） -->
                 <div class="space-y-2">
                     <button type="button" onclick="toggleDevSection('nav')" class="w-full flex items-center justify-between">
@@ -4441,7 +4473,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-app.js";
         import {
-            getAuth, onAuthStateChanged, signOut,
+            getAuth, onAuthStateChanged, signOut, signInAnonymously,
             createUserWithEmailAndPassword, signInWithEmailAndPassword,
             linkWithCredential, EmailAuthProvider, sendPasswordResetEmail,
             sendEmailVerification,
@@ -4568,6 +4600,11 @@
 
         window.AppFirebase = {
             auth, db,
+            async loginGuest() {
+                const { user } = await signInAnonymously(auth);
+                await ensureUserDoc(user);
+                return user;
+            },
             async logout() {
                 await signOut(auth);
             },
@@ -4811,6 +4848,13 @@
             async getPublicProfile(uid) {
                 const snap = await getDoc(doc(db, 'publicProfiles', uid));
                 return snap.exists() ? { uid, ...snap.data() } : { uid, nickname: '名無しさん', username: null };
+            },
+            // 開発者モード用：学習ProMasterアカウントを作った人（ゲストを除く）の人数を取得する
+            // publicProfiles コレクションは、ゲストではない本登録済みユーザーだけに作られるドキュメントなので、
+            // その件数＝サービス利用者数の目安として使える。
+            async getRegisteredUserCount() {
+                const res = await getCountFromServer(collection(db, 'publicProfiles'));
+                return res.data().count;
             },
             // ユーザーネームの前方一致でユーザーを検索する
             async searchUsers(text) {
@@ -5275,13 +5319,6 @@
         };
 
         onAuthStateChanged(auth, async (user) => {
-            if (user && user.isAnonymous) {
-                // 以前ゲストとして使っていたセッションがブラウザに残っている場合、
-                // 強制的にサインアウトしてログイン画面に戻す。
-                // signOut()が完了すると、この関数がuser=nullで再度呼ばれるのでそちらで処理する。
-                try { await signOut(auth); } catch (e) { console.error('anonymous auto-signout error', e); }
-                return;
-            }
             window.dispatchEvent(new CustomEvent('app-auth-changed', { detail: { user } }));
             if (user) {
                 try {
@@ -5321,8 +5358,8 @@
                     // マイページの表示（アバター等）を最新の状態に更新する
                     if (typeof window.refreshStudyProfile === 'function') window.refreshStudyProfile();
                     // タイムライン機能用の公開プロフィール（ニックネーム・ユーザーネーム・写真）も
-                    // 最新の値が確定したこのタイミングで同期する
-                    if (window.AppFirebase && typeof window.AppFirebase.ensurePublicProfile === 'function') {
+                    // 最新の値が確定したこのタイミングで同期する（ゲストは検索対象にする必要が無いのでスキップ）
+                    if (!user.isAnonymous && window.AppFirebase && typeof window.AppFirebase.ensurePublicProfile === 'function') {
                         window.AppFirebase.ensurePublicProfile();
                     }
                 } catch (e) {
@@ -5353,6 +5390,21 @@
         window.currentAppUser = null; // { uid, displayName, isAnonymous, ... }
 
         const AppAuthUI = {
+            async loginWith(kind) {
+                const errEl = document.getElementById('auth-gate-error');
+                if (errEl) { errEl.classList.add('hidden'); errEl.textContent = ''; }
+                try {
+                    if (kind === 'guest') {
+                        await window.AppFirebase.loginGuest();
+                    }
+                } catch (e) {
+                    console.error('login error', e);
+                    if (errEl) {
+                        errEl.textContent = 'ログインに失敗しました。時間をおいて再度お試しください。';
+                        errEl.classList.remove('hidden');
+                    }
+                }
+            },
             async logout() {
                 if (!confirm('ログアウトしますか？')) return;
                 try {
@@ -18513,7 +18565,7 @@ const KOBUN_TANGO = [
                     }
                     const paddingCls = m.imageData ? 'p-1.5' : 'px-3.5 py-2';
                     return `<div class="flex ${mine ? 'justify-end' : 'justify-start'}">
-                        <div class="max-w-[75%] ${paddingCls} rounded-2xl text-sm font-bold whitespace-pre-wrap break-words ${bubbleCls}">
+                        <div class="w-fit max-w-[80%] ${paddingCls} rounded-2xl text-sm font-bold whitespace-pre-wrap break-words ${bubbleCls}">
                             ${bodyHtml}
                             <div class="text-[9px] font-bold mt-0.5 ${m.imageData ? 'px-1.5 pb-0.5' : ''} ${mine ? 'text-white/70' : 'text-slate-400'}">${chatTimeLabel(m.createdAt)}</div>
                         </div>
@@ -18557,7 +18609,7 @@ const KOBUN_TANGO = [
             if (!file.type.startsWith('image/')) { showToast('画像ファイルを選んでください（動画は送れません）'); return; }
             const messagesEl = document.getElementById('chat-room-messages');
             const loadingId = 'chat-media-uploading-' + Date.now();
-            messagesEl.insertAdjacentHTML('beforeend', `<div id="${loadingId}" class="flex justify-end"><div class="max-w-[75%] px-3.5 py-2 rounded-2xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-400">送信中…</div></div>`);
+            messagesEl.insertAdjacentHTML('beforeend', `<div id="${loadingId}" class="flex justify-end"><div class="w-fit max-w-[80%] px-3.5 py-2 rounded-2xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-400">送信中…</div></div>`);
             messagesEl.scrollTop = messagesEl.scrollHeight;
             try {
                 // 段階的に圧縮を強めながら、Firestoreの1ドキュメント上限に収まるサイズまで縮小する
@@ -21227,6 +21279,19 @@ const KOBUN_TANGO = [
             content.classList.toggle('hidden', !willShow);
             if (chevron) chevron.classList.toggle('rotate-180', willShow);
         }
+        // 開発者モード：サービスを使っている人数（学習ProMasterアカウントを作った人）を表示する
+        async function loadDevUserCount() {
+            const el = document.getElementById('dev-user-count');
+            if (!el) return;
+            el.textContent = '読み込み中…';
+            try {
+                const count = await window.AppFirebase.getRegisteredUserCount();
+                el.textContent = count.toLocaleString('ja-JP') + ' 人';
+            } catch (e) {
+                console.error('load user count error', e);
+                el.textContent = '取得に失敗しました';
+            }
+        }
         function openDevDashboard() {
             const modal = document.getElementById('dev-settings-modal');
             const card  = document.getElementById('dev-settings-card');
@@ -21243,6 +21308,7 @@ const KOBUN_TANGO = [
             const summerTitleInput = document.getElementById('cms-summer-title-input');
             if (summerTitleInput) summerTitleInput.value = cmsConfigData.summerTaskTitle || '';
             updateSummerTaskEnabledToggleUI();
+            loadDevUserCount();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
