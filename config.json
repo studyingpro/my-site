@@ -367,6 +367,224 @@
         "corner_1784461896715"
       ],
       "notifyAt": null
+    },
+    {
+      "id": 1789019445859,
+      "type": "task",
+      "title": "修学旅行",
+      "subject": null,
+      "date": "2026-10-03",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019466622,
+      "type": "task",
+      "title": "修学旅行",
+      "subject": null,
+      "date": "2026-10-04",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019481270,
+      "type": "task",
+      "title": "修学旅行",
+      "subject": null,
+      "date": "2026-10-05",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019490279,
+      "type": "task",
+      "title": "修学旅行",
+      "subject": null,
+      "date": "2026-10-06",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019564866,
+      "type": "task",
+      "title": "芸術鑑賞",
+      "subject": null,
+      "date": "2026-10-29",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019590466,
+      "type": "test",
+      "title": "進研模試",
+      "subject": null,
+      "date": "2026-10-30",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019607271,
+      "type": "test",
+      "title": "進研模試",
+      "subject": null,
+      "date": "2026-10-31",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019674541,
+      "type": "test",
+      "title": "後期中間考査",
+      "subject": null,
+      "date": "2026-11-10",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019683257,
+      "type": "test",
+      "title": "後期中間考査",
+      "subject": null,
+      "date": "2026-11-11",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019695688,
+      "type": "test",
+      "title": "後期中間考査",
+      "subject": null,
+      "date": "2026-11-12",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019710692,
+      "type": "test",
+      "title": "後期中間考査",
+      "subject": null,
+      "date": "2026-11-13",
+      "memo": null,
+      "classIds": [
+        "c1783747972349",
+        "c1783747980943",
+        "c1783747990115",
+        "c1783748002801",
+        "c1783748009861",
+        "c1783748019462",
+        "c1783748029288"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019805199,
+      "type": "test",
+      "title": "進研模試",
+      "subject": null,
+      "date": "2027-01-15",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019814650,
+      "type": "test",
+      "title": "進研模試",
+      "subject": null,
+      "date": "2027-01-16",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019838206,
+      "type": "test",
+      "title": "大学入学共通テスト",
+      "subject": null,
+      "date": "2027-01-16",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019846024,
+      "type": "test",
+      "title": "大学入学共通テスト",
+      "subject": null,
+      "date": "2027-01-17",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019890418,
+      "type": "test",
+      "title": "全統共テ模試",
+      "subject": null,
+      "date": "2027-01-29",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019897291,
+      "type": "test",
+      "title": "全統共テ模試",
+      "subject": null,
+      "date": "2027-01-30",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019959097,
+      "type": "test",
+      "title": "学年末考査",
+      "subject": null,
+      "date": "2027-02-08",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019967582,
+      "type": "test",
+      "title": "学年末考査",
+      "subject": null,
+      "date": "2027-02-09",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019975967,
+      "type": "test",
+      "title": "学年末考査",
+      "subject": null,
+      "date": "2027-02-10",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1789019992688,
+      "type": "test",
+      "title": "学年末考査",
+      "subject": null,
+      "date": "2027-02-12",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
     }
   ],
   "extraSections": [
