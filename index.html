@@ -3169,6 +3169,23 @@
                     <span id="dev-user-count" class="text-sm font-black text-slate-800 dark:text-white">-</span>
                 </div>
 
+                <!-- 公式マークの管理 -->
+                <div class="bg-slate-50 dark:bg-slate-800/60 rounded-xl p-4 space-y-3">
+                    <h4 class="text-xs font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-2">
+                        <i data-lucide="badge-check" class="w-4 h-4"></i><span>公式マークの管理</span>
+                    </h4>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                        ユーザーネームで検索するか、「全ユーザーを表示」で一覧から選んで、公式マークのオン・オフを切り替えられます。
+                        ※この操作には、Firestoreの<code>admins</code>コレクションにあなたのuidが登録されている必要があります。
+                    </p>
+                    <div class="flex gap-2">
+                        <input type="text" id="dev-official-search" oninput="runDevOfficialSearch()" placeholder="ユーザーネームで検索"
+                            class="flex-1 px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                        <button onclick="loadDevOfficialAllUsers()" class="px-3 py-2 rounded-lg text-xs font-black bg-blue-500 text-white shrink-0">全ユーザーを表示</button>
+                    </div>
+                    <div id="dev-official-results" class="max-h-72 overflow-y-auto divide-y divide-slate-200 dark:divide-slate-700"></div>
+                </div>
+
                 <!-- コンテンツ編集への入口（すべて本体の実画面へ移動） -->
                 <div class="space-y-2">
                     <button type="button" onclick="toggleDevSection('nav')" class="w-full flex items-center justify-between">
@@ -4856,6 +4873,15 @@
                 const res = await getCountFromServer(collection(db, 'publicProfiles'));
                 return res.data().count;
             },
+            // 開発者モード用：全ユーザー（ゲストを除く）の一覧を取得する
+            async getAllPublicProfiles(max = 300) {
+                const snaps = await getDocs(query(collection(db, 'publicProfiles'), limit(max)));
+                return snaps.docs.map(d => ({ uid: d.id, ...d.data() }));
+            },
+            // 開発者モード用：公式マークの付与／解除（管理者(admins)に登録されたアカウントでログインしている必要がある）
+            async setUserOfficialBadge(uid, isOfficial) {
+                await setDoc(doc(db, 'publicProfiles', uid), { isOfficial: !!isOfficial }, { merge: true });
+            },
             // ユーザーネームの前方一致でユーザーを検索する
             async searchUsers(text) {
                 const key = (text || '').trim().toLowerCase();
@@ -5046,6 +5072,7 @@
                     authorName: window.currentAppProfileName || user.displayName || '名無しさん',
                     authorUsername: window.currentAppUsername || null,
                     authorPhoto: window.currentAppProfilePhoto || null,
+                    authorIsOfficial: !!window.currentAppIsOfficial,
                     text: trimmed,
                     authorIsPrivate: isPrivate,
                     createdAt: serverTimestamp(),
@@ -5336,6 +5363,13 @@
                     window.currentAppAchievementGoals = Array.isArray(data.achievementGoals) ? data.achievementGoals : [];
                     window.currentAppFullName = { lastName: data.lastName || '', firstName: data.firstName || '', lastNameKana: data.lastNameKana || '', firstNameKana: data.firstNameKana || '' };
                     window.currentAppIsPrivate = !!data.isPrivate;
+                    window.currentAppIsOfficial = false;
+                    if (!user.isAnonymous) {
+                        try {
+                            const pubSnap = await getDoc(doc(db, 'publicProfiles', user.uid));
+                            window.currentAppIsOfficial = !!(pubSnap.exists() && pubSnap.data().isOfficial);
+                        } catch (e) { /* 取得に失敗しても致命的ではない */ }
+                    }
                     window.dispatchEvent(new CustomEvent('app-class-changed', { detail: { classId } }));
 
                     // このブラウザでまだクラウドの予定・成績・進行度を読み込んでいなければ、1度だけ読み込んで反映する
@@ -18110,13 +18144,18 @@ const KOBUN_TANGO = [
             }
             return `<div class="${sizeClass} rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white font-black shrink-0">${initial}</div>`;
         }
+        // 公式マーク（青いチェックバッジ）。表示する箇所すべてで共通のこの関数を使う
+        function officialBadgeHtml(isOfficial) {
+            if (!isOfficial) return '';
+            return '<i data-lucide="badge-check" class="w-3.5 h-3.5 text-blue-500 inline-block align-middle shrink-0" title="公式アカウント"></i>';
+        }
         function renderPostCard(post) {
             return `
             <div class="rounded-2xl border border-slate-100 dark:border-slate-800 p-4" data-post-id="${post.id}">
                 <div class="flex items-center gap-2.5 mb-2 cursor-pointer" onclick="openPublicProfileScreen('${post.uid}')">
                     ${renderAvatarHtml(post.authorPhoto, post.authorName, 'w-9 h-9 text-sm')}
                     <div class="min-w-0">
-                        <p class="text-sm font-black text-slate-800 dark:text-white truncate">${post.authorName || '名無しさん'}</p>
+                        <p class="text-sm font-black text-slate-800 dark:text-white truncate flex items-center gap-1">${escapeHtmlText(post.authorName || '名無しさん')}${officialBadgeHtml(post.authorIsOfficial)}</p>
                         <p class="text-[10px] font-bold text-slate-400">${post.authorUsername ? '@' + post.authorUsername + ' · ' : ''}${timeAgoLabel(post.createdAt)}</p>
                     </div>
                 </div>
@@ -18308,7 +18347,7 @@ const KOBUN_TANGO = [
                 <div class="flex items-center gap-3 flex-1 min-w-0 cursor-pointer" onclick="openPublicProfileScreen('${profile.uid}')">
                     ${renderAvatarHtml(profile.photo, profile.nickname, 'w-10 h-10 text-sm')}
                     <div class="min-w-0">
-                        <p class="text-sm font-black text-slate-800 dark:text-white truncate">${profile.nickname || '名無しさん'}</p>
+                        <p class="text-sm font-black text-slate-800 dark:text-white truncate flex items-center gap-1">${escapeHtmlText(profile.nickname || '名無しさん')}${officialBadgeHtml(profile.isOfficial)}</p>
                         <p class="text-[11px] font-bold text-slate-400 truncate">${profile.username ? '@' + profile.username : ''}</p>
                     </div>
                 </div>
@@ -18390,7 +18429,7 @@ const KOBUN_TANGO = [
                 const profile = await window.AppFirebase.getPublicProfile(uid);
                 if (currentPublicProfileUid !== uid) return; // その間に別のプロフィールが開かれていたら反映しない
                 document.getElementById('public-profile-avatar-wrap').innerHTML = renderAvatarHtml(profile.photo, profile.nickname, 'w-16 h-16 text-xl');
-                document.getElementById('public-profile-nickname').innerHTML = escapeHtmlText(profile.nickname || '名無しさん') + (profile.private ? ' <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>' : '');
+                document.getElementById('public-profile-nickname').innerHTML = escapeHtmlText(profile.nickname || '名無しさん') + officialBadgeHtml(profile.isOfficial) + (profile.private ? ' <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>' : '');
                 document.getElementById('public-profile-username').textContent = profile.username ? '@' + profile.username : '';
                 const [followerCount, followingCount, following, mutual] = await Promise.all([
                     window.AppFirebase.getFollowerCount(uid),
@@ -18553,7 +18592,7 @@ const KOBUN_TANGO = [
                     <button onclick='openChatRoomScreen(${JSON.stringify(chat.id)}, ${JSON.stringify(otherUid)}, ${JSON.stringify(profile)})' class="w-full flex items-center gap-3 py-3 text-left">
                         ${renderAvatarHtml(profile.photo, profile.nickname, 'w-11 h-11 text-sm')}
                         <div class="min-w-0 flex-1">
-                            <p class="text-sm font-black text-slate-800 dark:text-white truncate">${profile.nickname || '名無しさん'}</p>
+                            <p class="text-sm font-black text-slate-800 dark:text-white truncate flex items-center gap-1">${escapeHtmlText(profile.nickname || '名無しさん')}${officialBadgeHtml(profile.isOfficial)}</p>
                             <p class="text-xs font-bold text-slate-400 truncate">${chat.lastMessage ? escapeHtmlText(chat.lastMessage) : 'メッセージを送ってみましょう'}</p>
                         </div>
                     </button>`).join('');
@@ -21317,6 +21356,75 @@ const KOBUN_TANGO = [
             } catch (e) {
                 console.error('load user count error', e);
                 el.textContent = '取得に失敗しました';
+            }
+        }
+
+        // ----- 開発者モード：公式マークの管理 -----
+        function renderDevOfficialRow(profile) {
+            const isOfficial = !!profile.isOfficial;
+            return `
+            <div class="flex items-center gap-3 py-2.5">
+                ${renderAvatarHtml(profile.photo, profile.nickname, 'w-9 h-9 text-xs')}
+                <div class="min-w-0 flex-1">
+                    <p class="text-xs font-black text-slate-800 dark:text-white truncate flex items-center gap-1">${escapeHtmlText(profile.nickname || '名無しさん')}${officialBadgeHtml(isOfficial)}</p>
+                    <p class="text-[10px] font-bold text-slate-400 truncate">${profile.username ? '@' + profile.username : '(ユーザーネーム未設定)'}</p>
+                </div>
+                <button onclick="onToggleOfficialClick('${profile.uid}', ${isOfficial}, this)" class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-black border ${isOfficial ? 'bg-blue-500 border-blue-500 text-white' : 'border-slate-300 dark:border-slate-600 text-slate-500 dark:text-slate-400'}">
+                    ${isOfficial ? '公式マークON' : '公式マークOFF'}
+                </button>
+            </div>`;
+        }
+        async function runDevOfficialSearch() {
+            const input = document.getElementById('dev-official-search');
+            const resultsEl = document.getElementById('dev-official-results');
+            const q = (input && input.value || '').trim();
+            if (!q) { resultsEl.innerHTML = ''; return; }
+            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-4">検索中…</p>';
+            try {
+                const results = await window.AppFirebase.searchUsers(q);
+                resultsEl.innerHTML = results.length
+                    ? results.map(renderDevOfficialRow).join('')
+                    : '<p class="text-center text-xs font-bold text-slate-400 py-4">見つかりませんでした</p>';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } catch (e) {
+                console.error('dev official search error', e);
+                resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-4">検索に失敗しました</p>';
+            }
+        }
+        async function loadDevOfficialAllUsers() {
+            const resultsEl = document.getElementById('dev-official-results');
+            const searchInput = document.getElementById('dev-official-search');
+            if (searchInput) searchInput.value = '';
+            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-4">読み込み中…</p>';
+            try {
+                const all = await window.AppFirebase.getAllPublicProfiles(300);
+                resultsEl.innerHTML = all.length
+                    ? all.map(renderDevOfficialRow).join('')
+                    : '<p class="text-center text-xs font-bold text-slate-400 py-4">ユーザーがいません</p>';
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            } catch (e) {
+                console.error('load all users error', e);
+                resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-4">読み込みに失敗しました</p>';
+            }
+        }
+        async function onToggleOfficialClick(uid, currentValue, btn) {
+            btn.disabled = true;
+            try {
+                await window.AppFirebase.setUserOfficialBadge(uid, !currentValue);
+                showToast(!currentValue ? '公式マークを付けました' : '公式マークを外しました');
+                if (document.getElementById('dev-official-search').value.trim()) {
+                    runDevOfficialSearch();
+                } else {
+                    loadDevOfficialAllUsers();
+                }
+            } catch (e) {
+                console.error('toggle official error', e);
+                const msg = (e && e.code === 'permission-denied')
+                    ? 'この操作を行う権限がありません（あなたのFirebaseアカウントがadminsコレクションに登録されているか確認してください）'
+                    : '変更に失敗しました。時間をおいて再度お試しください';
+                showToast(msg);
+            } finally {
+                btn.disabled = false;
             }
         }
         function openDevDashboard() {
