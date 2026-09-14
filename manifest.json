@@ -1,7 +1,7 @@
 {
   "name": "学習ProMaster",
   "short_name": "学習ProMaster",
-  "description": "予習をロジカルにサポートする学習アプリ",
+  "description": "学習をロジカルにサポートする学習アプリ",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
