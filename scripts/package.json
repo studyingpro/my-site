@@ -1,0 +1,11 @@
+{
+  "name": "studypromaster-push-notifications",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.6.0"
+  }
+}
