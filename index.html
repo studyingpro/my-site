@@ -1286,7 +1286,7 @@
                                 </div>
                                 <div class="space-y-1">
                                     <span class="text-xs font-bold text-slate-600 dark:text-slate-300 block">写真を追加、またはドロップ</span>
-                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 block">PNG, JPG, WEBP (最大5MB)</span>
+                                    <span class="text-[10px] text-slate-400 dark:text-slate-500 block">PNG, JPG, WEBP (最大20MB・自動で圧縮)</span>
                                 </div>
                             </label>
                             <div id="image-preview-container" class="hidden w-full h-full flex flex-col items-center justify-center relative">
@@ -9266,10 +9266,12 @@
             }
         }
 
-        // 撮影したままの大きな写真（最大5MB）を、AI解析に十分な画質を保ったまま
-        // 長辺1600px・JPEG品質0.85程度まで自動で縮小・圧縮する。
-        // これにより通信量が減り、AI側の処理失敗（応答なし・タイムアウト）が起きにくくなる。
-        function compressImageFile(file, maxDimension = 1600, quality = 0.85) {
+        // 撮影したままの大きな写真を、AI解析に十分な画質を保ったまま縮小・圧縮する。
+        // 長辺1600px・JPEG品質0.85から始め、送信サイズ（maxBytes）に収まるまで
+        // 品質→解像度の順に段階的に下げる。これにより通信量が減り、
+        // AI側の処理失敗（応答なし・タイムアウト）が起きにくくなる。
+        // ※PNG（スクリーンショット等）は容量が大きくなりやすいため、白背景のJPEGに変換する。
+        function compressImageFile(file, maxDimension = 1600, quality = 0.85, maxBytes = 900 * 1024) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onerror = () => reject(new Error('画像の読み込みに失敗しました。'));
@@ -9277,25 +9279,32 @@
                     const img = new Image();
                     img.onerror = () => reject(new Error('画像の読み込みに失敗しました。'));
                     img.onload = () => {
-                        let { width, height } = img;
-                        if (width > maxDimension || height > maxDimension) {
-                            if (width >= height) {
-                                height = Math.round(height * (maxDimension / width));
-                                width = maxDimension;
-                            } else {
-                                width = Math.round(width * (maxDimension / height));
-                                height = maxDimension;
-                            }
+                        const render = (dim, q) => {
+                            let { width, height } = img;
+                            const scale = Math.min(1, dim / Math.max(width, height));
+                            width = Math.max(1, Math.round(width * scale));
+                            height = Math.max(1, Math.round(height * scale));
+                            const canvas = document.createElement('canvas');
+                            canvas.width = width;
+                            canvas.height = height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.fillStyle = '#ffffff'; // 透過部分が黒くならないように白で塗る
+                            ctx.fillRect(0, 0, width, height);
+                            ctx.drawImage(img, 0, 0, width, height);
+                            return canvas.toDataURL('image/jpeg', q);
+                        };
+                        const bytesOf = (dataUrl) => Math.round((dataUrl.length - dataUrl.indexOf(',') - 1) * 0.75);
+                        let dim = maxDimension;
+                        let q = quality;
+                        let dataUrl = render(dim, q);
+                        // 上限を超えていたら、品質 → 解像度の順に下げて再圧縮（最大8回）
+                        for (let n = 0; n < 8 && bytesOf(dataUrl) > maxBytes; n++) {
+                            if (q > 0.6) q -= 0.1;
+                            else if (dim > 1000) dim = Math.round(dim * 0.85);
+                            else break;
+                            dataUrl = render(dim, q);
                         }
-                        const canvas = document.createElement('canvas');
-                        canvas.width = width;
-                        canvas.height = height;
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, width, height);
-                        // 透過PNGはJPEG化すると背景が黒くなるため、その場合のみPNGのまま維持する
-                        const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
-                        const dataUrl = canvas.toDataURL(outputType, quality);
-                        resolve({ dataUrl, mimeType: outputType });
+                        resolve({ dataUrl, mimeType: 'image/jpeg' });
                     };
                     img.src = event.target.result;
                 };
@@ -9357,8 +9366,8 @@
         }
 
         function handleFile(file) {
-            if (file.size > 5 * 1024 * 1024) {
-                showToast("画像サイズが大きすぎます。5MB以下のファイルを選択してください。");
+            if (file.size > 20 * 1024 * 1024) {
+                showToast("画像サイズが大きすぎます。20MB以下のファイルを選択してください。");
                 return;
             }
             compressImageFile(file).then(({ dataUrl, mimeType }) => {
@@ -22328,18 +22337,15 @@ const KOBUN_TANGO = [
         function cmsHandleSectionImageSelect(event) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-                const result = reader.result;
-                cmsSecImageBase64 = result.slice(result.indexOf(',') + 1);
-                cmsSecImageMimeType = file.type || 'image/jpeg';
-                document.getElementById('cms-sec-image-preview').src = result;
+            compressImageFile(file).then(({ dataUrl, mimeType }) => {
+                cmsSecImageBase64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+                cmsSecImageMimeType = mimeType;
+                document.getElementById('cms-sec-image-preview').src = dataUrl;
                 document.getElementById('cms-sec-image-preview-wrap').classList.remove('hidden');
                 document.getElementById('cms-sec-analyze-btn').disabled = false;
                 document.getElementById('cms-sec-analyze-status').textContent = '';
                 if (typeof lucide !== 'undefined') lucide.createIcons();
-            };
-            reader.readAsDataURL(file);
+            }).catch(() => showToast('画像の読み込みに失敗しました。別の画像をお試しください。'));
         }
         function cmsRemoveSectionImage() {
             cmsSecImageBase64 = null; cmsSecImageMimeType = null;
@@ -22565,18 +22571,15 @@ const KOBUN_TANGO = [
         function cmsHandleRonriSectionImageSelect(event) {
             const file = event.target.files && event.target.files[0];
             if (!file) return;
-            const reader = new FileReader();
-            reader.onload = () => {
-                const result = reader.result;
-                cmsRsecImageBase64 = result.slice(result.indexOf(',') + 1);
-                cmsRsecImageMimeType = file.type || 'image/jpeg';
-                document.getElementById('cms-rsec-image-preview').src = result;
+            compressImageFile(file).then(({ dataUrl, mimeType }) => {
+                cmsRsecImageBase64 = dataUrl.slice(dataUrl.indexOf(',') + 1);
+                cmsRsecImageMimeType = mimeType;
+                document.getElementById('cms-rsec-image-preview').src = dataUrl;
                 document.getElementById('cms-rsec-image-preview-wrap').classList.remove('hidden');
                 document.getElementById('cms-rsec-analyze-btn').disabled = false;
                 document.getElementById('cms-rsec-analyze-status').textContent = '';
                 if (typeof lucide !== 'undefined') lucide.createIcons();
-            };
-            reader.readAsDataURL(file);
+            }).catch(() => showToast('画像の読み込みに失敗しました。別の画像をお試しください。'));
         }
         function cmsRemoveRonriSectionImage() {
             cmsRsecImageBase64 = null; cmsRsecImageMimeType = null;
