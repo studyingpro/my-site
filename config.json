@@ -4353,7 +4353,320 @@
       "subjects": []
     }
   ],
-  "ronriSections": [],
+  "ronriSections": [
+    {
+      "id": "L9P39",
+      "title": "Lesson9 教科書P39",
+      "problems": [
+        {
+          "problemNumber": "1-(1)",
+          "reproducedWithAnswer": "Mary has a friend (**who**) plays the guitar well.",
+          "fullSentenceJapanese": "メアリーにはギターを上手に弾く友人がいます。",
+          "explanation": "先行詞「a friend」は人であり、空欄の後ろには動詞「plays」が続いているため、主格の関係代名詞が必要です。人称の主格関係代名詞は「who」なので、これが正解です。「which」は物や動物に、「whose」は所有を表す際に使用します。",
+          "grammarPoint": "関係代名詞「who」は、先行詞が人の場合に主格として用いられます。関係代名詞節内で動詞の主語の役割を果たします。"
+        },
+        {
+          "problemNumber": "1-(2)",
+          "reproducedWithAnswer": "I met a girl (**whose**) sister knows you.",
+          "fullSentenceJapanese": "私はあなたを知っている妹を持つ少女に出会いました。",
+          "explanation": "先行詞「a girl」は人です。空欄の後ろに名詞「sister」が続いており、「その少女の妹」という所有の関係を示しています。そのため、所有格の関係代名詞「whose」が適切です。「who」は主格、「which」は物や動物に使うため、ここでは不適切です。",
+          "grammarPoint": "関係代名詞「whose」は、先行詞が人または物で、その先行詞の所有を表す際に用いられます。後ろには名詞が続きます。"
+        },
+        {
+          "problemNumber": "1-(3)",
+          "reproducedWithAnswer": "The building (**which**) was destroyed in the fire is being rebuilt.",
+          "fullSentenceJapanese": "火事で破壊された建物は再建されています。",
+          "explanation": "先行詞「The building」は物であり、空欄の後ろには動詞「was destroyed」が続いているため、主格の関係代名詞が必要です。物事の主格関係代名詞は「which」なので、これが正解です。「who」や「whose」は人に使用します。",
+          "grammarPoint": "関係代名詞「which」は、先行詞が物や動物の場合に主格または目的格として用いられます。関係代名詞節内で動詞の主語の役割を果たすことができます。"
+        },
+        {
+          "problemNumber": "1-(4)",
+          "reproducedWithAnswer": "Is there anything (**that**) I can do for you?",
+          "fullSentenceJapanese": "あなたのために私ができることは何かありますか？",
+          "explanation": "先行詞が「anything」のような不定代名詞の場合、関係代名詞には「that」を用いるのが一般的です。「what」は先行詞を含む関係代名詞で「～のこと」という意味になるため、先行詞「anything」があるこの文では不適切です。「of which」は意味が合いません。",
+          "grammarPoint": "先行詞が「anything, everything, nothing」などの不定代名詞の場合、関係代名詞は「that」を使用することが推奨されます。"
+        },
+        {
+          "problemNumber": "1-(5)",
+          "reproducedWithAnswer": "The address (**to which**) I sent the email was wrong.",
+          "fullSentenceJapanese": "私がEメールを送った住所は間違っていました。",
+          "explanation": "「send an email to an address」（Eメールを住所に送る）という表現から、前置詞「to」が必要です。関係代名詞の前に前置詞を置く場合、関係代名詞は「which」（物の場合）または「whom」（人の場合）を使います。「that」は前置詞の後に置くことはできません。したがって、「to which」が正解です。",
+          "grammarPoint": "関係代名詞の前に前置詞を置くことで、より詳細な関係性を表現できます。この際、関係代名詞は「which」（物）または「whom」（人）になります。「that」の前には前置詞を置けません。"
+        },
+        {
+          "problemNumber": "1-(6)",
+          "reproducedWithAnswer": "I can't understand (**what**) you are saying.",
+          "fullSentenceJapanese": "あなたが何を言っているのか理解できません。",
+          "explanation": "動詞「understand」の目的語となる節が必要です。この節は「あなたが言っていることの内容」を指します。「what」は先行詞を含んだ関係代名詞で「～のこと/もの」という意味の名詞節を導き、目的語の役割を果たします。「that」は接続詞として名詞節を導きますが、この文では「saying」の目的語が不足するため不適切です。「which」は選択肢がある場合に使うため、文意に合いません。",
+          "grammarPoint": "関係代名詞「what」は、先行詞を含み「～すること/もの」という意味の名詞節を導きます。この名詞節は文の主語、目的語、補語になることができます。"
+        },
+        {
+          "problemNumber": "2-(1)",
+          "reproducedWithAnswer": "The woman (**who**) (**lives**) next door is very nice to us.",
+          "fullSentenceJapanese": "隣に住んでいる女性は私たちにとっても親切です。",
+          "explanation": "「隣に住んでいる」という情報を「The woman」に加える関係代名詞節が必要です。先行詞「The woman」は人なので、主格の関係代名詞は「who」または「that」が適切です。空欄の後には動詞が入るので、「live」を先行詞の数に合わせ「lives」とします。",
+          "grammarPoint": "先行詞が人の場合、主格の関係代名詞として「who」または「that」が使えます。関係代名詞節内の動詞は、先行詞の数（単数・複数）に合わせて形を変えます。"
+        },
+        {
+          "problemNumber": "2-(2)",
+          "reproducedWithAnswer": "The dinner (**which**) (**Tom made**) was very good.",
+          "fullSentenceJapanese": "トムが作った夕食はとてもおいしかった。",
+          "explanation": "「トムが作った」という情報を「The dinner」に加える関係代名詞節が必要です。先行詞「The dinner」は物なので、目的格の関係代名詞は「which」または「that」が適切です。目的格の関係代名詞は省略可能ですが、2つの空欄があるので「which Tom made」となります。",
+          "grammarPoint": "先行詞が物の場合、目的格の関係代名詞として「which」または「that」が使えます。これらは省略されることも多いですが、この問題のように指定された空欄がある場合は補完する必要があります。"
+        },
+        {
+          "problemNumber": "2-(3)",
+          "reproducedWithAnswer": "(**What**) you need is patience.",
+          "fullSentenceJapanese": "君に必要なのは、がまん強さだ。",
+          "explanation": "「あなたが本当に必要としているもの」という名詞節を主語にする必要があります。「what」は先行詞を含んだ関係代名詞で、「～すること/もの」という意味の名詞節を導き、文の主語となることができます。",
+          "grammarPoint": "関係代名詞「what」は、先行詞を含み「～すること/もの」という意味の名詞節を作ります。この名詞節は文の主語、目的語、補語になることができます。"
+        },
+        {
+          "problemNumber": "2-(4)",
+          "reproducedWithAnswer": "This neighborhood has changed a lot. It's quite different from (**what**) it (**was**) ten years ago.",
+          "fullSentenceJapanese": "このあたりはずいぶん変わったんだ。10年前とはかなり違うよ。",
+          "explanation": "「10年前の状態」という比較を表すため、「from what it was ten years ago」という形を使います。「what」は先行詞を含み、「～の状態/姿」という意味を持つ名詞節を導きます。「it was ten years ago」で10年前の状態を表します。",
+          "grammarPoint": "「what S is/was」は「Sの現在の/過去の状態」という意味で、先行詞を含んだ関係代名詞節として状態や性質を表すことができます。"
+        },
+        {
+          "problemNumber": "2-(5)",
+          "reproducedWithAnswer": "I want to get a job (**in**) (**which**) I can have contact with animals.",
+          "fullSentenceJapanese": "私は動物と接することができる仕事につきたい。",
+          "explanation": "「in a job」（仕事の中で）という状況を示すため、前置詞「in」が必要です。先行詞「a job」は物なので、関係代名詞は「which」を使います。したがって、「in which」が適切です。",
+          "grammarPoint": "関係副詞（where, when, whyなど）の代わりに「前置詞 + which」の形を用いることで、より具体的に場所、時、理由、方法などを表すことができます。「in which」は「～の中で」という状況を示します。"
+        },
+        {
+          "problemNumber": "2-(6)",
+          "reproducedWithAnswer": "The man is (**what**) (**is called**) a “house-husband.”",
+          "fullSentenceJapanese": "その男性はいわゆる「専業主夫」です。",
+          "explanation": "「いわゆる～」という表現は「what is called ～」または「what we call ～」で表されます。2つの空欄なので、「what is called」が適切です。「what」が先行詞を含む関係代名詞で、節内で主語となり「is called」と受動態で続きます。",
+          "grammarPoint": "「what is called A」または「what we call A」は、「いわゆるA」「Aと呼ばれるもの」という意味で、ある事物や人物が一般的にどのように言われているかを示す慣用表現です。"
+        },
+        {
+          "problemNumber": "3-(1)",
+          "reproducedWithAnswer": "Don't throw away (**b. what you can still use**).",
+          "fullSentenceJapanese": "まだ使えるものを捨ててはいけません。",
+          "explanation": "「throw away」（捨てる）の目的語として「まだ使えるもの」という意味が必要です。選択肢bの「what you can still use」は「あなたがまだ使えるもの」という意味で、先行詞を含んだ関係代名詞節として機能し、動詞の目的語に適切です。",
+          "grammarPoint": "関係代名詞「what」は、先行詞を含み「～すること/もの」という意味の名詞節を導き、動詞の目的語になることができます。"
+        },
+        {
+          "problemNumber": "3-(2)",
+          "reproducedWithAnswer": "This is the best book (**e. that he has ever written**).",
+          "fullSentenceJapanese": "これは彼がこれまでに書いた中で最高の作品です。",
+          "explanation": "先行詞「the best book」に最上級（the best）が含まれているため、関係代名詞には「that」を使用するのが最も適切です。選択肢eの「that he has ever written」は「彼がこれまでに書いた」という意味で、文意に合致します。",
+          "grammarPoint": "先行詞に「the only, the very, the same, all」や最上級（例: the best）が付く場合、関係代名詞には「that」を用いるのが一般的です。"
+        },
+        {
+          "problemNumber": "3-(3)",
+          "reproducedWithAnswer": "I don't know the girl (**c. who I haven't seen for ages**).",
+          "fullSentenceJapanese": "私は長い間会っていないその少女のことを知りません。",
+          "explanation": "先行詞「the girl」は人です。選択肢cの「who I haven't seen for ages」は「私が長い間会っていない」という情報で少女を修飾します。「who」は目的格として使われますが、口語では一般的です。",
+          "grammarPoint": "関係代名詞「who」は、先行詞が人の場合に主格としてだけでなく、目的格として使われることがあります（特に口語で）。"
+        },
+        {
+          "problemNumber": "3-(4)",
+          "reproducedWithAnswer": "I want to meet Alice, (**a. Alex is talking with**).",
+          "fullSentenceJapanese": "アレックスが話しているアリスに会いたいです。",
+          "explanation": "「Alice」は人名で、コンマの後に関係代名詞節が続いているため非制限用法です。「Alex is talking with Alice」という文から、「whom Alex is talking with」という形になります。選択肢aは、この形の関係代名詞節として適切です。",
+          "grammarPoint": "コンマの後に続く非制限用法の関係代名詞節では、先行詞が人の場合は「who」または「whom」を使います。前置詞は関係代名詞の直前または動詞の後に置くことができます。"
+        },
+        {
+          "problemNumber": "3-(5)",
+          "reproducedWithAnswer": "The boy said he had seen a wolf, (**d. which wasn't true**).",
+          "fullSentenceJapanese": "その少年はオオカミを見たと言いましたが、それは本当ではありませんでした。",
+          "explanation": "コンマの後ろに関係代名詞「which」が続く非制限用法の場合、先行詞が前の文全体の内容を指すことがあります。この文では、「少年がオオカミを見たと言った」という前文の内容全体が「本当ではなかった」と説明されているため、選択肢dが適切です。",
+          "grammarPoint": "関係代名詞「which」は、先行詞が前の文全体の内容を指す非制限用法で使われることがあります。この場合、「そのことは～」といった意味合いになります。"
+        }
+      ]
+    },
+    {
+      "id": "L9P40",
+      "title": "Lesson9 教科書P40",
+      "problems": [
+        {
+          "problemNumber": "4-(1)",
+          "reproducedWithAnswer": "I saw a girl whose hair reached down to her waist.",
+          "fullSentenceJapanese": "私は髪が腰まで届く少女を見ました。",
+          "explanation": "この文は「whose」という所有格の関係代名詞を使って、girlを修飾しています。whose hairは「その少女の髪」という意味になり、その髪が腰まで届いているという状況を説明しています。全体として「私は髪が腰まで届いている少女を見た」となります。",
+          "grammarPoint": "関係代名詞の所有格「whose」は、先行詞が人でも物でも使えます。whoseの後には名詞が続き、「〜の…」という意味で先行詞と後の名詞の関係を示します。例: He has a dog whose name is Pochi. (彼はポチという名前の犬を飼っている。) この場合、dogのnameがPochiであることを表しています。"
+        },
+        {
+          "problemNumber": "4-(2)",
+          "reproducedWithAnswer": "I want to see the movie you talked about the other day.",
+          "fullSentenceJapanese": "先日あなたが話していた映画が見たいです。",
+          "explanation": "この文では、movieを関係代名詞の目的格（whichまたはthat）が省略された形で修飾しています。「you talked about the other day」が先行詞movieを修飾し、「あなたが先日話していた映画」という意味になります。talk about somethingなので、aboutの目的語がmovieであり、これが関係代名詞として前に出た形です。",
+          "grammarPoint": "関係代名詞の目的格（who/whom, which, that）は、関係代名詞節内で動詞や前置詞の目的語になっている場合に、しばしば省略されます。特にthatやwhichが省略されることが多いです。ただし、関係代名詞の前に前置詞がくる場合は省略できません。例: This is the book (which/that) I read yesterday. (これが私が昨日読んだ本です。) This is the man (whom/who/that) I met at the party. (これが私がパーティーで会った男性です。)"
+        },
+        {
+          "problemNumber": "4-(3)",
+          "reproducedWithAnswer": "This chair is very comfortable, and what is more, the price is reasonable.",
+          "fullSentenceJapanese": "この椅子はとても座り心地がよく、その上、値段も手頃です。",
+          "explanation": "「what is more」は「その上」「さらに悪いことには」という意味で、追加情報を付け加える際に使われる慣用表現です。前の節の内容にさらに情報を加える接続詞的な役割を果たしています。comfortable（快適な）とreasonable（手頃な）という2つの良い点を並列に提示しています。",
+          "grammarPoint": "「what is more」は、先行詞を必要としない関係代名詞whatを含む独立した慣用表現です。文全体を修飾し、前の文の内容に付け加える形で使われます。同様の表現に「what is important (最も重要なことは)」「what is worse (さらに悪いことには)」などがあります。これらは独立した句として機能し、文と文をつなぐ役割をします。"
+        },
+        {
+          "problemNumber": "4-(4)",
+          "reproducedWithAnswer": "My brother, who can speak Spanish, works as a tour guide.",
+          "fullSentenceJapanese": "私の兄（弟）は、スペイン語を話すことができるのですが、旅行ガイドとして働いています。",
+          "explanation": "この文は非制限用法の関係代名詞「who」を用いています。先行詞My brotherの後にカンマを挟んで「who can speak Spanish」という節が続き、兄（弟）に関する補足情報を提供しています。この情報は兄（弟）が「どんな人か」を説明するもので、文の主たる意味（旅行ガイドとして働いている）を限定するものではありません。",
+          "grammarPoint": "関係代名詞には「制限用法」と「非制限用法」があります。非制限用法は、先行詞の後にカンマを置き、関係代名詞節が先行詞に関する補足情報を提供するものです。この節を省略しても文の意味が成立します。非制限用法では「that」は使えず、whoやwhichを使います。whoは人を、whichは物や事柄を指します。非制限用法は、文に情報を付け加える「おまけ」のようなイメージで理解すると良いでしょう。"
+        },
+        {
+          "problemNumber": "4-(5)",
+          "reproducedWithAnswer": "We had to wait in line for three hours, which was really annoying.",
+          "fullSentenceJapanese": "私たちは3時間列に並んで待たなければならず、そのことは本当に迷惑でした。",
+          "explanation": "この文では非制限用法の関係代名詞「which」が使われています。先行詞は直前の「We had to wait in line for three hours」という文全体の内容を指しています。3時間列に並んで待ったこと、そのこと自体が「迷惑だった (annoying)」と説明されています。",
+          "grammarPoint": "関係代名詞の非制限用法で「which」を用いると、先行詞が直前の句や節、あるいは文全体を指すことがあります。この場合、whichは「そしてそのこと（状況）」という意味合いを持ちます。これも補足情報を提供する役割であり、カンマで区切られます。例: He said he was busy, which was a lie. (彼は忙しいと言ったが、それは嘘だった。)"
+        },
+        {
+          "problemNumber": "5-(1)",
+          "reproducedWithAnswer": "[ you, tell, everything, know, me ] about this town.-> Tell **me** **everything** **you** **know** about this town.",
+          "fullSentenceJapanese": "この町についてあなたが知っていることをすべて私に教えてください。",
+          "explanation": "与えられた日本語訳「この町についてあなたが知っていることを全部教えてください」と、与えられた単語群から、命令文の構造「Tell + 人 + 物」を組み立てる必要があります。tell me everythingで「私にすべてを教えて」、その後に「you know」という関係代名詞の目的格が省略された節が続き、「あなたが知っていることすべて」という意味になります。最後に「about this town」で「この町について」となります。",
+          "grammarPoint": "動詞「tell」はSVOO（主語＋動詞＋目的語＋目的語）の形をとることができ、「〜に…を伝える/教える」という意味になります。この場合、直接目的語（物）が「everything you know」という名詞句になっており、間接目的語（人）が「me」です。また、「everything + 関係代名詞節」で「〜のすべて」という表現は非常によく使われます。この関係代名詞（that/which）は目的格なので省略可能です。"
+        },
+        {
+          "problemNumber": "5-(2)",
+          "reproducedWithAnswer": "Is this [ you, for, been, what, looking, have ]? -> Is this **what** **you** **have** **been** **looking** **for**?",
+          "fullSentenceJapanese": "これはあなたが探していたものですか？",
+          "explanation": "与えられた日本語訳と単語群から、疑問文「Is this 〜?」の後に「what + 主語 + 現在完了進行形」の形を組み立てます。「what you have been looking for」は「あなたがずっと探していたもの」という意味の疑問代名詞whatを含む名詞節です。look forは「〜を探す」という意味の句動詞で、現在完了進行形「have been looking」で過去から現在まで継続している動作を表します。",
+          "grammarPoint": "この問題のポイントは、疑問代名詞「what」が導く名詞節が主語の補語になっている点と、現在完了進行形「have been doing」です。whatは「〜のこと／もの」という意味で名詞節を導き、その節の中で主語・目的語・補語のいずれかの役割を果たします。ここでは、look forの目的語がwhatになっているため、whatの後にはS + Vの語順が続きます。また、現在完了進行形は「過去のある時点から現在まで継続している動作」を表し、期間や反復を示すことが多いです。"
+        },
+        {
+          "problemNumber": "5-(3)",
+          "reproducedWithAnswer": "We had a great view of the ocean [ in, from, stayed, we, the room ]. -> We had a great view of the ocean **from** **the** **room** **we** **stayed** **in**.",
+          "fullSentenceJapanese": "私たちが泊まった部屋から海がきれいに見えました。",
+          "explanation": "「私たちが泊まった部屋から」という部分を英語にするのがポイントです。from the room (私たちが泊まった) の形になります。the roomを「we stayed in」という関係代名詞節が修飾しています。stay in a roomなので、前置詞inが関係代名詞節の最後に残る形です。あるいは、関係代名詞which/thatをinの後に置いて、in which we stayedとする形もありますが、与えられた語句には関係代名詞がないため、この形が最適です。",
+          "grammarPoint": "関係代名詞の目的格が省略され、前置詞が関係代名詞節の最後に残るパターンです。例: This is the house (which/that) he lives in. (これが彼が住んでいる家です。) 前置詞inはlive in the houseのinです。このように、関係代名詞が動詞の目的語だけでなく、前置詞の目的語になっている場合、関係代名詞は省略可能で、前置詞は節の最後に置かれます。ただし、前置詞を関係代名詞の直前に置く場合は、関係代名詞は省略できません (e.g., in which we stayed)。"
+        },
+        {
+          "problemNumber": "6-1-(1)",
+          "reproducedWithAnswer": "An astronaut is someone **who** **travels** **in** **space**.",
+          "fullSentenceJapanese": "宇宙飛行士とは、宇宙を旅する人のことです。",
+          "explanation": "「An astronaut is someone」に続く言葉として、宇宙飛行士の定義を述べる必要があります。「誰か」を修飾する関係代名詞は「who」が適切です。「宇宙を旅する」という意味の動詞句「travels in space」を続けます。先行詞someoneが単数なので、travelに-sが付きます。",
+          "grammarPoint": "関係代名詞「who」の制限用法です。先行詞が人（someone）の場合、主格の関係代名詞として「who」を使います。who節は先行詞を具体的に説明し、限定する役割を果たします。whoの後には動詞が続きます。例: A doctor is a person who treats sick people. (医者とは病人を治療する人である。)"
+        },
+        {
+          "problemNumber": "6-1-(2)",
+          "reproducedWithAnswer": "A dictionary is a book **which** **explains** **the** **meaning** **of** **words**.",
+          "fullSentenceJapanese": "辞書とは、単語の意味を説明する本のことです。",
+          "explanation": "「A dictionary is a book」に続く言葉として、辞書の定義を述べる必要があります。本（a book）を修飾する関係代名詞は「which」が適切です。「単語の意味を説明する」という意味の動詞句「explains the meaning of words」を続けます。先行詞a bookが単数なので、explainに-sが付きます。",
+          "grammarPoint": "関係代名詞「which」の制限用法です。先行詞が物（a book）の場合、主格の関係代名詞として「which」を使います。which節は先行詞を具体的に説明し、限定する役割を果たします。whichの後には動詞が続きます。例: A calculator is a machine which can do calculations. (電卓とは計算ができる機械である。)"
+        },
+        {
+          "problemNumber": "6-2-(1)",
+          "reproducedWithAnswer": "What **I'm** **good** **at** is **playing** **the** **piano**.",
+          "fullSentenceJapanese": "私が得意なことはピアノを弾くことです。",
+          "explanation": "「What」で始まる名詞節を主語とし、その内容を説明する文です。自分自身について書くので、「私が得意なこと」を表現します。「be good at 〜ing」で「〜が得意である」という意味になります。ここでは、「私が得意なこと」として「ピアノを弾くこと」という具体的な活動を例として示しています。",
+          "grammarPoint": "疑問代名詞「what」が導く名詞節が主語となる構文です。「What S + V」の形で「SがVすること／もの」という意味になります。この場合、what節全体が主語となるため、動詞は単数形（is）をとります。例: What he said was true. (彼が言ったことは本当だった。) また、「be good at」の後の動詞は動名詞（-ing形）になります。"
+        },
+        {
+          "problemNumber": "6-2-(2)",
+          "reproducedWithAnswer": "What **my** **best** **friend** **likes** **most** is **watching** **movies**.",
+          "fullSentenceJapanese": "私の親友が最も好きなことは映画を見ることです。",
+          "explanation": "「What」で始まる名詞節を主語とし、その内容を説明する文です。家族や友人について書くので、「私の親友が最も好きなこと」を表現します。「likes most」は「最も好き」という意味です。ここでは、「映画を見ること」という具体的な活動を例として示しています。",
+          "grammarPoint": "6-2-(1)と同様に、疑問代名詞「what」が導く名詞節が主語となる構文です。主語が「What + my best friend likes most」となり、動詞は単数形（is）をとります。動詞likeの後に続くものは動名詞（watching movies）や不定詞（to watch movies）のどちらでも可能です。ここでは動名詞を使っています。"
+        }
+      ]
+    },
+    {
+      "id": "L9P41",
+      "title": "Lesson9 教科書P41",
+      "problems": [
+        {
+          "problemNumber": "1(1)",
+          "reproducedWithAnswer": "It is good to talk with people (**whose**) opinions differ from yours.",
+          "fullSentenceJapanese": "意見があなたと異なる人々と話すのは良いことだ。",
+          "explanation": "この問題は関係代名詞の選択を問うものです。空欄の後に名詞「opinions」が続き、「opinions differ from yours」（意見があなたと異なる）という節が「people」を修飾しています。この文脈では、「人々の意見」という所有の関係を示す必要があります。選択肢の中で所有格の関係代名詞はd. whose です。a. whatは先行詞を含み、名詞節を作る場合に用いられます。b. whoは主格、c. whomは目的格の関係代名詞であり、いずれも所有の関係を表すことはできません。したがって、所有関係を示すwhoseが正解です。",
+          "grammarPoint": "この問題は「関係代名詞の所有格」に関するものです。関係代名詞の所有格whoseは、先行詞が人でも物でも使うことができ、「〜の」という意味で名詞を修飾します。whoseの後ろには必ず名詞が続き、その名詞が関係代名詞が導く節の主語や目的語となります。例えば、「I know a girl whose father is a doctor.」（私は父親が医者である少女を知っている。）のように使われます。先行詞と名詞の間に所有の関係がある場合にwhoseを選択することを覚えておきましょう。"
+        },
+        {
+          "problemNumber": "1(2)",
+          "reproducedWithAnswer": "(**What**) seems easy at first often turns out to be difficult.",
+          "fullSentenceJapanese": "最初は簡単そうに見えることが、しばしば難しいと判明する。",
+          "explanation": "この文では、空欄が文頭にあり、\"seems easy at first\"が主語を必要とする動詞句、\"often turns out to be difficult\"が述語動詞句となっています。つまり、空欄を含む部分が名詞節として文全体の主語になっていると考えることができます。選択肢の中で名詞節を導き、かつ「〜すること／もの」という意味を持つ関係代名詞はa. What です。Whatは先行詞を含んだ関係代名詞（the thing which/that）として機能します。b. Thatは名詞節を導く接続詞ですが、「〜こと」という意味は持っても「〜こと／もの」という実質的な内容を示すことはできません。c. Whichは関係代名詞として使われる場合は先行詞が必要ですが、この文には先行詞がありません。d. Whereは場所を表す関係副詞または疑問副詞で、名詞節を導きますが、「～すること／もの」の意味合いは持ちません。",
+          "grammarPoint": "この問題は「関係代名詞whatが導く名詞節」に関するものです。関係代名詞whatは、「〜するところの事柄／もの」という意味で、先行詞を含んだ関係代名詞（the thing which/that）として名詞節を形成します。この名詞節は文の主語、補語、目的語になることができます。この問題のように文頭で主語として使われる場合、「What + S + V ...」または「What + V ...」の形で「SがVすること／Vすること」という意味になります。Whatを使うときは先行詞が不要である点、そして名詞節として機能する点に注意しましょう。"
+        },
+        {
+          "problemNumber": "1(3)",
+          "reproducedWithAnswer": "On my birthday, Richard gave me a bunch of flowers, (**which**) I did not know the names of.",
+          "fullSentenceJapanese": "私の誕生日に、リチャードは私に一束の花をくれたが、私はその花の名前を知らなかった。",
+          "explanation": "この文は「a bunch of flowers」に関する追加情報を提供しています。空欄の前にはカンマがあり、非制限用法を示唆しています。空欄の後には「I did not know the names of」という節が続いており、「of」の目的語が欠けています。つまり、「the names of the flowers」という関係が想定されます。非制限用法で「もの」を指す関係代名詞はc. whichです。a. thatは非制限用法では使えません。b. whatは先行詞を含んでしまうため不適切です。d. whoseは所有格ですが、ここでは「その花の名前」という関係をwhose the names of... と表すのは不自然で、of の目的語が欠けている構造とは合いません。of の目的語として the flowers を指す which が適切です。",
+          "grammarPoint": "この問題は「関係代名詞の非制限用法」と「前置詞の目的語となる関係代名詞」に関するものです。非制限用法は、先行詞に補足的な情報を加える際に用いられ、先行詞の直後にカンマ(,)を置いて関係代名詞を続けます。非制限用法では、関係代名詞thatは使えず、人にはwho(whom)、物にはwhichを使います。また、関係代名詞が前置詞の目的語となる場合、前置詞は関係代名詞の直前、または節の最後に置くことができます。この問題では「of which」とすることも可能ですが、「which I did not know the names of」のように「of」を節の最後に置く形が一般的です。"
+        },
+        {
+          "problemNumber": "2(1)",
+          "reproducedWithAnswer": "Those experiences **have made me who I am**.",
+          "fullSentenceJapanese": "そうした経験のおかげで今の私がある。",
+          "explanation": "「そうした経験が私を今の私にした」という日本語を英語にする問題です。「〜が〜を今の〜にした」という表現は \"make + 目的語 + 目的格補語\" の形を取り、さらに「今の私」を \"who I am\" と表現します。与えられた語句から、主語 \"Those experiences\" の後に動詞 \"have made\"、目的語 \"me\"、そして目的格補語にあたる \"who I am\" を続けます。\"who I am\" は「今の私」「現在の私」という意味の決まり文句です。",
+          "grammarPoint": "この問題は「make + 目的語 + 目的格補語」の文型と、「who I am」という慣用表現に関するものです。\n*   **make + O + C**: 「OをCにする」という意味を表します。Cには名詞、形容詞、動詞の原形などが来ます。\n*   **who I am**: 「今の私、現在の私」という意味の慣用表現です。「what I am」も同様の意味で使われますが、whoは「人としての私」というニュアンスが強いです。この表現を覚えておくと、英作文で「今の自分」を表現する際に役立ちます。"
+        },
+        {
+          "problemNumber": "2(2)",
+          "reproducedWithAnswer": "I feel like the food **I had yesterday is still in** my stomach.",
+          "fullSentenceJapanese": "昨日食べたご飯がまだ胃の中にあるような気がする。",
+          "explanation": "この文は「I feel like...」という構文に続き、名詞節が来ることを示しています。名詞節の中では「昨日食べたご飯」が主語「the food」を修飾する関係節「I had yesterday」となっており、その「the food I had yesterday」が全体の名詞節の主語、「is still in my stomach」が述語となります。「I had yesterday」は「the food」を修飾する関係代名詞が省略された形（目的格の関係代名詞が省略されている）です。",
+          "grammarPoint": "この問題は、「feel like + 節」の構文と、「目的格の関係代名詞の省略」に関するものです。\n*   **feel like + 節**: 「〜のような気がする」「〜したい気がする」という意味を表します。\n*   **目的格の関係代名詞の省略**: 関係代名詞が目的格の場合、その関係代名詞（which, that, whom）は省略されることがよくあります。この問題では、「the food (which/that) I had yesterday」のように、hadの目的語であるthe foodを指す関係代名詞が省略されています。この構造は日常会話や文章で頻繁に用いられるため、しっかりと理解しておくことが重要です。"
+        },
+        {
+          "problemNumber": "2(3)",
+          "reproducedWithAnswer": "The temperature **at which water boils is** 100 degrees.",
+          "fullSentenceJapanese": "水が沸騰する温度は100℃だ。",
+          "explanation": "この文は「The temperature... is 100 degrees」という主要な構造を持っています。空欄部分で「水が沸騰する（温度）」という修飾句を作る必要があります。「at which water boils」という形は、「〜が沸騰する温度」という関係を示します。「temperature」という場所や状況を示す名詞には前置詞「at」がよく使われ、それが関係代名詞「which」の前に置かれることで、「水が沸騰するその温度で」という意味合いの関係節が形成されます。",
+          "grammarPoint": "この問題は「前置詞 + 関係代名詞」の構文に関するものです。\n*   **前置詞 + 関係代名詞**: 関係代名詞が特定の意味を持つ前置詞と共に使われることで、より正確な関係を表すことができます。この場合、「at the temperature」という前置詞句が元々あり、それが関係代名詞を用いて「the temperature at which...」という形になっています。先行詞が場所や時、状況を表す名詞の場合、関係代名詞の前に適切な前置詞（at, in, on, for, withなど）が置かれることがあります。"
+        },
+        {
+          "problemNumber": "3(1)",
+          "reproducedWithAnswer": "Alice saved a boy (**who**) was drowning in the river.",
+          "fullSentenceJapanese": "アリスは川でおぼれていた男の子を助けた。",
+          "explanation": "この文では、「a boy」という先行詞があり、その後に続く「was drowning in the river」という節がその少年がどのような状態だったかを説明しています。空欄の後に動詞（was）が続いていることから、空欄には主語となる関係代名詞が入る必要があります。「a boy」は人ですので、主格の関係代名詞は「who」が適切です。「that」も主格で使えますが、ここでは最も一般的な「who」が適切でしょう。",
+          "grammarPoint": "この問題は「主格の関係代名詞」に関するものです。関係代名詞が関係節の中で主語の役割を果たす場合、それを主格の関係代名詞と呼びます。先行詞が人の場合はwho、物の場合はwhichを使います。thatは人・物どちらにも使えますが、非制限用法では使えません。この文は制限用法で、先行詞「a boy」を「川でおぼれていた」という情報で限定しています。関係代名詞のすぐ後に動詞が続くのが主格の典型的な形です。"
+        },
+        {
+          "problemNumber": "3(2)",
+          "reproducedWithAnswer": "Do you know a restaurant (**that**) allows customers to bring their dogs in?",
+          "fullSentenceJapanese": "お客さんが犬を連れて入ることを許しているレストランを知っていますか？",
+          "explanation": "この文は「a restaurant」という先行詞があり、その後に続く「allows customers to bring their dogs in」という節がレストランの特徴を説明しています。空欄の後に動詞（allows）が続いていることから、空欄には主語となる関係代名詞が入る必要があります。「a restaurant」は物ですので、主格の関係代名詞は「which」または「that」が適切です。特に「that」は人・物どちらにも使える便利な関係代名詞で、疑問文での「the restaurant that...」のような形でも自然に使われます。",
+          "grammarPoint": "この問題は「主格の関係代名詞」に関するものです。先行詞が物の場合はwhichまたはthatを使います。この文のように先行詞が「物」で、関係節が先行詞を限定する（制限用法）場合、whichとthatはどちらも使えます。どちらを使っても意味は変わりませんが、thatはより口語的で、幅広く使われる傾向があります。"
+        },
+        {
+          "problemNumber": "3(3)",
+          "reproducedWithAnswer": "I missed the last train and (**which**) was worse, I couldn't find a taxi.",
+          "fullSentenceJapanese": "私は終電を逃し、さらに悪いことには、タクシーも見つけられなかった。",
+          "explanation": "この文では、空欄の後に「was worse」と続いており、このwas worseの主語として空欄の語句が入ります。そして、この「was worse」の内容が、前の文全体「I missed the last train」を受けて「さらに悪いことには」という状況を説明しています。前の文全体の内容や句を先行詞として受ける関係代名詞は「which」です。これは非制限用法で使われ、カンマの後に置かれます。",
+          "grammarPoint": "この問題は「関係代名詞whichの非制限用法で、先行詞が文全体または句の場合」に関するものです。関係代名詞whichは、非制限用法において、先行詞が単語ではなく、前の節全体の内容や特定の句である場合に使うことができます。この場合、カンマの後にwhichを置き、「そしてそれは～だった」という意味で前の内容を説明します。例えば、「He said he was ill, which was a lie.」（彼は病気だと言ったが、それは嘘だった。）のように使われます。"
+        },
+        {
+          "problemNumber": "4(1)",
+          "reproducedWithAnswer": "What you should do first is to apologize to him.",
+          "fullSentenceJapanese": "君が最初にすべきことは彼に謝ることだ。",
+          "explanation": "「君が最初にすべきこと」は、関係代名詞whatを使って「What you should do first」と表現します。このWhat節全体が主語となり、述語動詞は「is」です。「謝ること」は不定詞の名詞的用法「to apologize to him」で表現できます。主語がwhat節の場合、補語のto不定詞はtoを省略して原形不定詞になることも多いですが、ここではtoがあるのが自然です。",
+          "grammarPoint": "この問題は「関係代名詞whatが導く名詞節が主語になる構文」と「SVC文型での補語」に関するものです。\n*   **What + S + V ...**: 「SがVすること」という意味で名詞節を作り、文の主語になることができます。このWhat節は単数扱いとなります。\n*   **SVC文型における補語**: 「主語 + be動詞 + 補語」の形で、「主語は補語である」という意味を表します。補語には名詞や形容詞、to不定詞などが来ます。この場合、「to apologize to him」が主語「What you should do first」が何であるかを説明する補語となっています。"
+        },
+        {
+          "problemNumber": "4(2)",
+          "reproducedWithAnswer": "The school festival, **which is held every September,** is the biggest event of our school.",
+          "fullSentenceJapanese": "学校祭は毎年9月に開催されますが、それは私たちの学校最大のイベントです。",
+          "explanation": "この文は「学校祭は私たちの学校最大のイベントです」が中心の文で、「毎年9月に開催される」は学校祭に関する追加情報です。追加情報なので、非制限用法で表現します。先行詞「The school festival」が物なので、関係代名詞は「which」を使います。「開催される」は受け身「is held」で表現します。カンマで区切る非制限用法を使うことで、自然なつながりになります。",
+          "grammarPoint": "この問題は「関係代名詞whichの非制限用法」と「受動態」に関するものです。\n*   **関係代名詞whichの非制限用法**: 先行詞に補足情報を加える際にカンマで区切ってwhichを使います。この用法ではthatは使えません。\n*   **受動態 (be + 過去分詞)**: 「〜される」という意味を表します。この文では「学校祭が開催される」ので \"is held\" が適切です。"
+        },
+        {
+          "problemNumber": "4(3)",
+          "reproducedWithAnswer": "Who is the boy Saki is playing tennis with?",
+          "fullSentenceJapanese": "サキがいっしょにテニスをしている男の子はだれですか。",
+          "explanation": "「だれですか」なので疑問詞「Who」から始めます。疑問文の語順で「Who is the boy...?」となり、その後に「Saki is playing tennis with」という関係節が続き、The boyを修飾します。この関係節では、Sakiが誰かとテニスをしているその「誰か」がThe boyであり、withの目的語である関係代名詞が省略されています。前置詞「with」を文末に置く形が自然です。",
+          "grammarPoint": "この問題は「疑問詞Whoを使った疑問文」と「目的格の関係代名詞の省略、および前置詞の置き方」に関するものです。\n*   **疑問詞 + be動詞 + 主語 + ...**: 「誰が〜ですか？」という基本的な疑問文の形です。\n*   **目的格の関係代名詞の省略**: 「the boy (whom/that) Saki is playing tennis with」のように、前置詞の目的語となる関係代名詞は省略されることがよくあります。\n*   **前置詞の配置**: 関係代名詞節において、前置詞は関係代名詞の直前（例: \"with whom\"）に置くことも、節の最後に置くこともできます。特に口語では、節の最後に置く形が一般的で自然です。"
+        },
+        {
+          "problemNumber": "4(4)",
+          "reproducedWithAnswer": "He is wearing **the same shirt as he wore yesterday.**",
+          "fullSentenceJapanese": "彼は昨日着ていたのと同じシャツを着ている。",
+          "explanation": "「〜と同じ...」という表現は「the same ... as ~」を使います。「シャツ」は「shirt」。「昨日着ていたのと同じ」の部分は「as he wore yesterday」となります。asは接続詞として働き、関係代名詞のような役割を果たし、「〜するのと同じように」という意味合いで前の名詞を修飾します。",
+          "grammarPoint": "この問題は「the same ... as ~」の構文に関するものです。\n*   **the same ... as ~**: 「〜と同じ...」という意味を表す表現です。asの後には節（主語+動詞）が続きます。asは比較の接続詞として機能し、関係代名詞のように先行詞を修飾します。「the same ... that ~」も同様の意味で使われますが、asは「同種類のもの」を指し、thatは「同一のもの」を指すというニュアンスの違いがあります。この文脈では、同じ種類のシャツを指しているためasがより適切です。"
+        }
+      ]
+    }
+  ],
   "corners": [
     {
       "id": "corner_1784461896715",
