@@ -4665,6 +4665,586 @@
           "grammarPoint": "この問題は「the same ... as ~」の構文に関するものです。\n*   **the same ... as ~**: 「〜と同じ...」という意味を表す表現です。asの後には節（主語+動詞）が続きます。asは比較の接続詞として機能し、関係代名詞のように先行詞を修飾します。「the same ... that ~」も同様の意味で使われますが、asは「同種類のもの」を指し、thatは「同一のもの」を指すというニュアンスの違いがあります。この文脈では、同じ種類のシャツを指しているためasがより適切です。"
         }
       ]
+    },
+    {
+      "id": "L10P43",
+      "title": "Lesson10 教科書P43",
+      "lessonLabel": "Lesson10",
+      "problems": [
+        {
+          "problemNumber": "1",
+          "reproducedWithAnswer": "(1) I recently went back to the town (**where**) I grew up.",
+          "fullSentenceJapanese": "私は最近、育った町に戻った。",
+          "explanation": "この文では、先行詞「the town」が場所を示しており、空欄の後には「I grew up」（私は育った）というS+Vの完全な文が続いています。場所の先行詞を説明し、完全な文を導くのは関係副詞「where」です。「which」は関係代名詞で、後に不完全な文が続きます。「when」は時を表すため、ここでは不適切です。",
+          "grammarPoint": "関係副詞（where）：先行詞が場所（例: town, city, house）である場合に、その場所で「何が起こるか」や「誰が何をするか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
+        },
+        {
+          "problemNumber": "2",
+          "reproducedWithAnswer": "(2) Do you remember the day (**when**) we first met?",
+          "fullSentenceJapanese": "私たちが初めて会った日を覚えていますか？",
+          "explanation": "この文では、先行詞「the day」が時を示しており、空欄の後には「we first met」（私たちは初めて会った）というS+Vの完全な文が続いています。時の先行詞を説明し、完全な文を導くのは関係副詞「when」です。「which」は関係代名詞、「where」は場所を表すため、ここでは不適切です。",
+          "grammarPoint": "関係副詞（when）：先行詞が時（例: day, year, time）である場合に、その時に「何が起こるか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
+        },
+        {
+          "problemNumber": "3",
+          "reproducedWithAnswer": "(3) The museum (**which**) I wanted to go to was closed.",
+          "fullSentenceJapanese": "私が行きたかった美術館は閉まっていた。",
+          "explanation": "この文では、先行詞「the museum」が物を示しています。空欄の後には「I wanted to go to」と続き、「go to」の目的語（＝museum）が欠けている不完全な文です。したがって、目的語の役割を果たす関係代名詞「which」が適切です。「when」や「where」は完全な文を導く関係副詞なので不適切です。",
+          "grammarPoint": "関係代名詞（which）：先行詞が物や動物である場合に、その先行詞を説明します。関係代名詞は、関係詞節の中で主語、目的語、補語の役割を果たし、その後には主語や目的語が欠けた不完全な文が続きます。前置詞の目的語になる場合は、前置詞を関係代名詞の前に置くことも、文末に残すことも可能です。"
+        },
+        {
+          "problemNumber": "4",
+          "reproducedWithAnswer": "(4) New Zealand, (**where**) we spent our holidays, is one of the most beautiful countries in the world.",
+          "fullSentenceJapanese": "私たちが休暇を過ごしたニュージーランドは、世界で最も美しい国の一つです。",
+          "explanation": "この文では、先行詞「New Zealand」が場所を示しており、空欄の後には「we spent our holidays」（私たちは休暇を過ごした）というS+V+Oの完全な文が続いています。場所の先行詞を説明し、完全な文を導くのは関係副詞「where」です。コンマで区切られていることから、非制限用法であることが分かります。「which」は関係代名詞、「how」は方法を表すため、ここでは不適切です。",
+          "grammarPoint": "関係副詞の非制限用法（where）：先行詞が場所を示す名詞で、その場所に関する追加情報を提供する場合に、コンマの後に「where」を使います。非制限用法は、先行詞を特定するのではなく、単に補足情報を加える役割があります。この「where」の後にも完全な文が続きます。"
+        },
+        {
+          "problemNumber": "5",
+          "reproducedWithAnswer": "(5) I came home at 9 p.m. That was (**when**) my parents were watching a movie on TV.",
+          "fullSentenceJapanese": "午後9時に帰宅した。ちょうどその時、両親はテレビで映画を見ていた。",
+          "explanation": "この文では、「That」が前の文の「I came home at 9 p.m.」という出来事、つまり「時」を指しています。空欄の後には「my parents were watching a movie on TV」という完全な文が続くため、時を表す関係副詞「when」が適切です。「why」は理由、「how」は方法を表すため、ここでは不適切です。",
+          "grammarPoint": "関係副詞（when）の先行詞が抽象的な時や前の文全体の場合：先行詞が具体的な時間名詞でなくても、「that」や「then」など、文脈から時を示すと判断できる語句や、前の文全体が時を表す場合に「when」が使われます。この「when」も完全な文を導きます。"
+        },
+        {
+          "problemNumber": "6",
+          "reproducedWithAnswer": "(6) (**Whatever**) happens, I will never use violence.",
+          "fullSentenceJapanese": "何が起ころうとも、私は決して暴力を使いません。",
+          "explanation": "この文では、空欄の後に動詞「happens」が続いており、空欄がその動詞の主語の役割を果たす必要があります。同時に「何が～であろうとも」という譲歩の意味も必要です。「whoever」は「誰が～であろうとも」で人について、「whenever」は「いつ～であろうとも」で時について使われます。不特定のものごとが主語になり、「何が～であろうとも」という意味を表す複合関係代名詞「whatever」が適切です。",
+          "grammarPoint": "複合関係代名詞（whatever）：名詞節または副詞節を導きます。名詞節としては「～するものは何でも」という意味で、主語、目的語、補語になります。副詞節としては「何が～であろうとも」という意味で、譲歩を表します。この問題では副詞節として譲歩の意味を表しています。"
+        },
+        {
+          "problemNumber": "7",
+          "reproducedWithAnswer": "(7) My sister follows me around (**wherever**) I go.",
+          "fullSentenceJapanese": "私の妹は、私がどこへ行こうとついてくる。",
+          "explanation": "この文では、「私がどこへ行こうと」という場所の譲歩を表す副詞節が必要です。空欄の後には「I go」というS+Vの完全な文が続いています。「whatever」は「何が～であろうとも」、「whenever」は「いつ～であろうとも」を表します。「wherever」は「どこへ～であろうとも」という意味で、場所の譲歩を表すため、この文脈に最適です。",
+          "grammarPoint": "複合関係副詞（wherever）：副詞節を導き、「～するところはどこでも」や「どこへ～であろうとも」という意味を表します。場所の譲歩を示す際に用いられ、その後には完全な文が続きます。"
+        },
+        {
+          "problemNumber": "8",
+          "reproducedWithAnswer": "(1) 友人が泊まっているホテルに行くところです。I'm going to the hotel (**where**) a friend of mine is staying.",
+          "fullSentenceJapanese": "友人が泊まっているホテルに行くところです。",
+          "explanation": "この文では、先行詞「the hotel」が場所を示しており、空欄の後には「a friend of mine is staying」（私の友人が泊まっている）というS+Vの完全な文が続いています。場所の先行詞を説明し、完全な文を導くのは関係副詞「where」です。",
+          "grammarPoint": "関係副詞（where）：先行詞が具体的な場所名詞である場合に用いられ、その場所で何が起こるか、誰が何をするかを説明します。関係副詞の後には完全な文が続きます。この「where」は「at which」や「in which」に置き換えることも可能です。"
+        },
+        {
+          "problemNumber": "9",
+          "reproducedWithAnswer": "(2) 火曜日は私が1番忙しい日です。いつも帰りが遅くなります。Tuesday is (**when**) I'm busiest. I usually get home very late.",
+          "fullSentenceJapanese": "火曜日は私が一番忙しい日だ。いつも帰りがとても遅くなる。",
+          "explanation": "この文では、「Tuesday」が時を示しており、空欄の後には「I'm busiest」（私が一番忙しい）というS+V+Cの完全な文が続いています。時の先行詞を説明し、完全な文を導くのは関係副詞「when」です。この文は「火曜日が、私が一番忙しい時だ」という意味になります。",
+          "grammarPoint": "関係副詞（when）：先行詞が具体的な時間名詞である場合に用いられ、その時に何が起こるかを説明します。関係副詞の後には完全な文が続きます。"
+        },
+        {
+          "problemNumber": "10",
+          "reproducedWithAnswer": "(3) スーが私のケーキを食べたの。だから私は彼女に腹を立てているの。Sue ate my cake. That's (**why**) I'm angry with her.",
+          "fullSentenceJapanese": "スーが私のケーキを食べたの。それが私が彼女に腹を立てている理由だ。",
+          "explanation": "この文では、「That」が前の文の内容（スーがケーキを食べたこと）を指しており、それが「私が怒っている理由」であると説明しています。空欄の後には「I'm angry with her」という完全な文が続くため、理由を示す関係副詞「why」が適切です。これは「the reason why」の「the reason」が省略された形と考えられます。",
+          "grammarPoint": "関係副詞（why）：先行詞が理由（the reason）である場合に用いられ、その理由によって何が起こるかを説明します。しばしば先行詞「the reason」が省略されて「why」のみが使われることがあります。その後には完全な文が続きます。"
+        },
+        {
+          "problemNumber": "11",
+          "reproducedWithAnswer": "(4) 何でもほしいものを買っていいよ。You can buy (**whatever**) you want.",
+          "fullSentenceJapanese": "何でもほしいものを買っていいよ。",
+          "explanation": "この文では、「あなたがほしいものは何でも」という意味の名詞節を作る必要があります。動詞「want」の目的語が欠けており、かつ「何でも」という意味を持つ複合関係代名詞「whatever」が適切です。「whatever」は「anything that」と言い換えられます。",
+          "grammarPoint": "複合関係代名詞（whatever）：名詞節を導き、「～するものは何でも」という意味になります。この名詞節は、文中で主語、目的語、補語のいずれかの役割を果たします。動詞の目的語が欠けた不完全な文を後に続けます。"
+        },
+        {
+          "problemNumber": "12",
+          "reproducedWithAnswer": "(5) どんなにがんばってやってみても、この瓶が開けられない。(**However**) I try, I can't open this jar.",
+          "fullSentenceJapanese": "どんなにがんばってやってみても、この瓶が開けられない。",
+          "explanation": "この文では、「どんなに～しようとも」という譲歩の意味を表す副詞節が必要です。空欄の後には「I try」というS+Vの完全な文が続きます。複合関係副詞「however」は、形容詞や副詞を伴って「どんなに～であろうとも」という意味を表しますが、ここでは単独で動詞「try」を修飾し、「どんなに努力しても」という譲歩の意味を表すことができます。",
+          "grammarPoint": "複合関係副詞（however）：副詞節を導き、「どんなに～であろうとも」という譲歩の意味を表します。通常は形容詞や副詞の前に置かれますが、特定の動詞（例: try）を修飾し、単独で使われることもあります。その後には完全な文が続きます。"
+        },
+        {
+          "problemNumber": "13",
+          "reproducedWithAnswer": "(6) ブライアンは住んでいるところからわずか2キロのところで働いている。Brian works only 2 km (**from where**) he lives.",
+          "fullSentenceJapanese": "ブライアンは、彼が住んでいるところからわずか2キロのところで働いている。",
+          "explanation": "この文では、「彼が住んでいるところから」という場所を示す句が必要です。「where he lives」で「彼が住んでいる場所」という名詞節になります。この名詞節に「～から」という意味を加えるために前置詞「from」を置くのが適切です。",
+          "grammarPoint": "関係副詞（where）を含む名詞節：関係副詞「where」は、単独で「～するところ」という意味の名詞節を導くことがあります。この名詞節は、前置詞の目的語になることができます。同様に、「when」が「～する時」、「why」が「～する理由」という意味の名詞節を作ることもあります。"
+        },
+        {
+          "problemNumber": "14",
+          "reproducedWithAnswer": "(1) (**Wherever**) you go, I'll follow you.",
+          "fullSentenceJapanese": "あなたがどこへ行こうと、私はついて行きます。",
+          "explanation": "この文では、「あなたがどこへ行こうとも」という場所の譲歩の意味を持つ副詞節が必要です。選択肢の中から場所の譲歩を表す複合関係副詞「wherever」が最も適切です。",
+          "grammarPoint": "複合関係副詞（wherever）：副詞節を導き、「～するところはどこでも」「どこへ～であろうとも」という譲歩の意味を表します。後には完全な文が続きます。"
+        },
+        {
+          "problemNumber": "15",
+          "reproducedWithAnswer": "(2) Don't be afraid. You can say (**whatever**) you have on your mind.",
+          "fullSentenceJapanese": "恐れないで。心の中にあることは何でも言っていいよ。",
+          "explanation": "この文では、「心の中にあるものは何でも」という意味の名詞節を作る必要があります。動詞「say」の目的語が欠けており、かつ「何でも」という意味を持つ複合関係代名詞「whatever」が適切です。",
+          "grammarPoint": "複合関係代名詞（whatever）：名詞節を導き、「～するものは何でも」という意味を表します。この名詞節は、文中で主語、目的語、補語のいずれかの役割を果たし、後には主語や目的語が欠けた不完全な文が続きます。"
+        },
+        {
+          "problemNumber": "16",
+          "reproducedWithAnswer": "(3) You can borrow either of these books. (**Whichever**) you choose.",
+          "fullSentenceJapanese": "これらの本のどちらでも借りていいよ。あなたが選ぶ方ならどちらでも。",
+          "explanation": "この文では、「どちらでもあなたが選ぶ方」という意味を表す必要があります。先行詞として「either of these books」（2つのうちのどちらか）が示されているため、選択肢が限定されている場合に「どちらでも」という意味を表す複合関係代名詞「whichever」が最も適切です。",
+          "grammarPoint": "複合関係代名詞（whichever）：名詞節または副詞節を導き、「～するどちらでも」「どちらが～であろうとも」という意味を表します。選択肢が限定されている場合に用いられます。後には主語や目的語が欠けた不完全な文が続くことが多いですが、この場合は「you choose (whichever one)」という構造です。"
+        },
+        {
+          "problemNumber": "17",
+          "reproducedWithAnswer": "(4) You can come and see us (**whenever**) you are always welcome.",
+          "fullSentenceJapanese": "いつでも、あなたが歓迎されている時に、私たちに会いに来ていいよ。",
+          "explanation": "この文では、「あなたが歓迎される時ならいつでも」という時の譲歩の意味を持つ副詞節が必要です。選択肢の中から時の譲歩を表す複合関係副詞「whenever」が最も適切です。",
+          "grammarPoint": "複合関係副詞（whenever）：副詞節を導き、「～する時はいつでも」「いつ～であろうとも」という譲歩の意味を表します。後には完全な文が続きます。"
+        },
+        {
+          "problemNumber": "18",
+          "reproducedWithAnswer": "(5) They offer free lessons to (**whoever**) is willing to learn.",
+          "fullSentenceJapanese": "彼らは、学びたい人には誰でも無料でレッスンを提供しています。",
+          "explanation": "この文では、「学びたい人は誰でも」という意味の名詞節を作る必要があります。動詞「is willing」の主語が欠けており、かつ「誰でも」という意味を持つ複合関係代名詞「whoever」が適切です。「to」の目的語となる名詞節を導きます。",
+          "grammarPoint": "複合関係代名詞（whoever）：名詞節を導き、「～する人は誰でも」「誰が～であろうとも」という意味を表します。この名詞節は、文中で主語、目的語、補語のいずれかの役割を果たし、後には主語が欠けた不完全な文が続きます。"
+        }
+      ]
+    },
+    {
+      "id": "L10P44",
+      "title": "Lesson10 教科書P44",
+      "lessonLabel": "Lesson10",
+      "problems": [
+        {
+          "problemNumber": "4-(1)",
+          "reproducedWithAnswer": "The reason **why** is not clear.",
+          "fullSentenceJapanese": "その理由が明らかではない。",
+          "explanation": "先行詞が「理由」を意味する \"reason\" であるため、関係副詞 \"why\" を用いて理由を説明する節を導きます。この文では \"why\" 以下が主語 \"The reason\" を修飾しています。",
+          "grammarPoint": "関係副詞 \"why\" は、先行詞 \"the reason\" の後に用いられ、理由を表す節を導きます。\"why\" は省略されることもあります。"
+        },
+        {
+          "problemNumber": "4-(2)",
+          "reproducedWithAnswer": "I went abroad for the first time ten years ago, **when**.",
+          "fullSentenceJapanese": "私は10年前、初めて海外に行った。",
+          "explanation": "\"ten years ago\" という時間を表す句に続くため、関係副詞 \"when\" が適切です。この文では、\"when\" がその時点についてさらなる情報を提供します。",
+          "grammarPoint": "関係副詞 \"when\" は、先行詞が時間を示す語句（例: year, day, time）の場合に用いられ、その時点における出来事を説明する節を導きます。"
+        },
+        {
+          "problemNumber": "4-(3)",
+          "reproducedWithAnswer": "Yesterday I tried some food **which I usually buy groceries**.",
+          "fullSentenceJapanese": "昨日、私は普段食料品として買う食べ物をいくつか試した。",
+          "explanation": "先行詞が「食べ物」を意味する \"food\" であるため、関係代名詞 \"which\" を用いて修飾する節を導きます。提供された選択肢の中で \"I usually buy groceries\" が「食べ物」に関連し、自然な文を形成します。",
+          "grammarPoint": "関係代名詞 \"which\" は、先行詞が物や動物である場合に用いられ、その先行詞を説明する節を導きます。\"which\" はその節の中で主語や目的語の役割を果たします。"
+        },
+        {
+          "problemNumber": "4-(4)",
+          "reproducedWithAnswer": "Mr. Taylor has just been to Chicago, **where his daughter lives**.",
+          "fullSentenceJapanese": "テイラーさんはちょうどシカゴに行ってきましたが、そこには彼の娘が住んでいます。",
+          "explanation": "先行詞が場所を意味する \"Chicago\" であるため、関係副詞 \"where\" を用いてその場所に関する情報を加える節を導きます。提供された選択肢の中で \"his daughter lives\" がシカゴで彼の娘が住んでいることを示しており、自然な文を形成します。",
+          "grammarPoint": "関係副詞 \"where\" は、先行詞が場所を示す語句（例: place, city, house）の場合に用いられ、その場所に関する状況や出来事を説明する節を導きます。コンマの後に続く場合は、非制限用法として追加情報を提供します。"
+        },
+        {
+          "problemNumber": "5-(1)",
+          "reproducedWithAnswer": "Tell **me whatever you know** about this person.",
+          "fullSentenceJapanese": "この人物について、あなたが知っていることを全部教えてください。",
+          "explanation": "命令形 \"Tell\" の後に目的語 \"me\" が来て、「〜を何でも」という意味の複合関係代名詞 \"whatever\" が導く名詞節 \"whatever you know\" が続きます。\"whatever you know\" で「あなたが知っていることすべて」という意味になります。",
+          "grammarPoint": "複合関係代名詞 \"whatever\" は、「～するものは何でも」「～する事なら何でも」という意味を持ち、名詞節または副詞節を導きます。この文では名詞節として \"tell\" の目的語になっています。"
+        },
+        {
+          "problemNumber": "5-(2)",
+          "reproducedWithAnswer": "That's **how I stay fit**.",
+          "fullSentenceJapanese": "それが私の健康維持の方法です。",
+          "explanation": "\"That's how...\" は「それが〜する方法だ」という意味の定型表現です。その後ろに主語 \"I\"、動詞 \"stay\"、形容詞 \"fit\" が続き、「私が健康を保つ方法」という内容になります。",
+          "grammarPoint": "\"That's how...\" は、「それが〜する方法だ」という意味で、先行する文の内容がどのように行われたかを説明する際に用います。\"how\" は関係副詞として使われ、先行詞 \"the way\" が省略された形と考えることもできます。"
+        },
+        {
+          "problemNumber": "5-(3)",
+          "reproducedWithAnswer": "2021 is **the year when the Tokyo Olympic Games were held**.",
+          "fullSentenceJapanese": "2021年は東京オリンピックが開催された年です。",
+          "explanation": "\"2021 is the year\" と続き、時間を表す先行詞 \"the year\" を修飾する関係副詞 \"when\" が続きます。その後に「東京オリンピックが開催された」という受動態の節 \"the Tokyo Olympic Games were held\" が来ます。",
+          "grammarPoint": "関係副詞 \"when\" は、先行詞が時間を表す名詞（この場合は \"the year\"）である場合に用いられ、その時間において何が起こったかを説明する節を導きます。"
+        },
+        {
+          "problemNumber": "Expression 1-(1)",
+          "reproducedWithAnswer": "A zoo is a place **where you can see various animals**.",
+          "fullSentenceJapanese": "動物園は様々な動物を見ることができる場所です。",
+          "explanation": "\"A zoo is a place\" の後に、場所を表す関係副詞 \"where\" を用い、動物園で何ができるかを説明する節を続けます。動物園の典型的な機能である「様々な動物を見ること」が適切です。",
+          "grammarPoint": "関係副詞 \"where\" は、先行詞が場所を示す名詞である場合に用いられ、その場所に関する詳細な情報を提供する節を導きます。"
+        },
+        {
+          "problemNumber": "Expression 1-(2)",
+          "reproducedWithAnswer": "A hospital is a place **where sick people are treated**.",
+          "fullSentenceJapanese": "病院は病気の人が治療を受ける場所です。",
+          "explanation": "\"A hospital is a place\" の後に、場所を表す関係副詞 \"where\" を用い、病院で何が行われるかを説明する節を続けます。病院の典型的な機能である「病気の人が治療を受けること」が適切です。",
+          "grammarPoint": "関係副詞 \"where\" は、先行詞が場所を示す名詞である場合に用いられ、その場所に関する詳細な情報を提供する節を導きます。"
+        },
+        {
+          "problemNumber": "Expression 1-(3)",
+          "reproducedWithAnswer": "A holiday is a time **where people can escape from daily routine**.",
+          "fullSentenceJapanese": "休暇は人々が日常から逃れることができる時です。",
+          "explanation": "\"A holiday is a time\" の後に、指示に従い関係副詞 \"where\" を用いて、その時期に人々が置かれる状況や状態を説明します。ここでは「人々が日常から逃れることができる状況」と表現します。通常は \"when\" を用いるのがより自然ですが、指示に沿って \"where\" を使用しました。",
+          "grammarPoint": "関係副詞 \"where\" は場所だけでなく、比喩的な状況や文脈を指す際にも用いられることがあります。ただし、時間を表す先行詞 \"time\" に対しては通常 \"when\" を用いるのが自然です。ここでは指示により \"where\" を使用しましたが、その意味するところは「その時に生じる状況において」と解釈できます。"
+        },
+        {
+          "problemNumber": "Expression 1-(4)",
+          "reproducedWithAnswer": "May 5 is Children's Day, **where families celebrate children's growth**.",
+          "fullSentenceJapanese": "5月5日はこどもの日ですが、その日には家族が子供たちの成長を祝います。",
+          "explanation": "\"May 5 is Children's Day\" の後に、指示に従い関係副詞 \"where\" を用いて、その日に行われる状況や慣習を説明します。通常は \"when\" を用いるのがより自然ですが、指示に沿って \"where\" を使用し、「家族が子供たちの成長を祝う場面」として表現しました。",
+          "grammarPoint": "時間を表す先行詞に対する \"where\" の使用は限定的であり、その時間における状況や活動の「場」を指す場合に用いられることがあります。一般的には \"when\" がより適切です。"
+        },
+        {
+          "problemNumber": "Expression 2-(1)",
+          "reproducedWithAnswer": "**Whatever you say**, Thomas won't change his mind.",
+          "fullSentenceJapanese": "あなたが何を言っても、トーマスは考えを変えないだろう。",
+          "explanation": "複合関係代名詞 \"whatever\" が導く副詞節は「何が〜しようとも」「何を〜しようとも」という意味を表します。ここでは「あなたが何を言おうとも」という内容が、後の主節「トーマスは考えを変えないだろう」に接続する副詞節として適切です。",
+          "grammarPoint": "複合関係代名詞 \"whatever\" は、副詞節を導く場合、「たとえ何が〜であろうとも」「何を〜しようとも」という意味で譲歩を表します。この場合、\"no matter what\" と言い換え可能です。"
+        },
+        {
+          "problemNumber": "Expression 2-(2)",
+          "reproducedWithAnswer": "Whenever I watch this movie, **I am deeply moved**.",
+          "fullSentenceJapanese": "この映画を見るたびに、私は深く感動する。",
+          "explanation": "複合関係副詞 \"whenever\" が導く副詞節は「〜する時はいつでも」「〜するたびに」という意味を表します。主節には、その行為（映画を見る）が引き起こす結果や感情を記述するのが自然です。",
+          "grammarPoint": "複合関係副詞 \"whenever\" は、副詞節を導く場合、「～する時はいつでも」「～するたびに」という意味を表します。\"every time that\" や \"at any time when\" と言い換え可能です。"
+        },
+        {
+          "problemNumber": "Expression 2-(3)",
+          "reproducedWithAnswer": "However fast you run, **you cannot catch me**.",
+          "fullSentenceJapanese": "どんなに速く走っても、あなたは私に追いつけないだろう。",
+          "explanation": "複合関係副詞 \"however\" は、形容詞や副詞を伴って「どんなに〜であっても」という譲歩の意味を表す副詞節を導きます。主節には、その条件に対する結果を記述します。",
+          "grammarPoint": "複合関係副詞 \"however\" は、形容詞や副詞を伴って譲歩の副詞節を導きます。「どんなに〜であっても」という意味になり、\"no matter how\" と言い換え可能です。"
+        }
+      ]
+    },
+    {
+      "id": "L10P45",
+      "title": "Lesson10 教科書P45",
+      "lessonLabel": "Lesson10",
+      "problems": [
+        {
+          "problemNumber": "1-(1)",
+          "reproducedWithAnswer": "It was a very hot afternoon, ( ) we rested for a while. a. which b. **when** c. where d. that",
+          "fullSentenceJapanese": "とても暑い午後だったので、私たちはしばらく休憩した。",
+          "explanation": "この文では「afternoon（午後）」という時間を表す語句が先行詞となっています。空欄の後ろの「we rested for a while（私たちはしばらく休憩した）」は、その午後に行った行動を説明しています。時間を表す先行詞を修飾し、その時に何が起こったかを説明する場合には、関係副詞の「when」が適切です。「which」は物や事柄に、「where」は場所に、「that」は制限用法で「when」の代わりになりますが、コンマの後には使えません。",
+          "grammarPoint": "関係副詞の「when」は、先行詞が「time」「day」「year」などの時間を表す名詞の場合に用いられ、その時に起こった出来事を説明する役割を果たします。非制限用法ではコンマの後に「when」が続き、文頭から順に情報を付け加えるように訳します。"
+        },
+        {
+          "problemNumber": "1-(2)",
+          "reproducedWithAnswer": "We found a coffee shop, ( ) we are, we can always talk online.",
+          "fullSentenceJapanese": "私たちは喫茶店を見つけ、どこにいても、いつでもオンラインで話せる。",
+          "explanation": "この文の後半は「どこにいても、いつでもオンラインで話せる」という意味になります。空欄の後ろにある「we are」は「私たちがいる場所」を示唆しており、「どこにいても」という譲歩の意味を表す複合関係副詞が必要です。選択肢の中でこの意味を持つのは「wherever」です。「wherever」は「どこで～しようとも」「～するところはどこでも」という意味で、場所の譲歩を表します。",
+          "grammarPoint": "複合関係副詞は、関係副詞に「-ever」が付いた形です。場所の譲歩を表す「wherever」は「どこで～しようとも」「～するところはどこでも」という意味を持ち、名詞節または副詞節を作ります。この文では副詞節として働き、主節の条件を示しています。"
+        },
+        {
+          "problemNumber": "1-(3)",
+          "reproducedWithAnswer": "**As** is often the case with them, they came late. a. **As** b. However c. Whenever d. What",
+          "fullSentenceJapanese": "彼らの場合によくあることだが、彼らは遅れてやってきた。",
+          "explanation": "「As is often the case with ～」は「～にはよくあることだが」という意味の慣用表現です。この「As」は関係代名詞で、後に続く文全体（they came late）を先行詞として受け、「～のように」という状況や様態を表します。この表現はそのまま覚えることが重要です。",
+          "grammarPoint": "「As is often the case with ～」は、文頭に「As」を置いて文全体を先行詞とする関係代名詞の慣用表現です。「As」は「～のように」という意味を持ち、後に続く動詞句と結びついて、前の文や文全体の内容を説明します。類似の表現には「As is usual with ～」などがあります。"
+        },
+        {
+          "problemNumber": "1-(4)",
+          "reproducedWithAnswer": "Mary was so nice that she gave the poor man ( **what** ) money she had. a. how b. those c. So d. **What**",
+          "fullSentenceJapanese": "メアリーはとても親切だったので、持っていたお金をすべてその貧しい男性にあげた。",
+          "explanation": "この文は「メアリーは親切だったので、持っていたお金をすべてその貧しい男性にあげた」という意味になります。空欄に続く「money she had」は「彼女が持っていたお金」という意味ですが、この前に「what」を置くことで、「彼女が持っていた（全ての）お金」という全体量を表すことができます。「what + 名詞 + (S + V)」で「SがVするすべての名詞」という意味合いになります。この場合は「what money she had」で「彼女が持っていた全てのお金」となります。",
+          "grammarPoint": "「what + 名詞 + (S + V)」の形で、「SがVするすべての名詞」という意味を表すことがあります。これは「all the 名詞 that S V」と同じ意味合いで、複合関係代名詞「what」の応用的な使い方として理解できます。"
+        },
+        {
+          "problemNumber": "2-(1)",
+          "reproducedWithAnswer": "Her book was first released in 2005, when nobody thought it would become so popular.",
+          "fullSentenceJapanese": "彼女の本は2005年に初版が発売されたが、その頃は誰もそれがこれほど人気になるとは思っていなかった。",
+          "explanation": "この文は「Her book was first released in 2005」という主節と、その年を修飾する非制限用法の関係副詞節「when nobody thought it would become so popular」から構成されています。非制限用法の関係副詞節は、先行詞（2005）について補足情報を与える役割があります。文頭から順に意味を捉え、「～が、その時に～だった」と自然につなげることがポイントです。",
+          "grammarPoint": "非制限用法の関係副詞「when」は、先行詞となる時間名詞（ここでは2005）の後にコンマを置いて挿入され、その先行詞に関する付加的な情報を提供します。文頭から訳し進め、「そしてその時～」や「その頃～」のように訳すと自然な日本語になります。この場合、「when」節の中では「it (その本) would become so popular (人気になる)」と「nobody thought (誰も思っていなかった)」が結びついています。"
+        },
+        {
+          "problemNumber": "2-(2)",
+          "reproducedWithAnswer": "The girl who I thought was your sister was a stranger.",
+          "fullSentenceJapanese": "私があなたの妹だと思っていた少女は見知らぬ人でした。",
+          "explanation": "この文の主語は「The girl」、動詞は「was」、補語は「a stranger」です。主語の「The girl」を「who I thought was your sister」という関係代名詞節が修飾しています。この関係代名詞節の中では、「who」が動詞「was」の主語であり、さらに「I thought」が挿入された形になっています。そのため、「who I thought was your sister」は「私があなたの妹だと思っていた（whoはwas your sisterの主語）少女」となります。",
+          "grammarPoint": "関係代名詞節の中に「I think」「I believe」「I suppose」などの考えを表す動詞が挿入されることがあります。この場合、挿入された動詞をカッコに入れて訳すと理解しやすくなります。関係代名詞は挿入された動詞の後の節の主語または目的語として機能します。"
+        },
+        {
+          "problemNumber": "3-(1)",
+          "reproducedWithAnswer": "The day will [ when, be, work, performed, can, come, such ] by robots. -> The day will **come when such work can be performed** by robots.",
+          "fullSentenceJapanese": "そのような仕事はロボットにより行われる時代が来るでしょう。",
+          "explanation": "この文は「The day will come when...」という構造で、「～という時代が来るだろう」という意味になります。「when」以降は関係副詞節で、「the day」を修飾します。関係副詞節の中は「そのような仕事がロボットによって行われうる」という受動態の形になります。したがって、「such work can be performed by robots」となります。",
+          "grammarPoint": "「the day when...」「the time when...」のように、時を表す先行詞の後に関係副詞「when」を置いて、その時の出来事を説明する構文は非常に頻繁に使われます。関係副詞節の中は完全な文になることに注意しましょう。また、「can be performed」は助動詞＋受動態の形です。"
+        },
+        {
+          "problemNumber": "3-(2)",
+          "reproducedWithAnswer": "Dad often says jogging is [ body, is, reading, to, to the, what ] the mind. -> Dad often says jogging is **to the body what reading is to** the mind.",
+          "fullSentenceJapanese": "父はジョギングと体との関係は、読書と心との関係と同じだとよく言う。",
+          "explanation": "この文は「A is to B what C is to D」という慣用表現を使っています。これは「AとBの関係は、CとDの関係と同じである」という比喩や比較を表す構文です。この場合、「ジョギングと体の関係は、読書と心の関係と同じだ」という意味になります。",
+          "grammarPoint": "「A is to B what C is to D」は、2つの比喩的な関係性を比較する際に用いられる重要な慣用表現です。「what」は関係代名詞で、「C is to D」という関係性を「A is to B」の関係性と同一視する役割を果たします。この構文は論理的な思考や表現の際に非常に役立ちます。"
+        },
+        {
+          "problemNumber": "4-(1)",
+          "reproducedWithAnswer": "Any information would be appreciated, **however small**.",
+          "fullSentenceJapanese": "どんな小さな情報でも、いただけるとありがたいです。",
+          "explanation": "「どんな小さな情報でも」という譲歩の意味を表すには、「however + 形容詞/副詞」の構文が適切です。「however small」で「どんなに小さくても」という意味になり、前の文全体に対する補足説明となります。",
+          "grammarPoint": "「however + 形容詞/副詞」は「どんなに～でも」という譲歩の意味を表す副詞句です。通常、文の冒頭や、コンマを挟んで文の最後に置かれ、主節の内容に対して条件や限定を加えます。例えば、「However hard you try, ...」（どんなに一生懸命努力しても...）のように使われます。"
+        },
+        {
+          "problemNumber": "4-(2)",
+          "reproducedWithAnswer": "What do you **think about the way young people speak**?",
+          "fullSentenceJapanese": "若い人の話し方についてどう思いますか。",
+          "explanation": "「～についてどう思いますか」は「What do you think about ～?」または「What do you think of ～?」と表現します。「若い人の話し方」は「the way young people speak」または「how young people speak」と表せます。これらを組み合わせて文を完成させます。",
+          "grammarPoint": "「What do you think about/of ～?」は、ある事柄に対する意見や感想を尋ねる際に用いる疑問文です。この「～」の部分には名詞、動名詞、または間接疑問文（例: how young people speak）を入れることができます。「the way S V」は「SがVする方法」という意味の表現です。"
+        },
+        {
+          "problemNumber": "4-(3)",
+          "reproducedWithAnswer": "Please tell me **the real reason why you want to quit the soccer team**.",
+          "fullSentenceJapanese": "あなたがサッカー部をやめたい本当の理由を教えてちょうだい。",
+          "explanation": "「～を教えてください」は「Please tell me ～」です。「あなたがサッカー部をやめたい本当の理由」は、「the real reason」の後に、理由を説明する関係副詞「why」を用いた節「why you want to quit the soccer team」を続けます。あるいは、「why」を省略して「the real reason you want to quit...」とすることも可能です。",
+          "grammarPoint": "「reason why S V」の形で、「SがVする理由」という名詞句を作ることができます。「reason」と「why」は共起しやすく、この「why」は関係副詞として機能します。口語では「why」が省略されることもよくあります。また、「want to do」は「～したい」という意味を表します。"
+        },
+        {
+          "problemNumber": "4-(4)",
+          "reproducedWithAnswer": "I want **the same tablet as you are using**.",
+          "fullSentenceJapanese": "君が使っているのと同じタブレットを私もほしい。",
+          "explanation": "「～と同じ…」という比較の表現は「the same ... as ～」を使います。この場合、「the same tablet as you are using」で「あなたが使っているのと同じタブレット」となります。「as」は接続詞で、後に節（主語+動詞）が続きます。「using」は現在進行形ではなく、「use」の動名詞が動詞として機能しています。",
+          "grammarPoint": "「the same A as B」は、「Bと同じA」という意味を表す比較構文です。「as」は接続詞として働き、後に続く節（主語＋動詞）と結びつきます。この構文は、二つのものが完全に同一であるというよりは、種類や特徴が同じであることを示す場合によく用いられます。"
+        }
+      ]
+    },
+    {
+      "id": "L11P47",
+      "title": "Lesson11 教科書P47",
+      "lessonLabel": "Lesson11",
+      "problems": [
+        {
+          "problemNumber": "1-1",
+          "reproducedWithAnswer": "His watch is **more expensive** than mine.",
+          "fullSentenceJapanese": "彼の腕時計は私のものよりも高価です。",
+          "explanation": "\"than\"があるので比較級を使うのが適切です。形容詞\"expensive\"は3音節以上の語なので、比較級は\"more expensive\"の形になります。",
+          "grammarPoint": "比較級を作る際のルールを理解しましょう。ほとんどの1音節の形容詞・副詞には-erをつけますが、3音節以上の形容詞・副詞には\"more\"を前置します。また、\"than\"は比較の対象を示すキーワードです。"
+        },
+        {
+          "problemNumber": "1-2",
+          "reproducedWithAnswer": "This question is **the most difficult** of all.",
+          "fullSentenceJapanese": "この問題はすべての中で最も難しいです。",
+          "explanation": "\"of all\"（すべての中で）という表現があるため、最上級を使うのが適切です。形容詞\"difficult\"は3音節以上の語なので、最上級は\"the most difficult\"の形になります。最上級には定冠詞\"the\"が必要です。",
+          "grammarPoint": "最上級を作る際のルールと、\"the\"の必要性を理解しましょう。ほとんどの1音節の形容詞・副詞には-estをつけますが、3音節以上の形容詞・副詞には\"the most\"を前置します。最上級の範囲を示すには\"of all\"や\"in the class\"などの語句が使われます。"
+        },
+        {
+          "problemNumber": "1-3",
+          "reproducedWithAnswer": "My test scores were **worse** than I had thought.",
+          "fullSentenceJapanese": "私のテストの点数は私が思っていたよりも悪かった。",
+          "explanation": "\"than\"があるので比較級を使うのが適切です。\"bad\"は不規則変化をする形容詞で、その比較級は\"worse\"となります。",
+          "grammarPoint": "不規則変化をする形容詞・副詞の比較級と最上級は暗記が必要です。例えば、good/well - better - best, bad/ill - worse - worst, much/many - more - most, little - less - least, far - farther/further - farthest/furthest などがあります。"
+        },
+        {
+          "problemNumber": "1-4",
+          "reproducedWithAnswer": "Lucas is **the faster** runner of the two.",
+          "fullSentenceJapanese": "ルーカスは二人の中で速いほうのランナーです。",
+          "explanation": "\"of the two\"（二人のうち）という表現があるため、二者間の比較を示す比較級を使います。この場合、比較級の前に定冠詞\"the\"をつけて「～のほう」という意味を表します。\"fast\"は1音節なので比較級は\"faster\"です。",
+          "grammarPoint": "「the + 比較級 of the two」の構文は、「二者のうちでより～なほう」という意味を表します。最上級ではありませんが、二者間の比較に\"the\"がつく特殊なケースとして覚えておきましょう。"
+        },
+        {
+          "problemNumber": "1-5",
+          "reproducedWithAnswer": "Emily came home **later** than usual.",
+          "fullSentenceJapanese": "エミリーはいつもより遅く帰宅した。",
+          "explanation": "\"than usual\"（いつもより）という比較表現があるため、比較級を使うのが適切です。副詞\"late\"は1音節なので比較級は\"later\"となります。",
+          "grammarPoint": "比較級の作り方と\"than\"を用いた比較の基本的な形を確認しましょう。形容詞・副詞の語尾に-erをつけるか、\"more\"を前置するかのルールをしっかりと身につけましょう。"
+        },
+        {
+          "problemNumber": "1-6",
+          "reproducedWithAnswer": "Look into the problem **further**, and you may find the truth.",
+          "fullSentenceJapanese": "その問題をさらに深く調査しなさい、そうすれば真実を見つけられるかもしれません。",
+          "explanation": "「さらに深く」「もっと」という意味で、\"far\"の比較級を使います。物理的な距離ではなく、抽象的な程度（ここでは「深さ」）を表す場合は\"further\"が適切です。\"farther\"は主に物理的な距離に対して使われます。",
+          "grammarPoint": "\"farther\"と\"further\"の使い分けを理解しましょう。\"farther\"は物理的な距離が「より遠い」ことを表し、\"further\"は物理的距離だけでなく「さらに」「追加の」といった抽象的な意味でも使われます。"
+        },
+        {
+          "problemNumber": "2-1",
+          "reproducedWithAnswer": "Jack doesn't eat as **much** food as Ken.",
+          "fullSentenceJapanese": "ジャックはケンほどたくさんの食べ物を食べません。",
+          "explanation": "\"food\"は数えられない名詞（不可算名詞）なので、量を表す\"much\"を使います。\"many\"は数えられる名詞（可算名詞）に対して使われます。",
+          "grammarPoint": "\"much\"と\"many\"の使い分けは非常に重要です。可算名詞には\"many\"、不可算名詞には\"much\"を使います。\"as ... as\"は同等比較の構文です。"
+        },
+        {
+          "problemNumber": "2-2",
+          "reproducedWithAnswer": "The **latter** half of the soccer game was very exciting.",
+          "fullSentenceJapanese": "サッカーの試合の後半はとてもエキサイティングだった。",
+          "explanation": "\"later\"は\"late\"の比較級で「より遅い、後で」という意味に対し、\"latter\"は「後者の」という意味、または時間や順序で「後半の、後の」という意味で使われます。ここでは「後半」という意味が文脈に合うため、\"latter\"が正解です。",
+          "grammarPoint": "\"later\"と\"latter\"は形が似ていますが意味が異なります。\"later\"は時間的な前後関係を表し、\"latter\"は二つのうちの「後者」や、「後半」のような部分を指す場合に使われます。"
+        },
+        {
+          "problemNumber": "2-3",
+          "reproducedWithAnswer": "She eats there no **less** than five times a week.",
+          "fullSentenceJapanese": "彼女は週に5回もそこで食事をする。",
+          "explanation": "\"no less than A\"は「Aもの、Aと全く同じくらい多く」という意味で、Aの数や量が多いこと、予想以上であることを強調します。文脈から「週に5回も」という肯定的な強調が適切です。\"no more than A\"は「たったAしか、Aにすぎない」という意味で、少ないことを強調します。",
+          "grammarPoint": "\"no more than A\"と\"no less than A\"は、比較級を使った慣用表現で、それぞれ「Aにすぎない」（少なさの強調）と「Aも」（多さの強調）という意味になります。意味を混同しないように注意しましょう。"
+        },
+        {
+          "problemNumber": "2-4",
+          "reproducedWithAnswer": "As **many** as 2.2 billion people in the world do not have access to safe drinking water.",
+          "fullSentenceJapanese": "世界では22億もの人々が安全な飲料水を利用できません。",
+          "explanation": "\"people\"は数えられる名詞（可算名詞）なので、数を表す\"many\"を使います。\"much\"は数えられない名詞に対して使われます。",
+          "grammarPoint": "\"much\"と\"many\"の使い分け（可算名詞 vs. 不可算名詞）は、基本的ながら間違いやすいポイントです。ここでは「as many/much as A」という倍数表現でも同様のルールが適用されます。"
+        },
+        {
+          "problemNumber": "2-5",
+          "reproducedWithAnswer": "This toy is very small. It's no **bigger** than a thumb.",
+          "fullSentenceJapanese": "このおもちゃはとても小さい。それは親指と同じくらいの大きさです。",
+          "explanation": "文頭で\"very small\"とあることから、おもちゃが小さいことを強調する表現が適切です。\"no bigger than A\"は「Aと全く同じくらい小さい、Aにすぎない」という意味で、小ささを強調します。\"no smaller than A\"は「Aと全く同じくらい大きい、Aもの」という意味なので、文脈に合いません。",
+          "grammarPoint": "\"no bigger than A\"と\"no smaller than A\"も比較級を用いた慣用表現です。\"no bigger than A\"は「Aと同じくらい小さい」、\"no smaller than A\"は「Aと同じくらい大きい」という逆の意味になることに注意しましょう。"
+        },
+        {
+          "problemNumber": "3-1",
+          "reproducedWithAnswer": "This lake is **half as large** as Lake Biwa.",
+          "fullSentenceJapanese": "この湖は琵琶湖の半分の大きさです。",
+          "explanation": "「～のA倍」という倍数表現は、「倍数 + as + 原級 + as + B」の形で表します。ここでは「半分」なので\"half\"を使い、大きさは形容詞\"large\"で表現できるため、\"half as large as\"となります。",
+          "grammarPoint": "倍数表現の基本的な構文は、「倍数 + as + 原級 + as + ～」です。\"twice as large as\"（2倍の大きさ）、\"three times as old as\"（3倍の年上）などの例を覚えておきましょう。\"half\"は倍数として扱われます。"
+        },
+        {
+          "problemNumber": "3-2",
+          "reproducedWithAnswer": "**More and more people** are shopping on the internet.",
+          "fullSentenceJapanese": "ますます多くの人がインターネットで買い物をしています。",
+          "explanation": "「ますます～」という進行する変化を表す表現は、「比較級 + and + 比較級」の形で表します。ここでは「ますます多くの人」なので、\"more and more people\"が適切です。",
+          "grammarPoint": "「比較級 and 比較級」は「ますます～」という意味を表す重要な表現です。例えば、\"It's getting hotter and hotter.\"（ますます暑くなっている）のように使われます。\"more and more\"は形容詞・副詞の前に\"more\"を置くタイプ（多音節語など）に使われます。"
+        },
+        {
+          "problemNumber": "3-3",
+          "reproducedWithAnswer": "We need **at least three people** to move this table.",
+          "fullSentenceJapanese": "私たちはこのテーブルを動かすのに少なくとも3人は必要です。",
+          "explanation": "「少なくとも～」という表現は\"at least\"を使います。",
+          "grammarPoint": "\"at least\"（少なくとも）と\"at most\"（せいぜい、多くとも）は、数や量の上限・下限を示す重要な表現です。セットで覚えておきましょう。"
+        },
+        {
+          "problemNumber": "3-4",
+          "reproducedWithAnswer": "Please reply as **soon as possible**.",
+          "fullSentenceJapanese": "できるだけ早くお返事をください。",
+          "explanation": "「できるだけ～」という表現は、「as + 原級 + as possible」または「as + 原級 + as + S + can」の形で表します。\"as soon as possible\"は「できるだけ早く」という意味でよく使われるフレーズです。",
+          "grammarPoint": "「as 原級 as possible / S can」は、「できるだけ～」という意味の慣用表現です。この形を応用して様々な表現ができます。例: \"as much as possible\"（できるだけ多く）。"
+        },
+        {
+          "problemNumber": "3-5",
+          "reproducedWithAnswer": "Yui is **the best singer in** her family.",
+          "fullSentenceJapanese": "ユイは家族の中で歌が一番上手です。",
+          "explanation": "「一番～だ」という最上級の表現を使います。歌が上手な人を\"good singer\"と表現し、その最上級は\"the best singer\"となります。最上級の範囲を示す前置詞は、ここでは集団（家族）を表すため\"in\"が適切です。",
+          "grammarPoint": "最上級の作り方と、その範囲を示す前置詞の使い分けを学びましょう。\"in\"は場所や集団、\"of\"は期間や全体、\"among\"は個々のメンバーからなる集団に対して使われることが多いです。"
+        },
+        {
+          "problemNumber": "3-6",
+          "reproducedWithAnswer": "His new novel is **better than** his previous one.",
+          "fullSentenceJapanese": "彼の新しい小説は前の小説より優れている。",
+          "explanation": "「～より優れている」という比較表現は、一般的に\"better than\"を使います。ここでは\"good\"の比較級である\"better\"と\"than\"を組み合わせて表現します。空欄が3つであるため、\"superior to\"はスペースが足りません。",
+          "grammarPoint": "比較級で「～より優れている」と言う場合、一般的には\"better than\"を使います。また、\"superior to\", \"inferior to\", \"senior to\", \"junior to\"のように、\"-or\"で終わるラテン語由来の比較級形容詞は\"than\"ではなく\"to\"を用いることも覚えておきましょう。文脈と空欄の数に応じて適切な表現を選ぶ必要があります。"
+        },
+        {
+          "problemNumber": "4-1",
+          "reproducedWithAnswer": "Sam was able to swim the fastest **among** the five boys.",
+          "fullSentenceJapanese": "サムは5人の少年の中で最も速く泳ぐことができました。",
+          "explanation": "最上級の範囲を表す前置詞の選択がポイントです。\"in\"は場所や集団、\"of\"は期間や全体を指すのに対し、\"among\"は個々のメンバーからなる集団（ここでは\"the five boys\"）の中で、という場合に使われます。したがって、\"among\"が適切です。",
+          "grammarPoint": "最上級の範囲を示す前置詞の使い分けを正確に理解しましょう。\"in\" + 場所/集団（例: in his class）、\"of\" + 期間/全体（例: of all the students）、\"among\" + 複数の個々の成員からなる集団（例: among the boys）が基本的なパターンです。"
+        },
+        {
+          "problemNumber": "4-2",
+          "reproducedWithAnswer": "He is one of the most popular **singers** among young people.",
+          "fullSentenceJapanese": "彼は若い人々の間で最も人気のある歌手の一人です。",
+          "explanation": "\"one of the 最上級 複数名詞\"という構文は、「最も～なものの一つ」という意味を表します。この構文では、複数のものの中から一つを選ぶため、最上級の後に来る名詞（ここでは\"singer\"）は必ず複数形にする必要があります。",
+          "grammarPoint": "\"one of the 最上級 複数名詞\"は非常に重要な構文です。最上級の表現の後に来る名詞を必ず複数形にすることを忘れないようにしましょう。これは単数形の名詞一つだけを指す表現ではないためです。"
+        },
+        {
+          "problemNumber": "4-3",
+          "reproducedWithAnswer": "Your dog is **by far bigger** than mine.",
+          "fullSentenceJapanese": "あなたの犬は私の犬よりもはるかに大きい。",
+          "explanation": "\"by far\"は比較級や最上級を強調する副詞句で、「はるかに」「ずば抜けて」という意味を持ちます。比較級の前に置いて「はるかに～だ」と表現するこの使い方は正しく、修正は不要です。",
+          "grammarPoint": "比較級や最上級を強調する表現にはいくつか種類があります。\"much\", \"far\", \"a lot\", \"even\", \"still\"などが比較級の前に置かれ、\"by far\"は比較級や最上級の前に置かれます。それぞれの意味と位置を確認しておきましょう。"
+        },
+        {
+          "problemNumber": "4-4",
+          "reproducedWithAnswer": "The more Joe studied Japanese culture, the more he became **interested** in it.",
+          "fullSentenceJapanese": "ジョーは日本文化を学べば学ぶほど、それにもっと興味を持つようになった。",
+          "explanation": "\"The 比較級, the 比較級\"は「～すればするほど、ますます～」という意味の構文です。感情を表す動詞の過去分詞（-ed）は「～させられた」という受動的な感情を表す形容詞になります。ここでは「（彼が）興味を持った」という状態を表すため、\"interested\"が正しいです。\"interesting\"（興味深い）は物事や行為がそうであるときに使われます。",
+          "grammarPoint": "\"The 比較級, the 比較級\"の構文を正しく使えるように練習しましょう。また、感情を表す形容詞の-ing形と-ed形（例: interesting/interested, exciting/excited, surprising/surprised）の使い分けは非常に重要です。-ing形は「～させるような」、-ed形は「～させられた、～である」という意味になります。"
+        },
+        {
+          "problemNumber": "4-5",
+          "reproducedWithAnswer": "The climate of Cairns is hotter than **that** of Sydney.",
+          "fullSentenceJapanese": "ケアンズの気候はシドニーの気候よりも暑い。",
+          "explanation": "比較対象は「ケアンズの気候 (the climate of Cairns)」と「シドニーの気候 (the climate of Sydney)」です。繰り返しを避けるために\"the climate\"を指す代名詞が必要ですが、\"it\"は単なるそれ自体を指す代名詞であり、比較対象の代わりにはなりません。単数形の\"climate\"を指す場合は\"that\"を、複数形の場合は\"those\"を使います。",
+          "grammarPoint": "比較構文において、先行する名詞の繰り返しを避けるために\"that\" (単数) や\"those\" (複数) を用いる用法を覚えましょう。\"it\"や\"them\"は比較の代名詞としては不適切です。"
+        }
+      ]
+    },
+    {
+      "id": "L11P48",
+      "title": "Lesson11 教科書P48",
+      "lessonLabel": "Lesson11",
+      "problems": [
+        {
+          "problemNumber": "5-(1)",
+          "reproducedWithAnswer": "b. Jim plays the piano **better than** I do.",
+          "fullSentenceJapanese": "ジムは私よりもピアノを上手に弾きます。",
+          "explanation": "この問題は、比較級を使った表現を問うものです。最初の文「I don't play the piano as well as Jim.（私はジムほどピアノを上手に弾きません。）」は、ジムの方が私よりもピアノが上手であることを示しています。したがって、2番目の文は「ジムは私よりもピアノを上手に弾く」という意味になるようにします。動詞 play を修飾する副詞 well の比較級は better であり、比較の対象を示す than を続けます。比較の対象が代名詞の場合、目的格 (me) も使われますが、主格 (I) も文語的表現として正しいです。したがって、「better than I do」または「better than me」が適切な表現ですが、元の文脈でI doとなっているのでI doに合わせるのが自然です。",
+          "grammarPoint": "【比較級の表現】2つのものを比較して「～よりも…である」と表現する際には、「比較級 + than」の形を用います。形容詞や副詞の比較級は、規則変化（-erをつける）と不規則変化（well→better, good→betterなど）があります。また、「A as B as C」は「CほどAがBではない」と、否定のas～as構文もよく使われます。"
+        },
+        {
+          "problemNumber": "5-(2)",
+          "reproducedWithAnswer": "b. He is not **so much as** a singer as an actor.",
+          "fullSentenceJapanese": "彼は歌手というよりはむしろ俳優だ。",
+          "explanation": "この問題は、「A rather than B（BというよりはむしろA）」という表現を、「not so much A as B（BというよりはむしろA）」の形で書き換えることを要求しています。「not so much A as B」は「AというよりはBだ」という意味で、AとBが逆転しているように見えますが、これは「BほどAではない」という直訳から「AというよりB」というニュアンスになります。つまり、「彼は俳優ほど歌手ではない」→「彼は歌手というよりは俳優だ」となります。空欄には、notの後に続く「so much as」が入ります。",
+          "grammarPoint": "【not so much A as B】「AというよりはむしろB」という比較表現です。同様の意味を持つ表現として、「rather B than A」や「B more than A」があります。これらの表現は、2つの属性や選択肢がある場合に、どちらかがより適切である、または強調したい方を表現する際に用いられます。"
+        },
+        {
+          "problemNumber": "5-(3)",
+          "reproducedWithAnswer": "b. Eri reads **more books than anyone else** in this class.",
+          "fullSentenceJapanese": "エリはこのクラスのどの生徒よりも多くの本を読みます。",
+          "explanation": "この問題は、最上級の意味を比較級の表現で言い換えることを問うものです。最初の文「Eri reads more books than any other student in this class.」は、「エリはこのクラスの他のどの生徒よりも多くの本を読む」という意味で、エリがこのクラスで最も多くの本を読むことを示しています。したがって、2番目の文も同様に最上級の意味になるようにします。「more books than」の後に続くのは「anyone else」で、「他の誰よりも」という意味になります。any other studentと同様に、比較の対象からEri自身を除外する必要があります。",
+          "grammarPoint": "【比較級を用いた最上級表現】「比較級 + than any other + 単数名詞」や「比較級 + than anyone else」は、「～の中で最も…である」という最上級の意味を表す重要な表現です。any otherの後に続く名詞は必ず単数形になります。また、than anyone elseを用いることで、比較対象から主語自身を除外して「他の誰よりも」と表現できます。"
+        },
+        {
+          "problemNumber": "5-(4)",
+          "reproducedWithAnswer": "b. Love is **more precious than anything** else.",
+          "fullSentenceJapanese": "愛は他の何よりも貴重なものです。",
+          "explanation": "この問題も、最上級の意味を比較級の表現で言い換えるものです。最初の文「Love is the most precious thing.」は、「愛は最も貴重なものである」という意味です。2番目の文は「愛は他の何よりも貴重である」という意味になるようにします。形容詞 precious の比較級は more precious であり、比較の対象を排除しつつ最上級の意味を表すために「than anything else」が続きます。「anything else」は「他の何よりも」という意味で、愛以外の全てのものと比較していることを示します。",
+          "grammarPoint": "【比較級を用いた最上級表現 その２】「比較級 + than anything else」も、最上級の意味を表す重要な表現です。特に、漠然とした「他の何よりも」という比較をする際に用います。この形は、物事の価値や重要性を強調する際によく使われます。"
+        },
+        {
+          "problemNumber": "6-(1)",
+          "reproducedWithAnswer": "Get up **as early as you can** tomorrow.",
+          "fullSentenceJapanese": "明日はできるだけ早く起きなさい。",
+          "explanation": "この問題は、「できるだけ～」という表現を作る整序問題です。日本語訳が「できるだけ早く起きなさい」となっていることから、「as + 形容詞/副詞の原級 + as + S + can」の構文を用いることがわかります。この構文は「Sができるだけ～」という意味を表します。今回は副詞 early を使って「as early as you can」とすることで、「あなたが（できるだけ）早く」という意味になります。",
+          "grammarPoint": "【as...as possible / as...as S can】「できるだけ～」という最上級の強調表現で、頻出の構文です。「as + 形容詞/副詞の原級 + as possible」または「as + 形容詞/副詞の原級 + as + 主語 + can/could」の形を取ります。主語が特定されている場合は「as S can」を用います。"
+        },
+        {
+          "problemNumber": "6-(2)",
+          "reproducedWithAnswer": "**The older you get, the more difficult it is** to memorize things.",
+          "fullSentenceJapanese": "年をとればとるほど、ますます物事を記憶するのは難しくなります。",
+          "explanation": "この問題は、「～すればするほど、ますます…だ」という比例を表す構文を作る整序問題です。この構文は「The 比較級 S V, the 比較級 S V」という形で表現されます。前半で「年をとればとるほど」、後半で「ますます記憶するのが難しくなる」という意味を表します。したがって、「The older you get, the more difficult it is」が適切な語順になります。動名詞 to memorize things は、it is difficult to memorize things の to不定詞句が後置された形です。",
+          "grammarPoint": "【The 比較級, the 比較級】「～すればするほど、ますます…だ」という比例の関係を表す構文です。どちらの節も「The + 比較級」で始まり、その後に主語と動詞が続きます。後半の節では、場合によっては主語と動詞が省略されることもありますが、基本的にはこの形を覚えておくと良いでしょう。"
+        },
+        {
+          "problemNumber": "6-(3)",
+          "reproducedWithAnswer": "James **studied all the harder because the exams** were coming up.",
+          "fullSentenceJapanese": "ジェームズは、試験が近づいているので、よりいっそう熱心に勉強しました。",
+          "explanation": "この問題は、「～なので、その分だけいっそう…」という因果関係と強調を表す構文の整序問題です。動詞 studied の後に、副詞 hard の比較級 harder を使って「いっそう熱心に」という意味を表します。「all the 比較級 because S V」の形で、「～なので、その分だけいっそう…だ」という意味になります。all は「その分だけ」という強調を表します。したがって、「studied all the harder because the exams」が適切な語順になります。",
+          "grammarPoint": "【all the 比較級 because...】「～なので、その分だけいっそう…だ」という理由を伴う比較の強調表現です。比較級の前に all the を置くことで、「その理由の分だけ」という強調の意味が加わります。because 以外の理由を示す接続詞 (for, since, as) や、名詞句 (for all these reasons) が続くこともあります。"
+        },
+        {
+          "problemNumber": "Expression-1-(1)",
+          "reproducedWithAnswer": "John **is three years old**.",
+          "fullSentenceJapanese": "ジョンは3歳です。",
+          "explanation": "この問題は、与えられた情報を使って英文を完成させるものです。主語「John」と、年齢を表す情報「three years (old)」が与えられています。年齢を述べる最も一般的な表現は「主語 + be動詞 + 数字 + years old」です。「John」は三人称単数なので、be動詞は「is」を使います。したがって、「John is three years old.」となります。",
+          "grammarPoint": "【年齢の表現】年齢を表現する際には、「主語 + be動詞 + 数字 + years old」という形が基本です。years old は省略されることもありますが、通常は付けます。また、「at the age of 数字」や「数字-year-old + 名詞」のような表現もあります。"
+        },
+        {
+          "problemNumber": "Expression-1-(2)",
+          "reproducedWithAnswer": "Ron **is tall for his family**.",
+          "fullSentenceJapanese": "ロンは家族にしては背が高いです。",
+          "explanation": "この問題は、「～にしては…だ」という、ある基準から見てある程度を上回っている、または下回っていることを表す表現を問うものです。与えられた情報「Ron」と「his family. (tall)」から、「ロンは彼の家族にしては背が高い」という文を作成します。この場合、「for + 基準」で「～にしては」という意味を表すことができます。したがって、「Ron is tall for his family.」が適切な表現です。",
+          "grammarPoint": "【for + 基準】「～にしては」という基準を表す表現です。ある集団や状況と比較して、その人の状態や行動が一般的ではない、または予想外である場合に用いられます。例: He is wise for his age. (彼は年の割には賢い。) / It's warm for November. (11月にしては暖かい。) "
+        },
+        {
+          "problemNumber": "Expression-2-(1)",
+          "reproducedWithAnswer": "Nothing in my life **is more important than love**.",
+          "fullSentenceJapanese": "私の人生において、愛よりも大切なものはありません。",
+          "explanation": "この問題は、「あなたの人生で最も大切なものは何ですか？」という問いに対する返答を、与えられた「Nothing in my life」から始める形で作成するものです。最上級の意味を持つ比較級の表現を用いるのが自然です。ここでは「愛」を例にとり、「Nothing is more important than love.（愛よりも大切なものはない＝愛が最も大切だ）」という形で表現します。これにより、問いに対する明確な答えとなります。",
+          "grammarPoint": "【比較級を用いた最上級表現の応用】「Nothing/No other + 単数名詞 + is + 比較級 + than + 名詞」の形は、「～よりも…なものはない」という意味で、最上級と同じ意味を表す非常に頻出の構文です。様々な文脈で「最も～である」という強調を表現するのに役立ちます。"
+        },
+        {
+          "problemNumber": "Expression-2-(2)",
+          "reproducedWithAnswer": "I like **living in the city better than living in the country**.",
+          "fullSentenceJapanese": "私は田舎に住むよりも都会に住む方が好きです。",
+          "explanation": "この問題は、「都会に住むのと田舎に住むのと、どちらを好みますか？」という問いに対し、「I like」から始める形で返答を作成するものです。選択肢が2つあるので、比較級の表現を用いるのが適切です。「prefer A to B（BよりもAを好む）」という表現もありますが、「like A better than B（BよりもAを好む）」も一般的です。ここでは「living in the city」と「living in the country」を比較して、「I like living in the city better than living in the country.」と表現します。",
+          "grammarPoint": "【like A better than B】「BよりもAを好む」という比較表現です。「better」は副詞「well」の比較級で、動詞「like」を修飾します。「prefer A to B」も同様に「BよりもAを好む」という意味で使われますが、likeを使用する場合は「better than」が一般的です。動名詞（living）を比較の対象とする場合は、両方を動名詞の形で揃えるのが自然です。"
+        }
+      ]
+    },
+    {
+      "id": "L11P49",
+      "title": "Lesson11 教科書P49",
+      "lessonLabel": "Lesson11",
+      "problems": []
     }
   ],
   "corners": [
