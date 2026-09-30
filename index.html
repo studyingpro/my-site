@@ -257,6 +257,35 @@
             background-size: 56px 100%;
             animation: devModeStripes 2.2s linear infinite;
         }
+
+        /* ===== 古文：巻物ビュー（縦書き・横スクロール） ===== */
+        .ks-wrap { --ks-text:#1f2937; --ks-hl:#e11d1d; --ks-note:#f59e0b; --ks-trans:#1d4ed8; --ks-bg:#fffdf8; --ks-edge:#e7dcc3; }
+        html.dark .ks-wrap { --ks-text:#e5e7eb; --ks-hl:#ff7b7b; --ks-note:#fbbf24; --ks-trans:#8fb0ff; --ks-bg:#111a2e; --ks-edge:#26324d; }
+        .ks-scroll {
+            writing-mode: vertical-rl; -webkit-writing-mode: vertical-rl;
+            height: min(72vh, 34rem); width: 100%; box-sizing: border-box; overflow-x: auto; overflow-y: hidden;
+            padding: 1.1rem 1rem; background: var(--ks-bg); border: 1px solid var(--ks-edge);
+            border-radius: 1rem; color: var(--ks-text); -webkit-overflow-scrolling: touch;
+            font-family: "Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP","Meiryo",sans-serif;
+        }
+        .ks-line { display: flex; flex-direction: column; margin-inline-start: 1.1rem; }
+        .ks-lead { color: var(--ks-hl); font-size: .76rem; font-weight: 800; line-height: 1.3; white-space: pre-line; margin-inline-end: .35rem; min-width: 1.1rem; font-family: sans-serif; }
+        .ks-segs { display: block; }
+        .ks-seg { display: inline-block; margin-block-end: .4rem; vertical-align: top; }
+        .ks-seg > span { display: block; }
+        .ks-above, .ks-below { font-family: sans-serif; font-size: .7rem; font-weight: 800; line-height: 1.25; white-space: pre-line; }
+        .ks-above { color: var(--ks-hl); min-width: 1.5rem; padding-inline-start: .15rem; }
+        .ks-below { color: var(--ks-note); min-width: 1.5rem; padding-inline-end: .15rem; }
+        .ks-text { font-size: 1.55rem; font-weight: 800; line-height: 1.2; padding-block: .15rem; border-left: 2px solid currentColor; padding-left: .2rem; }
+        .ks-text.ks-hl { color: var(--ks-hl); }
+        .ks-trans { color: var(--ks-trans); font-family: sans-serif; font-size: .95rem; font-weight: 800; line-height: 1.6; margin-inline-start: 1.6rem; padding-inline-start: 1rem; border-left: 1px dashed var(--ks-edge); }
+
+        /* ===== 下タブバーに通知が重ならないようにする =====
+           --bottom-tab-h は JS がタブバーの実際の高さ（非表示なら0）を入れる */
+        #toast, #undo-toast, #error-toast, #new-version-banner, #dev-floating-indicator {
+            bottom: calc(var(--bottom-tab-h, 0px) + 1rem) !important;
+        }
+        #toast, #undo-toast, #error-toast { z-index: 9995 !important; }
     </style>
 </head>
 <body class="bg-white dark:bg-black text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-500 antialiased relative overflow-x-hidden w-full" style="padding-bottom: 72px;">
@@ -2385,7 +2414,7 @@
                     <div id="kobun-photo-upload-area">
                         <label for="kobun-photo-input" class="flex flex-col items-center justify-center gap-1.5 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl py-5 cursor-pointer hover:border-rose-300 dark:hover:border-rose-700 transition-all">
                             <i data-lucide="upload" class="w-5 h-5 text-slate-400"></i>
-                            <span class="text-[11px] font-bold text-slate-400">古文が写っている写真をアップロード</span>
+                            <span class="text-[11px] font-bold text-slate-400">古文の原文・現代語訳が写っている写真をアップロード</span>
                         </label>
                         <input type="file" id="kobun-photo-input" accept="image/*" class="hidden" onchange="handleKobunPhotoSelect(event)" />
                     </div>
@@ -6875,7 +6904,9 @@
                                 </div>
                                 <span class="text-[11px] font-black text-cyan-600 dark:text-cyan-400">${sec.sectionLabel}</span>
                             </div>
-                            <p class="text-[10px] text-slate-400 font-semibold">解析済み ✓</p>
+                            ${presetSectionHasData(sec)
+                                ? `<p class="text-[10px] text-slate-400 font-semibold">解析済み ✓</p>`
+                                : `<p class="text-[10px] text-slate-400 font-semibold">準備中（データなし）</p>`}
                             ${devUnlocked ? `<span onclick="event.stopPropagation(); cmsEditSectionFromReal('${sec.id}')" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-white/80 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-900"><i data-lucide="pencil" class="w-3 h-3"></i></span>` : ''}
                         </button>`).join('')}
                     </div>
@@ -6887,6 +6918,7 @@
         function loadPresetSection(sectionId) {
             const section = PRESET_SECTIONS.find(s => s.id === sectionId);
             if (!section) return;
+            if (!presetSectionHasData(section)) { showToast('このセクションにはまだ解析データがありません'); return; }
             modeStates[0].analysisResult = section.data;
             modeStates[0].hasAnalyzed = true;
             modeStates[0].isAnalyzing = false;
@@ -18912,6 +18944,18 @@ const KOBUN_TANGO = [
             if (addHistory) pushState({ screen: 'ronri-section-list' }, 'Sectionを選ぶ - 論理・表現 - 学習ProMaster');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
+        // ===== 解析データの有無判定 =====
+        // 画像を解析せず、ID・タイトルなど文字だけ入力して反映したセクションは「解析済み」と表示しない。
+        function ronriSectionHasData(sec) {
+            return !!(sec && Array.isArray(sec.problems) && sec.problems.length > 0);
+        }
+        function presetSectionHasData(sec) {
+            const d = sec && sec.data;
+            if (!d || typeof d !== 'object') return false;
+            return ['transcription', 'transcriptionAnalysis', 'putIntoJapaneseAnswers', 'vocabulary', 'questions']
+                .some(k => Array.isArray(d[k]) ? d[k].length > 0 : !!(d[k] && String(d[k]).trim()));
+        }
+
         // ===== 論理表現：レッスン単位のグループ化 =====
         // lessonLabel が未設定の既存データは、タイトル先頭の「Lesson 2」「Unit 3」などから自動判定する。
         function ronriLessonOf(sec) {
@@ -18970,7 +19014,9 @@ const KOBUN_TANGO = [
                         <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-violet-400 to-purple-500 flex items-center justify-center shrink-0"><i data-lucide="file-text" class="w-4 h-4 text-white"></i></div>
                         <div class="min-w-0">
                             <p class="text-xs font-black text-slate-800 dark:text-white truncate">${escapeHtml(ronriSectionTitleOf(s, g.lesson))}</p>
-                            <p class="text-[10px] text-emerald-500 font-bold mt-0.5">解析済み ✓　（${(s.problems || []).length}問）</p>
+                            ${ronriSectionHasData(s)
+                                ? `<p class="text-[10px] text-emerald-500 font-bold mt-0.5">解析済み ✓　（${s.problems.length}問）</p>`
+                                : `<p class="text-[10px] text-slate-400 font-bold mt-0.5">準備中（問題データなし）</p>`}
                         </div>
                     </div>
                     ${devUnlocked ? `<span onclick="event.stopPropagation(); cmsEditRonriSectionFromReal('${s.id}')" class="absolute top-1.5 right-1.5 p-1 rounded-lg bg-white/80 dark:bg-slate-900/70 hover:bg-white dark:hover:bg-slate-900"><i data-lucide="pencil" class="w-3 h-3"></i></span>` : ''}
@@ -19350,6 +19396,57 @@ const KOBUN_TANGO = [
                 ]
             },
         ];
+        // ----- 組み込み3作品にも、写真解析と同じ「文節ごとの解析（巻物表示）」データを付ける -----
+        // 赤＝活用・品詞（grammar）／オレンジ＝意味・補足（note）／青＝現代語訳。文節を連結すると原文と一致する。
+        (function attachKobunBuiltinAnalysis() {
+            const sg = (text, grammar = '', note = '', emphasis = !!grammar) => ({ text, grammar, note, emphasis });
+            const ln = (lead, ...segments) => ({ lead, segments });
+            const st = (translation, ...lines) => ({ lines, translation });
+            const set = (id, sentences) => { const t = KOBUN_TEXTS.find(x => x.id === id); if (t) t.sentences = sentences; };
+
+            set('tsurezure', [
+                st('（これといってすることがなく）手持ち無沙汰なのにまかせて、一日中、硯に向かって、心に浮かんでは消えていくとりとめのないことを、あてもなく書きつけていると、',
+                    ln('作者 兼好法師', sg('つれづれなる', '形動ナリ\n連体形', '手持ち無沙汰だ'), sg('ままに、', '', '〜にまかせて')),
+                    ln('', sg('日暮らし、', '', '一日中')),
+                    ln('', sg('硯に'), sg('むかひて、', 'ハ四連用', '向かって')),
+                    ln('', sg('心に'), sg('うつりゆく', '連体形', '移り変わっていく'), sg('よしなし事を、', '', 'とりとめのないこと')),
+                    ln('', sg('そこはかとなく', 'ク活用\n連用形', 'あてもなく'), sg('書きつくれば、', '下二已然形\n＋ば', '書きつけていると'))
+                ),
+                st('不思議なほど（自分でも）気が変になりそうな気持ちがすることだ。',
+                    ln('', sg('あやしう', 'ク活用\n連用形ウ音便', '不思議なほど'), sg('こそ', '係助詞', '係り結び'), sg('ものぐるほしけれ。', 'シク活用\n已然形', '気が変になりそうだ\n（こその結び）'))
+                )
+            ]);
+
+            set('heike', [
+                st('祇園精舎の鐘の音には、この世のすべてのものは常に変化して同じ状態ではいられない、という響きがある。',
+                    ln('', sg('祇園精舎の'), sg('鐘の'), sg('声、')),
+                    ln('', sg('諸行無常の', '', 'この世は常に変化する'), sg('響き'), sg('あり。', 'ラ変終止', 'ある'))
+                ),
+                st('沙羅双樹の花の色は、勢いの盛んな者もかならず衰えるという道理を表している。',
+                    ln('', sg('沙羅双樹の'), sg('花の'), sg('色、')),
+                    ln('', sg('盛者必衰の', '', '栄える者も必ず衰える'), sg('理を'), sg('あらはす。', 'サ四終止', '表している'))
+                ),
+                st('おごり高ぶっている人も長くは続かず、まるで春の夜の夢のようだ。',
+                    ln('', sg('おごれる', '存続「り」\n連体形', '思い上がっている'), sg('人も'), sg('久しからず、', 'シク活用未然\n＋打消「ず」', '長く続かない')),
+                    ln('', sg('ただ', '', 'まるで'), sg('春の夜の'), sg('夢の'), sg('ごとし。', '比況\n終止形', '〜のようだ'))
+                ),
+                st('強く勇ましい者もいつかは必ず滅んでしまう、それはまったく風の前の塵と同じことである。',
+                    ln('', sg('たけき', 'ク活用\n連体形', '勇ましい・強い'), sg('者も'), sg('遂には'), sg('滅びぬ、', '完了「ぬ」\n終止形', '滅んでしまう')),
+                    ln('', sg('ひとへに', '', 'まったく'), sg('風の'), sg('前の'), sg('塵に'), sg('同じ。', 'シク活用\n終止形', '同じだ'))
+                )
+            ]);
+
+            set('makura', [
+                st('春は明け方（が趣深い）。',
+                    ln('「をかし」が省略', sg('春は'), sg('あけぼの。', '', '夜がほのぼのと明けるころ'))
+                ),
+                st('だんだんと白んでいく山際の空が、少し明るくなって、紫がかった雲が細くたなびいているのが（良い）。',
+                    ln('', sg('やうやう', '', 'だんだんと'), sg('白く', 'ク活用\n連用形', '白んで'), sg('なりゆく', '連体形', 'なっていく'), sg('山ぎは、', '', '山に接する空の部分')),
+                    ln('', sg('すこし'), sg('あかりて、', 'ラ四連用', '明るくなって')),
+                    ln('「をかし」が省略', sg('紫だちたる', '完了「たり」\n連体形', '紫がかっている'), sg('雲の'), sg('細く', 'ク活用\n連用形', '細く'), sg('たなびきたる。', '完了「たり」\n連体止め', 'たなびいている（のが良い）'))
+                )
+            ]);
+        })();
         let kobunReaderCurrentId = null;
         function openKobunReader() {
             hideAllPanels();
@@ -19409,13 +19506,33 @@ const KOBUN_TANGO = [
             document.getElementById('kobun-photo-preview-area')?.classList.add('hidden');
             document.getElementById('kobun-photo-loading')?.classList.remove('hidden');
 
-            const promptText = 'あなたは高校国語（古典）の学習支援AIです。添付の画像には古文（原文）が写っています。次の情報をJSONで作成してください。' +
+            const promptText = 'あなたは高校国語（古典）の学習支援AIです。添付の画像には古文の原文（と、あれば現代語訳）が写っています。次の情報をJSONで作成してください。' +
                 '1) title: 作品名がわかれば記載、わからなければ「アップロードされた古文」。' +
                 '2) author: 作者名がわかれば記載、わからなければ空文字。' +
-                '3) original: 原文をできるだけ正確に書き起こす（誤字脱字に注意）。' +
-                '4) translation: 自然な現代語訳。' +
-                '5) notes: 読解の助けになる重要古語を3〜6個選び、それぞれの意味を簡潔に記載。';
+                '3) original: 原文全体をできるだけ正確に書き起こす（誤字脱字に注意）。' +
+                '4) translation: 現代語訳の全体（画像にあればそれを優先、なければ自然な現代語訳）。' +
+                '5) notes: 読解の助けになる重要古語を3〜6個選び、それぞれの意味を簡潔に記載。' +
+                '6) sentences: 原文を、読点「、」や句点「。」で終わる節（1行）ごとに分けた解析。sentencesの各要素は「意味のまとまり」（1〜3行程度）で、lines（節の配列）とtranslation（そのまとまりの現代語訳）を持つ。' +
+                'linesの各要素は、lead（その節の主語や指す内容の補足。例：大納言様 伊周、漢詩文。括弧は付けず、不要なら空文字）と、segments（文節ごとの配列）を持つ。' +
+                'segmentsのtextを順に連結すると、その節の原文（、や。を含む）と一致すること。句読点は直前の文節に含める。' +
+                '各segmentは、text（文節）、grammar（その語の文法情報）、note（補足）、emphasis（強調するか）を持つ。' +
+                '【敬語を最優先で解析する】尊敬語・謙譲語・丁寧語（補助動詞を含む）の文節は emphasis=true にして、' +
+                'grammar には「活用の種類と活用形」と「敬語の種類」を改行区切りで書く（例：「ラ四連用\n謙譲」「ハ四連用\n尊敬補助」「サ変連用\n謙譲」）、' +
+                'note には「(敬語の種類)敬意の主体→敬意の対象」を書く（例：「(謙譲)作者→帝」「(尊敬)作者→伊周(補助)」。会話文中なら「話し手→聞き手」）。' +
+                '敬語でない文節は grammar・note を空文字、emphasis=false にする。' +
+                '係り結び・重要な助動詞・入試頻出の重要古語がある場合に限り、grammarに短く（例：「係助詞\nぞ」「助動詞 過去」）、noteに意味を書いて emphasis=true にしてよいが、付けすぎないこと。' +
+                'grammar・note は短く簡潔に（1〜2行、各8文字程度まで）。';
 
+            const segmentSchema = {
+                type: 'OBJECT',
+                properties: {
+                    text: { type: 'STRING' },
+                    grammar: { type: 'STRING' },
+                    note: { type: 'STRING' },
+                    emphasis: { type: 'BOOLEAN' }
+                },
+                required: ['text', 'grammar', 'note', 'emphasis']
+            };
             const responseSchema = {
                 type: 'OBJECT',
                 properties: {
@@ -19430,9 +19547,30 @@ const KOBUN_TANGO = [
                             properties: { word: { type: 'STRING' }, meaning: { type: 'STRING' } },
                             required: ['word', 'meaning']
                         }
+                    },
+                    sentences: {
+                        type: 'ARRAY',
+                        items: {
+                            type: 'OBJECT',
+                            properties: {
+                                lines: {
+                                    type: 'ARRAY',
+                                    items: {
+                                        type: 'OBJECT',
+                                        properties: {
+                                            lead: { type: 'STRING' },
+                                            segments: { type: 'ARRAY', items: segmentSchema }
+                                        },
+                                        required: ['lead', 'segments']
+                                    }
+                                },
+                                translation: { type: 'STRING' }
+                            },
+                            required: ['lines', 'translation']
+                        }
                     }
                 },
-                required: ['title', 'author', 'original', 'translation', 'notes']
+                required: ['title', 'author', 'original', 'translation', 'notes', 'sentences']
             };
 
             const parts = [
@@ -19441,7 +19579,7 @@ const KOBUN_TANGO = [
             ];
             const payload = {
                 contents: [{ role: 'user', parts }],
-                generationConfig: { responseMimeType: 'application/json', responseSchema }
+                generationConfig: { responseMimeType: 'application/json', responseSchema, maxOutputTokens: 16384 }
             };
 
             try {
@@ -19461,6 +19599,7 @@ const KOBUN_TANGO = [
                     original: parsed.original || '',
                     translation: parsed.translation || '',
                     notes: Array.isArray(parsed.notes) ? parsed.notes : [],
+                    sentences: Array.isArray(parsed.sentences) ? parsed.sentences : [],
                 });
 
                 clearKobunPhoto();
@@ -19483,6 +19622,38 @@ const KOBUN_TANGO = [
                 <button onclick="showKobunText('${t.id}')" id="kobun-tab-${t.id}" class="px-3.5 py-2 rounded-xl text-xs font-black border transition-all">${escapeHtml(t.title)}</button>
             `).join('');
         }
+        // 解析結果（sentences）を、縦書き・横スクロールの「巻物」表示にする。
+        // 赤＝活用・敬語の種類 / オレンジ＝敬意の方向・補足 / 青＝現代語訳。右から左へ読み進める。
+        function buildKobunScrollHtml(sentences) {
+            const nl = (v) => escapeHtml(String(v == null ? '' : v).replace(/\\n/g, '\n'));
+            const body = sentences.map(sen => {
+                const lines = (sen.lines || []).map(line => {
+                    const segs = (line.segments || []).map(seg => `
+                        <span class="ks-seg">
+                            <span class="ks-above">${nl(seg.grammar)}</span>
+                            <span class="ks-text${seg.emphasis ? ' ks-hl' : ''}">${escapeHtml(seg.text || '')}</span>
+                            <span class="ks-below">${nl(seg.note)}</span>
+                        </span>`).join('');
+                    const lead = (line.lead || '').trim();
+                    return `<div class="ks-line">
+                        <span class="ks-lead">${lead ? '（' + nl(lead) + '）' : ''}</span>
+                        <div class="ks-segs">${segs}</div>
+                    </div>`;
+                }).join('');
+                const tr = (sen.translation || '').trim();
+                return lines + (tr ? `<div class="ks-trans">${escapeHtml(tr)}</div>` : '');
+            }).join('');
+            return `
+                <div class="ks-wrap mt-3">
+                    <div class="ks-legend flex flex-wrap items-center gap-x-3 gap-y-1 mb-2 text-[10px] font-bold text-slate-500 dark:text-slate-400" style="font-family:sans-serif">
+                        <span>↔ 左へスクロールして読み進めます</span>
+                        <span style="color:var(--ks-hl)">■ 活用・品詞・敬語の種類</span>
+                        <span style="color:var(--ks-note)">■ 意味・敬意の方向</span>
+                        <span style="color:var(--ks-trans)">■ 現代語訳</span>
+                    </div>
+                    <div class="ks-scroll" id="kobun-scroll-view">${body}</div>
+                </div>`;
+        }
         function showKobunText(id) {
             kobunReaderCurrentId = id;
             KOBUN_TEXTS.forEach(t => {
@@ -19494,8 +19665,8 @@ const KOBUN_TANGO = [
             const t = KOBUN_TEXTS.find(x => x.id === id);
             const content = document.getElementById('kobun-reader-content');
             if (!t || !content) return;
-            content.innerHTML = `
-                ${t.author ? `<p class="text-[10px] font-black text-rose-500 uppercase tracking-wider">${escapeHtml(t.author)}</p>` : ''}
+            const hasScroll = Array.isArray(t.sentences) && t.sentences.some(sen => sen && Array.isArray(sen.lines) && sen.lines.length > 0);
+            const fullText = `
                 <div class="mt-3 p-4 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-800/40 rounded-2xl">
                     <p class="text-[9px] font-black text-rose-400 uppercase tracking-wider mb-2">原文</p>
                     <p class="text-sm font-bold text-slate-800 dark:text-slate-100 leading-loose whitespace-pre-wrap">${escapeHtml(t.original)}</p>
@@ -19503,7 +19674,12 @@ const KOBUN_TANGO = [
                 <div class="mt-3 p-4 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 rounded-2xl">
                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider mb-2">現代語訳</p>
                     <p class="text-sm font-semibold text-slate-600 dark:text-slate-300 leading-loose whitespace-pre-wrap">${escapeHtml(t.translation)}</p>
-                </div>
+                </div>`;
+            content.innerHTML = `
+                ${t.author ? `<p class="text-[10px] font-black text-rose-500 uppercase tracking-wider">${escapeHtml(t.author)}</p>` : ''}
+                ${hasScroll
+                    ? buildKobunScrollHtml(t.sentences) + `<details class="mt-3"><summary class="cursor-pointer text-[11px] font-black text-slate-500 dark:text-slate-400">原文・現代語訳（全文）を見る</summary>${fullText}</details>`
+                    : fullText}
                 ${t.notes && t.notes.length > 0 ? `
                 <div class="mt-3">
                     <p class="text-[9px] font-black text-slate-400 uppercase tracking-wider mb-2">語句注釈</p>
@@ -19517,6 +19693,13 @@ const KOBUN_TANGO = [
                     </div>
                 </div>` : ''}
             `;
+            // マウスの縦ホイールでも横（左方向）へスクロールできるようにする
+            const sc = document.getElementById('kobun-scroll-view');
+            if (sc) {
+                sc.addEventListener('wheel', (e) => {
+                    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) { sc.scrollLeft -= e.deltaY; e.preventDefault(); }
+                }, { passive: false });
+            }
         }
 
         // ----- ② 古語単語帳（フラッシュカード） -----
@@ -22820,6 +23003,17 @@ const KOBUN_TANGO = [
         }
 
         // トースト通知表示
+        // 下タブバーの高さ（非表示のときは0）をCSS変数に反映し、通知が重ならないようにする
+        (function watchBottomTabHeight() {
+            const bar = document.getElementById('bottom-tab-bar');
+            if (!bar) return;
+            const update = () => document.documentElement.style.setProperty('--bottom-tab-h', (bar.offsetHeight || 0) + 'px');
+            update();
+            if (window.ResizeObserver) new ResizeObserver(update).observe(bar);
+            new MutationObserver(update).observe(bar, { attributes: true, attributeFilter: ['style', 'class'] });
+            window.addEventListener('resize', update);
+        })();
+
         function showToast(message) {
             // エラーメッセージはエラートーストへ
             if (message.startsWith('エラー:') || message.startsWith('エラーが発生しました')) {
