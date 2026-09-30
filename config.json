@@ -1,14 +1,24 @@
 {
   "announcements": [
     {
-      "badge": "INFO",
-      "badgeColor": "#06b6d4",
-      "version": "1.3.2",
-      "title": "プレリリース期間延長のお知らせ",
-      "body": "開発者側の都合によりプレリリース期間を無期限延長とさせていただきます。申し訳ございません。",
+      "badge": "UPDATE",
+      "badgeColor": "#f66504",
+      "version": "dev-1790735671108",
+      "title": "古典の現代語訳、品詞分解をアップデートしました。",
+      "body": "現代語訳、品詞分解の分析後の表示をより視認しやすくなりました。",
       "link": "",
-      "createdAt": "2026-07-07T05:38:15.552Z",
-      "updatedAt": "2026-09-05T04:21:25.964Z"
+      "createdAt": "2026-09-30T02:34:31.108Z",
+      "updatedAt": "2026-09-30T02:34:45.019Z"
+    },
+    {
+      "badge": "セクション追加",
+      "badgeColor": "#06b6d4",
+      "version": "dev-1790735479739",
+      "title": "論理表現にセクションを追加しました",
+      "body": "【追加内容】\n・Lesson9\n・Lesson10\n・Lesson11",
+      "link": "",
+      "createdAt": "2026-09-30T02:31:19.739Z",
+      "updatedAt": "2026-09-30T02:31:56.363Z"
     }
   ],
   "globalSchedules": [
