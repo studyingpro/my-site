@@ -699,26 +699,26 @@
     <!-- ==================================================
          学習ProMasterアカウント作成（名前入力）モーダル
          ================================================== -->
-    <div id="profile-setup-modal" class="fixed inset-0 z-[999] bg-slate-900/90 backdrop-blur-sm flex items-center justify-center p-5 hidden">
+    <div id="profile-setup-modal" class="fixed inset-0 z-[10050] bg-slate-900/95 backdrop-blur-sm flex items-center justify-center p-5 hidden">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-sm border border-slate-200 dark:border-slate-700">
             <div class="text-center mb-5">
                 <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white mb-3">
                     <i data-lucide="user-plus" class="w-6 h-6"></i>
                 </div>
                 <h2 class="text-lg font-black text-slate-800 dark:text-white">学習ProMasterアカウントを作成</h2>
-                <p class="text-xs font-semibold text-slate-400 mt-1">表示するお名前を入力してください。予定・成績・進行度は、このアカウントで別の端末からも続きから使えるようになります。</p>
+                <p class="text-xs font-semibold text-slate-400 mt-1"><span class="text-rose-500">ニックネームとユーザーネームは必須です。</span>どちらも入力するまで、アプリは使えません。予定・成績・進行度は、このアカウントで別の端末からも続きから使えるようになります。</p>
             </div>
-            <input type="text" id="profile-setup-name" maxlength="20" placeholder="表示名（例：やまだ たろう）"
+            <input type="text" id="profile-setup-name" maxlength="20" placeholder="ニックネーム（必須・例：やまだ たろう）"
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 mb-3">
             <input type="text" id="profile-setup-bio" maxlength="40" placeholder="一言コメント（例：テストで100位以内）"
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 mb-3">
             <div class="mb-3">
                 <div class="flex items-center px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus-within:border-blue-400">
                     <span class="text-sm font-black text-slate-400 mr-0.5">@</span>
-                    <input type="text" id="profile-setup-username" maxlength="20" placeholder="ユーザーネーム（半角英数・アンダースコア）"
+                    <input type="text" id="profile-setup-username" maxlength="20" placeholder="ユーザーネーム（必須・半角英数・アンダースコア）"
                         class="flex-1 min-w-0 bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none">
                 </div>
-                <p class="text-[10px] font-bold text-slate-400 mt-1 ml-1">ログインにも使えるIDです。あとから変更できます。</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-1 ml-1">ログインにも使えるIDです（3〜20文字）。あとから変更できます。</p>
             </div>
             <button onclick="submitProfileSetup()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">保存して始める</button>
             <p id="profile-setup-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-2"></p>
@@ -3811,7 +3811,7 @@
         </button>
     </nav>
 
-    <div id="floating-tools" class="fixed bottom-24 right-5 z-40 flex flex-col gap-3 items-end">
+    <div id="floating-tools">
         <button id="floating-timer-btn" onclick="toggleTimerPanel()" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="タイマー">
             <i data-lucide="timer" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i>
         </button>
@@ -5505,8 +5505,24 @@
 
                     // ログイン済み（ゲストではない）なのに、まだ学習ProMasterアカウントの表示名を
                     // 設定していない場合は、名前の入力（アカウント作成）を促す
-                    if (!user.isAnonymous && !data.profileName) {
-                        window.dispatchEvent(new CustomEvent('app-need-profile-setup', { detail: { user } }));
+                    // ニックネーム（表示名）とユーザーネームは必須。どちらかが未設定なら、設定するまで先へ進めない。
+                    // 「名無しさん」などの仮の名前のままの人も、未設定として扱う。
+                    const PLACEHOLDER_NAMES = ['名無しさん', '名無し', 'ゲスト'];
+                    const nameMissing = !data.profileName || PLACEHOLDER_NAMES.includes(String(data.profileName).trim());
+                    let needProfileSetup = false;
+                    if (!user.isAnonymous) {
+                        needProfileSetup = nameMissing || !data.username;
+                    } else {
+                        // ゲストでも参加できた頃に作られたアカウント（公開プロフィールを持つ匿名アカウント）も対象。
+                        // 公開プロフィールを持たない、ふつうのゲスト（閲覧のみ）は対象外。
+                        try {
+                            const legacyPub = await getDoc(doc(db, 'publicProfiles', user.uid));
+                            if (legacyPub.exists()) needProfileSetup = nameMissing || !data.username;
+                        } catch (e) { /* 確認できなければ対象にしない */ }
+                    }
+                    window.currentAppProfileSetupRequired = needProfileSetup;
+                    if (needProfileSetup) {
+                        window.dispatchEvent(new CustomEvent('app-need-profile-setup', { detail: { user, forced: true } }));
                     }
                     // プロフィール名・画像はここまでの非同期取得で確定するため、
                     // マイページの表示（アバター等）を最新の状態に更新する
@@ -5530,6 +5546,7 @@
                 window.currentAppAchievementGoals = [];
                 window.currentAppFullName = null;
                 window.currentAppIsPrivate = false;
+                window.currentAppProfileSetupRequired = false;
             }
         });
     </script>
@@ -5910,11 +5927,29 @@
             const usernameInput = document.getElementById('profile-setup-username');
             const errEl = document.getElementById('profile-setup-error');
             if (errEl) errEl.classList.add('hidden');
-            if (input) input.value = (window.currentAppProfileName) || (user && user.displayName) || '';
+            if (input) {
+                const cand = window.currentAppProfileName || (user && user.displayName) || '';
+                input.value = isPlaceholderProfileName(cand) ? '' : cand;
+            }
             if (bioInput) bioInput.value = window.currentAppBio || '';
             if (usernameInput) usernameInput.value = window.currentAppUsername || '';
             if (modal) modal.classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        // ニックネームまたはユーザーネームが未設定の（ゲストではない）アカウントには、設定を必須にする
+        const PLACEHOLDER_PROFILE_NAMES = ['名無しさん', '名無し', 'ゲスト'];
+        function isPlaceholderProfileName(n) {
+            return !n || PLACEHOLDER_PROFILE_NAMES.includes(String(n).trim());
+        }
+        function enforceProfileSetup() {
+            const u = window.currentAppUser;
+            if (!u) return;
+            if (u.isAnonymous) {
+                // ゲストは、以前に「アカウント化」されていた人（ログイン時に判定済み）だけが対象
+                if (window.currentAppProfileSetupRequired) openProfileSetupModal(u);
+                return;
+            }
+            if (isPlaceholderProfileName(window.currentAppProfileName) || !window.currentAppUsername) openProfileSetupModal(u);
         }
         function closeProfileSetupModal() {
             const modal = document.getElementById('profile-setup-modal');
@@ -5933,34 +5968,36 @@
             const bioInput = document.getElementById('profile-setup-bio');
             const usernameInput = document.getElementById('profile-setup-username');
             const errEl = document.getElementById('profile-setup-error');
+            const showErr = (msg) => { if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); } };
+            if (errEl) errEl.classList.add('hidden');
             const name = (input && input.value || '').trim();
             const bio = (bioInput && bioInput.value || '').trim();
-            const username = (usernameInput && usernameInput.value || '').trim();
-            if (!name) {
-                if (errEl) { errEl.textContent = '名前を入力してください'; errEl.classList.remove('hidden'); }
-                return;
-            }
+            const username = (usernameInput && usernameInput.value || '').trim().replace(/^@/, '');
+            // ニックネームとユーザーネームは必須
+            if (!name) return showErr('ニックネームを入力してください');
+            if (isPlaceholderProfileName(name)) return showErr('「' + name + '」は仮の名前なので使えません。あなたのニックネームを入力してください');
+            if (!username) return showErr('ユーザーネームを入力してください');
+            if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) return showErr('ユーザーネームは半角英数字とアンダースコアで3〜20文字にしてください');
             try {
-                await window.AppFirebase.setProfileName(name);
-                try { await window.AppFirebase.setBio(bio); } catch (be) { console.warn('bio save error', be); }
-                if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
-                if (username) {
+                // 先にユーザーネーム（重複の可能性がある）を確定させ、通ってから他を保存する
+                if ((window.currentAppUsername || '').toLowerCase() !== username.toLowerCase()) {
                     try {
                         await window.AppFirebase.setUsername(username);
                     } catch (ue) {
                         console.error('username save error', ue);
-                        if (errEl) { errEl.textContent = profileSetupUsernameErrorMessage(ue); errEl.classList.remove('hidden'); }
-                        showToast('名前は保存しましたが、ユーザーネームは保存できませんでした');
-                        updateAccountMenuDisplay(window.currentAppUser);
-                        return;
+                        return showErr(profileSetupUsernameErrorMessage(ue));
                     }
                 }
+                await window.AppFirebase.setProfileName(name);
+                try { await window.AppFirebase.setBio(bio); } catch (be) { console.warn('bio save error', be); }
+                if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
+                window.currentAppProfileSetupRequired = false;
                 closeProfileSetupModal();
-                showToast('学習ProMasterアカウントを作成しました');
+                showToast('プロフィールを保存しました');
                 updateAccountMenuDisplay(window.currentAppUser);
             } catch (e) {
                 console.error(e);
-                if (errEl) { errEl.textContent = '保存に失敗しました。もう一度お試しください'; errEl.classList.remove('hidden'); }
+                showErr('保存に失敗しました。もう一度お試しください');
             }
         }
         // ==================================================
@@ -6381,6 +6418,8 @@
             showToast('アカウントの登録が完了しました！');
             if (typeof updateAccountMenuDisplay === 'function') updateAccountMenuDisplay(window.currentAppUser);
             if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
+            // ユーザーネーム（ウィザードでは未入力）が必須なので、未設定ならそのまま入力画面を出す
+            if (typeof enforceProfileSetup === 'function') enforceProfileSetup();
         }
 
         // ----- STEP: universities -----
@@ -7676,7 +7715,164 @@
             if (!aiOn) document.getElementById('general-ai-chat-modal')?.classList.add('hidden');
             setToggleSwitchUI('timer-fab-toggle-switch', timerOn);
             setToggleSwitchUI('aichat-fab-toggle-switch', aiOn);
+            if (typeof window._fabRelayout === 'function') window._fabRelayout(); // 再表示したボタンが重ならないように
         }
+
+        // ===== タイマー／AIチャットのボタンを、画面の端のどこへでも動かせるようにする =====
+        // ドラッグして離すと、いちばん近い端（上下左右）に吸着する。位置は端末に保存する。
+        // 下端は下タブバーの上までに収める。ボタンを動かさず「タップ」したときは今までどおり開く。
+        (function setupDraggableFabs() {
+            const SIZE = 48, MARGIN = 10, DRAG_PX = 6;
+            const defs = [
+                { id: 'floating-aichat-btn', key: 'pm_fab_pos_aichat', defFromBottom: 96 },
+                { id: 'floating-timer-btn',  key: 'pm_fab_pos_timer',  defFromBottom: 96 + SIZE + 12 },
+            ];
+            const probe = document.createElement('div'); // iPhoneのノッチ分の余白を取得するための見えない要素
+            probe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;visibility:hidden;padding-top:env(safe-area-inset-top,0px)';
+            document.body.appendChild(probe);
+            const clamp = (v, a, b) => Math.min(Math.max(v, a), Math.max(a, b));
+            function bounds() {
+                const tab = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--bottom-tab-h')) || 0;
+                const safeTop = parseFloat(getComputedStyle(probe).paddingTop) || 0;
+                return { minX: MARGIN, maxX: window.innerWidth - SIZE - MARGIN, minY: MARGIN + safeTop, maxY: window.innerHeight - tab - SIZE - MARGIN };
+            }
+            function load(d) {
+                try { const v = JSON.parse(localStorage.getItem(d.key)); if (v && ['left','right','top','bottom'].includes(v.edge) && typeof v.t === 'number') return v; } catch (_) {}
+                const b = bounds();
+                const y = clamp(window.innerHeight - d.defFromBottom - SIZE, b.minY, b.maxY);
+                return { edge: 'right', t: b.maxY > b.minY ? (y - b.minY) / (b.maxY - b.minY) : 1 };
+            }
+            function coords(pos) {
+                const b = bounds();
+                const t = clamp(pos.t, 0, 1);
+                if (pos.edge === 'left')   return { x: b.minX, y: b.minY + t * (b.maxY - b.minY) };
+                if (pos.edge === 'top')    return { x: b.minX + t * (b.maxX - b.minX), y: b.minY };
+                if (pos.edge === 'bottom') return { x: b.minX + t * (b.maxX - b.minX), y: b.maxY };
+                return { x: b.maxX, y: b.minY + t * (b.maxY - b.minY) };
+            }
+            const state = {};
+            function apply(d, animate) {
+                const el = document.getElementById(d.id);
+                if (!el) return;
+                const c = coords(state[d.id]);
+                el.style.transition = animate ? 'left .25s ease, top .25s ease, transform .15s' : 'transform .15s';
+                el.style.left = c.x + 'px';
+                el.style.top = c.y + 'px';
+                state[d.id].x = c.x; state[d.id].y = c.y;
+            }
+            // 2つのボタンが重ならないようにする：重なるときは、同じ端に沿って近い空きスペースへずらす
+            const GAP = 8;
+            function resolveOverlap(d) {
+                const other = defs.find(x => x.id !== d.id);
+                const otherEl = document.getElementById(other.id);
+                const ot = state[other.id], me = state[d.id];
+                if (!ot || ot.x == null || !me || !otherEl || otherEl.classList.contains('hidden')) return; // 相手が非表示なら避けなくてよい
+                const c = coords(me);
+                const step = SIZE + GAP;
+                if (!(Math.abs(c.x - ot.x) < step && Math.abs(c.y - ot.y) < step)) return; // 重なっていない
+                const b = bounds();
+                const vertical = (me.edge === 'left' || me.edge === 'right');
+                const axisMin = vertical ? b.minY : b.minX, axisMax = vertical ? b.maxY : b.maxX;
+                const cur = vertical ? c.y : c.x, otherPos = vertical ? ot.y : ot.x;
+                const cands = [otherPos + step, otherPos - step]
+                    .filter(v => v >= axisMin - 0.5 && v <= axisMax + 0.5)
+                    .sort((a, z) => Math.abs(a - cur) - Math.abs(z - cur));
+                const v = cands.length ? cands[0] : clamp(otherPos + step, axisMin, axisMax);
+                me.t = (v - axisMin) / Math.max(1, axisMax - axisMin);
+            }
+            function layoutAll(animate) {
+                defs.forEach(d => { const c = coords(state[d.id]); state[d.id].x = c.x; state[d.id].y = c.y; });
+                resolveOverlap(defs[1]); // 画面サイズの変化などで重なったら、後ろのボタン（タイマー）をずらす
+                defs.forEach(d => apply(d, animate));
+                positionTimerPanel();
+            }
+            window._fabRelayout = () => layoutAll(true);
+
+            // タイマーパネルを、ボタンの近く（画面内に収まる向き）に出す
+            function positionTimerPanel() {
+                const panel = document.getElementById('timer-panel');
+                const st = state['floating-timer-btn'];
+                if (!panel || !st || panel.classList.contains('hidden')) return;
+                const pw = panel.offsetWidth, ph = panel.offsetHeight, vw = window.innerWidth, vh = window.innerHeight, gap = 10;
+                const b = bounds();
+                let left, top;
+                if (st.edge === 'left')       { left = st.x + SIZE + gap; top = st.y + SIZE / 2 - ph / 2; }
+                else if (st.edge === 'right') { left = st.x - pw - gap;   top = st.y + SIZE / 2 - ph / 2; }
+                else if (st.edge === 'top')   { left = st.x + SIZE / 2 - pw / 2; top = st.y + SIZE + gap; }
+                else                          { left = st.x + SIZE / 2 - pw / 2; top = st.y - ph - gap; }
+                panel.style.right = 'auto'; panel.style.bottom = 'auto';
+                panel.style.left = clamp(left, 8, vw - pw - 8) + 'px';
+                panel.style.top = clamp(top, b.minY, vh - ph - 8) + 'px';
+            }
+
+            defs.forEach(d => {
+                const el = document.getElementById(d.id);
+                if (!el) return;
+                state[d.id] = load(d);
+                Object.assign(el.style, { position: 'fixed', zIndex: '40', touchAction: 'none', userSelect: 'none', webkitUserSelect: 'none' });
+                let sx = 0, sy = 0, ox = 0, oy = 0, pid = null, down = false, dragging = false;
+                el.addEventListener('pointerdown', (e) => {
+                    if (e.button !== undefined && e.button !== 0) return;
+                    down = true; dragging = false; pid = e.pointerId;
+                    sx = e.clientX; sy = e.clientY; ox = state[d.id].x; oy = state[d.id].y;
+                    // マウスでもボタンの外まで追従できるよう、押した時点でポインターを捕捉する
+                    try { el.setPointerCapture(pid); } catch (_) {}
+                });
+                el.addEventListener('pointermove', (e) => {
+                    if (!down || e.pointerId !== pid) return;
+                    const mx = e.clientX - sx, my = e.clientY - sy;
+                    if (!dragging) {
+                        if (Math.hypot(mx, my) < DRAG_PX) return;
+                        dragging = true;
+                        el.style.transition = 'transform .15s';
+                        el.style.transform = 'scale(1.1)';
+                    }
+                    // 指に追従して自由に動かす（画面内に限る）
+                    const b = bounds();
+                    state[d.id].x = clamp(ox + mx, b.minX, b.maxX);
+                    state[d.id].y = clamp(oy + my, b.minY, b.maxY);
+                    el.style.left = state[d.id].x + 'px';
+                    el.style.top = state[d.id].y + 'px';
+                    if (d.id === 'floating-timer-btn') positionTimerPanel();
+                });
+                const end = (e) => {
+                    if (!down || (e && e.pointerId !== pid)) return;
+                    down = false;
+                    try { el.releasePointerCapture(pid); } catch (_) {}
+                    el.style.transform = '';
+                    if (!dragging) return; // ただのタップ → クリックとして通常動作
+                    dragging = false;
+                    window._fabSuppressClickUntil = Date.now() + 400;
+                    // いちばん近い端へ吸着
+                    const b = bounds(), st = state[d.id];
+                    const dist = { left: st.x - b.minX, right: b.maxX - st.x, top: st.y - b.minY, bottom: b.maxY - st.y };
+                    const edge = Object.keys(dist).sort((a, c) => dist[a] - dist[c])[0];
+                    const horizontalEdge = (edge === 'top' || edge === 'bottom');
+                    const along = horizontalEdge ? (st.x - b.minX) / Math.max(1, b.maxX - b.minX) : (st.y - b.minY) / Math.max(1, b.maxY - b.minY);
+                    state[d.id] = { edge, t: clamp(along, 0, 1) };
+                    resolveOverlap(d); // もう一方のボタンと重なる場所なら、近い空きスペースへずらす
+                    try { localStorage.setItem(d.key, JSON.stringify({ edge: state[d.id].edge, t: state[d.id].t })); } catch (_) {}
+                    apply(d, true);
+                    if (d.id === 'floating-timer-btn') positionTimerPanel();
+                };
+                el.addEventListener('pointerup', end);
+                el.addEventListener('pointercancel', end);
+            });
+            // ドラッグ直後に出る「クリック」は無視（タイマーが開いたりAIチャットが開いたりしないように）
+            document.addEventListener('click', (e) => {
+                if (Date.now() < (window._fabSuppressClickUntil || 0) && e.target.closest && e.target.closest('#floating-timer-btn, #floating-aichat-btn')) {
+                    e.stopPropagation(); e.preventDefault();
+                }
+            }, true);
+
+            layoutAll(false);
+            window.addEventListener('resize', () => layoutAll(false));
+            // 下タブバーの出入りで下端の位置が変わるので追従する
+            new MutationObserver(() => layoutAll(false)).observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
+            const panel = document.getElementById('timer-panel');
+            if (panel) new MutationObserver(positionTimerPanel).observe(panel, { attributes: true, attributeFilter: ['class'] });
+        })();
+
         function toggleTimerFabVisibility() {
             const next = !isTimerFabVisible();
             safeStorage.set('pm_show_timer_fab', next);
@@ -18458,7 +18654,13 @@ const KOBUN_TANGO = [
                         <i data-lucide="heart" class="w-4 h-4"></i>
                         <span class="text-xs font-black" data-like-count>-</span>
                     </button>
-                    ${post.uid === (window.currentAppUser && window.currentAppUser.uid) ? `<button onclick="onDeletePostClick('${post.id}')" class="text-slate-300 hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>` : ''}
+                    ${(() => {
+                        const myUid = window.currentAppUser && window.currentAppUser.uid;
+                        const isMine = post.uid === myUid;
+                        // 自分の投稿、または公式マークのアカウント（他人の投稿も削除できる）
+                        if (!isMine && !isOfficialUser()) return '';
+                        return `<button onclick="onDeletePostClick('${post.id}', ${!isMine})" title="${isMine ? '削除' : '公式権限で削除'}" class="${isMine ? 'text-slate-300' : 'text-amber-400'} hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
+                    })()}
                 </div>
             </div>`;
         }
@@ -18527,14 +18729,29 @@ const KOBUN_TANGO = [
                 btnEl.disabled = false;
             }
         }
-        async function onDeletePostClick(postId) {
-            if (!confirm('この投稿を削除しますか？')) return;
+        // 公式マークが付いたログイン中のアカウントか（ゲスト・未ログインは不可）
+        function isOfficialUser() {
+            const u = window.currentAppUser;
+            return !!(u && !u.isAnonymous && window.currentAppIsOfficial === true && window.currentAppIsOfficialUid === u.uid);
+        }
+        async function onDeletePostClick(postId, byOfficial = false) {
+            const msg = byOfficial
+                ? 'この投稿を公式権限で削除しますか？\n（投稿した人の画面からも消えます）'
+                : 'この投稿を削除しますか？';
+            if (!confirm(msg)) return;
+            // 他人の投稿を消せるのは公式アカウントだけ（画面上のボタンが出ない場合でも念のため再確認）
+            if (byOfficial && !isOfficialUser()) { showToast('他の人の投稿を削除できるのは公式アカウントだけです'); return; }
             try {
                 await window.AppFirebase.deletePost(postId);
+                if (byOfficial) showToast('投稿を削除しました');
                 // フィードの更新自体はリアルタイム購読が自動で行うため、ここでの再読み込みは不要
             } catch (e) {
                 console.error('delete post error', e);
-                showToast('削除に失敗しました。時間をおいて再度お試しください');
+                if (byOfficial && e && e.code === 'permission-denied') {
+                    showToast('削除できませんでした。サーバー側（Firestoreのルール）で公式アカウントの削除が許可されていない可能性があります');
+                } else {
+                    showToast('削除に失敗しました。時間をおいて再度お試しください');
+                }
             }
         }
         function setTimelineMode(mode) {
@@ -23339,7 +23556,8 @@ const KOBUN_TANGO = [
             toastMessageEl.textContent = message;
             toastEl.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
             toastEl.classList.add('translate-y-0', 'opacity-100');
-            setTimeout(() => {
+            clearTimeout(toastEl._hideTimer);
+            toastEl._hideTimer = setTimeout(() => {
                 toastEl.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
                 toastEl.classList.remove('translate-y-0', 'opacity-100');
             }, 5000);
@@ -23358,11 +23576,74 @@ const KOBUN_TANGO = [
             el.classList.remove('translate-y-24', 'opacity-0', 'pointer-events-none');
             el.classList.add('translate-y-0', 'opacity-100');
             if (typeof lucide !== 'undefined') lucide.createIcons();
-            setTimeout(() => {
+            clearTimeout(el._hideTimer);
+            el._hideTimer = setTimeout(() => {
                 el.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
                 el.classList.remove('translate-y-0', 'opacity-100');
             }, 10000);
         }
+
+        // ===== 通知（トースト）を横または下にスワイプして消す =====
+        // 指で払う／マウスでドラッグすると、その向きにスライドして消える。短い移動ならもとの位置に戻る。
+        function enableSwipeDismiss(el, hideFn) {
+            if (!el || el.dataset.swipeReady) return;
+            el.dataset.swipeReady = '1';
+            el.style.touchAction = 'none';
+            el.style.userSelect = 'none';
+            let sx = 0, sy = 0, dx = 0, dy = 0, t0 = 0, pid = null, active = false;
+            const reset = () => { el.style.translate = ''; el.style.opacity = ''; el.style.transition = ''; };
+            el.addEventListener('pointerdown', (e) => {
+                if (e.button !== undefined && e.button !== 0) return;
+                if (e.target.closest('button, a, input, select, textarea')) return; // ボタン操作はそのまま
+                active = true; pid = e.pointerId; sx = e.clientX; sy = e.clientY; dx = 0; dy = 0; t0 = Date.now();
+                el.style.transition = 'none';
+                try { el.setPointerCapture(pid); } catch (_) {}
+            });
+            el.addEventListener('pointermove', (e) => {
+                if (!active || e.pointerId !== pid) return;
+                dx = e.clientX - sx;
+                dy = Math.max(0, e.clientY - sy); // 下方向のみ
+                if (Math.abs(dx) >= dy) {
+                    el.style.translate = dx + 'px 0';
+                    el.style.opacity = String(Math.max(0.25, 1 - Math.abs(dx) / (el.offsetWidth * 1.2)));
+                } else {
+                    el.style.translate = '0 ' + dy + 'px';
+                    el.style.opacity = String(Math.max(0.25, 1 - dy / 140));
+                }
+            });
+            const end = (e) => {
+                if (!active || (e && e.pointerId !== pid)) return;
+                active = false;
+                try { el.releasePointerCapture(pid); } catch (_) {}
+                const dt = Math.max(1, Date.now() - t0);
+                const horizontal = Math.abs(dx) >= dy;
+                const dist = horizontal ? Math.abs(dx) : dy;
+                const speed = dist / dt; // px/ms
+                const dismiss = dist > (horizontal ? el.offsetWidth * 0.35 : 50) || (speed > 0.6 && dist > 30);
+                if (!dismiss) { reset(); return; }
+                // 飛んでいく向きへスライドさせてから非表示にする
+                el.style.transition = 'translate .22s ease-in, opacity .22s ease-in';
+                el.style.translate = horizontal ? ((dx > 0 ? 1 : -1) * (window.innerWidth + 40)) + 'px 0' : '0 160px';
+                el.style.opacity = '0';
+                setTimeout(() => { hideFn(); reset(); }, 230);
+            };
+            el.addEventListener('pointerup', end);
+            el.addEventListener('pointercancel', end);
+        }
+        (function setupToastSwipe() {
+            const hideStd = (el) => () => {
+                clearTimeout(el._hideTimer);
+                el.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+                el.classList.remove('translate-y-0', 'opacity-100');
+            };
+            ['toast', 'error-toast'].forEach(id => { const el = document.getElementById(id); if (el) enableSwipeDismiss(el, hideStd(el)); });
+            const undoEl = document.getElementById('undo-toast');
+            if (undoEl) enableSwipeDismiss(undoEl, () => {
+                clearTimeout(undoTimer);
+                undoEl.classList.add('translate-y-24', 'opacity-0', 'pointer-events-none');
+                undoEl.classList.remove('translate-y-0', 'opacity-100');
+            });
+        })();
 
         function copyErrorMessage() {
             if (!lastErrorMessage) return;
