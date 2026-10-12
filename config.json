@@ -4302,6 +4302,321 @@
         ],
         "lessonTitle": "Lesson 5 Mental Toughness Section 2"
       }
+    },
+    {
+      "id": "L5S3",
+      "lessonLabel": "Lesson5",
+      "sectionLabel": "Section3",
+      "name": "Lesson5  Mental Toughness  Section3",
+      "data": {
+        "transcription": "3 Talk to yourself.Stay focused. Relax. Great advice. But how do you do that? One way is self-talk.Your mind, emotions, and your muscles all work together. If you tell yourself you'll fail, your performance will suffer. Champions use positive self-talk to stay focused under pressure.Develop positive cue words to encourage yourself. Use these words whenever you are feeling mad, sad, or scared. Here are examples of negative and positive self-talk:It's just too tough! / I love new challenges!We're down 20 to nothing! / It's not over till it's over.① I've never done this before! / Here's a chance to learn something new.② Whatever your game is, switch off the negative and turn on the positive. If you're a basketball player shooting a free-throw, tell yourself: \"That basket is as big as Lake Biwa!③ I can't miss!\" If you're a golfer trying to make a putt, talk to yourself: \"It's all downhill now, right into the hole!\"One more tip! Talk to yourself in the second person. Instead of saying: \"I'm going to make that shot,\" say, \"Chris, you're going to make that shot.\" ④ \"Sally, there's no way in the world you can double-fault!\"It may not work every time, but in the long run, it will.",
+        "transcriptionAnalysis": [
+          {
+            "english": "Stay focused. Relax. Great advice. But how do you do that? One way is self-talk.",
+            "japanese": "集中してリラックスしなさい、というのは素晴らしいアドバイスだが、どうすればそれができるのか？その一つの方法がセルフトーク（自分自身への語りかけ）である。",
+            "grammarExplanation": "「Stay focused.」と「Relax.」は命令形で、何かを指示する際に使われます。「Great advice.」は独立した感嘆文で、(That is) Great advice. のようなSVC構文の主語と動詞が省略された形です。「But how do you do that?」は疑問文で、具体的な方法を尋ねています。「One way is self-talk.」は結論を述べています。",
+            "sentenceStructure": "「Stay focused.」はS(You) V(Stay) C(focused: 補語、形容詞)の第2文型（SVC）です。「Relax.」はS(You) V(Relax)の第1文型（SV）です。「Great advice.」は(This is) Great advice. でSVCです。「But how do you do that?」はS(you) V(do) O(that)の第3文型（SVO）です。「One way is self-talk.」はS(One way) V(is) C(self-talk)の第2文型です。",
+            "keyExpressions": "「Stay focused」は「集中し続ける」という意味です。「self-talk」は「自分自身への語りかけ」を指します。"
+          },
+          {
+            "english": "Your mind, emotions, and your muscles all work together. If you tell yourself you'll fail, your performance will suffer. Champions use positive self-talk to stay focused under pressure.",
+            "japanese": "精神、感情、肉体はすべて連携して機能する。もし自分に失敗すると言い聞かせれば、あなたのパフォーマンスは悪化するだろう。一流選手たちは、プレッシャーの下で集中力を保つために、前向きなセルフトークを使う。",
+            "grammarExplanation": "最初の文は、主語が「Your mind, emotions, and your muscles」と複数形で、動詞「work together」がそれに続きます。次の文は条件節（If節）で、「If S + 現在形..., S + will + 動詞の原形...」の形を取り、「もし～ならば、…だろう」という未来の仮定を表します。「tell oneself that節」は「自分に～と伝える」という意味です。最後の文の「to stay focused」は不定詞の副詞的用法（目的）で「集中力を保つために」という意味になります。「under pressure」は「プレッシャーの下で」という状況を示します。",
+            "sentenceStructure": "「Your mind, emotions, and your muscles all work together.」はS(Your mind, emotions, and your muscles) V(work) (together: 副詞)の第1文型（SV）です。「If you tell yourself you'll fail, your performance will suffer.」のIf節はS(you) V(tell) IO(yourself) DO(you'll fail)の第4文型（SVOO）に準じます（'you'll fail'は間接話法でthat節が省略された直接目的語です）。主節はS(your performance) V(will suffer)の第1文型です。「Champions use positive self-talk to stay focused under pressure.」はS(Champions) V(use) O(positive self-talk)の第3文型（SVO）です。「to stay focused」は目的を表す副詞句、「under pressure」は様態を表す副詞句です。",
+            "keyExpressions": "「work together」は「協力して働く、連携する」という意味です。「tell oneself」は「自分に言い聞かせる」です。「suffer」はここでは「悪化する、損なわれる」という意味で使われています。「stay focused」は「集中力を保つ」です。「under pressure」は「プレッシャーを受けている状態で」という意味です。"
+          },
+          {
+            "english": "Develop positive cue words to encourage yourself. Use these words whenever you are feeling mad, sad, or scared. Here are examples of negative and positive self-talk:",
+            "japanese": "自分自身を励ます前向きなきっかけの言葉を考えなさい。怒ったり、悲しんだり、怖がったりしている時にはいつでも、これらの言葉を使いなさい。以下に、ネガティブなセルフトークとポジティブなセルフトークの例を挙げます。",
+            "grammarExplanation": "最初の文の「to encourage yourself」は不定詞の副詞的用法で、目的（～するために）を表します。2番目の文の「whenever」は複合関係副詞で「～するときはいつでも」という意味です。続く「mad, sad, or scared」は感情を表す形容詞が並列に繋がっています。最後の文「Here are examples...」は倒置構文で、主語が「examples」という複数形なので、動詞は「are」が使われています。",
+            "sentenceStructure": "「Develop positive cue words to encourage yourself.」はS(You) V(Develop) O(positive cue words)の第3文型（SVO）です。「to encourage yourself」は副詞句です。「Use these words whenever you are feeling mad, sad, or scared.」はS(You) V(Use) O(these words)の第3文型（SVO）です。「whenever you are feeling mad, sad, or scared」は時を表す副詞節です（副詞節内はS(you) V(are feeling) C(mad, sad, or scared)のSVC）。「Here are examples of negative and positive self-talk:」はV(are) S(examples of negative and positive self-talk)という倒置された形です。Hereは副詞です。",
+            "keyExpressions": "「cue words」は「きっかけとなる言葉」や「合図の言葉」を意味します。「encourage oneself」は「自分自身を励ます」という意味です。「whenever」は「～するときはいつでも」です。「mad, sad, or scared」は「怒っている、悲しい、怖がっている」という感情を表します。"
+          },
+          {
+            "english": "It's just too tough! / I love new challenges!",
+            "japanese": "(ネガティブな例)「あまりにも大変すぎる！」「（ポジティブな例）新しい挑戦が大好きだ！」",
+            "grammarExplanation": "「too + 形容詞/副詞」は「～すぎる」という否定的な意味合いを含む表現です。「just」はここでは「単に、まさに」という強調の意味です。2つ目の文はシンプルな肯定文です。",
+            "sentenceStructure": "「It's just too tough!」はS(It) V(is) C(just too tough)の第2文型（SVC）です。「I love new challenges!」はS(I) V(love) O(new challenges)の第3文型（SVO）です。",
+            "keyExpressions": "「too tough」は「あまりに大変すぎる、手強い」という意味です。「new challenges」は「新しい挑戦」という意味です。"
+          },
+          {
+            "english": "We're down 20 to nothing! / It's not over till it's over.",
+            "japanese": "(ネガティブな例)「20対0で負けている！」「（ポジティブな例）終わるまでは終わりじゃない（最後まで諦めるな）。」",
+            "grammarExplanation": "「be down X to nothing」はスポーツの試合などで「X対0で負けている」という状況を表します。「It's not over till it's over.」は有名な格言で、「完全に終わるまでは勝敗は決まらない」という、最後まで諦めない強い肯定の意味を持つ表現です。tillは「～まで（ずっと）」という継続を表します。",
+            "sentenceStructure": "「We're down 20 to nothing!」はS(We) V(are) (down: 状態を示す補語的な形容詞句) (20 to nothing: 副詞句)です。「It's not over till it's over.」はS(It) V(is) C(not over)のSVC文型が主節であり、「till it's over」は時を表す副詞節です。",
+            "keyExpressions": "「be down X to nothing」は「X対0で負けている」という意味です。「It's not over till it's over」は「終わるまでは終わりじゃない、最後まで諦めるな」という意味の慣用句です。"
+          },
+          {
+            "english": "One more tip! Talk to yourself in the second person. Instead of saying: \"I'm going to make that shot,\" say, \"Chris, you're going to make that shot.\" ④ \"Sally, there's no way in the world you can double-fault!\"",
+            "japanese": "もう一つアドバイス！自分自身に二人称で話しかけなさい。「私がそのシュートを決めるぞ」と言う代わりに、「クリス、お前はそのシュートを決めるぞ」と言いなさい。④「サリー、お前は絶対にダブルフォルトなんてしないぞ！」",
+            "grammarExplanation": "「One more tip!」は追加の助言を提示しています。「Talk to yourself in the second person.」は「二人称で自分に話しかける」という具体的な方法を指示しています。「Instead of ~ing」は「～する代わりに」という意味の慣用表現です。「there's no way (in the world) that S V」は「SがVすることは絶対にありえない」という強い否定と強調を表します。「in the world」は強調のために使われ、「一体全体」といったニュアンスを加えます。",
+            "sentenceStructure": "「One more tip!」は(This is) One more tip. と同じでSVCです。「Talk to yourself in the second person.」はS(You) V(Talk) (to yourself: 副詞句) (in the second person: 副詞句)のSVです。「Instead of saying: \"I'm going to make that shot,\" say, \"Chris, you're going to make that shot.\"」はS(You) V(say) O(\"Chris, you're going to make that shot.\")のSVOであり、「Instead of saying...」は副詞句です。「Sally, there's no way in the world you can double-fault!」は「Sally」が呼びかけであり、その後は「there is」構文です。V(is) S(no way)で、「in the world」は副詞句です。「you can double-fault」は、関係副詞thatが省略された形でwayを修飾しています。",
+            "keyExpressions": "「in the second person」は「二人称で」という意味です。つまり「私」ではなく「あなた/お前」と呼ぶことです。「Instead of ~ing」は「～する代わりに」です。「there's no way (in the world) that S V」は「SがVするはずがない、絶対にSはVしない」という強い否定の表現です。「double-fault」はテニスで「ダブルフォルトする」という意味です。"
+          },
+          {
+            "english": "It may not work every time, but in the long run, it will.",
+            "japanese": "それが毎回うまくいくとは限らないが、長い目で見ればうまくいくでしょう。",
+            "grammarExplanation": "「may not ~ every time」は部分否定で、「毎回～するとは限らない」という意味です。全ての場合に当てはまるわけではない、というニュアンスです。「but」で対比されており、後半の「it will」の後には動詞「work」が省略されています。「in the long run」は「長い目で見れば」という意味の慣用句です。",
+            "sentenceStructure": "「It may not work every time」はS(It) 助動詞(may) V(work) (every time: 副詞句)です。「but in the long run, it will (work).」はS(it) 助動詞(will) (work: 省略) (in the long run: 副詞句)です。",
+            "keyExpressions": "「not ~ every time」は「毎回～するとは限らない」という部分否定の表現です。「in the long run」は「長い目で見れば、結局は」という意味の重要な慣用表現です。"
+          }
+        ],
+        "putIntoJapaneseAnswers": [
+          {
+            "num": "1",
+            "english": "I've never done this before! / Here's a chance to learn something new.",
+            "japanese": "(ネガティブな例)「これ、やったことない！」「（ポジティブな例）新しいことを学ぶチャンスだ！」",
+            "translationPoint": "前半の「I've never done this before!」は、現在完了形の経験用法で「以前に一度も～したことがない」という意味です。後半の「Here's a chance to learn something new.」は、「新しい何かを学ぶチャンスがここにある」と直訳することもできますが、より自然な日本語では「新しいことを学ぶチャンスだ」と言い切る形が適しています。「something new」のように、-thingで終わる不定代名詞は形容詞が後ろから修飾します。",
+            "commonMistake": "「Here's a chance to learn something new.」を「新しい何かを学ぶ機会がここにある」と直訳するとやや不自然に聞こえることがあります。文脈に合わせて「これは新しいことを学ぶチャンスだ」と意訳する方が自然です。"
+          },
+          {
+            "num": "2",
+            "english": "Whatever your game is, switch off the negative and turn on the positive.",
+            "japanese": "どんな競技をしていても、ネガティブな思考を断ち切り、ポジティブな思考に切り替えなさい。",
+            "translationPoint": "「Whatever your game is」は複合関係代名詞whateverが「何が～であろうと」という意味を持ち、ここでは「どんな競技をしていても」と意訳すると自然です。「switch off the negative」と「turn on the positive」は比喩的な表現で、「ネガティブなものを断ち切り、ポジティブなものを取り入れる」という思考の切り替えを意味します。「the negative」や「the positive」は、具体的な「思考」や「側面」を指していると解釈します。",
+            "commonMistake": "「the negative」や「the positive」をそのまま「そのネガティブなもの」「そのポジティブなもの」と訳すと、何を指すのか不明瞭になります。文脈から「ネガティブな思考」や「ポジティブな思考」と補って訳すのが適切です。また、「switch off」や「turn on」を「電気を切る/つける」と直接的に訳さないように注意が必要です。"
+          },
+          {
+            "num": "3",
+            "english": "I can't miss!\" If you're a golfer trying to make a putt, talk to yourself: \"It's all downhill now, right into the hole!\"",
+            "japanese": "「外せない！」もしパットを決めようとしているゴルファーなら、自分にこう言い聞かせなさい。「もう後は下り坂だ、カップに一直線だ！」",
+            "translationPoint": "「I can't miss!」は直訳すると「外すことはできない」ですが、強い決意を表すので「絶対に外さないぞ！」「決める！」といったニュアンスで捉えます。「make a putt」はゴルフで「パットを決める」という意味です。「It's all downhill now」は文字通り「すべて下り坂だ」という意味と、比喩的に「もう後は楽だ、順調だ」というポジティブな意味があります。日本語では「下り坂」はネガティブな意味で使われがちなので、文脈を考慮して「楽勝だ」というニュアンスを出すことが重要です。「right into the hole!」は「まさに穴の中へ」と、ピンポイントで目標を指しています。",
+            "commonMistake": "「It's all downhill now」を直訳して「もうすべて下り坂だ」と訳すと、日本語の「下り坂」が持つ「衰退」や「悪化」といったネガティブな意味合いと混同されやすいです。英語では、困難な部分を乗り越え「もう楽な段階に入った」というポジティブな意味で使われることが多いため、注意が必要です。"
+          },
+          {
+            "num": "4",
+            "english": "Sally, there's no way in the world you can double-fault!\"",
+            "japanese": "「サリー、お前がダブルフォルトするなんて絶対にありえないぞ！」",
+            "translationPoint": "「there's no way in the world you can double-fault!」は、「there is no way that S V」の構文に「in the world」（一体全体、強調）が加わったもので、「SがVするはずがない、絶対にSはVしない」という強い否定と強調を表します。「double-fault」はテニスの専門用語で、2回連続でサービスを失敗することです。",
+            "commonMistake": "「in the world」を直訳して「世界中には方法がない」とすると、本来の意味が伝わりません。これは慣用表現で、否定文や疑問文で「絶対に～ない」「一体全体」という強調の意味で使われます。また、「double-fault」を知らないと意味が取りづらいことがあります。"
+          }
+        ],
+        "vocabulary": [
+          {
+            "word": "emotion",
+            "meaning": "感情、感動",
+            "usage": "It's important to understand and manage your emotions effectively.",
+            "synonymsAntonyms": "Synonyms: feeling, sentiment. Antonyms: apathy, indifference",
+            "derivatives": "emotional (形: 感情的な), emotionally (副: 感情的に)",
+            "pronunciation": "/ɪˈmoʊʃən/ (アクセントは「mo」の部分)",
+            "examFrequency": "頻出 (高校レベル、大学入試にもよく出る重要語)"
+          },
+          {
+            "word": "muscle",
+            "meaning": "筋肉",
+            "usage": "He strained a muscle in his leg during the marathon.",
+            "synonymsAntonyms": "Synonyms: sinew, brawn. Antonyms: (特になし)",
+            "derivatives": "muscular (形: 筋肉質の), musculature (名: 筋肉組織)",
+            "pronunciation": "/ˈmʌsl/ (「c」は発音せず、「s」と「l」の間に短い母音が入る)",
+            "examFrequency": "中頻度 (基本的な身体部位の語彙)"
+          },
+          {
+            "word": "performance",
+            "meaning": "性能、演技、業績、実行",
+            "usage": "The company's financial performance improved significantly last quarter.",
+            "synonymsAntonyms": "Synonyms: achievement, execution, presentation, output. Antonyms: failure, inability",
+            "derivatives": "perform (動: 実行する、演じる), performer (名: 演者)",
+            "pronunciation": "/pərˈfɔːrməns/ (アクセントは「for」の部分)",
+            "examFrequency": "頻出 (文脈によって意味が多岐にわたるため、注意が必要)"
+          },
+          {
+            "word": "champion",
+            "meaning": "優勝者、選手権保持者",
+            "usage": "She trained hard to become a boxing champion.",
+            "synonymsAntonyms": "Synonyms: winner, victor, titleholder. Antonyms: loser, challenger",
+            "derivatives": "championship (名: 選手権), champion (動: ～を擁護する)",
+            "pronunciation": "/ˈtʃæmpiən/ (アクセントは「cham」の部分)",
+            "examFrequency": "中頻度 (スポーツ関連の文脈でよく使われる)"
+          },
+          {
+            "word": "cue",
+            "meaning": "合図、きっかけ、手本",
+            "usage": "The director gave the actors a cue to begin the scene.",
+            "synonymsAntonyms": "Synonyms: signal, hint, prompt, sign. Antonyms: (特になし)",
+            "derivatives": "(特になし。ただし'queue'は発音や綴りが似ているが意味が異なる)",
+            "pronunciation": "/kjuː/ (アルファベットの「Q」と同じ発音)",
+            "examFrequency": "やや低頻度 (特定の文脈で使われることが多い)"
+          },
+          {
+            "word": "mad",
+            "meaning": "怒っている、気が狂った",
+            "usage": "He was mad at himself for making such a silly mistake.",
+            "synonymsAntonyms": "Synonyms: angry, furious, insane, crazy. Antonyms: happy, sane, delighted",
+            "derivatives": "madness (名: 狂気), madden (動: 怒らせる、狂わせる)",
+            "pronunciation": "/mæd/ (短い「ア」の音)",
+            "examFrequency": "基本語 (日常会話や文学作品で幅広く使われる)"
+          },
+          {
+            "word": "scared",
+            "meaning": "怖がっている、おびえている",
+            "usage": "The little girl was scared of the loud thunder.",
+            "synonymsAntonyms": "Synonyms: afraid, frightened, terrified, anxious. Antonyms: brave, courageous, fearless",
+            "derivatives": "scare (動: 怖がらせる), scary (形: 怖い)",
+            "pronunciation": "/skɛrd/ (「sc」は「ス」の音、reの部分は母音を伴うr)",
+            "examFrequency": "基本語 (感情表現として頻出)"
+          },
+          {
+            "word": "switch off",
+            "meaning": "～のスイッチを切る、～をやめる",
+            "usage": "Please switch off your mobile phones during the meeting.",
+            "synonymsAntonyms": "Synonyms: turn off, shut down, disconnect. Antonyms: switch on, turn on",
+            "derivatives": "switch (名: スイッチ、動: 切り替える)",
+            "pronunciation": "/swɪtʃ ɔːf/",
+            "examFrequency": "中頻度 (句動詞として重要)"
+          },
+          {
+            "word": "golfer",
+            "meaning": "ゴルファー",
+            "usage": "My grandfather is a keen golfer and plays every Sunday morning.",
+            "synonymsAntonyms": "Synonyms: (特になし) Antonyms: (特になし)",
+            "derivatives": "golf (名: ゴルフ、動: ゴルフをする)",
+            "pronunciation": "/ˈɡoʊlfər/",
+            "examFrequency": "低頻度 (スポーツ関連の専門用語)"
+          },
+          {
+            "word": "putt",
+            "meaning": "パット（ゴルフでボールをカップに入れるための短いショット）",
+            "usage": "She sank a long putt on the final hole to win the tournament.",
+            "synonymsAntonyms": "Synonyms: (特になし) Antonyms: drive, chip",
+            "derivatives": "putt (動: パットする), putter (名: パター、パットする人)",
+            "pronunciation": "/pʌt/",
+            "examFrequency": "低頻度 (ゴルフ関連の専門用語)"
+          },
+          {
+            "word": "downhill",
+            "meaning": "下り坂で、楽で、衰退して",
+            "usage": "After the initial struggle, the project was all downhill from there.",
+            "synonymsAntonyms": "Synonyms: easy, effortless, declining (衰退の). Antonyms: uphill, difficult, improving (改善する)",
+            "derivatives": "downhill (形: 下り坂の), downhill (名: 下り坂)",
+            "pronunciation": "/ˈdaʊnˌhɪl/ (アクセントは「down」の部分)",
+            "examFrequency": "やや低頻度 (比喩表現としての意味に注意)"
+          },
+          {
+            "word": "tip",
+            "meaning": "秘訣、助言、チップ、先端",
+            "usage": "The chef shared some useful cooking tips with the audience.",
+            "synonymsAntonyms": "Synonyms: advice, hint, suggestion, counsel. Antonyms: (特になし)",
+            "derivatives": "tip (動: 傾ける、ヒントを与える)",
+            "pronunciation": "/tɪp/",
+            "examFrequency": "頻出 (多義語として、文脈での使い分けが重要)"
+          },
+          {
+            "word": "Chris",
+            "meaning": "クリス (人名)",
+            "usage": "Chris is a common name for both boys and girls.",
+            "synonymsAntonyms": "(人名のため特になし)",
+            "derivatives": "(人名のため特になし)",
+            "pronunciation": "/krɪs/",
+            "examFrequency": "低頻度 (固有名詞)"
+          },
+          {
+            "word": "Sally",
+            "meaning": "サリー (人名)",
+            "usage": "Sally enjoys painting landscapes in her free time.",
+            "synonymsAntonyms": "(人名のため特になし)",
+            "derivatives": "(人名のため特になし)",
+            "pronunciation": "/ˈsæli/",
+            "examFrequency": "低頻度 (固有名詞)"
+          },
+          {
+            "word": "double-fault",
+            "meaning": "ダブルフォルトする",
+            "usage": "The pressure got to him, and he double-faulted on game point.",
+            "synonymsAntonyms": "Synonyms: (特になし) Antonyms: ace",
+            "derivatives": "double-fault (名: ダブルフォルト)",
+            "pronunciation": "/ˈdʌbl fɔːlt/",
+            "examFrequency": "低頻度 (テニス関連の専門用語)"
+          },
+          {
+            "word": "whenever",
+            "meaning": "～するときはいつでも、いつ～しようとも",
+            "usage": "Feel free to call me whenever you have a question.",
+            "synonymsAntonyms": "Synonyms: at any time, every time that. Antonyms: never",
+            "derivatives": "(特になし)",
+            "pronunciation": "/wɛnˈɛvər/ (アクセントは「ev」の部分)",
+            "examFrequency": "頻出 (複合関係副詞として重要)"
+          },
+          {
+            "word": "whatever",
+            "meaning": "何が～であろうと、～するものは何でも",
+            "usage": "Whatever decision you make, I will support you.",
+            "synonymsAntonyms": "Synonyms: no matter what, anything that. Antonyms: (特になし)",
+            "derivatives": "(特になし)",
+            "pronunciation": "/wɒtˈɛvər/ (米: /wɑːtˈɛvər/) (アクセントは「ev」の部分)",
+            "examFrequency": "頻出 (複合関係代名詞・形容詞として重要)"
+          },
+          {
+            "word": "turn on",
+            "meaning": "～をつける、～を活性化する",
+            "usage": "Could you please turn on the air conditioner? It's hot in here.",
+            "synonymsAntonyms": "Synonyms: switch on, activate, enable. Antonyms: turn off, switch off",
+            "derivatives": "turn (動: 回る、回す), on (前: ～の上に、副: 作動して)",
+            "pronunciation": "/tɜːrn ɒn/",
+            "examFrequency": "中頻度 (句動詞として重要)"
+          },
+          {
+            "word": "make a shot",
+            "meaning": "シュートを決める、打つ",
+            "usage": "The basketball player made a difficult shot at the buzzer.",
+            "synonymsAntonyms": "Synonyms: score a basket, take a shot, hit the target. Antonyms: miss a shot, fail to score",
+            "derivatives": "make (動: 作る、する), shot (名: シュート、一撃)",
+            "pronunciation": "/meɪk ə ʃɒt/",
+            "examFrequency": "中頻度 (スポーツ関連で使われる)"
+          },
+          {
+            "word": "in the world",
+            "meaning": "一体全体、世界中で (疑問詞や否定文で強調として使われる)",
+            "usage": "What in the world were you thinking when you did that?",
+            "synonymsAntonyms": "Synonyms: on earth, absolutely (否定文での強調). Antonyms: (特になし)",
+            "derivatives": "world (名: 世界)",
+            "pronunciation": "/ɪn ðə wɜːrld/",
+            "examFrequency": "中頻度 (強調表現として)"
+          },
+          {
+            "word": "in the long run",
+            "meaning": "長い目で見れば、結局は",
+            "usage": "Eating healthy food will benefit your body in the long run.",
+            "synonymsAntonyms": "Synonyms: eventually, ultimately, in the end. Antonyms: in the short run",
+            "derivatives": "long (形: 長い), run (名: 期間)",
+            "pronunciation": "/ɪn ðə lɒŋ rʌn/",
+            "examFrequency": "頻出 (慣用表現として重要)"
+          }
+        ],
+        "questions": [
+          {
+            "question": "What do champions do to stay focused under pressure?",
+            "questionJapanese": "プレッシャーの下で集中力を保つために、一流選手は何をしますか？",
+            "answer": "Champions use positive self-talk to stay focused under pressure.",
+            "answerJapanese": "一流選手はプレッシャーの下で集中力を保つために、前向きなセルフトークを使います。",
+            "explanation": "本文の2段落目に「Champions use positive self-talk to stay focused under pressure.」と明確に書かれています。プレッシャーを感じる状況で、自分自身に肯定的な言葉をかけることが重要だと述べられています。",
+            "similarQuestion": "According to the text, what is an effective strategy for athletes to maintain their concentration in stressful situations?"
+          },
+          {
+            "question": "What does the author recommend as a way to encourage yourself?",
+            "questionJapanese": "筆者は自分自身を励ます方法として何を勧めていますか？",
+            "answer": "The author recommends developing positive cue words to encourage yourself, and also talking to yourself in the second person.",
+            "answerJapanese": "筆者は、自分自身を励ますための前向きなきっかけの言葉を考え出すこと、そして自分に二人称で話しかけることを勧めています。",
+            "explanation": "本文の3段落目には「Develop positive cue words to encourage yourself.」とあり、さらに「One more tip! Talk to yourself in the second person.」と、二人称で自分に話しかけることも推奨されています。",
+            "similarQuestion": "Besides using positive cue words, what other technique does the text suggest for self-encouragement during challenging moments?"
+          },
+          {
+            "question": "Your basketball team is down 58 to 60 with only 2 seconds left to play. You are trying a three-point shot. Which of the following is the best self-talk for you? a. Please, God, let me make this shot! b. If I make this shot, it'll be a miracle! c. That basket is huge, there's no way you can miss!",
+            "questionJapanese": "あなたのバスケットボールチームは残り2秒で58対60と負けています。あなたは3点シュートを打とうとしています。次のうち、あなたにとって最高のセルフトークはどれですか？ a. 神様、このシュートを決めさせてください！ b. もしこのシュートを決められたら、奇跡だ！ c. あのバスケットはとても大きい、外すはずがない！",
+            "answer": "c. That basket is huge, there's no way you can miss!",
+            "answerJapanese": "c. あのバスケットはとても大きい、外すはずがない！",
+            "explanation": "本文では、プレッシャーのかかる状況でポジティブなセルフトークを使うこと、特に二人称で話しかけることが推奨されています。aとbは「神頼み」や「奇跡」といった、自信を失わせる可能性のある言葉です。一方、cは「バスケットはとても大きい」と成功をイメージさせる表現を使い、「外すはずがない」と強い肯定的な言葉で自信を高める、ポジティブなセルフトークの例として最も適切です。これは本文中にあるバスケットボール選手やゴルファーのセルフトークの例に合致します。",
+            "similarQuestion": "In a high-pressure sports situation, which type of self-talk would be most detrimental to an athlete's performance? a. I've got this, I can do it. b. I'm going to focus and execute perfectly. c. I hope I don't mess this up like last time."
+          }
+        ],
+        "lessonTitle": "Mental Toughness"
+      }
+    },
+    {
+      "id": "L5S4",
+      "lessonLabel": "Lesson5",
+      "sectionLabel": "Section4",
+      "name": "Lesson5    Section4",
+      "data": {}
     }
   ],
   "weekendBooth": {
