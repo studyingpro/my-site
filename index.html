@@ -20315,7 +20315,7 @@ const KOBUN_TANGO = [
             const p = rhProblems[idx];
             const detail = document.getElementById('rh-problem-detail');
             if (!p || !detail) return;
-            detail.innerHTML = `
+            detail.innerHTML = ronriProblemTopNavHtml(idx) + `
                 <!-- ① 解答の提示（元のフォーマットを再現＋正解太字） -->
                 <div class="p-4 bg-violet-50 dark:bg-violet-950/20 border border-violet-200 dark:border-violet-800/40 rounded-xl">
                     <p class="text-[9px] font-black text-violet-400 uppercase tracking-wider mb-2">解答</p>
@@ -20337,9 +20337,74 @@ const KOBUN_TANGO = [
                     <p class="text-[9px] font-black text-amber-500 uppercase tracking-wider mb-2">文法ポイント</p>
                     <p class="text-xs font-semibold text-slate-600 dark:text-slate-300 leading-relaxed whitespace-pre-wrap">${escapeHtml(p.grammarPoint || '')}</p>
                 </div>
-            `;
+            ` + ronriProblemBottomNavHtml(idx);
+            detail.scrollTo({ top: 0 });
+            // 選んでいる番号が、帯の中で見える位置に来るようにする
+            document.getElementById('rh-chip-' + idx)?.scrollIntoView({ inline: 'center', block: 'nearest' });
+            setupRonriProblemSwipe();
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
+
+        // ----- 問題の切り替え：一覧を開かなくても、前後の問題・好きな番号へ移れる -----
+        function ronriProblemLabel(i) {
+            const circled = ['①','②','③','④','⑤','⑥','⑦','⑧','⑨','⑩'];
+            const p = rhProblems[i] || {};
+            const n = p.problemNumber || String(i + 1);
+            return /^\d+$/.test(String(n)) && circled[Number(n) - 1] ? circled[Number(n) - 1] : String(n);
+        }
+        function ronriStep(delta) {
+            const next = rhCurrentProblemIdx + delta;
+            if (next < 0 || next >= rhProblems.length) return;
+            showRonriProblem(next);
+        }
+        function ronriProblemTopNavHtml(idx) {
+            const n = rhProblems.length;
+            if (n <= 1) return '';
+            const arrow = (dir, disabled, icon, label) => `<button onclick="ronriStep(${dir})" ${disabled ? 'disabled' : ''} class="shrink-0 w-9 h-9 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 flex items-center justify-center hover:border-violet-400 hover:text-violet-600 disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-600 transition-all" aria-label="${label}" title="${label}"><i data-lucide="${icon}" class="w-4 h-4"></i></button>`;
+            const chips = rhProblems.map((_, i) => `<button id="rh-chip-${i}" onclick="showRonriProblem(${i})" class="shrink-0 min-w-[2.25rem] h-9 px-2.5 rounded-xl border text-xs font-black transition-all ${i === idx ? 'bg-violet-500 border-violet-500 text-white' : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:border-violet-300'}">${escapeHtml(ronriProblemLabel(i))}</button>`).join('');
+            return `
+                <div class="flex items-center gap-2 mb-3 sticky top-0 z-10 -mx-1 px-1 py-1.5 bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-sm">
+                    ${arrow(-1, idx === 0, 'chevron-left', '前の問題')}
+                    <div class="rh-chip-strip flex-1 min-w-0 flex gap-1.5 overflow-x-auto" style="scrollbar-width:none;-webkit-overflow-scrolling:touch">${chips}</div>
+                    ${arrow(1, idx === n - 1, 'chevron-right', '次の問題')}
+                </div>`;
+        }
+        function ronriProblemBottomNavHtml(idx) {
+            const n = rhProblems.length;
+            if (n <= 1) return '';
+            const btn = (dir, disabled, icon, text, right) => `<button onclick="ronriStep(${dir})" ${disabled ? 'disabled' : ''} class="flex-1 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-xs font-black text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1 hover:border-violet-400 hover:text-violet-600 disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-slate-600 transition-all">${right ? `<span>${text}</span><i data-lucide="${icon}" class="w-4 h-4"></i>` : `<i data-lucide="${icon}" class="w-4 h-4"></i><span>${text}</span>`}</button>`;
+            return `
+                <div class="mt-4 flex items-center gap-2">
+                    ${btn(-1, idx === 0, 'chevron-left', '前の問題', false)}
+                    <span class="shrink-0 text-[11px] font-black text-slate-400 px-1">${idx + 1} / ${n}</span>
+                    ${btn(1, idx === n - 1, 'chevron-right', '次の問題', true)}
+                </div>`;
+        }
+        // 左右にスワイプ、またはキーボードの ← → で、前後の問題へ移る
+        function setupRonriProblemSwipe() {
+            const detail = document.getElementById('rh-problem-detail');
+            if (!detail || detail.dataset.swipeReady) return;
+            detail.dataset.swipeReady = '1';
+            let sx = 0, sy = 0, active = false;
+            detail.addEventListener('touchstart', (e) => {
+                if (e.touches.length !== 1 || e.target.closest('.rh-chip-strip, button, a, input, textarea')) { active = false; return; }
+                active = true; sx = e.touches[0].clientX; sy = e.touches[0].clientY;
+            }, { passive: true });
+            detail.addEventListener('touchend', (e) => {
+                if (!active) return; active = false;
+                const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
+                if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.8) ronriStep(dx < 0 ? 1 : -1);
+            }, { passive: true });
+        }
+        document.addEventListener('keydown', (e) => {
+            if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+            if (e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+            const detail = document.getElementById('rh-problem-detail');
+            if (!detail || detail.classList.contains('hidden') || detail.offsetParent === null) return; // 問題を表示していないときは何もしない
+            if (/^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement || {}).tagName || '') || (document.activeElement && document.activeElement.isContentEditable)) return;
+            e.preventDefault();
+            ronriStep(e.key === 'ArrowRight' ? 1 : -1);
+        });
 
         function selectSubject(subject) {
             if (subject === 'english') { _navigateTo('english'); return; }
