@@ -4616,7 +4616,30 @@
       "lessonLabel": "Lesson5",
       "sectionLabel": "Section4",
       "name": "Lesson5    Section4",
-      "data": {}
+      "data": {
+        "style": {
+          "backgroundColor": "#FFFFFF",
+          "textColor": "#000000"
+        },
+        "translations": [
+          {
+            "number": 1,
+            "text": "彼女は起こりうる悪いシナリオ（展開）さえも作り出し、それから成功する対応策をイメージしたものでした。"
+          },
+          {
+            "number": 2,
+            "text": "練習中にプレッシャーを感じることは、試合当日に緊張を和らげるのに役立ちます。"
+          },
+          {
+            "number": 3,
+            "text": "それらはまた、新しい挑戦に立ち向かうために必要となるメンタルタフネス（精神的な強さ）を身につけるのにも役立ちます。"
+          },
+          {
+            "number": 4,
+            "text": "勝っても負けても、メンタルタフネスがあれば、次に何が来ても準備ができている状態になれます。"
+          }
+        ]
+      }
     }
   ],
   "weekendBooth": {
