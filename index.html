@@ -364,7 +364,8 @@
         .essay-typing span:nth-child(3) { animation-delay: .3s; }
 
         /* ===== アプリ専用：ブラウザで開いたときの案内画面 ===== */
-        #install-gate { display: none; }
+        #install-gate { display: none; position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 100000; overflow-y: auto; background: #f8fafc; }
+        html.dark #install-gate { background: #090d16; }
         html.needs-install #install-gate { display: block; }
         html.needs-install, html.needs-install body { overflow: hidden !important; }
     </style>
@@ -3935,6 +3936,14 @@
                 <button type="button" id="cms-sec-analyze-cancel-btn" onclick="cmsCancelSectionAnalysis()" class="hidden py-2 px-3 bg-slate-200 dark:bg-slate-700 rounded-xl text-xs font-black">キャンセル</button>
             </div>
             <p id="cms-sec-analyze-status" class="text-[10px] text-slate-500 dark:text-slate-400 min-h-[14px] mb-3"></p>
+            <div class="mb-3 p-3 rounded-xl border border-dashed border-amber-300 dark:border-amber-700 bg-amber-50/60 dark:bg-amber-950/20">
+                <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-2">AI解析が使えないときは、こちらから手動で入れられます</p>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="cmsManualOpen('sec')" class="flex-1 min-w-[140px] py-2 px-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1"><i data-lucide="pencil-line" class="w-3.5 h-3.5"></i><span>手動で入力する（フォーム）</span></button>
+                    <button type="button" onclick="cmsCopyExternalPrompt('sec')" class="flex-1 min-w-[140px] py-2 px-3 bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 rounded-xl text-xs font-black flex items-center justify-center gap-1"><i data-lucide="clipboard-copy" class="w-3.5 h-3.5"></i><span>外部AI用の指示文をコピー</span></button>
+                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">外部AI（ChatGPT・Geminiアプリ等）に画像と指示文を渡し、返ってきたJSONを下の欄に貼り付けてもOKです（```や末尾のカンマがあっても自動で直します）。</p>
+            </div>
             <div>
                 <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center justify-between mb-1">
                     <span>解析結果データ（JSON・自動生成／手動編集も可）</span>
@@ -3991,6 +4000,14 @@
                 <button type="button" id="cms-rsec-analyze-cancel-btn" onclick="cmsCancelRonriSectionAnalysis()" class="hidden py-2 px-3 bg-slate-200 dark:bg-slate-700 rounded-xl text-xs font-black">キャンセル</button>
             </div>
             <p id="cms-rsec-analyze-status" class="text-[10px] text-slate-500 dark:text-slate-400 min-h-[14px] mb-3"></p>
+            <div class="mb-3 p-3 rounded-xl border border-dashed border-amber-300 dark:border-amber-700 bg-amber-50/60 dark:bg-amber-950/20">
+                <p class="text-[10px] font-bold text-amber-700 dark:text-amber-300 mb-2">AI解析が使えないときは、こちらから手動で入れられます</p>
+                <div class="flex flex-wrap gap-2">
+                    <button type="button" onclick="cmsManualOpen('rsec')" class="flex-1 min-w-[140px] py-2 px-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1"><i data-lucide="pencil-line" class="w-3.5 h-3.5"></i><span>手動で入力する（フォーム）</span></button>
+                    <button type="button" onclick="cmsCopyExternalPrompt('rsec')" class="flex-1 min-w-[140px] py-2 px-3 bg-white dark:bg-slate-800 border border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300 rounded-xl text-xs font-black flex items-center justify-center gap-1"><i data-lucide="clipboard-copy" class="w-3.5 h-3.5"></i><span>外部AI用の指示文をコピー</span></button>
+                </div>
+                <p class="text-[10px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">外部AI（ChatGPT・Geminiアプリ等）に画像と指示文を渡し、返ってきたJSONを下の欄に貼り付けてもOKです（```や末尾のカンマがあっても自動で直します）。</p>
+            </div>
             <div>
                 <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center justify-between mb-1">
                     <span>解析結果データ（JSON・自動生成／手動編集も可）</span>
@@ -4008,6 +4025,20 @@
                     <button onclick="closeCmsRonriModal()" class="py-2.5 px-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90">キャンセル</button>
                     <button onclick="cmsConfirmRonriSection()" class="py-2.5 px-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90">反映する</button>
                 </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- CMS: 手動入力フォーム（AI解析が使えないとき用） -->
+    <div id="cms-manual-modal" class="fixed inset-0 z-[10001] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
+        <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl p-5 w-full max-w-lg max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300" id="cms-manual-card">
+            <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1" id="cms-manual-title">手動で入力</h3>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">空欄の行は自動で無視されます。「入力欄に反映」を押すと、前の画面のJSON欄に入ります（その後「反映する」で確定）。</p>
+            <div id="cms-manual-body" class="space-y-4"></div>
+            <div class="flex items-center justify-end gap-2 mt-5">
+                <button type="button" onclick="cmsManualClose()" class="py-2.5 px-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90">キャンセル</button>
+                <button type="button" onclick="cmsManualApply()" class="py-2.5 px-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90">入力欄に反映</button>
             </div>
         </div>
     </div>
@@ -4108,7 +4139,7 @@
         </div>
         <div class="mb-3">
             <label class="text-[10px] font-black text-slate-400 mb-1 block">教科</label>
-            <select id="timer-subject-select" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+            <select id="timer-subject-select" onchange="saveTimerState()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
                 <option value="国語">国語</option>
                 <option value="数学">数学</option>
                 <option value="英語" selected>英語</option>
@@ -4124,12 +4155,29 @@
                 <span class="text-xs font-bold text-slate-400 shrink-0">分</span>
             </div>
         </div>
-        <div class="text-center py-4">
+        <div class="text-center pt-4 pb-2">
             <p id="timer-display" class="text-4xl font-black tabular-nums text-slate-900 dark:text-white">00:00</p>
+            <p id="timer-hint" class="text-[10px] font-bold text-slate-400 mt-1.5 min-h-[1rem]"></p>
         </div>
         <div class="grid grid-cols-2 gap-2">
             <button id="timer-start-btn" onclick="startPauseTimer()" class="py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">開始</button>
-            <button onclick="resetTimer()" class="py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90 transition-all">リセット</button>
+            <button id="timer-finish-btn" onclick="resetTimer()" class="py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90 transition-all">終了して記録</button>
+        </div>
+        <p id="timer-today" class="text-center text-[11px] font-black text-blue-600 dark:text-cyan-400 mt-3"></p>
+    </div>
+
+    <!-- タイマーが動いたまま、アプリが閉じていたときの確認 -->
+    <div id="timer-recover-modal" class="fixed inset-0 z-[10020] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-5">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 w-full max-w-sm border border-slate-200 dark:border-slate-700 space-y-3">
+            <div class="text-center space-y-1">
+                <div class="w-11 h-11 mx-auto rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white"><i data-lucide="timer" class="w-5 h-5"></i></div>
+                <h3 class="text-sm font-black text-slate-800 dark:text-white pt-1">タイマーが動いたままでした</h3>
+                <p id="timer-recover-text" class="text-xs font-semibold text-slate-500 dark:text-slate-400 leading-relaxed"></p>
+            </div>
+            <button id="timer-recover-full" onclick="timerRecoverRecordFull()" class="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white text-xs font-black hover:opacity-90"></button>
+            <button id="timer-recover-beat" onclick="timerRecoverRecordUntilBeat()" class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-black hover:opacity-90"></button>
+            <button onclick="timerRecoverContinue()" class="w-full py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-black hover:opacity-90">このまま続ける（計測を再開）</button>
+            <button onclick="timerRecoverDiscard()" class="w-full py-2 text-[11px] font-bold text-slate-400 hover:text-rose-500">記録せずに破棄する</button>
         </div>
     </div>
 
@@ -4957,6 +5005,7 @@
             'pm_last_history_id',         // 直前に開いていた学習履歴（続きから、の進行度）
             'pm_last_section_id',
             'pm_scan_history',            // スキャン学習の履歴（進行度）
+            'pm_study_logs',              // 勉強時間の記録（ログイン中は、端末を変えても引き継がれる）
             'pm_trash_history',
             'pm_geo_puzzle_best_mistakes',
             'pm_geo_puzzle_plays',
@@ -4985,8 +5034,26 @@
                 try {
                     const snap = await getDoc(doc(db, 'users', uid, 'appData', key));
                     if (snap.exists() && snap.data().value != null) {
-                        localStorage.setItem(key, snap.data().value);
+                        if (key === 'pm_study_logs') {
+                            // 勉強記録は、上書きではなく「合わせる」：この端末にだけある記録も、クラウドにだけある記録も、両方残す
+                            const merge = (a, b) => {
+                                const map = new Map();
+                                [].concat(Array.isArray(a) ? a : [], Array.isArray(b) ? b : []).forEach(l => { if (l && l.id && !map.has(l.id)) map.set(l.id, l); });
+                                return Array.from(map.values()).sort((x, y) => String(x.endedAt || '').localeCompare(String(y.endedAt || '')));
+                            };
+                            let local = [], cloud = [];
+                            try { local = JSON.parse(localStorage.getItem(key) || '[]'); } catch (_) {}
+                            try { cloud = JSON.parse(snap.data().value || '[]'); } catch (_) {}
+                            const merged = merge(local, cloud);
+                            localStorage.setItem(key, JSON.stringify(merged));
+                            if (merged.length > (Array.isArray(cloud) ? cloud.length : 0)) queueSync(key, merged);   // この端末にだけあった分を、クラウドへも反映
+                        } else {
+                            localStorage.setItem(key, snap.data().value);
+                        }
                         didLoadAny = true;
+                    } else if (key === 'pm_study_logs') {
+                        // クラウドにまだ無い：この端末に記録があれば、クラウドへ保存する（初めて同期するとき）
+                        try { const local = JSON.parse(localStorage.getItem(key) || '[]'); if (Array.isArray(local) && local.length) queueSync(key, local); } catch (_) {}
                     }
                 } catch (e) {
                     console.warn('クラウドデータの取得に失敗しました:', key, e);
@@ -12516,6 +12583,41 @@
         let timerCountdownTotalMs = 0;  // カウントダウンの合計時間
         let timerCountdownRemainMs = 0; // カウントダウンの残り時間（一時停止中も保持）
 
+        // ----- 計測中の状態を端末に保存（アプリを閉じる・再読み込み・OSによる終了があっても、時間を失わない） -----
+        const TIMER_STATE_KEY = 'pm_timer_state_v1';
+        let _timerRecover = null;   // 「動いたままでした」の確認中の情報
+        function saveTimerState() {
+            if (_timerRecover) return; // 確認中は、保存済みの状態を上書きしない
+            try {
+                const progressed = timerRunning || timerElapsedMs > 0 || (timerMode === 'countdown' && timerCountdownTotalMs > 0 && timerCountdownRemainMs > 0 && timerCountdownRemainMs < timerCountdownTotalMs);
+                if (!progressed) { localStorage.removeItem(TIMER_STATE_KEY); return; }
+                localStorage.setItem(TIMER_STATE_KEY, JSON.stringify({
+                    mode: timerMode, running: timerRunning, elapsedMs: timerElapsedMs, startTs: timerStartTimestamp,
+                    countdownTotalMs: timerCountdownTotalMs, countdownRemainMs: timerCountdownRemainMs,
+                    subject: getTimerSelectedSubject(), minutes: parseInt((document.getElementById('timer-countdown-minutes') || {}).value) || 25,
+                    lastBeat: Date.now(),
+                }));
+            } catch (_) {}
+        }
+        function clearTimerState() { try { localStorage.removeItem(TIMER_STATE_KEY); } catch (_) {} }
+        setInterval(() => { if (timerRunning) saveTimerState(); }, 5000);                       // 動いている間は、5秒ごとに保存
+        document.addEventListener('visibilitychange', () => { if (document.hidden) saveTimerState(); });
+        window.addEventListener('pagehide', saveTimerState);
+
+        function updateTimerHint() {
+            const el = document.getElementById('timer-hint');
+            if (!el) return;
+            const started = timerMode === 'stopwatch' ? timerElapsedMs > 0 : (timerCountdownTotalMs > 0 && timerCountdownRemainMs < timerCountdownTotalMs);
+            el.textContent = timerRunning ? '計測中：「終了して記録」で保存されます'
+                : (started ? '一時停止中：「終了して記録」で保存されます' : '');
+        }
+        function updateTimerTodayLabel() {
+            const el = document.getElementById('timer-today');
+            if (!el) return;
+            const ms = getStudyMsOnDate(getJSTDateOnly().toISOString().slice(0, 10));
+            el.textContent = ms > 0 ? `今日の勉強時間：${formatStudyHoursLabel(ms)}` : '今日はまだ記録がありません';
+        }
+
         function toggleTimerPanel() {
             if (!isModeEnabled('timer')) { showToast(modeDisabledMessage('timer')); return; }
             const panel = document.getElementById('timer-panel');
@@ -12525,18 +12627,29 @@
                 updateTimerModeButtons();
                 if (timerMode === 'countdown' && !timerRunning && timerCountdownRemainMs === 0) updateCountdownPreview();
                 renderTimerDisplay();
+                updateTimerHint();
+                updateTimerTodayLabel();
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             }
         }
         function setTimerMode(mode) {
             if (timerRunning) { showToast('タイマーを停止してから切り替えてください'); return; }
+            if (mode === timerMode) return;
+            // 一時停止中に時間が残っているときは、消えてしまわないよう、記録してから切り替える
+            const pending = timerMode === 'stopwatch' ? timerElapsedMs : (timerCountdownTotalMs - timerCountdownRemainMs);
+            if (pending >= 10000) {
+                if (!confirm(`いまの計測（${formatStudyHoursLabel(pending)}）を記録してから、切り替えます。よろしいですか？`)) return;
+                recordStudySession(getTimerSelectedSubject(), pending);
+            }
             timerMode = mode;
             timerElapsedMs = 0;
             timerCountdownTotalMs = 0;
             timerCountdownRemainMs = 0;
+            clearTimerState();
             updateTimerModeButtons();
             if (mode === 'countdown') updateCountdownPreview();
             renderTimerDisplay();
+            updateTimerHint();
         }
         function updateTimerModeButtons() {
             const swBtn = document.getElementById('timer-mode-stopwatch-btn');
@@ -12569,22 +12682,8 @@
             if (!el) return;
             el.textContent = formatTimerMs(timerMode === 'stopwatch' ? timerElapsedMs : timerCountdownRemainMs);
         }
-        function startPauseTimer() {
-            const btn = document.getElementById('timer-start-btn');
-            if (timerRunning) {
-                // 一時停止：経過時間／残り時間を確定させて止める
-                timerRunning = false;
-                clearInterval(timerInterval);
-                if (timerMode === 'stopwatch') timerElapsedMs += Date.now() - timerStartTimestamp;
-                else timerCountdownRemainMs = Math.max(0, timerCountdownRemainMs - (Date.now() - timerStartTimestamp));
-                renderTimerDisplay();
-                if (btn) btn.textContent = '再開';
-                return;
-            }
-            if (timerMode === 'countdown' && timerCountdownRemainMs <= 0) updateCountdownPreview();
-            timerRunning = true;
-            timerStartTimestamp = Date.now();
-            if (btn) btn.textContent = '一時停止';
+        // 表示を、開始時刻との差で0.25秒ごとに更新する（画面が止まっていた間の時間も、戻ったときに正しく反映される）
+        function startTimerTick() {
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
                 if (timerMode === 'stopwatch') {
@@ -12605,6 +12704,28 @@
                 }
             }, 250);
         }
+        function startPauseTimer() {
+            const btn = document.getElementById('timer-start-btn');
+            if (timerRunning) {
+                // 一時停止：経過時間／残り時間を確定させて止める
+                timerRunning = false;
+                clearInterval(timerInterval);
+                if (timerMode === 'stopwatch') timerElapsedMs += Date.now() - timerStartTimestamp;
+                else timerCountdownRemainMs = Math.max(0, timerCountdownRemainMs - (Date.now() - timerStartTimestamp));
+                renderTimerDisplay();
+                if (btn) btn.textContent = '再開';
+                saveTimerState();
+                updateTimerHint();
+                return;
+            }
+            if (timerMode === 'countdown' && timerCountdownRemainMs <= 0) updateCountdownPreview();
+            timerRunning = true;
+            timerStartTimestamp = Date.now();
+            if (btn) btn.textContent = '一時停止';
+            startTimerTick();
+            saveTimerState();
+            updateTimerHint();
+        }
         function onTimerCountdownFinished() {
             showToast('⏰ タイマーが終了しました');
             const btn = document.getElementById('timer-start-btn');
@@ -12613,6 +12734,8 @@
             if (timerCountdownTotalMs > 0) {
                 recordStudySession(getTimerSelectedSubject(), timerCountdownTotalMs);
             }
+            clearTimerState();
+            updateTimerHint();
             try {
                 // 外部の音声ファイルを使わず、Web Audio APIでその場に短いビープ音を鳴らす
                 const ctx = new (window.AudioContext || window.webkitAudioContext)();
@@ -12630,17 +12753,20 @@
                 try { new Notification('タイマー終了', { body: '設定した時間が経過しました' }); } catch (e) {}
             }
         }
+        // 「終了して記録」：計測した時間を勉強記録として保存し、タイマーを0に戻す
         function resetTimer() {
             clearInterval(timerInterval);
-            // ストップウォッチで時間が経過していた場合は、リセット前に勉強記録として保存する
+            let elapsed = 0;
             if (timerMode === 'stopwatch') {
-                let elapsed = timerElapsedMs;
+                elapsed = timerElapsedMs;
                 if (timerRunning) elapsed += Date.now() - timerStartTimestamp;
-                if (elapsed > 0) recordStudySession(getTimerSelectedSubject(), elapsed);
             } else {
-                const elapsed = timerCountdownTotalMs - timerCountdownRemainMs;
-                if (elapsed > 0) recordStudySession(getTimerSelectedSubject(), elapsed);
+                elapsed = timerCountdownTotalMs - timerCountdownRemainMs;
+                if (timerRunning) elapsed += Date.now() - timerStartTimestamp;
+                elapsed = Math.min(elapsed, timerCountdownTotalMs);
             }
+            if (elapsed >= 10000) recordStudySession(getTimerSelectedSubject(), elapsed);
+            else if (elapsed > 0) showToast('10秒未満のため、記録されませんでした');
             timerRunning = false;
             timerElapsedMs = 0;
             if (timerMode === 'countdown') updateCountdownPreview();
@@ -12648,6 +12774,94 @@
             const btn = document.getElementById('timer-start-btn');
             if (btn) btn.textContent = '開始';
             renderTimerDisplay();
+            clearTimerState();
+            updateTimerHint();
+            updateTimerTodayLabel();
+        }
+
+        // ----- 前回のタイマーを復元する（起動時） -----
+        function restoreTimerState() {
+            let st = null;
+            try { st = JSON.parse(localStorage.getItem(TIMER_STATE_KEY) || 'null'); } catch (_) {}
+            if (!st || typeof st !== 'object') return;
+            const now = Date.now();
+            timerMode = st.mode === 'countdown' ? 'countdown' : 'stopwatch';
+            const sel = document.getElementById('timer-subject-select'); if (sel && st.subject) sel.value = st.subject;
+            const mins = document.getElementById('timer-countdown-minutes'); if (mins && st.minutes) mins.value = st.minutes;
+            timerElapsedMs = Number(st.elapsedMs) || 0;
+            timerCountdownTotalMs = Number(st.countdownTotalMs) || 0;
+            timerCountdownRemainMs = Number(st.countdownRemainMs) || 0;
+            updateTimerModeButtons();
+            const startBtn = document.getElementById('timer-start-btn');
+            if (!st.running) {                 // 一時停止のまま閉じていた
+                renderTimerDisplay();
+                if (startBtn) startBtn.textContent = '再開';
+                updateTimerHint();
+                showToast('前回のタイマーを、一時停止の状態で復元しました');
+                return;
+            }
+            const startTs = Number(st.startTs) || now, lastBeat = Number(st.lastBeat) || startTs, gap = now - lastBeat;
+            if (timerMode === 'countdown') {
+                const remainNow = timerCountdownRemainMs - (now - startTs);
+                if (remainNow <= 0) {          // 閉じている間に、カウントダウンが終わっていた
+                    if (timerCountdownTotalMs > 0) recordStudySession(st.subject || 'その他', timerCountdownTotalMs, startTs + timerCountdownRemainMs);
+                    timerElapsedMs = 0; timerCountdownTotalMs = 0; timerCountdownRemainMs = 0;
+                    clearTimerState(); updateCountdownPreview(); updateTimerHint();
+                    showToast('閉じている間に、タイマーが終了していました。時間を記録しました');
+                    return;
+                }
+                resumeTimerFrom(startTs);
+                return;
+            }
+            // ストップウォッチ：短い中断（再読み込みなど）は、そのまま続ける。長く空いたときは、どうするかを確認する。
+            if (gap < 120000) { resumeTimerFrom(startTs); return; }
+            _timerRecover = { subject: st.subject || 'その他', startTs, lastBeat, base: timerElapsedMs };
+            const full = timerElapsedMs + (now - startTs), upTo = timerElapsedMs + (lastBeat - startTs);
+            document.getElementById('timer-recover-text').textContent = `「${_timerRecover.subject}」のストップウォッチが、動いたままになっていました。この時間を、どう記録しますか？`;
+            document.getElementById('timer-recover-full').textContent = `いままでの全部を記録（${formatStudyHoursLabel(full)}）`;
+            document.getElementById('timer-recover-beat').textContent = `最後に開いていた時点までを記録（${formatStudyHoursLabel(upTo)}）`;
+            const m = document.getElementById('timer-recover-modal'); if (m) { m.classList.remove('hidden'); m.classList.add('flex'); }
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function resumeTimerFrom(startTs) {
+            timerRunning = true;
+            timerStartTimestamp = startTs;
+            const btn = document.getElementById('timer-start-btn'); if (btn) btn.textContent = '一時停止';
+            // 最初のタイマー更新（0.25秒後）を待たず、復元した直後から、正しい時間を表示する
+            const el = document.getElementById('timer-display');
+            if (el) el.textContent = formatTimerMs(timerMode === 'stopwatch' ? timerElapsedMs + (Date.now() - startTs) : timerCountdownRemainMs - (Date.now() - startTs));
+            startTimerTick();
+            updateTimerHint();
+        }
+        function closeTimerRecoverModal() {
+            const m = document.getElementById('timer-recover-modal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
+        }
+        function _timerRecoverFinish() {
+            _timerRecover = null; timerRunning = false; timerElapsedMs = 0; timerCountdownTotalMs = 0; timerCountdownRemainMs = 0;
+            clearTimerState(); closeTimerRecoverModal();
+            const btn = document.getElementById('timer-start-btn'); if (btn) btn.textContent = '開始';
+            if (timerMode === 'countdown') updateCountdownPreview();
+            renderTimerDisplay(); updateTimerHint(); updateTimerTodayLabel();
+        }
+        function timerRecoverRecordFull() {
+            const r = _timerRecover; if (!r) return;
+            recordStudySession(r.subject, r.base + (Date.now() - r.startTs));
+            _timerRecoverFinish();
+        }
+        function timerRecoverRecordUntilBeat() {
+            const r = _timerRecover; if (!r) return;
+            recordStudySession(r.subject, r.base + (r.lastBeat - r.startTs), r.lastBeat);
+            _timerRecoverFinish();
+        }
+        function timerRecoverContinue() {
+            const r = _timerRecover; if (!r) return;
+            _timerRecover = null; closeTimerRecoverModal();
+            resumeTimerFrom(r.startTs);
+            saveTimerState();
+        }
+        function timerRecoverDiscard() {
+            if (!confirm('この時間を、記録せずに破棄します。よろしいですか？')) return;
+            _timerRecoverFinish();
         }
         function getTimerSelectedSubject() {
             const sel = document.getElementById('timer-subject-select');
@@ -12662,20 +12876,57 @@
             const logs = safeStorage.get('pm_study_logs');
             return Array.isArray(logs) ? logs : [];
         }
-        function recordStudySession(subject, durationMs) {
+        // 勉強時間を記録する。日付（日本時間の0時）をまたぐ場合は、日ごとに分けて記録する（連続記録・日別の時間が正しくなるように）。
+        function recordStudySession(subject, durationMs, endTs) {
             if (!durationMs || durationMs < 10000) return; // 10秒未満は記録しない
+            const end = Number(endTs) || Date.now();
+            const start = end - Math.round(durationMs);
+            const DAY = 86400000, JST = 9 * 3600000;
+            const dateOf = (t) => new Date(t + JST).toISOString().slice(0, 10);
             const logs = getStudyLogs();
-            logs.push({
-                id: Date.now() + '-' + Math.random().toString(36).slice(2, 6),
-                subject: subject || 'その他',
-                durationMs: Math.round(durationMs),
-                date: getJSTDateOnly().toISOString().slice(0, 10),
-                endedAt: new Date().toISOString(),
-            });
+            let cursor = start;
+            while (cursor < end) {
+                const dayEnd = (Math.floor((cursor + JST) / DAY) + 1) * DAY - JST;   // その日の終わり（日本時間 24:00）
+                const pieceEnd = Math.min(end, dayEnd);
+                const piece = pieceEnd - cursor;
+                if (piece >= 1000) {
+                    logs.push({
+                        id: pieceEnd + '-' + Math.random().toString(36).slice(2, 6),
+                        subject: subject || 'その他',
+                        durationMs: Math.round(piece),
+                        date: dateOf(cursor),
+                        endedAt: new Date(pieceEnd).toISOString(),
+                    });
+                }
+                cursor = pieceEnd;
+            }
             safeStorage.set('pm_study_logs', logs);
-            const mins = Math.round(durationMs / 60000);
-            showToast(`「${subject}」を${mins}分、記録しました`);
+            const mins = Math.max(1, Math.round(durationMs / 60000));
+            showToast(`「${subject || 'その他'}」を${mins}分、記録しました`);
             refreshStudyProfile();
+            if (typeof updateTimerTodayLabel === 'function') updateTimerTodayLabel();
+        }
+        // 記録の「いつ」を表す文字：例）今日 10月14日(水) 19:30〜20:15（日本時間。端末の時刻設定に左右されない）
+        function formatStudyLogWhen(l) {
+            const JST = 9 * 3600000, DAY = 86400000;
+            const pad = (n) => String(n).padStart(2, '0');
+            const WD = ['日', '月', '火', '水', '木', '金', '土'];
+            const end = new Date(l.endedAt).getTime();
+            const dateStr = (typeof l.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(l.date)) ? l.date : (isFinite(end) ? new Date(end + JST).toISOString().slice(0, 10) : '');
+            if (!dateStr) return '';
+            const [y, mo, d] = dateStr.split('-').map(Number);
+            const wd = WD[new Date(Date.UTC(y, mo - 1, d)).getUTCDay()];
+            const today = getJSTDateOnly().toISOString().slice(0, 10);
+            const yesterday = new Date(getJSTDateOnly().getTime() - DAY).toISOString().slice(0, 10);
+            const rel = dateStr === today ? '今日 ' : (dateStr === yesterday ? '昨日 ' : '');
+            let label = `${rel}${mo}月${d}日(${wd})`;
+            if (isFinite(end) && l.durationMs > 0) {
+                const hhmm = (t) => { const x = new Date(t + JST); return `${pad(x.getUTCHours())}:${pad(x.getUTCMinutes())}`; };
+                const endDate = new Date(end + JST).toISOString().slice(0, 10);
+                const endLabel = (endDate !== dateStr && hhmm(end) === '00:00') ? '24:00' : hhmm(end);   // 日付をまたいだ記録の前半は、24:00 で終わる
+                label += ` ${hhmm(end - l.durationMs)}〜${endLabel}`;
+            }
+            return label;
         }
         function deleteStudyLog(id) {
             if (!confirm('この記録を削除しますか？')) return;
@@ -12722,6 +12973,8 @@
             if (m === 0) return `${h}時間`;
             return `${h}時間${m}分`;
         }
+        restoreTimerState();
+
         // 5時間ごとにレベルが1つ上がる、シンプルなレベル制
         const STUDY_HOURS_PER_LEVEL = 5;
         function getStudyLevel() {
@@ -12978,7 +13231,7 @@
                         <div class="flex items-center justify-between px-3.5 py-2.5">
                             <div class="min-w-0">
                                 <p class="text-xs font-black text-slate-800 dark:text-slate-100">${escapeHtml(l.subject)}<span class="text-slate-400 font-bold"> ・ ${formatStudyHoursLabel(l.durationMs)}</span></p>
-                                <p class="text-[10px] font-bold text-slate-400 mt-0.5">${escapeHtml(l.date)}</p>
+                                <p class="text-[10px] font-bold text-slate-400 mt-0.5 tabular-nums">${escapeHtml(formatStudyLogWhen(l) || l.date || '')}</p>
                             </div>
                             <button onclick="deleteStudyLog('${l.id}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-400 hover:text-rose-500 shrink-0"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                         </div>`).join('');
@@ -23011,6 +23264,11 @@ const KOBUN_TANGO = [
             if (typeof isOfficialUser === 'function' && isOfficialUser()) show = false;   // 公式アカウントはブラウザでも使える
             else if (_installLoginReveal && !window.currentAppUser) show = false;          // ログイン画面を出すため、一時的に外す
             root.classList.toggle('needs-install', show);
+            // 案内画面の後ろにある画面は、Tabキーでの移動やEnterでの操作もできないようにする
+            Array.from(document.body.children).forEach(el => {
+                if (el.id === 'install-gate' || el.tagName === 'SCRIPT' || el.tagName === 'NOSCRIPT') return;
+                el.toggleAttribute('inert', show);
+            });
         }
         function installGateRevealLogin() {
             _installLoginReveal = true;
@@ -24398,7 +24656,7 @@ const KOBUN_TANGO = [
             if (!id || !lessonLabel || !sectionLabel) { showToast('ID・ラベルは必須です'); return; }
             let dataObj = {};
             if (dataRaw) {
-                try { dataObj = JSON.parse(dataRaw); }
+                try { dataObj = cmsLenientParseJson(dataRaw); }
                 catch (e) { errEl.textContent = 'JSONの形式が正しくありません：' + e.message; errEl.classList.remove('hidden'); return; }
             }
             const entry = { id, lessonLabel, sectionLabel, name: `${lessonLabel}  ${dataObj.lessonTitle || ''}  ${sectionLabel}`, data: dataObj };
@@ -24582,7 +24840,7 @@ const KOBUN_TANGO = [
             let problems = [];
             if (dataRaw) {
                 try {
-                    const parsed = JSON.parse(dataRaw);
+                    const parsed = cmsLenientParseJson(dataRaw);
                     problems = Array.isArray(parsed.problems) ? parsed.problems : (Array.isArray(parsed) ? parsed : []);
                 } catch (e) { errEl.textContent = 'JSONの形式が正しくありません：' + e.message; errEl.classList.remove('hidden'); return; }
             }
@@ -24604,6 +24862,206 @@ const KOBUN_TANGO = [
             cmsRenderRonriSections();
             renderRonriSectionListPage();
             cmsMarkDirty();
+        }
+
+
+        // ===== 手動入力（AI解析が使えないとき用） =====
+        const CMS_MANUAL_SCHEMAS = {
+            sec: {
+                title: '英コミュ セクションを手動で入力',
+                root: [
+                    { key: 'lessonTitle', label: 'レッスンタイトル（任意）', type: 'text' },
+                    { key: 'transcription', label: '本文メモ（任意）', type: 'textarea' }
+                ],
+                lists: [
+                    { key: 'transcriptionAnalysis', label: '英文ごとの解説', item: '英文', fields: [
+                        { key: 'english', label: '英文', type: 'textarea' },
+                        { key: 'japanese', label: '内容の要約（日本語）', type: 'textarea' },
+                        { key: 'grammarExplanation', label: '文法・構文の解説', type: 'textarea' },
+                        { key: 'sentenceStructure', label: '文の構造（SVOCなど）', type: 'textarea' },
+                        { key: 'keyExpressions', label: '重要表現・イディオム', type: 'textarea' } ] },
+                    { key: 'putIntoJapaneseAnswers', label: '和訳', item: '和訳', fields: [
+                        { key: 'num', label: '番号（①など）', type: 'text' },
+                        { key: 'english', label: '英文', type: 'textarea' },
+                        { key: 'japanese', label: '日本語訳', type: 'textarea' },
+                        { key: 'translationPoint', label: '訳出ポイント', type: 'textarea' },
+                        { key: 'commonMistake', label: '間違えやすいポイント', type: 'textarea' } ] },
+                    { key: 'vocabulary', label: '重要語彙', item: '語彙', fields: [
+                        { key: 'word', label: '単語', type: 'text' },
+                        { key: 'meaning', label: '意味', type: 'text' },
+                        { key: 'usage', label: '例文・使い方', type: 'textarea' },
+                        { key: 'synonymsAntonyms', label: '同義語・反意語', type: 'text' },
+                        { key: 'derivatives', label: '派生語', type: 'text' },
+                        { key: 'pronunciation', label: '発音・アクセント', type: 'text' },
+                        { key: 'examFrequency', label: '入試頻出度', type: 'text' } ] },
+                    { key: 'questions', label: 'Questions', item: '問題', fields: [
+                        { key: 'question', label: '問題（英語）', type: 'textarea' },
+                        { key: 'questionJapanese', label: '問題（日本語訳）', type: 'textarea' },
+                        { key: 'answer', label: '模範解答（英語）', type: 'textarea' },
+                        { key: 'answerJapanese', label: '模範解答（日本語訳）', type: 'textarea' },
+                        { key: 'explanation', label: '解説', type: 'textarea' },
+                        { key: 'similarQuestion', label: '類題', type: 'textarea' } ] }
+                ]
+            },
+            rsec: {
+                title: '論理表現 セクションを手動で入力',
+                root: [],
+                lists: [
+                    { key: 'problems', label: '問題', item: '問題', fields: [
+                        { key: 'problemNumber', label: '問題番号', type: 'text' },
+                        { key: 'reproducedWithAnswer', label: '問題文（正解部分を **正解** のように囲む）', type: 'textarea' },
+                        { key: 'fullSentenceJapanese', label: '完成した英文の日本語訳', type: 'textarea' },
+                        { key: 'explanation', label: '解説', type: 'textarea' },
+                        { key: 'grammarPoint', label: '文法ポイント', type: 'textarea' } ] }
+                ]
+            }
+        };
+        let cmsManualKind = null, cmsManualState = null;
+
+        // 外部AIの返答（```json で囲まれている・末尾にカンマがある等）も読み取れるJSON解析
+        function cmsLenientParseJson(raw) {
+            let t = String(raw || '').trim();
+            try { return JSON.parse(t); } catch (e) { /* 次の手順へ */ }
+            t = t.replace(/^```[a-zA-Z]*\s*/, '').replace(/```\s*$/, '').trim();
+            const a = t.indexOf('{'), b = t.lastIndexOf('}');
+            const a2 = t.indexOf('['), b2 = t.lastIndexOf(']');
+            if (a >= 0 && b > a && (a2 < 0 || a < a2)) t = t.slice(a, b + 1);
+            else if (a2 >= 0 && b2 > a2) t = t.slice(a2, b2 + 1);
+            t = t.replace(/[\u201C\u201D]/g, '"').replace(/,\s*([}\]])/g, '$1');
+            return JSON.parse(t);
+        }
+        function cmsManualBlank(list) { const o = {}; list.fields.forEach(f => o[f.key] = ''); return o; }
+        function cmsManualTextareaId(kind) { return kind === 'sec' ? 'cms-sec-data-json' : 'cms-rsec-data-json'; }
+
+        function cmsManualOpen(kind) {
+            const schema = CMS_MANUAL_SCHEMAS[kind];
+            const raw = document.getElementById(cmsManualTextareaId(kind)).value.trim();
+            let data = {};
+            if (raw) {
+                try { data = cmsLenientParseJson(raw); }
+                catch (e) {
+                    if (!confirm('入力欄のJSONを読み取れませんでした。空の状態から入力を始めますか？\n（入力欄の内容は「入力欄に反映」するまで消えません）')) return;
+                    data = {};
+                }
+            }
+            if (Array.isArray(data)) data = { problems: data };
+            cmsManualKind = kind;
+            const st = {};
+            schema.root.forEach(f => { st[f.key] = data[f.key] == null ? '' : String(data[f.key]); });
+            schema.lists.forEach(l => {
+                const arr = Array.isArray(data[l.key]) ? data[l.key] : [];
+                st[l.key] = arr.map(it => { const o = {}; l.fields.forEach(f => { o[f.key] = it && it[f.key] != null ? String(it[f.key]) : ''; }); return o; });
+                if (!st[l.key].length) st[l.key].push(cmsManualBlank(l));
+            });
+            cmsManualState = st;
+            document.getElementById('cms-manual-title').textContent = schema.title;
+            cmsManualRender();
+            document.getElementById('cms-manual-card').scrollTop = 0;
+            cmsOpenModal('cms-manual-modal', 'cms-manual-card');
+        }
+        function cmsManualClose() { cmsCloseModal('cms-manual-modal', 'cms-manual-card'); }
+
+        function cmsManualInputHtml(f, value, handler) {
+            const cls = 'w-full px-2 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-400';
+            const label = `<label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-0.5">${escapeHtml(f.label)}</label>`;
+            if (f.type === 'textarea') {
+                return `<div>${label}<textarea rows="2" oninput="${handler}(this.value)" class="${cls}">${escapeHtml(value)}</textarea></div>`;
+            }
+            return `<div>${label}<input type="text" value="${escapeHtml(value)}" oninput="${handler}(this.value)" class="${cls}"></div>`;
+        }
+        function cmsManualRender() {
+            const schema = CMS_MANUAL_SCHEMAS[cmsManualKind];
+            const card = document.getElementById('cms-manual-card');
+            const keepScroll = card.scrollTop;
+            let html = '';
+            schema.root.forEach(f => {
+                html += cmsManualInputHtml(f, cmsManualState[f.key], `cmsManualSetRoot.bind(null,'${f.key}')`);
+            });
+            schema.lists.forEach(l => {
+                html += `<div class="border border-slate-200 dark:border-slate-800 rounded-xl p-3">
+                    <p class="text-xs font-black text-slate-800 dark:text-white mb-2">${escapeHtml(l.label)}</p>
+                    <div class="space-y-3">`;
+                cmsManualState[l.key].forEach((row, i) => {
+                    html += `<div class="rounded-lg bg-slate-50/70 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-2.5 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-black text-blue-500">${escapeHtml(l.item)} ${i + 1}</span>
+                            <button type="button" onclick="cmsManualDelRow('${l.key}',${i})" class="p-1 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-500" title="この行を削除"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+                        </div>`;
+                    l.fields.forEach(f => {
+                        html += cmsManualInputHtml(f, row[f.key], `cmsManualSetItem.bind(null,'${l.key}',${i},'${f.key}')`);
+                    });
+                    html += `</div>`;
+                });
+                html += `</div>
+                    <button type="button" onclick="cmsManualAddRow('${l.key}')" class="mt-2 w-full py-2 border border-dashed border-cyan-300 dark:border-cyan-700 text-cyan-600 dark:text-cyan-300 rounded-lg text-xs font-black flex items-center justify-center gap-1"><i data-lucide="plus" class="w-3.5 h-3.5"></i><span>${escapeHtml(l.item)}を追加</span></button>
+                </div>`;
+            });
+            document.getElementById('cms-manual-body').innerHTML = html;
+            card.scrollTop = keepScroll;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function cmsManualSetRoot(key, v) { cmsManualState[key] = v; }
+        function cmsManualSetItem(listKey, i, fk, v) { cmsManualState[listKey][i][fk] = v; }
+        function cmsManualAddRow(listKey) {
+            const list = CMS_MANUAL_SCHEMAS[cmsManualKind].lists.find(l => l.key === listKey);
+            cmsManualState[listKey].push(cmsManualBlank(list));
+            cmsManualRender();
+        }
+        function cmsManualDelRow(listKey, i) {
+            const row = cmsManualState[listKey][i];
+            if (Object.values(row).some(v => String(v).trim()) && !confirm('この行を削除しますか？')) return;
+            cmsManualState[listKey].splice(i, 1);
+            if (!cmsManualState[listKey].length) {
+                const list = CMS_MANUAL_SCHEMAS[cmsManualKind].lists.find(l => l.key === listKey);
+                cmsManualState[listKey].push(cmsManualBlank(list));
+            }
+            cmsManualRender();
+        }
+        function cmsManualApply() {
+            const kind = cmsManualKind;
+            const schema = CMS_MANUAL_SCHEMAS[kind];
+            const out = {};
+            schema.root.forEach(f => { out[f.key] = (cmsManualState[f.key] || '').trim(); });
+            schema.lists.forEach(l => {
+                out[l.key] = cmsManualState[l.key]
+                    .filter(row => Object.values(row).some(v => String(v).trim()))
+                    .map(row => { const o = {}; l.fields.forEach(f => { o[f.key] = String(row[f.key] || '').trim(); }); return o; });
+            });
+            const total = schema.lists.reduce((n, l) => n + out[l.key].length, 0);
+            if (total === 0 && !schema.root.some(f => out[f.key])) { showToast('何も入力されていません'); return; }
+            document.getElementById(cmsManualTextareaId(kind)).value = JSON.stringify(out, null, 2);
+            document.getElementById(kind === 'sec' ? 'cms-sec-json-error' : 'cms-rsec-json-error').classList.add('hidden');
+            if (kind === 'sec') {
+                const lessonEl = document.getElementById('cms-sec-lesson-label');
+                if (lessonEl && !lessonEl.value.trim() && out.lessonTitle) lessonEl.value = out.lessonTitle;
+            }
+            cmsManualClose();
+            const st = document.getElementById(kind === 'sec' ? 'cms-sec-analyze-status' : 'cms-rsec-analyze-status');
+            if (st) st.textContent = '手動入力の内容をJSON欄に反映しました。確認して「反映する」を押してください。';
+            showToast('入力内容をJSON欄に反映しました');
+        }
+
+        // 外部AI（ChatGPT・Geminiアプリなど）に渡す指示文をコピーする
+        function cmsExternalPromptText(kind) {
+            const schema = CMS_MANUAL_SCHEMAS[kind];
+            const skeleton = {};
+            schema.root.forEach(f => { skeleton[f.key] = ''; });
+            schema.lists.forEach(l => { skeleton[l.key] = [cmsManualBlank(l)]; });
+            const base = kind === 'sec' ? CMS_SECTION_ANALYSIS_PROMPT : CMS_RONRI_PROMPT;
+            return base + '\n\n【出力形式】説明文は書かず、次の構造のJSONだけを出力してください。項目が複数ある場合は配列の要素を増やしてください。すべての値は文字列です。\n' + JSON.stringify(skeleton, null, 2);
+        }
+        async function cmsCopyExternalPrompt(kind) {
+            const text = cmsExternalPromptText(kind);
+            try {
+                await navigator.clipboard.writeText(text);
+            } catch (e) {
+                const ta = document.createElement('textarea');
+                ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                try { document.execCommand('copy'); } catch (e2) { /* 失敗時は何もしない */ }
+                document.body.removeChild(ta);
+            }
+            showToast('指示文をコピーしました。外部AIに画像と一緒に貼り付け、返ってきたJSONをJSON欄に貼ってください');
         }
 
         // ----- モーダル開閉共通ヘルパー -----
