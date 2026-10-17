@@ -348,6 +348,56 @@
         }
         #toast, #undo-toast, #error-toast { z-index: 9995 !important; }
 
+        /* ===== ポップアップ／シートが下タブバーの下に潜り込まないようにする =====
+           タブバー（z-9980）より前面に出ない低い z-index の全画面オーバーレイは、
+           タブバーの高さぶん下に余白をとり、内容がバーより上の領域に収まるようにする。
+           タブバー非表示時は --bottom-tab-h が 0 になるので影響しない。 */
+        .fixed.inset-0.z-50,
+        .fixed.inset-0.z-\[60\],
+        .fixed.inset-0.z-\[70\],
+        .fixed.inset-0.z-\[998\],
+        .fixed.inset-0.z-\[999\],
+        .fixed.inset-0.z-\[1000\],
+        .fixed.inset-0.z-\[1001\],
+        .fixed.inset-0.z-\[1002\] {
+            padding-bottom: calc(var(--bottom-tab-h, 0px) + 1rem);
+            box-sizing: border-box;
+        }
+        /* スクロールできるカードは、バーより上の高さに収めて中でスクロールさせる */
+        .fixed.inset-0.z-50 > .overflow-y-auto,
+        .fixed.inset-0.z-\[998\] > .overflow-y-auto,
+        .fixed.inset-0.z-\[999\] > .overflow-y-auto,
+        .fixed.inset-0.z-\[1000\] > .overflow-y-auto,
+        .fixed.inset-0.z-\[1001\] > .overflow-y-auto,
+        .fixed.inset-0.z-\[1002\] > .overflow-y-auto {
+            max-height: calc(100vh - var(--bottom-tab-h, 0px) - 2rem);
+            max-height: calc(100dvh - var(--bottom-tab-h, 0px) - 2rem);
+        }
+
+        /* ===== カレンダーの予定詳細：説明が長くても最後まで読めるようにスクロールさせる ===== */
+        #schedule-detail-modal-card {
+            display: flex;
+            flex-direction: column;
+            max-height: calc(100vh - var(--bottom-tab-h, 0px) - 2rem);
+            max-height: calc(100dvh - var(--bottom-tab-h, 0px) - 2rem);
+        }
+        #schedule-detail-modal-card > #schedule-detail-color-bar { flex-shrink: 0; }
+        #schedule-detail-modal-card > .p-6 {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+        #schedule-detail-title { overflow-wrap: anywhere; }
+        #schedule-detail-memo-wrap {
+            max-height: 45vh;
+            overflow-y: auto;
+            overflow-wrap: anywhere;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
+        }
+
         /* ===== 設定ドロワー：歯車が回る ===== */
         @keyframes gearSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
         .gear-spin-cw svg  { animation: gearSpin .55s cubic-bezier(.4,0,.2,1); }
@@ -1525,11 +1575,7 @@
             <div id="scan-sub-header" style="display:none" class="w-full bg-white/95 dark:bg-[#0c1220]/95 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-2.5 transition-colors">
                 <div class="max-w-7xl w-full mx-auto flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button id="back-to-section-btn" onclick="showEnglishEntrySelector()" class="hidden items-center space-x-1 text-[11px] font-bold text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-cyan-400 transition-colors">
-                            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
-                            <span>英コHOMEに戻る</span>
-                        </button>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-[11px] font-black">英</div>
                             <span class="text-sm font-extrabold text-slate-900 dark:text-white">英語コミュニケーション</span>
                         </div>
@@ -1571,11 +1617,7 @@
             <div id="ronri-sub-header" style="display:none" class="w-full bg-white/95 dark:bg-[#0c1220]/95 border-b border-slate-200 dark:border-slate-800 px-4 sm:px-6 py-2.5 transition-colors">
                 <div class="max-w-7xl w-full mx-auto flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="_showEnglishHome()" class="flex items-center space-x-1 text-[11px] font-bold text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-cyan-400 transition-colors">
-                            <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
-                            <span>英語HOMEに戻る</span>
-                        </button>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center text-white text-[11px] font-black"><i data-lucide="pen-line" class="w-3.5 h-3.5"></i></div>
                             <span class="text-sm font-extrabold text-slate-900 dark:text-white">論理・表現</span>
                         </div>
@@ -1858,11 +1900,7 @@
             <!-- ★ Sectionセレクター -->
             <div id="preset-section-selector" class="hidden w-full bg-white/90 dark:bg-[#0c1220]/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 backdrop-blur-md">
                 <div class="mb-5">
-                    <button onclick="showEnglishEntrySelector()" class="flex items-center space-x-1 mb-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-cyan-400 transition-colors">
-                        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
-                        <span>英コHOMEに戻る</span>
-                    </button>
-                    <h4 class="text-sm font-black text-slate-800 dark:text-white flex items-center space-x-2">
+                                        <h4 class="text-sm font-black text-slate-800 dark:text-white flex items-center space-x-2">
                         <i data-lucide="layers" class="w-4 h-4 text-cyan-500"></i>
                         <span>Sectionを選んで学習する</span>
                     </h4>
@@ -1926,10 +1964,7 @@
 
                 <!-- ヘッダー -->
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 sm:px-5 py-4 flex items-center justify-between">
-                    <button onclick="_navigateTo('top')" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                        <i data-lucide="chevron-left" class="w-4 h-4"></i><span>ホーム</span>
-                    </button>
-                    <div class="flex items-center space-x-2">
+                                        <div class="flex items-center space-x-2">
                         <div class="w-7 h-7 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shrink-0">
                             <i data-lucide="line-chart" class="w-4 h-4"></i>
                         </div>
@@ -2116,10 +2151,7 @@
                     <!-- ヘッダー：戻る・月移動・追加 -->
                     <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
                         <div class="flex items-center space-x-2">
-                            <button onclick="showTopHome()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 transition-all" title="ホームに戻る">
-                                <i data-lucide="arrow-left" class="w-4 h-4"></i>
-                            </button>
-                            <h2 class="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
+                                                        <h2 class="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
                                 <i data-lucide="calendar-days" class="w-4 h-4 text-rose-500"></i>
                                 <span>カレンダー</span>
                             </h2>
@@ -2209,10 +2241,7 @@
 
             <!-- ===== 期間限定コーナー（テスト範囲・夏休みなど、その時期にしか必要ないものをまとめる場所） ===== -->
             <section id="seasonal-corner-panel" class="hidden w-full max-w-2xl mx-auto space-y-4 animate-fade-in">
-                <button onclick="showTopHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                    <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i><span>学習コンテンツに戻る</span>
-                </button>
-                <div class="flex items-center gap-2 mb-1">
+                                <div class="flex items-center gap-2 mb-1">
                     <i data-lucide="sparkles" class="w-6 h-6 text-amber-500"></i>
                     <h2 class="text-lg font-black text-slate-800 dark:text-white">期間限定コーナー</h2>
                 </div>
@@ -2277,11 +2306,7 @@
                 <!-- ヘッダー -->
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="showTopHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>教科選択</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-white text-sm font-black">英</div>
                             <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">英語</h3>
                         </div>
@@ -2413,11 +2438,7 @@
             <!-- 論理表現：セクション一覧ページ -->
             <div id="ronri-section-list-panel" class="hidden w-full bg-white/90 dark:bg-[#0c1220]/80 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 backdrop-blur-md">
                 <div class="mb-5">
-                    <button onclick="openRonriEntrySelector()" class="flex items-center space-x-1 mb-3 text-[11px] font-bold text-slate-400 dark:text-slate-500 hover:text-violet-500 dark:hover:text-cyan-400 transition-colors">
-                        <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
-                        <span>論理表現HOMEに戻る</span>
-                    </button>
-                    <h4 class="text-sm font-black text-slate-800 dark:text-white flex items-center space-x-2">
+                                        <h4 class="text-sm font-black text-slate-800 dark:text-white flex items-center space-x-2">
                         <i data-lucide="layers" class="w-4 h-4 text-violet-500"></i>
                         <span>Sectionを選んで学習する</span>
                     </h4>
@@ -2600,11 +2621,7 @@
             <div id="japanese-home" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="showTopHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>教科選択</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white text-sm font-black">国</div>
                             <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">国語</h3>
                         </div>
@@ -2617,11 +2634,7 @@
             <div id="kobun-home" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="_showJapaneseHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>国語</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white"><i data-lucide="scroll-text" class="w-4 h-4"></i></div>
                             <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">古典</h3>
                         </div>
@@ -2675,11 +2688,7 @@
             <div id="kobun-reader-panel" class="hidden w-full space-y-4 animate-fade-in">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="openKobunHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>古典</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">原文・現代語訳</h3>
+                                                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">原文・現代語訳</h3>
                     </div>
                 </div>
 
@@ -2768,11 +2777,7 @@
             <div id="kobun-vocab-panel" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="openKobunHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>古典</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">古語単語帳</h3>
+                                                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">古語単語帳</h3>
                     </div>
                 </div>
                 <div class="bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-md mx-auto w-full">
@@ -2801,11 +2806,7 @@
             <div id="kobun-katsuyou-panel" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="openKobunHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>古典</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">活用・助動詞トレーニング</h3>
+                                                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">活用・助動詞トレーニング</h3>
                     </div>
                 </div>
                 <p class="text-[11px] font-bold text-slate-400 max-w-2xl mx-auto">空欄をタップして活用形を入力し、「答え合わせ」を押してください。</p>
@@ -2816,11 +2817,7 @@
             <div id="math-home" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="showTopHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>教科選択</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-sm font-black">数</div>
                             <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">数学</h3>
                         </div>
@@ -2833,11 +2830,7 @@
             <div id="science-home" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="showTopHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>教科選択</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-sm font-black">理</div>
                             <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">理科</h3>
                         </div>
@@ -2850,11 +2843,7 @@
             <div id="social-home" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
                 <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
-                        <button onclick="showTopHome()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                            <i data-lucide="chevron-left" class="w-4 h-4"></i><span>教科選択</span>
-                        </button>
-                        <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                        <div class="flex items-center space-x-2">
+                                                <div class="flex items-center space-x-2">
                             <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white text-sm font-black">社</div>
                             <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">社会</h3>
                         </div>
@@ -3121,11 +3110,7 @@
     <div id="social-qa-panel" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
         <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <button onclick="closeSocialQA()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                    <i data-lucide="chevron-left" class="w-4 h-4"></i><span>社会</span>
-                </button>
-                <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                <div class="flex items-center space-x-2">
+                                <div class="flex items-center space-x-2">
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white"><i data-lucide="scroll" class="w-4 h-4"></i></div>
                     <h3 class="text-sm font-extrabold text-slate-900 dark:text-white" id="social-qa-title">一問一答</h3>
                 </div>
@@ -3153,11 +3138,7 @@
     <div id="geo-puzzle-panel" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
         <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <button onclick="closeCountryPuzzle()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                    <i data-lucide="chevron-left" class="w-4 h-4"></i><span>社会</span>
-                </button>
-                <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                <div class="flex items-center space-x-2">
+                                <div class="flex items-center space-x-2">
                     <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-sky-400 via-emerald-400 to-amber-400 flex items-center justify-center text-white"><i data-lucide="earth" class="w-4 h-4"></i></div>
                     <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">あそんでまなべる世界地図パズル</h3>
                 </div>
@@ -3238,11 +3219,7 @@
     <div id="formula-panel" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
         <div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 flex items-center justify-between">
             <div class="flex items-center space-x-3">
-                <button onclick="closeFormulaMode()" class="flex items-center space-x-1.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-white transition-all">
-                    <i data-lucide="chevron-left" class="w-4 h-4"></i><span id="formula-back-label">戻る</span>
-                </button>
-                <div class="w-px h-4 bg-slate-200 dark:bg-slate-700"></div>
-                <div class="flex items-center space-x-2">
+                                <div class="flex items-center space-x-2">
                     <button id="formula-list-back-btn" onclick="showFormulaList()" class="hidden p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg transition-all">
                         <i data-lucide="chevron-left" class="w-4 h-4 text-slate-500"></i>
                     </button>
@@ -24638,8 +24615,8 @@ const KOBUN_TANGO = [
                 showToast('AI解析が完了しました');
             } catch (e) {
                 console.error(e);
-                statusEl.textContent = 'エラー：' + e.message;
-                showToast('エラー: 解析に失敗しました');
+                statusEl.textContent = 'エラー：' + e.message + '　→ 上の「手動で入力する」からも入れられます';
+                showToast('エラー: 解析に失敗しました。「手動で入力する」もお試しください');
             } finally {
                 clearInterval(elapsedTimer);
                 cmsSecAnalyzeAbortController = null;
@@ -24821,8 +24798,8 @@ const KOBUN_TANGO = [
                 showToast('AI解析が完了しました');
             } catch (e) {
                 console.error(e);
-                statusEl.textContent = 'エラー：' + e.message;
-                showToast('エラー: 解析に失敗しました');
+                statusEl.textContent = 'エラー：' + e.message + '　→ 上の「手動で入力する」からも入れられます';
+                showToast('エラー: 解析に失敗しました。「手動で入力する」もお試しください');
             } finally {
                 clearInterval(elapsedTimer);
                 cmsRsecAnalyzeAbortController = null;
