@@ -617,6 +617,54 @@
       "memo": "【範囲】155〜168\n　　　　P161〜P170",
       "classIds": [],
       "notifyAt": "2026-09-22T15:00:00.000Z"
+    },
+    {
+      "id": 1792286895511,
+      "type": "submission",
+      "title": "化学tokuMo",
+      "subject": "化学",
+      "date": "2026-10-23",
+      "memo": "No31酸化還元反応の量的関係\nNo32金属の酸化還元反応\nNo33ダニエル電池",
+      "classIds": [
+        "c1783747972349",
+        "c1783747980943",
+        "c1783747990115"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1792287042517,
+      "type": "submission",
+      "title": "化学tokuMo",
+      "subject": "化学",
+      "date": "2026-11-04",
+      "memo": "No33.34電池\nNo35水溶液の電気分解\nNo36電気分解の量的関係\nNo37金属の製錬",
+      "classIds": [
+        "c1783747972349",
+        "c1783747980943",
+        "c1783747990115"
+      ],
+      "notifyAt": null
+    },
+    {
+      "id": 1792287430105,
+      "type": "submission",
+      "title": "数B完成ノート",
+      "subject": "数学B",
+      "date": "2026-10-21",
+      "memo": "統計的な推測　p29〜56",
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1792287471998,
+      "type": "submission",
+      "title": "数Ⅱ完成ノート",
+      "subject": "数Ⅱ",
+      "date": "2026-10-28",
+      "memo": "三角関数　p29〜53",
+      "classIds": [],
+      "notifyAt": null
     }
   ],
   "extraSections": [
