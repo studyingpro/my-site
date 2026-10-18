@@ -665,6 +665,26 @@
       "memo": "三角関数　p29〜53",
       "classIds": [],
       "notifyAt": null
+    },
+    {
+      "id": 1792298482884,
+      "type": "submission",
+      "title": "国語週末課題",
+      "subject": "国語",
+      "date": "2026-10-19",
+      "memo": "現代文：25・26\n古　典：13・18",
+      "classIds": [],
+      "notifyAt": null
+    },
+    {
+      "id": 1792298544407,
+      "type": "submission",
+      "title": "クロスビーム",
+      "subject": "英語",
+      "date": "2026-10-19",
+      "memo": null,
+      "classIds": [],
+      "notifyAt": null
     }
   ],
   "extraSections": [
