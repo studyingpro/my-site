@@ -4683,28 +4683,340 @@
       "id": "L5S4",
       "lessonLabel": "Lesson5",
       "sectionLabel": "Section4",
-      "name": "Lesson5    Section4",
+      "name": "Lesson5  Lesson 5 Mental Toughness / Section 4: Use Imaging, Practice for Failure（イメージトレーニングを活用し、失敗に備える）  Section4",
       "data": {
-        "style": {
-          "backgroundColor": "#FFFFFF",
-          "textColor": "#000000"
-        },
-        "translations": [
+        "lessonTitle": "Lesson 5 Mental Toughness / Section 4: Use Imaging, Practice for Failure（イメージトレーニングを活用し、失敗に備える）",
+        "transcription": "本文全体のテーマは、イメージトレーニングによって競技中の集中力や自信を高め、失敗への備えを通じて精神的な強さ（mental toughness）を身につけることである。イメージトレーニングは視覚的な想像だけでなく、音・感覚・思考も活用する。オリンピック選手の実例から、成功場面だけでなく失敗場面とその対処まで具体的に想像することが、緊張の軽減や新たな課題への対応につながると説明している。なお、英文中のimagingは、頭の中で行動や状況を具体的に思い描くことを指す。",
+        "transcriptionAnalysis": [
           {
-            "number": 1,
-            "text": "彼女は起こりうる悪いシナリオ（展開）さえも作り出し、それから成功する対応策をイメージしたものでした。"
+            "english": "Many champions use imaging.",
+            "japanese": "多くの一流選手がイメージトレーニングを活用している。",
+            "grammarExplanation": "Manyは「多くの」という数量を表す形容詞で、可算名詞の複数形championsを修飾する。useは「使う、活用する」という他動詞で、目的語にimagingを取る。imagingはここではイメージトレーニングという活動を表す名詞として使われている。",
+            "sentenceStructure": "第3文型SVO。S＝Many champions、V＝use、O＝imaging。Manyはchampionsを修飾し、imagingはuseの目的語である。",
+            "keyExpressions": "many＋複数名詞＝多くの～。champion＝優勝者、一流選手。use＋名詞＝～を使う、活用する。imaging＝頭の中で行動や状況を具体的に想像すること。"
           },
           {
-            "number": 2,
-            "text": "練習中にプレッシャーを感じることは、試合当日に緊張を和らげるのに役立ちます。"
+            "english": "Imaging means visualizing the action you are going to take.",
+            "japanese": "イメージトレーニングとは、自分がこれから取ろうとしている行動を具体的に思い描くことである。",
+            "grammarExplanation": "meanは「～を意味する」という他動詞。visualizingは動名詞で、meansの目的語に当たる。visualizeは「心に思い描く、視覚化する」という意味。the actionの後ろには目的格の関係代名詞thatまたはwhichを補える省略された関係詞節があり、you are going to takeがactionを説明している。be going to＋動詞の原形は、ここでは近い未来に行う予定の行動を表す。",
+            "sentenceStructure": "主節は第2文型SVC。S＝Imaging、V＝means、C＝visualizing the action you are going to take。なお、meansを「～を意味する」という他動詞と分析する場合、文型はSVOと捉えることもできる。visualizing以下では、動名詞visualizingがthe actionを目的語に取り、you are going to takeがactionを修飾する関係詞節である。",
+            "keyExpressions": "mean ～＝～を意味する。visualize＝具体的に思い描く。the action (that) S＋V＝SがVする行動。be going to＋動詞の原形＝～する予定である、～しようとしている。take an actionは「行動を起こす」という意味でも使われる。"
           },
           {
-            "number": 3,
-            "text": "それらはまた、新しい挑戦に立ち向かうために必要となるメンタルタフネス（精神的な強さ）を身につけるのにも役立ちます。"
+            "english": "Imaging means visualizing an action such as shooting a basket or passing a football.",
+            "japanese": "イメージトレーニングとは、シュートを打ったり、フットボールをパスしたりするような行動を思い描くことである。",
+            "grammarExplanation": "such asは具体例を示す表現で、後ろに名詞や動名詞を置くことができる。shootingとpassingは動名詞で、ここでは行動の例を表す。orは2つの例を並列している。",
+            "sentenceStructure": "主節はImagingを主語とし、meansの後ろに説明内容が続く。such as以下はvisualizingの対象となるactionの具体例。shooting a basketとpassing a footballは文法的に並列された動名詞句である。",
+            "keyExpressions": "such as ～＝例えば～など。shoot a basket＝バスケットボールでシュートを打つ。pass a football＝フットボールのボールをパスする。A or B＝AまたはB。"
           },
           {
-            "number": 4,
-            "text": "勝っても負けても、メンタルタフネスがあれば、次に何が来ても準備ができている状態になれます。"
+            "english": "Imaging is not just making pictures in your mind.",
+            "japanese": "イメージトレーニングは、単に頭の中に映像を思い浮かべることだけではない。",
+            "grammarExplanation": "not just ～は「単に～だけではない」という意味で、後続の内容に別の要素が加わることを予告する。makingは動名詞で、ここでは「映像を作ること」を表す。your mindは「あなたの心、頭の中」という意味。",
+            "sentenceStructure": "主節は第2文型SVC。S＝Imaging、V＝is、C＝not just making pictures in your mind。makingは動名詞で、picturesが目的語、in your mindが場所を示す前置詞句である。",
+            "keyExpressions": "not just ～＝単に～だけではない。make a picture in one's mind＝頭の中に映像を思い描く。in your mind＝頭の中で、心の中で。"
+          },
+          {
+            "english": "It also involves hearing, feeling, and thinking.",
+            "japanese": "それには、聞くこと、感じること、そして考えることも含まれる。",
+            "grammarExplanation": "Itは直前のimagingを指す。alsoは「～もまた」。involveは「～を含む、伴う」という他動詞で、目的語としてhearing、feeling、thinkingという3つの動名詞が並列されている。",
+            "sentenceStructure": "第3文型SVO。S＝It、V＝involves、O＝hearing, feeling, and thinking。3つの動名詞はandで結ばれ、同じ文法的役割を果たす。",
+            "keyExpressions": "also＝～もまた。involve＋名詞・動名詞＝～を含む、伴う。hearing＝聞くこと。feeling＝感じること。thinking＝考えること。A, B, and C＝A、B、そしてC。"
+          },
+          {
+            "english": "Emily Cook, an Olympic skier, used imaging.",
+            "japanese": "オリンピックのスキー選手であるエミリー・クックは、イメージトレーニングを活用した。",
+            "grammarExplanation": "Emily Cookの直後のan Olympic skierは、同一人物について補足説明する同格表現である。usedはuseの過去形で、過去の経験を述べている。",
+            "sentenceStructure": "第3文型SVO。S＝Emily Cook、V＝used、O＝imaging。an Olympic skierはEmily Cookと同一人物を表す同格の名詞句。",
+            "keyExpressions": "Olympic＝オリンピックの。skier＝スキー選手。use imaging＝イメージトレーニングを活用する。過去の出来事を述べるため、useではなくusedが使われている。"
+          },
+          {
+            "english": "By imagining the smell of the snow, the wind on her neck, and the roar of the crowd, Cook increased her focus and confidence.",
+            "japanese": "雪のにおい、首に当たる風、そして観客の大歓声を想像することによって、クックは集中力と自信を高めた。",
+            "grammarExplanation": "By＋動名詞は「～することによって」という手段を表す。imaginingの目的語にはthe smell of the snow、the wind on her neck、the roar of the crowdという3つの名詞句が並列されている。increaseは他動詞で、focusとconfidenceを目的語に取る。herはCookを指す所有格である。",
+            "sentenceStructure": "文全体は第3文型SVO。S＝Cook、V＝increased、O＝her focus and confidence。文頭のBy imagining以下は手段を示す副詞句。the wind on her neckではon her neckがwindを説明し、the roar of the crowdではof the crowdがroarの内容・発生源を示す。",
+            "keyExpressions": "by＋動名詞＝～することによって。the smell of ～＝～のにおい。the wind on one's neck＝首に当たる風。the roar of the crowd＝観客の大歓声。increase one's focus＝集中力を高める。confidence＝自信。"
+          },
+          {
+            "english": "She says, 'You have to hear it. You have to feel it, everything.'",
+            "japanese": "彼女は「それを聞かなければならない。それを、すべてを、感じなければならない」と語っている。",
+            "grammarExplanation": "saysは現在形で、本人の考えや発言を紹介している。have to＋動詞の原形は「～しなければならない」という必要性を表す。itは想像している競技場面や状況を指す。everythingは「すべてのこと」で、感覚的な経験全体を強調している。",
+            "sentenceStructure": "主節は第3文型SVO。S＝She、V＝says、O＝引用された発言。引用文ではYouが主語、have to hear／feelが述語、itが目的語となる。",
+            "keyExpressions": "say＋発言内容＝～と言う。have to＋動詞の原形＝～しなければならない。hear＝聞こえる音を聞く。feel＝感じる。everything＝すべてのこと。ここでのYouは特定の相手だけでなく、一般的な人を指す表現としても理解できる。"
+          },
+          {
+            "english": "Nicole W. Forrester, an Olympian and eight-time Canadian high jump champion, spent hours imaging what she wanted to do.",
+            "japanese": "オリンピック選手であり、カナダの走高跳で8度優勝したニコール・W・フォレスターは、自分が実現したいことをイメージするために何時間も費やした。",
+            "grammarExplanation": "an Olympian and eight-time Canadian high jump championはNicole W. Forresterの説明を加える同格表現。spent hours doingは「～するのに何時間も費やした」という重要構文で、spend＋時間＋動名詞の形を取る。what she wanted to doは名詞節で、「彼女がしたかったこと」という意味。what自体に「～すること」という先行詞を含む働きがある。",
+            "sentenceStructure": "主節は第3文型SVO。S＝Nicole W. Forrester、V＝spent、O＝hours。imaging what she wanted to doは「何時間を何に費やしたか」を表す動名詞句で、spend hours doingの形を作る。what she wanted to doはimagingの目的語となる名詞節。",
+            "keyExpressions": "Olympian＝オリンピック選手。eight-time＝8回の、8度の。high jump＝走高跳。spend＋時間＋動名詞＝～するのに時間を費やす。what S＋V＝SがVすること・もの。want to do＝～したい。"
+          },
+          {
+            "english": "She would even create bad scenarios that could occur, and then image a successful response.",
+            "japanese": "彼女は、起こり得る悪い事態さえも想定し、その後で、それにうまく対処する方法を思い描いていた。",
+            "grammarExplanation": "wouldは過去の習慣や繰り返し行っていた行動を表す。evenは「～さえも」と意外性を強調する。that could occurは直前のbad scenariosを修飾する関係詞節。couldは可能性を表し、「起こり得る」と訳せる。and thenは行動の順序を示す。imageはここでは動詞として使われている。",
+            "sentenceStructure": "主語Sheに対して述語がwould createと(image)の2つ並び、andで結ばれている。createの目的語はbad scenariosで、that could occurがそれを修飾する。imageの目的語はa successful response。",
+            "keyExpressions": "would＋動詞の原形＝過去によく～した。even＝～さえも。scenario＝想定される状況、シナリオ。could occur＝起こり得る。and then＝そしてその後。a successful response＝うまくいく対応、成功につながる対処。"
+          },
+          {
+            "english": "Tennis great Serena Williams also images failure.",
+            "japanese": "テニス界の偉大な選手であるセリーナ・ウィリアムズも、失敗する場面をイメージする。",
+            "grammarExplanation": "Tennis greatは「テニス界の偉大な選手」という意味で、greatが名詞的に用いられている。Serena Williamsはその人物を特定する同格表現。imagesはここでは動詞imageの三人称単数現在形であり、名詞のimages「画像」とは異なる。failureは「失敗」という名詞。",
+            "sentenceStructure": "第3文型SVO。S＝Tennis great Serena Williams、V＝images、O＝failure。Tennis greatはSerena Williamsを説明する名詞句である。",
+            "keyExpressions": "tennis great＝テニス界の偉大な選手。image＝～を頭の中で思い描く。failure＝失敗。greatは文脈によって「偉大な」「素晴らしい」などと訳し分ける。"
+          },
+          {
+            "english": "She will imagine she is down 15 to 30 and hitting her second serve; she simply can't double-fault!",
+            "japanese": "彼女は、15対30でリードを許し、セカンドサーブを打つ場面を想像する。絶対にダブルフォールトはできないのだ。",
+            "grammarExplanation": "will imagineは未来の行動や意図を表す。imagineの後ろにはshe is down 15 to 30 and hitting her second serveという内容を表す節が続く。be downはスポーツの得点状況で「負けている、リードを許している」という意味。hittingはisと並列された現在分詞で、進行中の状況を表す。can'tは能力の欠如だけでなく、文脈によって「～してはいけない、～するわけにはいかない」という強い制約を表す。double-faultはテニスでダブルフォールトをすること。",
+            "sentenceStructure": "前半はS＝She、V＝will imagine、O＝she is down 15 to 30 and hitting her second serveという内容節。節内ではS＝she、V＝is、C＝down 15 to 30 and hitting her second serveと理解できる。後半はS＝she、V＝can't double-faultで、double-faultは動詞。",
+            "keyExpressions": "be down＋得点＝得点で負けている。second serve＝セカンドサーブ。simply can't ～＝どうしても～できない、絶対に～してはいけない。double-fault＝ダブルフォールトをする。セミコロンは関連する2つの文をつなぎ、前半の状況と後半の決意を結び付ける。"
+          },
+          {
+            "english": "Feeling pressure during practice helps her alleviate nervousness on game day.",
+            "japanese": "練習中にプレッシャーを感じておくことが、試合当日の緊張を和らげる助けになる。",
+            "grammarExplanation": "Feelingは動名詞で、文全体の主語になっている。動名詞句が主語の場合、述語動詞は原則として単数形となるためhelpsが使われている。help＋人＋動詞の原形は「人が～するのを助ける」という構文。alleviateは「軽減する、和らげる」という他動詞。during practiceは「練習中に」、on game dayは「試合当日に」を表す。",
+            "sentenceStructure": "第3文型SVO。S＝Feeling pressure during practice、V＝helps、O＝her。helpの後ろには目的語herと動詞の原形alleviateが続く。alleviateの目的語はnervousnessで、on game dayはその緊張を和らげる時を表す副詞句。",
+            "keyExpressions": "feel pressure＝プレッシャーを感じる。during＋名詞＝～の間に。help＋人＋動詞の原形＝人が～するのを助ける。alleviate＝軽減する、和らげる。nervousness＝緊張。on game day＝試合当日に。"
+          },
+          {
+            "english": "Stay focused. Relax. Talk to yourself. Use imaging. Practice for failure.",
+            "japanese": "集中力を保とう。リラックスしよう。自分自身に語りかけよう。イメージトレーニングを活用しよう。失敗に備えて練習しよう。",
+            "grammarExplanation": "いずれも命令文で、主語のyouが省略され、動詞の原形から始まっている。Stayは「～の状態でいる」という意味で、focusedは過去分詞由来の形容詞「集中した」。Talk to yourselfのyourselfは再帰代名詞で、主語youと同じ人物を指す。Practice for failureは、失敗を経験する練習というより、失敗が起こる可能性に備える練習という意味。",
+            "sentenceStructure": "5つの命令文。Stay focusedはS＝you（省略）、V＝stay、C＝focusedの第2文型。Relaxは自動詞。Talkはto yourselfを伴う。Useはimagingを目的語に取る第3文型。Practice for failureはpracticeを動詞、for failureを目的・備えを表す前置詞句として分析する。",
+            "keyExpressions": "stay＋形容詞＝～の状態を保つ。focused＝集中した。talk to oneself＝自分に語りかける。use imaging＝イメージトレーニングを活用する。practice for ～＝～に備えて練習する。命令文は助言や指示を簡潔に伝える。"
+          },
+          {
+            "english": "These techniques work for world-class athletes.",
+            "japanese": "これらの技術は、世界トップレベルのアスリートに役立つ。",
+            "grammarExplanation": "Theseは複数のものを指す指示形容詞で、直前の助言や技法を指す。techniquesは「技法、方法」。workは「働く」だけでなく、物事や方法が「うまく機能する、役に立つ」という意味でも使われる。world-classは「世界トップレベルの」という複合形容詞。",
+            "sentenceStructure": "第1文型SVを基本とする。S＝These techniques、V＝work。for world-class athletesは、誰に役立つかを示す前置詞句である。",
+            "keyExpressions": "technique＝技法、技術。work for ～＝～に役立つ、～のために機能する。world-class＝世界トップレベルの。athlete＝運動選手、アスリート。"
+          },
+          {
+            "english": "They can also help you develop the mental toughness you'll need to meet new challenges.",
+            "japanese": "これらの技法は、新たな課題に立ち向かうために必要となる精神的な強さを身につける助けにもなる。",
+            "grammarExplanation": "TheyはThese techniquesを指す。can help＋人＋動詞の原形は「人が～するのを助けることができる」。developは「発達させる、身につける」。the mental toughnessの後ろにはyou'll need to meet new challengesという関係詞節があり、目的格の関係代名詞thatを補うことができる。you'llはyou willの短縮形。to meet new challengesはneedの内容を補い、「新たな課題に対応するために必要な」という意味を作る。",
+            "sentenceStructure": "主節はS＝They、V＝can help、O＝you、補足の動詞句＝develop the mental toughness you'll need to meet new challenges。help＋目的語＋動詞の原形の構文。the mental toughnessはdevelopの目的語で、you'll need to meet new challengesがそれを修飾する。",
+            "keyExpressions": "can help＋人＋動詞の原形＝人が～するのを助けることができる。develop＝身につける、発達させる。mental toughness＝精神的な強さ、困難に耐える力。need to do＝～する必要がある。meet a challenge＝課題に立ち向かう、課題に対処する。"
+          },
+          {
+            "english": "Win or lose, with mental toughness you will be ready for whatever comes next.",
+            "japanese": "勝っても負けても、精神的な強さがあれば、次に何が起こっても対応できる準備が整っているだろう。",
+            "grammarExplanation": "Win or loseは「勝っても負けても」という譲歩の意味を持つ慣用表現。with mental toughnessは「精神的な強さがあれば、精神的な強さを備えていれば」という条件・付帯状況を表す。whatever comes nextは「次に起こるどんなことでも」という意味の名詞節で、whateverは「何でも」という複合関係代名詞。be ready for ～は「～に備えている、～への準備ができている」という表現。",
+            "sentenceStructure": "主節はS＝you、V＝will be、C＝ready。Win or loseは譲歩を表す独立した表現。with mental toughnessは条件・付帯状況を表す前置詞句。for whatever comes nextのwhatever comes nextは前置詞forの目的語となる名詞節で、内部はS＝whatever、V＝comes、nextは時を示す副詞。",
+            "keyExpressions": "win or lose＝勝っても負けても。with＋名詞＝～を備えて、～があれば。mental toughness＝精神的な強さ。be ready for ～＝～に備えている。whatever＋動詞＝～するものは何でも。come next＝次に起こる。"
+          }
+        ],
+        "putIntoJapaneseAnswers": [
+          {
+            "num": "1",
+            "english": "She would even create ...",
+            "japanese": "彼女は、起こり得る悪い状況さえも想定し、その後で、うまく対処する方法を思い描いていた。",
+            "translationPoint": "wouldはここでは単純な未来ではなく、過去に繰り返していた習慣的行動を表す。evenは「さえも」と訳し、bad scenariosは単なる物語ではなく「悪い事態、好ましくない状況」とする。that could occurはscenariosを修飾し、「起こり得る状況」という意味になる。a successful responseは「成功した反応」と直訳するより、「うまく対処する方法」「適切な対応」とする方が自然。",
+            "commonMistake": "wouldを必ず「～だろう」と訳すのは誤り。過去の文脈では「よく～した、～していた」となる。また、responseを「返事」とだけ訳すと、競技中の状況に対する対処という意味が伝わりにくい。couldは過去の能力だけでなく、可能性を表すことにも注意する。"
+          },
+          {
+            "num": "2",
+            "english": "Feeling pressure during ...",
+            "japanese": "練習中にプレッシャーを感じておくことは、試合当日の緊張を和らげる助けになる。",
+            "translationPoint": "文頭のFeeling pressure during practiceは動名詞句で、文の主語。「練習中にプレッシャーを感じること」と訳す。helps her alleviateはhelp＋人＋動詞の原形の構文で、「彼女が緊張を和らげるのを助ける」。nervousnessは「緊張、不安」であり、試合当日を表すon game dayと対比することで、練習で経験しておくことの効果が分かる。",
+            "commonMistake": "Feelingを「感じている」と進行形のように訳すと、主語としての動名詞の働きを見落とす。また、helpの後ろのalleviateを不定詞と決めつけず、原形不定詞として捉える。alleviate nervousnessは「緊張を取り除く」と断定するより「緊張を和らげる」とする方が適切。"
+          },
+          {
+            "num": "3",
+            "english": "They can also help you ...",
+            "japanese": "これらの技法は、新たな課題に立ち向かうために必要な精神的な強さを身につける助けにもなる。",
+            "translationPoint": "Theyは直前に述べられた複数の技法を指す。help you developは「あなたが身につけるのを助ける」。mental toughnessは単なる「心の硬さ」ではなく、困難やプレッシャーに耐え、冷静に対応する精神的な強さを意味する。you'll need to meet new challengesはmental toughnessを説明し、「新たな課題に対処するために必要な」と訳す。",
+            "commonMistake": "toughnessを物理的な硬さとだけ捉えないこと。meetを常に「会う」と訳すのも誤りで、meet a challengeは「課題に立ち向かう、対処する」。また、you'll needを「あなたは必要とするだろう」と独立して訳すと、mental toughnessを修飾する関係詞節のつながりが崩れる。"
+          },
+          {
+            "num": "4",
+            "english": "Win or lose, with ...",
+            "japanese": "勝っても負けても、精神的な強さがあれば、次に何が起こっても対応できる準備が整っているだろう。",
+            "translationPoint": "Win or loseは「勝つか負けるか」ではなく、文全体にかかる譲歩表現として「勝っても負けても」と訳す。with mental toughnessは「精神的な強さとともに」より「精神的な強さがあれば」とすると自然。whatever comes nextはwhateverが導く節で、「次に来るものは何でも」から「次に何が起こっても」と意訳できる。",
+            "commonMistake": "whateverを疑問詞の「何？」とだけ捉えないこと。ここでは「～するものは何でも」という意味。be ready forは「準備をする」ではなく「準備ができている、備えている」。win or loseの後に省略されている主語や動詞を補いすぎず、譲歩の意味を優先すると自然な日本語になる。"
+          }
+        ],
+        "vocabulary": [
+          {
+            "word": "visualize",
+            "meaning": "動詞：心に思い描く、視覚化する。頭の中で場面や結果を具体的にイメージすること。",
+            "usage": "例文：Before the interview, I visualized myself answering the questions calmly.（面接の前に、落ち着いて質問に答える自分を思い描いた。）visualize＋名詞、visualize＋名詞＋doingのような形で使える。",
+            "synonymsAntonyms": "類義語：imagine（想像する）、picture（心に描く）、envision（将来像などを思い描く）。反意語：実用的な直接の反意語は少ないが、ignore（無視する）、overlook（見落とす）は文脈によって対照的。",
+            "derivatives": "名詞：visualization（視覚化、イメージ化）。形容詞：visual（視覚の、目で見る）。名詞：vision（視力、展望、ビジョン）。",
+            "pronunciation": "発音は /ˈvɪʒuəlaɪz/。第1音節にアクセント。visualの最初の音は「ヴィ」に近く、sは /ʒ/（有声のジに近い音）になる。",
+            "examFrequency": "中～高。英語長文の学習・心理・科学・教育分野で見られる。visual、vision、visualizationなどの派生語も押さえたい。"
+          },
+          {
+            "word": "imaging",
+            "meaning": "名詞：イメージトレーニング、心の中で状況や行動を具体的に思い描くこと。文脈によっては画像化・画像診断などを意味する。",
+            "usage": "例文：Imaging the first day at her new school helped Maya feel less nervous.（新しい学校での初日を思い描くことで、マヤは不安を軽くできた。）本文ではスポーツの行動や感覚を想像する意味。",
+            "synonymsAntonyms": "類義語：mental imagery（心的イメージ）、visualization（視覚化）。反意語：固定した直接の反意語はない。lack of preparation（準備不足）は文脈上の対照表現となり得る。",
+            "derivatives": "動詞：image（心に思い描く、画像化する）。名詞：image（画像、イメージ）。名詞：imagination（想像力）。形容詞：imaginative（想像力に富んだ）。",
+            "pronunciation": "imagingは /ˈɪmɪdʒɪŋ/。第1音節にアクセント。imageの語末のeが取れて-ingが付くため、imageingとは綴らない。",
+            "examFrequency": "中。本文のテーマ語として重要。一般的な入試語彙ではimagine、imagination、imageの方がより幅広く使われる。"
+          },
+          {
+            "word": "champion",
+            "meaning": "名詞：優勝者、チャンピオン。文脈によっては支持者、擁護者。",
+            "usage": "例文：The young champion thanked her teammates after the final match.（その若い優勝者は決勝戦の後、チームメートに感謝した。）",
+            "synonymsAntonyms": "類義語：winner（勝者）、titleholder（タイトル保持者）。反意語：loser（敗者）。championは競技の優勝者、winnerはより一般的な勝者を指す。",
+            "derivatives": "動詞：champion（～を支持する、擁護する）。名詞：championship（選手権、優勝）。形容詞：championは名詞の前で「一流の、優勝した」という意味になる場合もある。",
+            "pronunciation": "米音の目安は /ˈtʃæmpiən/。第1音節にアクセント。語頭chは /tʃ/ の音。",
+            "examFrequency": "中。スポーツや人物紹介の長文で使われる。championshipも重要。"
+          },
+          {
+            "word": "focus",
+            "meaning": "名詞：集中、焦点。動詞：集中する、焦点を合わせる。",
+            "usage": "例文：I need a quiet room to focus on my homework.（宿題に集中するために静かな部屋が必要だ。）focus on＋名詞・動名詞の形が重要。",
+            "synonymsAntonyms": "類義語：concentration（集中）、attention（注意）。反意語：distraction（気を散らすもの）、inattention（不注意）。",
+            "derivatives": "名詞：focus、focusing。形容詞：focused（集中した）。動詞：focus。形容詞：focal（焦点の）。",
+            "pronunciation": "米音の目安は /ˈfoʊkəs/。第1音節にアクセント。focus onは頻出の組み合わせ。",
+            "examFrequency": "高。focus on、focus one's attention on、focusedなどをまとめて覚えるとよい。"
+          },
+          {
+            "word": "confidence",
+            "meaning": "名詞：自信、信頼。自分の能力や成功の可能性を信じる気持ち。",
+            "usage": "例文：Regular practice gave him the confidence to speak in public.（継続的な練習によって、彼は人前で話す自信を得た。）confidence to doは「～する自信」。confidence in ～は「～への信頼、自信」。",
+            "synonymsAntonyms": "類義語：self-confidence（自信）、assurance（確信、自信）。反意語：self-doubt（自信のなさ）、uncertainty（不確かさ）。",
+            "derivatives": "形容詞：confident（自信のある）。副詞：confidently（自信を持って）。動詞：confide（打ち明ける、信頼して話す）。名詞：confidence。",
+            "pronunciation": "米音の目安は /ˈkɑːnfɪdəns/。第1音節にアクセント。confident /ˈkɑːnfɪdənt/ とともに覚える。",
+            "examFrequency": "高。confidence in、be confident that、be confident ofなどの形が大学入試で重要。"
+          },
+          {
+            "word": "scenario",
+            "meaning": "名詞：想定される状況、シナリオ、筋書き。将来起こり得る事態の説明にも用いる。",
+            "usage": "例文：We discussed several scenarios in case the train was delayed.（電車が遅れた場合に備えて、いくつかの状況を検討した。）",
+            "synonymsAntonyms": "類義語：situation（状況）、possibility（可能性）、case（場合）。直接的な反意語はない。",
+            "derivatives": "名詞：scenario、複数形scenarios。関連語：scene（場面）、scenic（景色のよい）。sceneとscenarioは意味も発音も異なる。",
+            "pronunciation": "米音の目安は /səˈnɛrioʊ/。第2音節にアクセント。複数形はscenarios。",
+            "examFrequency": "中。社会問題、環境、科学技術、未来予測などの長文で使用される。"
+          },
+          {
+            "word": "occur",
+            "meaning": "動詞：起こる、発生する。考えなどが人の頭に浮かぶという意味でも使う。",
+            "usage": "例文：A strange idea occurred to me while I was walking home.（家に歩いて帰る途中、奇妙な考えがふと浮かんだ。）occur to＋人＝人の頭に浮かぶ。",
+            "synonymsAntonyms": "類義語：happen（起こる）、take place（起こる、開催される）。直接的な反意語は文脈によるが、prevent（防ぐ）は結果として対照的。",
+            "derivatives": "動詞：occur。名詞：occurrence（発生、出来事）。形容詞：occurrentは一般的な学習語としての優先度が低い。",
+            "pronunciation": "米音の目安は /əˈkɝː/。第2音節にアクセント。occurred、occurringではrの後ろのrが続く形になり、綴りのrを重ねる。",
+            "examFrequency": "高。occur to＋人、It occurred to me that ～、occurrenceなどを覚えたい。"
+          },
+          {
+            "word": "alleviate",
+            "meaning": "動詞：苦痛・問題・緊張などを軽減する、和らげる。",
+            "usage": "例文：Taking a short walk may alleviate stress after a busy day.（短い散歩をすると、忙しい一日の後のストレスが和らぐかもしれない。）alleviate＋負担・症状・問題などの名詞。",
+            "synonymsAntonyms": "類義語：relieve（和らげる）、ease（軽減する）、reduce（減らす）。反意語：aggravate（悪化させる）、worsen（悪化する）。",
+            "derivatives": "動詞：alleviate。名詞：alleviation（軽減）。形容詞：alleviativeは一般的な入試学習での優先度が低い。",
+            "pronunciation": "米音の目安は /əˈliːvieɪt/。第2音節にアクセント。語頭のaは弱く発音される。",
+            "examFrequency": "中～高。やや硬い語で、医療・社会問題・心理・環境などの英文で使われる。relieveとの言い換えが重要。"
+          },
+          {
+            "word": "nervousness",
+            "meaning": "名詞：緊張、不安、神経質な状態。",
+            "usage": "例文：Her nervousness disappeared after she started talking to the audience.（聴衆に話し始めると、彼女の緊張は消えた。）",
+            "synonymsAntonyms": "類義語：anxiety（不安）、tension（緊張）、uneasiness（不安な気持ち）。反意語：calmness（落ち着き）、composure（平静）。",
+            "derivatives": "形容詞：nervous（緊張した、神経質な）。副詞：nervously（緊張して）。名詞：nerve（神経、度胸）、nervousness（緊張）。",
+            "pronunciation": "米音の目安は /ˈnɝːvəsnəs/。nervousの第1音節にアクセント。nervousとnervousnessを関連づけて覚える。",
+            "examFrequency": "中。nervous、nervously、nervousnessの品詞変化と、anxiousとの違いを確認したい。"
+          },
+          {
+            "word": "pressure",
+            "meaning": "名詞：圧力、プレッシャー、精神的な重圧。動詞：圧力をかける、強く迫る。",
+            "usage": "例文：Some students find it difficult to make decisions under pressure.（プレッシャーの下で決断するのが難しいと感じる生徒もいる。）under pressure＝プレッシャーを受けて。",
+            "synonymsAntonyms": "類義語：stress（ストレス）、strain（負担、緊張）。反意語としては文脈によりrelief（安堵、負担の軽減）、ease（気楽さ）が考えられる。",
+            "derivatives": "名詞：pressure。動詞：pressure。形容詞：pressured（圧力を受けた）。形容詞：pressing（差し迫った、緊急の）は別の用法として区別する。",
+            "pronunciation": "米音の目安は /ˈprɛʃər/。第1音節にアクセント。sure部分は「シュア」に近い音。",
+            "examFrequency": "高。under pressure、put pressure on ～、peer pressureなどの熟語が重要。"
+          },
+          {
+            "word": "technique",
+            "meaning": "名詞：技法、技術、やり方。特定の目的を達成するための方法。",
+            "usage": "例文：The teacher showed us a useful technique for remembering new words.（先生は新しい単語を覚えるための役立つ方法を教えてくれた。）technique for＋名詞・動名詞。",
+            "synonymsAntonyms": "類義語：method（方法）、approach（取り組み方）、skill（技能）。厳密な反意語はない。",
+            "derivatives": "名詞：technique。形容詞：technical（技術的な、専門的な）。副詞：technically（技術的に、厳密に言えば）。名詞：technician（技術者）。",
+            "pronunciation": "米音の目安は /tɛkˈniːk/。第2音節にアクセント。語末は「ニーク」に近い音。",
+            "examFrequency": "中～高。method、approach、skillとの使い分けが読解・英作文で役立つ。"
+          },
+          {
+            "word": "mental toughness",
+            "meaning": "名詞句：精神的な強さ。困難、緊張、失敗などに直面しても、気持ちを保ち、対処する力。",
+            "usage": "例文：Mental toughness helped the team recover after an unexpected defeat.（精神的な強さが、チームが予想外の敗北から立ち直る助けとなった。）",
+            "synonymsAntonyms": "類義語：resilience（回復力）、perseverance（粘り強さ）、determination（決意）。反意語：fragility（もろさ）、helplessness（無力感）。完全な同義語ではなく、それぞれ異なる側面を表す。",
+            "derivatives": "形容詞：mental（精神の、知的な）。名詞：mind（心、精神）。形容詞：tough（強い、粘り強い）。名詞：toughness（強さ、粘り強さ）。副詞：mentally（精神的に）。",
+            "pronunciation": "mentalは第1音節にアクセント。toughnessはtoughの母音が /ʌ/ で、ghは発音しない。toughのghを/f/と発音する綴りの規則に注意。",
+            "examFrequency": "中。mental、tough、toughnessはそれぞれ頻出。本文では段落全体の主題を表す重要語句。"
+          },
+          {
+            "word": "alleviate nervousness",
+            "meaning": "緊張を和らげる。alleviateは負担や苦痛の程度を軽くすることを表し、nervousnessは緊張や不安を指す。",
+            "usage": "例文：Listening to calm music can alleviate nervousness before a presentation.（落ち着いた音楽を聴くと、発表前の緊張が和らぐことがある。）",
+            "synonymsAntonyms": "類義表現：reduce anxiety、ease tension、relieve stress。対照表現：increase anxiety（不安を増大させる）、worsen stress（ストレスを悪化させる）。",
+            "derivatives": "alleviate（動詞）、alleviation（名詞）、nervous（形容詞）、nervously（副詞）、nervousness（名詞）。",
+            "pronunciation": "alleviateは第2音節、nervousnessは第1音節にアクセント。両語とも語尾の綴りと品詞を区別して覚える。",
+            "examFrequency": "中～高。単語単独だけでなく、動詞と目的語の自然な組み合わせとして覚えると読解・英作文に役立つ。"
+          },
+          {
+            "word": "be ready for",
+            "meaning": "～に備えている、～を迎える準備ができている。",
+            "usage": "例文：We must be ready for unexpected changes in the schedule.（予定の予想外の変更に備えておかなければならない。）be ready to＋動詞の原形は「～する準備ができている」という意味。",
+            "synonymsAntonyms": "類義表現：be prepared for、be equipped for。反意表現：be unprepared for（～への準備ができていない）。",
+            "derivatives": "形容詞：ready（準備のできた）。名詞：readiness（準備ができていること）。動詞：prepare（準備する）。名詞：preparation（準備）。",
+            "pronunciation": "readyは第1音節にアクセント。ready forとready to doを区別する。forは会話では弱く発音されることが多い。",
+            "examFrequency": "高。be ready for＋名詞、be ready to＋動詞、get ready forなどの形が重要。"
+          },
+          {
+            "word": "serve",
+            "meaning": "動詞：提供する、仕える、役に立つ。テニスなどではサーブを打つ。名詞形のserveは競技用語としてのサーブを指すことがある。",
+            "usage": "例文：This small device serves an important purpose in the laboratory.（この小さな装置は研究室で重要な役割を果たしている。）serve a purpose＝目的・役割を果たす。",
+            "synonymsAntonyms": "類義語：provide（提供する）、supply（供給する）、assist（助ける）。反意語は文脈によるが、withhold（与えずにおく）はprovideの対照となる場合がある。",
+            "derivatives": "名詞：service（サービス、役務）。名詞：servant（使用人、召使い）。形容詞：serviceable（役に立つ、使用に耐える）。",
+            "pronunciation": "米音の目安は /sɝːv/。動詞と名詞で発音は基本的に同じ。serveとserviceの母音の違いに注意。",
+            "examFrequency": "高。serve as ～（～として役立つ）、serve a purpose、serve foodなど多様な意味を持つ。"
+          },
+          {
+            "word": "roar",
+            "meaning": "名詞：とどろき、大きな叫び声、轟音。動詞：ほえる、轟音を立てる、大声で笑う。",
+            "usage": "例文：A roar of laughter filled the room after the comedian's joke.（コメディアンの冗談の後、部屋は大きな笑い声に包まれた。）a roar of laughter＝大きな笑い声。",
+            "synonymsAntonyms": "類義語：shout（叫ぶ）、cheer（歓声を上げる）、thunder（轟音を立てる）。反意語：whisper（ささやく）、silence（静けさ）。",
+            "derivatives": "名詞：roar。動詞：roar。関連表現：roaring（轟音を立てる、大きな音の）。",
+            "pronunciation": "米音の目安は /rɔːr/。語頭のrと語末のrを意識し、母音を長めに発音する。",
+            "examFrequency": "低～中。物語文や描写文で使われる。本文では観客の大歓声を表す。"
+          },
+          {
+            "word": "failure",
+            "meaning": "名詞：失敗、不成功、機能不全。何かがうまくいかなかったこと。",
+            "usage": "例文：Failure can teach us how to improve our plans.（失敗は計画を改善する方法を教えてくれることがある。）failure to do＝～しないこと、～できないこと。",
+            "synonymsAntonyms": "類義語：mistake（間違い）、defeat（敗北）、setback（挫折、後退）。反意語：success（成功）、achievement（達成）。",
+            "derivatives": "動詞：fail（失敗する、～できない）。名詞：failure（失敗）。形容詞：failed（失敗した）。形容詞：failing（衰えつつある、弱点となる）。",
+            "pronunciation": "米音の目安は /ˈfeɪljər/。第1音節にアクセント。failとfailureをセットで覚える。",
+            "examFrequency": "高。fail to do、failure to do、without failなどの表現が頻出。"
+          }
+        ],
+        "questions": [
+          {
+            "question": "Q-1. How did Emily Cook increase her focus and confidence?",
+            "questionJapanese": "エミリー・クックはどのようにして集中力と自信を高めましたか。",
+            "answer": "By imagining the smell of the snow, the wind on her neck, and the roar of the crowd.",
+            "answerJapanese": "雪のにおい、首に当たる風、そして観客の大歓声を想像することによってです。",
+            "explanation": "本文では、Cookが複数の感覚的な要素を具体的に思い描くことによって、集中力と自信を高めたと説明されている。解答はBy＋動名詞の形で手段を示す。質問がHow did ～?と方法を尋ねているため、By imagining ...と答えると簡潔で自然。smell、wind、roarという具体的な情報を抜き出すことが本文理解のポイント。",
+            "similarQuestion": "How did Cook improve her confidence? Answer in English.（クックはどのように自信を高めましたか。英語で答えなさい。）模範解答：By imagining the sights and sounds of the competition.（競技の光景や音を想像することによって。）"
+          },
+          {
+            "question": "Q-2. What helps Serena Williams alleviate nervousness on game day?",
+            "questionJapanese": "セリーナ・ウィリアムズが試合当日の緊張を和らげるのに役立つものは何ですか。",
+            "answer": "Feeling pressure during practice helps her alleviate nervousness on game day.",
+            "answerJapanese": "練習中にプレッシャーを感じておくことが、試合当日の緊張を和らげる助けになります。",
+            "explanation": "本文では、練習中にプレッシャーを経験することが、試合当日の緊張を軽減する助けになると述べられている。質問の主語Whatに対する答えは、動名詞句Feeling pressure during practice。設問文にあるalleviate nervousnessは本文の表現と対応しているため、本文の因果関係を正確に読み取ることが大切。",
+            "similarQuestion": "What is the benefit of feeling pressure during practice? Answer in English.（練習中にプレッシャーを感じておくことには、どのような利点がありますか。英語で答えなさい。）模範解答：It helps athletes alleviate nervousness on game day.（試合当日の緊張を和らげる助けになります。）"
+          },
+          {
+            "question": "Q-3. Which of the following is NOT true about imaging?",
+            "questionJapanese": "イメージトレーニングについて、次のうち正しくないものはどれですか。",
+            "answer": "b. It sometimes results in a loss of confidence.",
+            "answerJapanese": "b. イメージトレーニングは、ときに自信を失う結果につながる。",
+            "explanation": "本文では、イメージトレーニングによって集中力と自信が高まることが説明されているため、「自信を失う結果につながる」という選択肢bは本文の内容と一致しない。選択肢aの「聞くこと、感じること、考えることを含む」は、本文の説明に合致する。選択肢cの「悪い状況に備えるのに役立つ」も、起こり得る悪い事態を想像し、成功につながる対応を考えるという記述に合致する。NOT trueは「正しくないもの」を選ぶ指示なので、正しい内容を選ばないように注意する。",
+            "similarQuestion": "Which statement is true about imaging? (a) It involves only seeing pictures. (b) It can help athletes prepare for difficult situations. (c) It always makes athletes nervous.（イメージトレーニングについて正しいものはどれか。）模範解答：b. It can help athletes prepare for difficult situations.（困難な状況に備える助けとなる。）"
           }
         ]
       }
