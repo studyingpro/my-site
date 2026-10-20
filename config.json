@@ -5962,7 +5962,85 @@
       "id": "L11P49",
       "title": "Lesson11 教科書P49",
       "lessonLabel": "Lesson11",
-      "problems": []
+      "problems": [
+        {
+          "problemNumber": "1 (1)",
+          "reproducedWithAnswer": "The more I studied chemistry, (d. **the more bored** I became.)",
+          "fullSentenceJapanese": "化学を勉強すればするほど、私はもっとうんざりした。",
+          "explanation": "「The 比較級 ..., the 比較級 ...」の構文は、「～すればするほど、ますます…」という意味を表します。前後の文の「The more I studied chemistry」に対応して、後半も「The 比較級」の形を取る必要があります。選択肢の中でこの形に合致するのはdのみです。",
+          "grammarPoint": "「The 比較級 ..., the 比較級 ...」の構文は、二つの事柄が同時に変化し、一方の変化が他方の変化に比例して起こることを表します。常に両方の節が「The + 比較級」で始まることを確認しましょう。"
+        },
+        {
+          "problemNumber": "1 (2)",
+          "reproducedWithAnswer": "He is the (a. **by far**) best baseball player in the history of Major League Baseball.",
+          "fullSentenceJapanese": "彼はメジャーリーグの歴史上、ずば抜けて最高の野球選手だ。",
+          "explanation": "最上級を強調する表現として「by far the best」（ずば抜けて最高の）や「much the best」（はるかに最高の）などがあります。「very」は原級を強調するのに使われ、最上級には使いません。「even」は「～でさえ」という意味で文脈に合いません。「much」も最上級の強調に使えますが、「the much best」とは通常言わず、「much the best」となります。選択肢の中では「by far」が「the best」の前に来て最上級を強調するのに最も適切です。",
+          "grammarPoint": "最上級を強調する表現にはいくつか種類があります。by far: 「ずば抜けて」「はるかに」という意味で、最上級の直前に置きます。（例: by far the best）much / even / still: これらの副詞は「the + 最上級」の前に置いて最上級を強調します。（例: much the best, even the best, still the best）the very: 「まさにその」「これぞ」というニュアンスで最上級を強調します。（例: the very best）選択肢の中から適切なものを選べるように、それぞれの意味と使い方を理解しておきましょう。"
+        },
+        {
+          "problemNumber": "1 (3)",
+          "reproducedWithAnswer": "The ticket was expensive. In fact, it cost me (a. **as much as**) 200 dollars.",
+          "fullSentenceJapanese": "そのチケットは高かった。実際、私には200ドルもかかった。",
+          "explanation": "空欄の後に「200 dollars」という金額が続いており、「expensive（高かった）」という前文を受けて、その金額が「～も」かかったと強調する文脈です。金額を表す「dollars」は数えられない名詞として扱われるため、「much」を使います。「as much as + 数詞」で「～もの（金額）」という驚きや多さを強調する表現になります。「as many as」は数えられる名詞に対して使います。「no more than」は「たった～しか」という意味で、前文の「expensive」と矛盾します。「larger than」は比較の表現ですが、金額の多さを強調する文脈には合いません。",
+          "grammarPoint": "as much as + 数詞: 「～もの（数量・金額）」という意味で、驚きや多さを強調します。主に不可算名詞や金額に対して使われます。例: He ate as much as three pizzas. (彼は3枚ものピザを食べた。)例: It cost as much as 100 dollars. (それは100ドルもかかった。)as many as + 数詞: 「～もの（数量）」という意味で、驚きや多さを強調します。主に可算名詞に対して使われます。例: As many as 50 students attended the lecture. (50人もの学生が講義に出席した。)no more than + 数詞: 「たった～しか」という意味で、少なさを強調します。（only と同義）no less than + 数詞: 「～も」という意味で、多さを強調します。（as much/many as と同義）これらの表現は、数量や金額の多寡に対する話し手の感情を伝える重要な働きをします。"
+        },
+        {
+          "problemNumber": "1 (4)",
+          "reproducedWithAnswer": "I cannot read French, (b. **much less**) write it.",
+          "fullSentenceJapanese": "私はフランス語を読めないし、ましてや書くことなどできない。",
+          "explanation": "「A not ..., much less B」の構文は、「Aができないのだから、Bはなおさらできない」という意味を表します。「much less B」は、AよりもBがさらに困難であることを強調する際に用いられます。選択肢の中でこの意味に合致するのは「much less」です。「much more」は「さらに多く」という意味で文脈に合いません。「no more」や「no less」は比較の意味で使われますが、ここでは「ましてや～ない」という強調のニュアンスが必要です。",
+          "grammarPoint": "「much less」と「still less」は、「ましてや～ない」という意味で、前述の事柄よりも後の事柄がさらに困難であることや不可能であることを強調する際に使われる表現です。否定文の後に続きます。例: I don't have enough money for a new car, much less a house. (新車を買うお金すら十分でないのに、ましてや家など買えない。)同様の表現に「let alone」もあります。例: He can't read Japanese, let alone write it. (彼は日本語を読めない、ましてや書くことなどできない。)"
+        },
+        {
+          "problemNumber": "2 (1)",
+          "reproducedWithAnswer": "My life [is **not as hard as** it used to be].",
+          "fullSentenceJapanese": "私の生活は以前ほど大変ではありません。",
+          "explanation": "「～ほど…ではない」という比較否定の構文「not as + 形容詞/副詞 + as ～」と、「以前は～だった」という「used to be」の表現を組み合わせた問題です。与えられた語句を正しく並べ替えると、「My life is not as hard as it used to be.」となります。「used to be」は「かつてはそうだった」という意味で、ここでは「以前の状態」を指します。",
+          "grammarPoint": "not as ... as ～: 「～ほど…ではない」という比較否定の構文です。同等比較「as ... as」の否定形として用いられます。used to do / used to be: 「（以前は）～したものだった」「（以前は）～だった」という意味で、過去の習慣や状態を表します。現在ではその習慣や状態が続いているとは限りません。"
+        },
+        {
+          "problemNumber": "2 (2)",
+          "reproducedWithAnswer": "He [was **more relieved than shocked**] to hear the news.",
+          "fullSentenceJapanese": "彼はその知らせを聞いて、ショックを受けたというよりはほっとした。",
+          "explanation": "「AというよりはむしろBだ」という構文は、「B rather than A」や「more B than A」で表されます。この問題では「more ... than」を使う形が適切です。「relieved（ほっとした）」と「shocked（ショックを受けた）」を比較し、より「relieved」だったことを示しています。したがって、be動詞の「was」と形容詞を正しく配置する必要があります。",
+          "grammarPoint": "「more A than B」の構文は、「BというよりはむしろA」という意味を表します。これは、二つの形容詞や副詞を比較して、どちらの状態や程度がより当てはまるかを述べる際に使われます。同じ単語を繰り返して「more beautiful than beautiful」とは言わず、違う状態を比較するのに使います。"
+        },
+        {
+          "problemNumber": "3 (1)",
+          "reproducedWithAnswer": "Which country **has the second largest population**?",
+          "fullSentenceJapanese": "どの国の人口が２番目に多いのですか。",
+          "explanation": "「2番目に～」という表現は、「the second largest」のように「the + 序数 + 最上級」で表します。また、「人口が多い」は「have a large population」と表現します。疑問文なので、「Which country」が主語となり、動詞「has」が続きます。",
+          "grammarPoint": "「the 序数 + 最上級」の構文は、「～番目に最も…な」という意味を表します。これは、順位や段階を示す際によく用いられます。例: Mount Fuji is the highest mountain in Japan. (富士山は日本で最も高い山だ。)例: Mount Everest is the second highest mountain in the world. (エベレストは世界で2番目に高い山だ。)また、「人口が多い/少ない」は「have a large/small population」と表現することを覚えておきましょう。"
+        },
+        {
+          "problemNumber": "3 (2)",
+          "reproducedWithAnswer": "I prefer **to go shopping at home rather than outside**.",
+          "fullSentenceJapanese": "私は外に行くよりも家で買い物をする方が好きだ。",
+          "explanation": "「～するよりも…するほうが好きだ」という嗜好を表す構文「prefer to do A rather than do B」を使います。「家で買い物に行く」は「to go shopping at home」と表現できます。対比される「外で買い物に行く」は明示されていないものの、「rather than outside」で対比の対象を示せます。",
+          "grammarPoint": "prefer to do A rather than do B: 「BするよりもAするほうを好む」という意味の構文です。動詞の原形が続きます。prefer doing A to doing B: 同様に「BするよりもAするほうを好む」という意味ですが、こちらは動名詞が続き、前置詞「to」を使います。どちらの形も頻出なので、使い分けられるように練習しましょう。"
+        },
+        {
+          "problemNumber": "3 (3)",
+          "reproducedWithAnswer": "I **am happiest when I am with you**.",
+          "fullSentenceJapanese": "私は君といっしょにいるときが一番幸せだ。",
+          "explanation": "「一番幸せだ」は最上級の「happiest」を使います。「～の時」を表す接続詞「when」を用いて、「君といっしょにいる時」は「when I am with you」と表現します。主語「I」と動詞「am」が必要です。",
+          "grammarPoint": "最上級: 形容詞/副詞の最上級を使って「最も～だ」という表現ができます。（例: happy -> happiest）when節: 「～するとき」という時を表す副詞節を導く接続詞です。主節の動詞と時制を合わせることに注意しましょう。"
+        },
+        {
+          "problemNumber": "3 (4)",
+          "reproducedWithAnswer": "This is **one of the best movies I have ever seen**.",
+          "fullSentenceJapanese": "これは私が今まで見た中で最もよかった映画の１つだ。",
+          "explanation": "「最も～なものの１つ」という表現は「one of the + 最上級 + 複数名詞」の形をとります。また、「私が今まで見た中で」という経験を表す部分は、現在完了形「I have ever seen」で表現するのが適切です。",
+          "grammarPoint": "one of the + 最上級 + 複数名詞: 「最も～なもののうちの１つ」という意味を表す頻出の構文です。最上級の後に続く名詞は必ず複数形になります。現在完了形 (have + 過去分詞): 「経験（～したことがある）」、「完了（～し終えた）」、「継続（ずっと～している）」などの意味があります。この文脈では「ever」と共に「今まで～した中で」という経験を表します。"
+        },
+        {
+          "problemNumber": "3 (5)",
+          "reproducedWithAnswer": "The sea **was much more beautiful than I had expected**.",
+          "fullSentenceJapanese": "海は私が予想していたよりも、はるかに美しかった。",
+          "explanation": "「～よりもはるかに…だった」という比較級の強調は、「much + 比較級 + than ～」で表現します。この文では「beautiful」の比較級「more beautiful」を使います。また、「私が予想していたよりも」という部分は、海が美しかった時点よりもさらに過去の予想を表すため、過去完了形「I had expected」を用いるのが適切です。",
+          "grammarPoint": "比較級の強調: 「はるかに」「ずっと」といった意味で比較級を強調するには、much, far, a lot, even, still などの副詞を比較級の前に置きます。veryは原級を強調するのに使われ、比較級は強調しません。過去完了形 (had + 過去分詞): 過去のある時点よりもさらに前の出来事や状態を表すときに使います。この文では、海が美しかったという過去の時点よりも前に「予想していた」という事実があったため、過去完了形が適切です。"
+        }
+      ]
     }
   ],
   "corners": [
