@@ -6041,6 +6041,293 @@
           "grammarPoint": "比較級の強調: 「はるかに」「ずっと」といった意味で比較級を強調するには、much, far, a lot, even, still などの副詞を比較級の前に置きます。veryは原級を強調するのに使われ、比較級は強調しません。過去完了形 (had + 過去分詞): 過去のある時点よりもさらに前の出来事や状態を表すときに使います。この文では、海が美しかったという過去の時点よりも前に「予想していた」という事実があったため、過去完了形が適切です。"
         }
       ]
+    },
+    {
+      "id": "L12P53",
+      "title": "Lesson12 教科書P53",
+      "lessonLabel": "Lesson12",
+      "problems": [
+        {
+          "problemNumber": "1-(1)",
+          "reproducedWithAnswer": "If I (**were**) you, I would tell her the truth.",
+          "fullSentenceJapanese": "もし私があなただったら、彼女に本当のことを言うだろう。",
+          "explanation": "主節が「I would tell」（助動詞の過去形 + 動詞の原形）であることから、現在の事実と異なる仮定を表す「仮定法過去」の文と判断できます。仮定法過去のif節では、動詞は過去形を用い、主語がIであってもbe動詞は「were」を使うのが一般的です。",
+          "grammarPoint": "仮定法過去：現在の事実と異なる仮定や願望を表す。If節（仮定）は「If + 主語 + 動詞の過去形（be動詞はwere）」、主節（結果）は「主語 + would/could/should/might + 動詞の原形」となる。"
+        },
+        {
+          "problemNumber": "1-(2)",
+          "reproducedWithAnswer": "If you (**come**) to see me, I'll show you around the city.",
+          "fullSentenceJapanese": "もしあなたが私に会いに来たら、街を案内してあげましょう。",
+          "explanation": "主節が「I'll show」（will + 動詞の原形）であることから、未来の可能性を表す「仮定法現在（条件文のType 1）」の文と判断できます。仮定法現在では、if節は現在形を用います。そのため、「come」が正解です。",
+          "grammarPoint": "仮定法現在（条件文Type 1）：現在の事実や未来の可能性を表す。If節（条件）は「If + 主語 + 現在形」、主節（結果）は「主語 + will/can/may/must + 動詞の原形」となる。"
+        },
+        {
+          "problemNumber": "1-(3)",
+          "reproducedWithAnswer": "If you (**hadn't reminded**) me, I would have forgotten to do my homework.",
+          "fullSentenceJapanese": "もしあなたが私に注意してくれなかったら、宿題をやるのを忘れていただろう。",
+          "explanation": "主節が「I would have forgotten」（would have + 過去分詞）であることから、過去の事実と異なる仮定を表す「仮定法過去完了」の文と判断できます。仮定法過去完了のif節では、動詞は「had + 過去分詞」の形を用います。否定形なので「hadn't reminded」が正解です。",
+          "grammarPoint": "仮定法過去完了：過去の事実と異なる仮定や願望、後悔を表す。If節（仮定）は「If + 主語 + had + 過去分詞」、主節（結果）は「主語 + would/could/should/might + have + 過去分詞」となる。"
+        },
+        {
+          "problemNumber": "1-(4)",
+          "reproducedWithAnswer": "I wish I (**had listened**) to his advice at that time.",
+          "fullSentenceJapanese": "あの時、彼のアドバイスを聞いていればよかったのに。",
+          "explanation": "「at that time」という過去を表す語句があることから、過去の事実に対する願望や後悔を表していると判断できます。「I wish」構文で過去の事実に反する願望を表す場合、「I wish + 主語 + 仮定法過去完了（had + 過去分詞）」の形を用います。したがって、「had listened」が正解です。",
+          "grammarPoint": "I wish構文：願望を表す構文。現在の事実に反する願望は「I wish + 主語 + 仮定法過去（動詞の過去形）」、過去の事実に反する願望は「I wish + 主語 + 仮定法過去完了（had + 過去分詞）」を用いる。"
+        },
+        {
+          "problemNumber": "2-(1)",
+          "reproducedWithAnswer": "If I (**didn't have**) a cold, I could go camping.",
+          "fullSentenceJapanese": "もし風邪をひいていなければ、キャンプに行けるのに。",
+          "explanation": "主節が「I could go」（助動詞の過去形 + 動詞の原形）であることから、現在の事実と異なる仮定を表す「仮定法過去」の文と判断できます。if節の動詞は過去形を用いるので、「not have」は過去形の否定で「didn't have」となります。",
+          "grammarPoint": "仮定法過去（再掲）：現在の事実と異なる仮定や願望を表す。If節は「If + 主語 + 動詞の過去形」。否定形にする場合は「didn't + 動詞の原形」または「weren't」を用いる。"
+        },
+        {
+          "problemNumber": "2-(2)",
+          "reproducedWithAnswer": "If she (**had joined**) our team last year, she (**would be**) a star now.",
+          "fullSentenceJapanese": "もし彼女が去年の時点で私たちのチームに入っていたら、今頃はスターだろうに。",
+          "explanation": "if節に「last year」とあることから過去の仮定、主節に「now」とあることから現在の結果を表しており、「混合仮定法」の文と判断できます。過去の仮定は仮定法過去完了（had + 過去分詞）で、現在の結果は仮定法過去の主節の形（would/could + 動詞の原形）で表現します。したがって、if節は「had joined」、主節は「would be」が正解です。",
+          "grammarPoint": "混合仮定法：if節と主節で異なる時制の仮定を表す構文。例えば、「過去の仮定が現在の結果に影響を与えている」場合は、「If + 主語 + had + 過去分詞（過去の仮定）」, 「主語 + would/could + 動詞の原形（現在の結果）」となる。"
+        },
+        {
+          "problemNumber": "2-(3)",
+          "reproducedWithAnswer": "Ren speaks English as if he (**had lived**) in America for a long time.",
+          "fullSentenceJapanese": "レンはまるで長い間アメリカに住んでいたかのように英語を話す。",
+          "explanation": "「as if + 仮定法」の構文です。主節の「speaks」が現在形であり、「for a long time」という期間が過去から現在に至るまで、または現在よりも以前の状況を表しています。レンが今現在アメリカに住んでいるわけではない（と話者が考えている）けれど、まるで以前から住んでいたかのように話す、という「過去の事実に反する仮定」を表すため、仮定法過去完了「had lived」を用います。もし現在住んでいるかのように話す場合は、仮定法過去「lived」を用います。",
+          "grammarPoint": "as if / as though + 仮定法：主節の内容が実際と異なるときの表現。「as if / as though + 仮定法過去（動詞の過去形）」は、現在の事実に反する内容を表現。「as if / as though + 仮定法過去完了（had + 過去分詞）」は、過去の事実に反する内容を表現する。"
+        },
+        {
+          "problemNumber": "3-(1)",
+          "reproducedWithAnswer": "(**Had you had**) a little more time, you could have solved the puzzle.",
+          "fullSentenceJapanese": "もう少し時間があったら、君はそのパズルを解けただろうに。",
+          "explanation": "主節が「could have solved」（could have + 過去分詞）であることから、過去の事実と異なる仮定を表す「仮定法過去完了」の文と判断できます。仮定法過去完了のif節は「If + 主語 + had + 過去分詞」ですが、ifを省略して「Had + 主語 + 過去分詞」と倒置形にすることも可能です。ここでは「Had」で始まっていることから倒置形を用います。「少し時間を持つ」は「have a little more time」なので、過去分詞は「had」となります。したがって「Had you had」が正解です。",
+          "grammarPoint": "ifの省略と倒置：仮定法過去完了（If + S + had + 過去分詞）や仮定法過去（If + S + were/had to + V）において、ifを省略すると、hadやwereが文頭に出て倒置が起こる。この場合、コンマでif節と主節を区切る。"
+        },
+        {
+          "problemNumber": "3-(2)",
+          "reproducedWithAnswer": "I (**wish there were**) a big supermarket in my neighborhood.",
+          "fullSentenceJapanese": "私の近所に大きなスーパーマーケットがあればいいのに。",
+          "explanation": "日本語訳が「～があればいいのに」とあることから、「I wish」構文を使うことがわかります。現在の事実「近所に大きなスーパーがない」ことに対する願望なので、「I wish + 主語 + 仮定法過去（動詞の過去形）」の形を用います。「～がある」という存在を表すには「there is/are」を使いますが、仮定法過去なので「there were」とします。したがって、「wish there were」が正解です。",
+          "grammarPoint": "I wish構文（再掲）：現在の事実に反する願望は「I wish + 主語 + 仮定法過去（動詞の過去形）」を用いる。動詞がbe動詞の場合、主語が単数でも「were」を使うことがある（特に形式的な文脈では）。"
+        },
+        {
+          "problemNumber": "3-(3)",
+          "reproducedWithAnswer": "If Japan (**won**) the World Cup, the history of soccer would change.",
+          "fullSentenceJapanese": "仮に日本がワールドカップで優勝すれば、サッカーの歴史が変わるだろう。",
+          "explanation": "主節が「would change」（would + 動詞の原形）であることから、現在の事実と異なる仮定を表す「仮定法過去」の文と判断できます。if節の動詞は過去形を用いるので、「win」の過去形である「won」が正解です。",
+          "grammarPoint": "仮定法過去（再々掲）：現在の事実と異なる仮定や願望を表す。If節は「If + 主語 + 動詞の過去形」。"
+        },
+        {
+          "problemNumber": "3-(4)",
+          "reproducedWithAnswer": "I'm busy now. (**Otherwise**), I would go shopping with you.",
+          "fullSentenceJapanese": "今は忙しいんだ。そうでなければ、君と一緒に買い物に行くんだが。",
+          "explanation": "主節が「I would go」（would + 動詞の原形）であることから、現在の事実と異なる仮定を表す「仮定法過去」の文であることがわかります。直前の文「I'm busy now.」（私は今忙しい）という事実がなければ、という条件を導く接続副詞が必要です。「そうでなければ」「さもなければ」という意味で仮定法の意味合いを持つ「Otherwise」が適切です。",
+          "grammarPoint": "Otherwiseを用いた仮定法：Otherwiseは「そうでなければ」「さもなければ」という意味で、直前の文の内容を仮定法のif節のように受け、結果を導くことができる。主に仮定法過去や仮定法過去完了の主節と組み合わせて使われる。"
+        },
+        {
+          "problemNumber": "3-(5)",
+          "reproducedWithAnswer": "If you (**should change**) your mind, let me know.",
+          "fullSentenceJapanese": "万が一考えが変わることがあれば、私に知らせて。",
+          "explanation": "「万一」という表現は、起こる可能性が低い未来の仮定を表します。このような場合、if節に「should + 動詞の原形」を用いる「仮定法未来（もし万が一～ならば）」の形を使います。したがって、「should change」が正解です。",
+          "grammarPoint": "仮定法未来（should）：起こる可能性が低い未来の仮定を表す。If節は「If + 主語 + should + 動詞の原形」。主節は未来形や命令形になることが多い。"
+        },
+        {
+          "problemNumber": "3-(6)",
+          "reproducedWithAnswer": "Kaori looks as if (**she had seen**) a ghost.",
+          "fullSentenceJapanese": "カオリはまるでオバケを見たかのような顔をしている。",
+          "explanation": "「as if + 仮定法」の構文です。主節の「looks」が現在形ですが、日本語訳が「オバケを見たかのような」と、あたかも過去にオバケを見たような状況を表現しています。これは過去の事実に反する仮定を表すため、仮定法過去完了「had seen」を用います。主語はKaoriなので「she」が入ります。",
+          "grammarPoint": "as if / as though + 仮定法（再掲）：主節の内容が実際と異なるときの表現。過去の事実に反する内容を表現する場合は「as if / as though + 仮定法過去完了（had + 過去分詞）」を用いる。"
+        },
+        {
+          "problemNumber": "4-(1)",
+          "reproducedWithAnswer": "**If it were not for the sun, we couldn't live.**",
+          "fullSentenceJapanese": "もし太陽がなければ、私たちは生きられないだろう。",
+          "explanation": "「But for ~」は「～がなければ」という意味で、仮定法の条件節の役割を果たします。主節が「couldn't live」（助動詞の過去形 + 動詞の原形）と仮定法過去の形なので、現在の事実と異なる仮定を表す「If it were not for ~」を用いて書き換えます。これは「太陽がなければ（現在）」という意味に合致します。",
+          "grammarPoint": "「But for ~」の言い換え：現在の事実に反する仮定で「～がなければ」という意味を表す場合、「If it were not for ~」または「Without ~」に書き換え可能。過去の事実に反する仮定の場合は「If it had not been for ~」または「Without ~」となる。"
+        },
+        {
+          "problemNumber": "4-(2)",
+          "reproducedWithAnswer": "**I wish I knew her home address.**",
+          "fullSentenceJapanese": "彼女の家の住所を知っていたらなあ。",
+          "explanation": "「I'm sorry I don't know her home address.」は「彼女の住所を知らないことを残念に思っている」という現在の事実に対する後悔を表しています。「I wish」構文で現在の事実に反する願望や後悔を表す場合、「I wish + 主語 + 仮定法過去（動詞の過去形）」の形を用います。「don't know」という現在の事実を仮定法過去の「knew」に変えることで、願望の文が完成します。",
+          "grammarPoint": "「I'm sorry + (that) S + V」の言い換え：現在の事実に対する後悔や残念な気持ちを表す場合、「I wish + 主語 + 仮定法過去（動詞の過去形）」を用いて言い換えができる。"
+        }
+      ]
+    },
+    {
+      "id": "L12P54",
+      "title": "Lesson12 教科書P54",
+      "lessonLabel": "Lesson12",
+      "problems": [
+        {
+          "problemNumber": "5-(1)",
+          "reproducedWithAnswer": "b. If it **is** raining heavily, we can't go out.",
+          "fullSentenceJapanese": "もし大雨が降っているなら、私たちは外出できない。",
+          "explanation": "元の文「大雨が降っているので、私たちは外出できない。」は、現在の大雨という事実とその結果を述べています。空欄補充の文は「If」で始まっているため、条件節を使って同じ意味を表現する必要があります。「If it is raining heavily」は、現在の状況が条件として提示され、それによって外出できないという結果につながることを示し、元の文の意味と非常に近くなります。ここでは、現在の事実に基づく条件を述べるため、現在形（is）を使用します。過去形（were）を使うと、「もし雨が降っていなければ」という非現実的な仮定になってしまい、元の文の意味と合いません。",
+          "grammarPoint": "条件節（If-clause）と時制の一致。現在の事実に基づく条件を述べる場合、If節には現在形（または現在進行形）を使用し、主節には未来形または現在の状態を表す助動詞（can, mayなど）を使います。例えば、「If it rains tomorrow, I will stay home.（明日雨が降れば、家にいるだろう。）」のように、可能性のある未来の出来事や、現在起こっている事実を前提とした状況を表現します。"
+        },
+        {
+          "problemNumber": "5-(2)",
+          "reproducedWithAnswer": "b. If I **had not overslept** this morning, I **would not have been** late for the meeting.",
+          "fullSentenceJapanese": "もし今朝寝坊していなかったら、会議に遅れることはなかっただろう。",
+          "explanation": "元の文「今朝寝坊したので、会議に遅刻しました。」は、過去の事実（寝坊した）と、それによって生じた過去の結果（会議に遅刻した）を述べています。これを「If」で始まる文に書き換える場合、過去の事実に反する仮定を表す「仮定法過去完了」を用います。仮定法過去完了の構文は、「If + 主語 + had + 過去分詞, 主語 + would (could/might) + have + 過去分詞」です。元の文が否定的な原因と結果なので、仮定法ではそれぞれを肯定形にして逆の結果を表現するか、あるいは否定形をそのまま用いて「～でなかったら、～でなかっただろう」と表現します。ここでは、元の文の意味を保ちつつ、もしそうしていなかったら、という仮定なので否定の形を取ります。",
+          "grammarPoint": "仮定法過去完了 (Third Conditional)。過去の事実に反する仮定を表す際に使用します。「もし～していたら、…していただろうに」という後悔や非現実的な状況を表現します。If節では過去完了形（had + 過去分詞）、主節では助動詞の過去形（would/could/might）+ have + 過去分詞を使用します。これは、過去の出来事に対する「もし～ならば」という仮想的な状況を述べる際に非常に重要な文法ポイントです。"
+        },
+        {
+          "problemNumber": "5-(3)",
+          "reproducedWithAnswer": "b. Jane behaves **as if** she **were** a teacher.",
+          "fullSentenceJapanese": "ジェーンはまるで先生であるかのように振る舞う。",
+          "explanation": "元の文「ジェーンは先生のように振る舞うが、実際はそうではない。」は、ジェーンの振る舞いが実際の職業と異なっていることを示しています。これを「まるで～であるかのように」という意味を持つ「as if」または「as though」を使って表現します。この構文では、現在の事実に反する仮定を表すために、動詞を「仮定法過去」の形にします。主語がsheであっても、be動詞は「were」を使うのが一般的です。これは、非現実的な仮定を強調する表現です。",
+          "grammarPoint": "As if/As though + 仮定法過去。「まるで～であるかのように」という意味を表し、現実とは異なる状況を仮定する際に使用します。If節と同様に、現在の事実に反する仮定には仮定法過去（動詞の過去形、be動詞は主語に関わらずwere）を、過去の事実に反する仮定には仮定法過去完了（had + 過去分詞）を用います。この表現は、話者の主観的な印象や、現実と異なる状況を強調したいときに役立ちます。"
+        },
+        {
+          "problemNumber": "5-(4)",
+          "reproducedWithAnswer": "b. **Without** my smartphone, I would have gotten lost.",
+          "fullSentenceJapanese": "スマートフォンがなかったら、私は道に迷っていただろう。",
+          "explanation": "元の文「もしスマートフォンがなかったら、私は道に迷っていただろう。」は、仮定法過去完了の「If it had not been for...」の形を使っています。この表現は、「～がなかったら／～がなければ」という意味で、過去の事実に反する仮定を表します。この句は、「Without...」または「But for...」という簡潔な前置詞句で置き換えることができます。ここでは一語の空欄なので「Without」が適切です。",
+          "grammarPoint": "仮定法におけるIf節の省略表現。「If it were not for...（～がなければ）」や「If it had not been for...（～がなかったら）」は、「Without...」や「But for...」という前置詞句で置き換えることができます。これらの表現は、条件節なしで仮定の状況を表す際に非常に便利です。特に、後続の主節が仮定法（would/could/might + 動詞の原形 または would/could/might + have + 過去分詞）である場合に、この表現の「仮定」の意味が明確になります。"
+        },
+        {
+          "problemNumber": "6-(1)",
+          "reproducedWithAnswer": "It **is about time you took** a bath.",
+          "fullSentenceJapanese": "そろそろお風呂に入る時間だよ。",
+          "explanation": "「そろそろ～する時間だ」という表現には、「It's time + 主語 + 動詞の過去形」という構文を用います。これは、「～すべき時が来ている」というニュアンスを含み、しばしば遅れていたり、そうするのが望ましい、という気持ちを表します。この構文は仮定法的な意味合いを持ち、現実にはまだ行われていない行動を促す際に使われます。提示された単語をこの構文に合わせて並べ替えます。",
+          "grammarPoint": "It's time + 仮定法過去。「そろそろ～する時間だ」と、何らかの行動を促す際に使われる慣用表現です。この構文では、主節の動詞に過去形（仮定法過去）を用いますが、これは非現実的な仮定ではなく、むしろ「現時点ではまだ行われていないが、今すぐ行うべきだ」という強い勧めや提案の意味合いを含んでいます。同様の表現に「It's high time...」や「It's about time...」があり、これらは緊急性や適切性をより強調します。"
+        },
+        {
+          "problemNumber": "6-(2)",
+          "reproducedWithAnswer": "I **wish I had left** home earlier.",
+          "fullSentenceJapanese": "もっと早く家を出ていればなあ。",
+          "explanation": "「～すればよかったのに／～だったらなあ」と過去の事実に対する後悔や願望を表す場合、「I wish + 主語 + 仮定法過去完了（had + 過去分詞）」の構文を用います。与えられた単語「had, wish, home, I, I, left」をこの構文に沿って並べ替えると、「I wish I had left home earlier.」となります。",
+          "grammarPoint": "Wish + 仮定法過去完了。過去の事実に反する願望や後悔を表す際に使用します。「～していればよかったのに」という気持ちを伝える重要な表現です。例えば、「I wish I had studied harder.（もっと一生懸命勉強していればよかった。）」のように、実現しなかった過去の出来事に対して今感じる残念な気持ちを表現します。"
+        },
+        {
+          "problemNumber": "6-(3)",
+          "reproducedWithAnswer": "A **considerate person would not have said** such a rude thing.",
+          "fullSentenceJapanese": "思いやりのある人なら、そんな失礼なことは言わなかっただろうに。",
+          "explanation": "与えられた単語は、「not, said, person, have, would, considerate」と「A」で始まる文の断片です。これは、「もし～ならば、～していただろう」という仮定法過去完了の意味合いを含む、条件節が省略された文と考えることができます。具体的には、「If he had been a considerate person, he would not have said such a rude thing.」という仮定法過去完了の主節部分がそのまま表現されています。つまり、「思いやりのある人（という条件）ならば、そんな失礼なことは言わなかっただろう」という帰結を表します。",
+          "grammarPoint": "仮定法における主節の表現。仮定法では「If節」で条件を提示し、「主節」でその結果を述べます。この問題のように、主節のみが示されている場合でも、文脈や動詞の形（would + have + 過去分詞）から仮定法であることが判断できます。この形は、過去の出来事に対する非現実的な結果を表し、しばしば後悔や批判のニュアンスを含みます。"
+        },
+        {
+          "problemNumber": "6-(4)",
+          "reproducedWithAnswer": "**If it were not for the internet**, our lives would be more inconvenient.",
+          "fullSentenceJapanese": "インターネットがなければ、私たちの生活はもっと不便になっているだろう。",
+          "explanation": "「～がなければ」という、現在の事実に反する仮定を表すには、「If it were not for...」の構文を用います。主節が「would be」と仮定法過去の形になっていることから、If節も仮定法過去の形にする必要があります。与えられた単語「not, the internet, it, for, if, were」を適切に配置すると、「If it were not for the internet」となります。",
+          "grammarPoint": "If it were not for...（～がなければ）。現在の事実に反する仮定を表す際に用いられる重要な表現です。この表現は、何かが存在しないとどうなるか、という仮想の状況を説明するのに使われます。主節には「would/could/might + 動詞の原形」の形が続きます。同様に、過去の事実に反する仮定には「If it had not been for...（～がなかったら）」が用いられ、主節には「would/could/might + have + 過去分詞」が続きます。これらの表現は、「Without...」や「But for...」で置き換えることもできます。"
+        },
+        {
+          "problemNumber": "Expression-1",
+          "reproducedWithAnswer": "Kenta wishes **he were a mayor**.",
+          "fullSentenceJapanese": "ケンタは自分が市長だったらなあ、と願っている。",
+          "explanation": "ケンタが市長になることを願っている状況を表すために、「wish + 仮定法」の構文を使います。現在または未来の事実に反する願望や実現が難しい願望を表す場合、「wish + 主語 + 動詞の過去形」の仮定法過去を用います。be動詞の場合、主語が三人称単数でも「were」を使用するのが一般的です。",
+          "grammarPoint": "Wish + 仮定法過去。現在の事実に反する、または実現が難しい願望を表す際に使われます。「～だったらなあ」という気持ちを表現します。If節と同様に、非現実的な願望を強調するためにbe動詞は主語に関わらず「were」を使うのが一般的です。"
+        },
+        {
+          "problemNumber": "Expression-2-(1)",
+          "reproducedWithAnswer": "If you were to become mayor*, what would you do? **If I were to become mayor, I would focus on improving public transportation and creating more green spaces in the city.**",
+          "fullSentenceJapanese": "もし私が市長になったら、公共交通機関の改善と、市内の緑地を増やすことに注力するでしょう。",
+          "explanation": "「If you were to become mayor, what would you do?」は、仮定法過去を用いた質問で、現実には可能性が低いが、もしそうなったらどうするか、という hypothetical な状況について尋ねています。回答も仮定法過去の形式（If I were to become mayor, I would...）で答えるのが自然です。具体的な行動を述べることで、問題の意図に応えます。",
+          "grammarPoint": "仮定法過去 (Second Conditional)。現在の事実に反する、または現実には可能性が低い仮定を述べる際に使用します。「もし～ならば、…するだろうに」という状況を表現します。If節では動詞の過去形（be動詞はwere）、主節では助動詞の過去形（would/could/might）+ 動詞の原形を使用します。特に「If S were to do...」は、より丁寧で、実現可能性が低いことを強調する表現です。"
+        },
+        {
+          "problemNumber": "Expression-2-(2)",
+          "reproducedWithAnswer": "If you had a time machine, what year or period would you visit and what would you do? **If I had a time machine, I would visit Japan during the Edo period to experience its unique culture and traditions firsthand.**",
+          "fullSentenceJapanese": "もしタイムマシンがあったら、江戸時代の日本を訪れて、そのユニークな文化や伝統を直接体験するでしょう。",
+          "explanation": "「If you had a time machine, what year or period would you visit and what would you do?」も、仮定法過去を用いた質問です。タイムマシンは現在のところ存在しないため、非現実的な仮定となります。回答も仮定法過去の形式（If I had a time machine, I would...）で答えることで、この非現実的な状況に対する自分の行動を表現します。訪問したい時代とその理由を具体的に述べます。",
+          "grammarPoint": "仮定法過去 (Second Conditional)。上記Expression-2-(1)と同様に、現在の事実に反する仮定を表す際に使われます。If節では動詞の過去形（had）、主節では助動詞の過去形（would/could/might）+ 動詞の原形を使用します。この問題では、非現実的な道具（タイムマシン）を使った仮想の状況を想定しており、それに対する想像上の行動を述べる形式です。"
+        }
+      ]
+    },
+    {
+      "id": "L12P55",
+      "title": "Lesson12 教科書P55",
+      "lessonLabel": "Lesson12",
+      "problems": [
+        {
+          "problemNumber": "1(1)",
+          "reproducedWithAnswer": "I had a previous appointment. Otherwise I ( ) the party last night. a. would join b. **could have joined** c. came d. joined",
+          "fullSentenceJapanese": "以前に約束があった。そうでなければ、昨晩のパーティーに参加できたのに。",
+          "explanation": "「Otherwise」は「もしそうでなければ」という意味で、仮定法で用いられます。文中の「last night」（昨晩）という過去の事実に反する仮定を表すため、帰結節は仮定法過去完了の形（助動詞の過去形 + have + 過去分詞）をとります。「join」は「参加する」という意味なので、「参加できたのに」という過去の可能性を表す「could have joined」が正解です。",
+          "grammarPoint": "「Otherwise」を用いた仮定法：\n「Otherwise」は、前に述べられた状況がなければどうなったかを仮定する際に使われます。「もしそうでなければ」という意味で、条件節が省略された仮定法と考えることができます。\n・過去の事実に反する仮定の場合（仮定法過去完了）：主節は「助動詞の過去形 + have + 過去分詞」となります。例: He studied hard; otherwise, he would have failed the exam. (彼は一生懸命勉強した。そうでなければ、試験に落ちていただろう。)\n・現在の事実に反する仮定の場合（仮定法過去）：主節は「助動詞の過去形 + 動詞の原形」となります。例: He is busy; otherwise, he would help us. (彼は忙しい。そうでなければ、私たちを助けてくれるだろう。)"
+        },
+        {
+          "problemNumber": "1(2)",
+          "reproducedWithAnswer": "It's about time the bus ( ). a. will come b. comes c. **came** d. would join",
+          "fullSentenceJapanese": "もうそろそろバスが来る時間だ。",
+          "explanation": "「It's about time (that) S + 過去形」は、「もうそろそろSが〜する時間だ」という意味で、Sがまだその行動をしていないことへの不満や、その行動を促すニュアンスを含みます。実際にはまだ起こっていないことや、これから起こるべきことに対して過去形を用いることで仮定の意味合いが表現されます。したがって、「came」が正解です。",
+          "grammarPoint": "「It's time...」の構文：\n「It's time (that) S + 過去形」: 「もうSが〜する時間だ」という意味で、行動が遅れていることへの催促や不満を表します。\n「It's high time (that) S + 過去形」: 「とっくにSが〜していてもいい時間だ」と、さらに強いニュアンスになります。\n「It's about time (that) S + 過去形」: 「そろそろSが〜する時間だ」と、穏やかな催促や期待を表します。\nこれらの構文では、現在の事柄について述べる場合でも、動詞は過去形を使用します。これは、仮定法的なニュアンスを持つためです。"
+        },
+        {
+          "problemNumber": "1(3)",
+          "reproducedWithAnswer": "If only I ( ) a flashlight! a. bring b. **had brought** c. will bring d. would bring",
+          "fullSentenceJapanese": "懐中電灯を持ってきてさえいればなあ！",
+          "explanation": "「If only S + 動詞」は、「Sが〜しさえすればなあ」という願望や後悔を表す仮定法です。過去の事柄に対する後悔を表す場合は、仮定法過去完了の形（had + 過去分詞）を用います。この文は、過去に懐中電灯を持ってこなかったことへの後悔を表しているため、「had brought」が正解です。",
+          "grammarPoint": "「If only...」を用いた仮定法：\n「If only」は、「〜しさえすればなあ」という強い願望や後悔を表す表現です。同じ意味で「I wish...」を使うこともできますが、「If only」の方がより感情が強調されます。\n・現在の事実に反する願望/後悔：If only S + 過去形。例: If only I knew her address. (彼女の住所を知ってさえいればなあ。)\n・過去の事実に反する願望/後悔：If only S + had + 過去分詞。例: If only I had studied harder. (もっと一生懸命勉強していればなあ。)\n・未来の願望：If only S + would + 動詞の原形。例: If only he would come. (彼が来てくれさえすればなあ。)"
+        },
+        {
+          "problemNumber": "1(4)",
+          "reproducedWithAnswer": "My teacher strongly advised that I ( ) for the exam as early as possible. a. will prepare b. have prepared c. **prepare** d. had prepared",
+          "fullSentenceJapanese": "先生は、できるだけ早く試験の準備をするように強く勧めた。",
+          "explanation": "「advise that S + 動詞の原形」という構文は、勧告や提案を表す際に用いられる仮定法現在の一種です。that節の中の動詞は、主語が三人称単数であっても原形（またはshould + 動詞の原形）となります。したがって、「prepare」が正解です。",
+          "grammarPoint": "仮定法現在（Subjunctive Mood）：\n要求、提案、命令、忠告などを表す動詞（suggest, recommend, advise, insist, order, demandなど）の後に続くthat節では、動詞の原形（またはshould + 動詞の原形）が用いられます。これは主語の人称や数、時制に関わらず、動詞の原形が使われる点が特徴です。この形は仮定法現在と呼ばれます。例: I suggested that he go to the doctor. (私は彼に医者に行くように提案した。)"
+        },
+        {
+          "problemNumber": "1(5)",
+          "reproducedWithAnswer": "( ) I knew his phone number, I would have told you. Otherwise I knew his phone number. a. If b. **Had** c. Have d. When",
+          "fullSentenceJapanese": "もし彼の電話番号を知っていたら、君に教えていただろうに。そうでなければ、私は彼の電話番号を知らなかった。",
+          "explanation": "「I would have told you」という帰結節は、仮定法過去完了（Type 3 Conditional）の形です。これは過去の事実に反する仮定を表します。仮定法過去完了の条件節は通常「If S had + 過去分詞」の形をとります。この「If」が省略されると、主語と「had」が倒置され、「Had S + 過去分詞」という形になります。問題文の「knew」は「known」と解釈し、「（もし）彼の電話番号を知っていたら」という条件を作るために、倒置形である「Had」を文頭に置くのが適切です。",
+          "grammarPoint": "仮定法の倒置（Inversion in Conditionals）：\n条件節の「If」が省略されると、助動詞（had, were, shouldなど）が主語の前に置かれて倒置が起こります。これにより、フォーマルな響きや、強調のニュアンスが生まれます。\n・仮定法過去完了：If S had + 過去分詞 → Had S + 過去分詞。例: Had I known, I would have told you. (もし知っていたら、君に教えていただろう。)\n・仮定法過去：If S were to + 動詞の原形 → Were S to + 動詞の原形。例: Were I to win the lottery, I would travel the world. (もし宝くじが当たったら、世界中を旅するだろう。)\n・仮定法未来：If S should + 動詞の原形 → Should S + 動詞の原形。例: Should you need anything, please call me. (もし何か必要でしたら、お電話ください。)"
+        },
+        {
+          "problemNumber": "2(1)",
+          "reproducedWithAnswer": "[ I, you, borrowed, if, would, mind ] this book? -> **Would you mind if I borrowed this book?**",
+          "fullSentenceJapanese": "私がこの本を借りてもよろしいでしょうか？",
+          "explanation": "「Would you mind if I...?」は、「私が〜してもよろしいでしょうか？」と許可を求める丁寧な表現です。この構文では、「if」節の中の動詞は過去形になります（仮定法過去）。したがって、「Would you mind if I borrowed this book?」が正しい語順です。",
+          "grammarPoint": "「Would you mind if I...?」の構文：\n「Would you mind if I + 動詞の過去形...?」は、「私が〜してもよろしいでしょうか？」という非常に丁寧な依頼や許可を求める表現です。この構文では、仮定法過去を用いることで丁寧さが増します。\n返答は、承諾なら「No, I wouldn't. / Of course not. / Not at all.」、拒否なら「Yes, I would. / I'm sorry, but...」となります。"
+        },
+        {
+          "problemNumber": "2(2)",
+          "reproducedWithAnswer": "[ for, not, had, the government's help, it, been ], the company would have gone bankrupt. -> **Had it not been for the government's help, the company would have gone bankrupt.**",
+          "fullSentenceJapanese": "もし政府の援助がなかったら、その会社は倒産していただろう。",
+          "explanation": "「〜がなかったら」という過去の事実に反する仮定を表す表現には、「If it had not been for A」や「But for A」「Without A」がありますが、この問題は「had it not been for」の倒置形を問うものです。帰結節が「would have gone bankrupt」（仮定法過去完了）であることから、条件節も仮定法過去完了である必要があります。したがって、「Had it not been for the government's help」が正しい語順です。",
+          "grammarPoint": "「〜がなかったら」の仮定法表現：\n過去の事実に反する仮定で「もし〜がなかったら」と言う場合、いくつかの表現があります。\n・If it had not been for A, S + would have + P.P.\n・Had it not been for A, S + would have + P.P. (倒置形)\n・But for A, S + would have + P.P.\n・Without A, S + would have + P.P.\nこれらの表現は、原因となる事柄がなかった場合の過去の結果を述べる際に用いられます。"
+        },
+        {
+          "problemNumber": "2(3)",
+          "reproducedWithAnswer": "[ I, come, if, appreciate, could, would, it, you ] to our concert. -> **I would appreciate it if you could come to our concert.**",
+          "fullSentenceJapanese": "もし私たちのコンサートに来ていただけると、ありがたいのですが。",
+          "explanation": "「I would appreciate it if you could do something」は、「もし〜していただけるとありがたいのですが」という、丁寧な依頼や感謝を表す表現です。この構文に沿って語句を並べると、「I would appreciate it if you could come to our concert.」となります。",
+          "grammarPoint": "「I would appreciate it if...」の構文：\n「I would appreciate it if S + 動詞の過去形（または助動詞の過去形 + 動詞の原形）」は、「もしSが〜してくれたらありがたいのですが」という、丁寧な依頼や感謝の意を表す際に使われます。仮定法過去を用いることで、控えめな表現になります。例: I would appreciate it if you could send me the report. (その報告書を送っていただけるとありがたいのですが。)"
+        },
+        {
+          "problemNumber": "3(1)",
+          "reproducedWithAnswer": "ギターをじょうずに弾けたらいいのになあ。 -> **I wish I could play the guitar well.**",
+          "fullSentenceJapanese": "ギターをじょうずに弾けたらいいのになあ。",
+          "explanation": "「〜たらいいのになあ」という現在の願望や不可能なことへの願望を表す場合、「I wish S + 仮定法過去（動詞の過去形）」または「If only S + 仮定法過去」を使います。「弾ける」という能力を表すので、「could play」を用います。",
+          "grammarPoint": "現在の願望や仮定を表す「I wish / If only」：\n・I wish S + 動詞の過去形 / If only S + 動詞の過去形：現在の事実に反する願望や、実現が難しい願望を表します。「〜だったらなあ」。\n・I wish S + could + 動詞の原形 / If only S + could + 動詞の原形：現在の能力や可能性に関する願望を表します。「〜できたらなあ」。"
+        },
+        {
+          "problemNumber": "3(2)",
+          "reproducedWithAnswer": "もう少し時間があったなら、その数学の問題をすべて解けたのに。 -> **If I had had a little more time, I could have solved all the math problems.**",
+          "fullSentenceJapanese": "もう少し時間があったなら、その数学の問題をすべて解けたのに。",
+          "explanation": "「もう少し時間があったなら」は過去の事実に反する仮定、「すべて解けたのに」は過去の事実に反する帰結を表しているため、仮定法過去完了（Type 3 Conditional）を用います。条件節は「If S had + 過去分詞」、帰結節は「S could have + 過去分詞」となります。「時間がある」は「have time」なので、過去完了形では「had had time」となります。",
+          "grammarPoint": "仮定法過去完了（Type 3 Conditional）：\n過去の事実に反する仮定と、それに基づく過去の帰結を表します。\n・条件節: If S + had + 過去分詞\n・帰結節: S + would/could/might + have + 過去分詞\n「もし〜だったなら、〜だっただろうに」という意味で、過去への後悔や非難を表す際によく使われます。"
+        },
+        {
+          "problemNumber": "3(3)",
+          "reproducedWithAnswer": "もし朝食をとっていたら、私は今おなかがすいていないだろうに。 -> **If I had eaten breakfast, I would not be hungry now.**",
+          "fullSentenceJapanese": "もし朝食をとっていたら、私は今おなかがすいていないだろうに。",
+          "explanation": "「もし朝食をとっていたら」は過去の事実に反する仮定ですが、「私は今おなかがすいていないだろうに」という帰結は現在の状況です。このように、条件が過去で帰結が現在という異なる時制を組み合わせる仮定法を「混合仮定法（Mixed Conditional）」と呼びます。条件節は仮定法過去完了（If S had + 過去分詞）、帰結節は仮定法過去（S would + 動詞の原形）の形をとります。",
+          "grammarPoint": "混合仮定法（Mixed Conditional）：\n条件節と帰結節の時制が異なる仮定法です。最も一般的な形は以下の通りです。\n・条件節（過去の事実に反する仮定）：If S + had + 過去分詞\n・帰結節（現在の事実に反する帰結）：S + would/could/might + 動詞の原形\n「もし過去に〜だったなら、今頃〜だろうに」という意味を表します。"
+        },
+        {
+          "problemNumber": "3(4)",
+          "reproducedWithAnswer": "その女性はまるで子どもが泣いているいた（仮定法を使って） -> **The woman was crying as if she were a child.**",
+          "fullSentenceJapanese": "その女性はまるで子どもが泣いているかのように泣いていた。",
+          "explanation": "「まるで〜のように」という、事実と異なる仮定や比喩を表す場合、「as if/as though S + 仮定法」の構文を用います。この文は「泣いているいた（過去進行形）」と過去の行動について述べていますが、「まるで子ども（であるかのよう）」という現在の事実に反する状況（彼女は子どもではない）を表現するため、仮定法過去の「were」を使います。主語がsheですが、仮定法では「was」ではなく「were」を用いるのが一般的です。",
+          "grammarPoint": "「as if / as though」を用いた仮定法：\n「as if」または「as though」は、「まるで〜であるかのように」という意味で、事実とは異なる状況や仮定を述べるときに使われます。\n・現在の事実に反する仮定：as if/as though S + 仮定法過去（動詞の過去形）。例: He acts as if he were rich. (彼はお金持ちであるかのように振る舞う。)\n・過去の事実に反する仮定：as if/as though S + 仮定法過去完了（had + 過去分詞）。例: He talks as if he had seen the ghost. (彼はまるで幽霊を見たかのように話す。)\n仮定法過去では、be動詞は主語が単数でも「were」を使うのが一般的です。"
+        }
+      ]
     }
   ],
   "corners": [
