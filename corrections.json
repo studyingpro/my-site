@@ -10,6 +10,34 @@
       "device": "dgigf5sqsez9mvglkjli",
       "verdict": "stale",
       "reason": "該当の問題が見つかりません（セクションが変更された可能性）"
+    },
+    {
+      "id": "abae509a-273c-4c73-bdf5-bfa9b4e07c1f",
+      "at": "2026-10-21T02:23:29.628Z",
+      "kind": "eikomi",
+      "sectionId": "22",
+      "sectionTitle": "22",
+      "path": "questions.0",
+      "device": "dgigf5sqsez9mvglkjli",
+      "itemLabel": "Question 1",
+      "reason": "問題が高校英語ではなく算数の問題であるため、根本的に不適切です。また、解答の形式も不自然です。",
+      "before": {
+        "question": "2+2=?",
+        "questionJapanese": "2+2=?",
+        "answer": "?=4",
+        "answerJapanese": "?=4",
+        "explanation": "",
+        "similarQuestion": ""
+      },
+      "verdict": "corrected",
+      "after": {
+        "question": "What is two plus two?",
+        "questionJapanese": "2足す2は何ですか？",
+        "answer": "Four.",
+        "answerJapanese": "4です。",
+        "explanation": "",
+        "similarQuestion": ""
+      }
     }
   ]
 }
