@@ -91,6 +91,32 @@
         "grammarPoint": "複合関係副詞は、関係副詞に「-ever」が付いた形です。場所の譲歩を表す「wherever」は「どこで～しようとも」「～するところはどこでも」という意味を持ち、名詞節または副詞節を作ります。この文では副詞節として働き、主節の条件を示しています。"
       },
       "reverted": true
+    },
+    {
+      "id": "dee31eff-ffaa-4f2c-83f6-4f8690448820",
+      "at": "2026-10-21T03:32:37.389Z",
+      "kind": "ronri",
+      "sectionId": "L10P43",
+      "sectionTitle": "Lesson10 教科書P43",
+      "path": "0",
+      "device": "dgigf5sqsez9mvglkjli",
+      "itemLabel": "問題1",
+      "reason": "英文、和訳、解答、解説、文法ポイントのすべてにおいて、事実としての誤りはありません。内容も適切です。",
+      "before": {
+        "problemNumber": "1",
+        "reproducedWithAnswer": "(1) I recently went back to the town (**where**) I grew up.",
+        "fullSentenceJapanese": "私は最近、育った町に戻った。",
+        "explanation": "この文では、先行詞「the town」が場所を示しており、空欄の後には「I grew up」（私は育った）というS+Vの完全な文が続いています。場所の先行詞を説明し、完全な文を導くのは関係副詞「where」です。「which」は関係代名詞で、後に不完全な文が続きます。「when」は時を表すため、ここでは不適切です。",
+        "grammarPoint": "関係副詞（where）：先行詞が場所（例: town, city, house）である場合に、その場所で「何が起こるか」や「誰が何をするか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
+      },
+      "verdict": "ok",
+      "after": {
+        "problemNumber": "1",
+        "reproducedWithAnswer": "(1) I recently went back to the town (**where**) I grew up.",
+        "fullSentenceJapanese": "私は最近、育った町に戻った。",
+        "explanation": "この文では、先行詞「the town」が場所を示しており、空欄の後には「I grew up」（私は育った）というS+Vの完全な文が続いています。場所の先行詞を説明し、完全な文を導くのは関係副詞「where」です。「which」は関係代名詞で、後に不完全な文が続きます。「when」は時を表すため、ここでは不適切です。",
+        "grammarPoint": "関係副詞（where）：先行詞が場所（例: town, city, house）である場合に、その場所で「何が起こるか」や「誰が何をするか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
+      }
     }
   ]
 }
