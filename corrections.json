@@ -38,6 +38,32 @@
         "explanation": "",
         "similarQuestion": ""
       }
+    },
+    {
+      "id": "07a94506-8269-44f8-97c1-a79efd0253a4",
+      "at": "2026-10-21T02:32:20.799Z",
+      "kind": "eikomi",
+      "sectionId": "22",
+      "sectionTitle": "22",
+      "path": "putIntoJapaneseAnswers.0",
+      "device": "dgigf5sqsez9mvglkjli",
+      "itemLabel": "Put into Japanese 1",
+      "reason": "英文は「学校に行く」という現在形ですが、和訳は「病院に行きました」と場所も時制も異なっています。",
+      "before": {
+        "num": "",
+        "english": "I go to school",
+        "japanese": "私は病院に行きました",
+        "translationPoint": "",
+        "commonMistake": ""
+      },
+      "verdict": "corrected",
+      "after": {
+        "num": "",
+        "english": "I go to school",
+        "japanese": "私は学校に行きます",
+        "translationPoint": "",
+        "commonMistake": ""
+      }
     }
   ]
 }
