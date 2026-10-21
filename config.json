@@ -1,14 +1,14 @@
 {
   "announcements": [
     {
-      "badge": "セクション追加",
-      "badgeColor": "#06b6d4",
-      "version": "dev-1792310462380",
-      "title": "セクションを新たに追加しました。",
-      "body": "英語コミュニケーション　Lesson5　Section4",
+      "badge": "UPDATE",
+      "badgeColor": "#03e23b",
+      "version": "dev-1792552713264",
+      "title": "アップデート予定について",
+      "body": "大型アップデートを来週末に予定しております。（前後する可能性あり）\nより皆様の意見が取り入れられるようなアプリとなります。\nまたアップデートが近づき次第詳しい内容はお知らせします。",
       "link": "",
-      "createdAt": "2026-10-18T08:01:02.380Z",
-      "updatedAt": "2026-10-18T08:01:12.746Z"
+      "createdAt": "2026-10-21T03:18:33.264Z",
+      "updatedAt": "2026-10-21T03:18:41.064Z"
     }
   ],
   "globalSchedules": [
