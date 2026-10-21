@@ -6642,12 +6642,12 @@
   "featureFlags": {
     "english": true,
     "examRange": true,
-    "math": false,
-    "science": false,
-    "social": false,
-    "grades": false,
+    "math": true,
+    "science": true,
+    "social": true,
+    "grades": true,
     "aiChat": true,
-    "essay": false
+    "essay": true
   },
   "examRanges": [],
   "examRangeTitle": "後期中間考査範囲",
