@@ -5024,10 +5024,10 @@
         "vocabulary": [],
         "questions": [
           {
-            "question": "2+2=4",
-            "questionJapanese": "",
-            "answer": "",
-            "answerJapanese": "",
+            "question": "2+2=?",
+            "questionJapanese": "2+2=?",
+            "answer": "4",
+            "answerJapanese": "4",
             "explanation": "",
             "similarQuestion": ""
           }
