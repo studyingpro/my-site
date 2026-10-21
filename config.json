@@ -6644,9 +6644,23 @@
     "examRange": true
   },
   "examRanges": [],
-  "examRangeTitle": "テスト範囲",
-  "exams": [],
-  "examRangeEnabled": false,
+  "examRangeTitle": "後期中間考査範囲",
+  "exams": [
+    {
+      "id": 1792552824849,
+      "name": "",
+      "dates": [
+        "2026-11-10",
+        "2026-11-11",
+        "2026-11-12",
+        "2026-11-13"
+      ],
+      "sessions": [],
+      "updatedAt": "2026-10-21T03:21:09.817Z",
+      "createdAt": "2026-10-21T03:21:09.817Z"
+    }
+  ],
+  "examRangeEnabled": true,
   "summerTasks": [],
   "summerTaskEnabled": false,
   "summerTaskTitle": ""
