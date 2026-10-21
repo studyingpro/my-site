@@ -5012,10 +5012,10 @@
       }
     },
     {
-      "id": "k",
-      "lessonLabel": "j",
-      "sectionLabel": "j",
-      "name": "j    j",
+      "id": "22",
+      "lessonLabel": "22",
+      "sectionLabel": "22",
+      "name": "22    22",
       "data": {
         "lessonTitle": "",
         "transcription": "",
@@ -5026,8 +5026,8 @@
           {
             "question": "2+2=?",
             "questionJapanese": "2+2=?",
-            "answer": "4",
-            "answerJapanese": "4",
+            "answer": "?=4",
+            "answerJapanese": "?=4",
             "explanation": "",
             "similarQuestion": ""
           }
