@@ -143,6 +143,33 @@
         "explanation": "この文では、先行詞「the day」が時を示しており、空欄の後には「we first met」（私たちは初めて会った）というS+Vの完全な文が続いています。時の先行詞を説明し、完全な文を導くのは関係副詞「when」です。「which」は関係代名詞、「where」は場所を表すため、ここでは不適切です。",
         "grammarPoint": "関係副詞（when）：先行詞が時（例: day, year, time）である場合に、その時に「何が起こるか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
       }
+    },
+    {
+      "id": "9b276f18-0732-42b4-bce8-6d650d3fe1c5",
+      "at": "2026-10-21T22:39:23.133Z",
+      "kind": "ronri",
+      "sectionId": "L11P47",
+      "sectionTitle": "Lesson11 教科書P47",
+      "path": "0",
+      "device": "dgigf5sqsez9mvglkjli",
+      "itemLabel": "問題1-1",
+      "usedImage": false,
+      "reason": "問題文、解答、和訳、解説、文法ポイントのすべてにおいて、内容の整合性があり、誤りはありません。",
+      "before": {
+        "problemNumber": "1-1",
+        "reproducedWithAnswer": "His watch is **more expensive** than mine.",
+        "fullSentenceJapanese": "彼の腕時計は私のものよりも高価です。",
+        "explanation": "\"than\"があるので比較級を使うのが適切です。形容詞\"expensive\"は3音節以上の語なので、比較級は\"more expensive\"の形になります。",
+        "grammarPoint": "比較級を作る際のルールを理解しましょう。ほとんどの1音節の形容詞・副詞には-erをつけますが、3音節以上の形容詞・副詞には\"more\"を前置します。また、\"than\"は比較の対象を示すキーワードです。"
+      },
+      "verdict": "ok",
+      "after": {
+        "problemNumber": "1-1",
+        "reproducedWithAnswer": "His watch is **more expensive** than mine.",
+        "fullSentenceJapanese": "彼の腕時計は私のものよりも高価です。",
+        "explanation": "\"than\"があるので比較級を使うのが適切です。形容詞\"expensive\"は3音節以上の語なので、比較級は\"more expensive\"の形になります。",
+        "grammarPoint": "比較級を作る際のルールを理解しましょう。ほとんどの1音節の形容詞・副詞には-erをつけますが、3音節以上の形容詞・副詞には\"more\"を前置します。また、\"than\"は比較の対象を示すキーワードです。"
+      }
     }
   ]
 }
