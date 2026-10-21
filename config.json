@@ -5010,37 +5010,6 @@
           }
         ]
       }
-    },
-    {
-      "id": "22",
-      "lessonLabel": "22",
-      "sectionLabel": "22",
-      "name": "22    22",
-      "data": {
-        "lessonTitle": "",
-        "transcription": "",
-        "transcriptionAnalysis": [],
-        "putIntoJapaneseAnswers": [
-          {
-            "num": "",
-            "english": "I go to school",
-            "japanese": "私は学校に行きます",
-            "translationPoint": "",
-            "commonMistake": ""
-          }
-        ],
-        "vocabulary": [],
-        "questions": [
-          {
-            "question": "What is two plus two?",
-            "questionJapanese": "2足す2は何ですか？",
-            "answer": "Four.",
-            "answerJapanese": "4です。",
-            "explanation": "",
-            "similarQuestion": ""
-          }
-        ]
-      }
     }
   ],
   "weekendBooth": {
