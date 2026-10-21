@@ -5024,10 +5024,10 @@
         "vocabulary": [],
         "questions": [
           {
-            "question": "2+2=?",
-            "questionJapanese": "2+2=?",
-            "answer": "?=4",
-            "answerJapanese": "?=4",
+            "question": "What is two plus two?",
+            "questionJapanese": "2足す2は何ですか？",
+            "answer": "Four.",
+            "answerJapanese": "4です。",
             "explanation": "",
             "similarQuestion": ""
           }
