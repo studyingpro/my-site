@@ -6641,7 +6641,13 @@
   "tourSteps": [],
   "featureFlags": {
     "english": true,
-    "examRange": true
+    "examRange": true,
+    "math": false,
+    "science": false,
+    "social": false,
+    "grades": false,
+    "aiChat": true,
+    "essay": false
   },
   "examRanges": [],
   "examRangeTitle": "後期中間考査範囲",
