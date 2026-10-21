@@ -6648,16 +6648,157 @@
   "exams": [
     {
       "id": 1792552824849,
-      "name": "",
+      "name": "後期中間考査",
       "dates": [
         "2026-11-10",
         "2026-11-11",
         "2026-11-12",
         "2026-11-13"
       ],
-      "sessions": [],
-      "updatedAt": "2026-10-21T03:21:09.817Z",
-      "createdAt": "2026-10-21T03:21:09.817Z"
+      "sessions": [
+        {
+          "id": "1792552931812-td1l",
+          "date": "",
+          "subject": "論理国語",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": []
+        },
+        {
+          "id": "1792552943669-qom1",
+          "date": "",
+          "subject": "古典探究",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": []
+        },
+        {
+          "id": "1792552954013-jepb",
+          "date": "",
+          "subject": "数学Ⅱ",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": []
+        },
+        {
+          "id": "1792552964039-fusb",
+          "date": "",
+          "subject": "数学B",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": []
+        },
+        {
+          "id": "1792552978525-wgtf",
+          "date": "",
+          "subject": "英語コミュニケーションⅡ",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": []
+        },
+        {
+          "id": "1792552995171-89kn",
+          "date": "",
+          "subject": "論理表現Ⅱ",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": []
+        },
+        {
+          "id": "1792553025663-cf28",
+          "date": "",
+          "subject": "生物",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": [
+            "c1783747972349",
+            "c1783747980943",
+            "c1783747990115"
+          ]
+        },
+        {
+          "id": "1792553042975-7kr7",
+          "date": "",
+          "subject": "物理",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": [
+            "c1783747972349",
+            "c1783747980943"
+          ]
+        },
+        {
+          "id": "1792553051732-h6tn",
+          "date": "",
+          "subject": "化学",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": [
+            "c1783747972349",
+            "c1783747980943",
+            "c1783747990115"
+          ]
+        },
+        {
+          "id": "1792553105448-tt3i",
+          "date": "",
+          "subject": "地学",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": [
+            "c1783748002801",
+            "c1783748009861",
+            "c1783748019462",
+            "c1783748029288"
+          ]
+        },
+        {
+          "id": "1792553116263-fpf9",
+          "date": "",
+          "subject": "世界史",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": [
+            "c1783748019462",
+            "c1783748029288"
+          ]
+        },
+        {
+          "id": "1792553134535-7x7m",
+          "date": "",
+          "subject": "日本史",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": [
+            "c1783748002801",
+            "c1783748009861",
+            "c1783748019462"
+          ]
+        },
+        {
+          "id": "1792553145679-s0j8",
+          "date": "",
+          "subject": "公共",
+          "period": null,
+          "time": "",
+          "range": "",
+          "classIds": []
+        }
+      ],
+      "createdAt": "2026-10-21T03:21:09.817Z",
+      "updatedAt": "2026-10-21T03:28:07.277Z"
     }
   ],
   "examRangeEnabled": true,
