@@ -64,6 +64,32 @@
         "translationPoint": "",
         "commonMistake": ""
       }
+    },
+    {
+      "id": "8fe3356d-78a0-4ea1-a493-02630dca3540",
+      "at": "2026-10-21T03:02:56.548Z",
+      "kind": "ronri",
+      "sectionId": "L10P45",
+      "sectionTitle": "Lesson10 教科書P45",
+      "path": "1",
+      "device": "dgigf5sqsez9mvglkjli",
+      "itemLabel": "問題1-(2)",
+      "reason": "問題文の英文が文法的に誤っており（コンマスパイス）、それに伴い和訳も不自然です。複合関係副詞whereverの用法を問う意図を明確にするため、不要な前置部分を削除しました。",
+      "before": {
+        "problemNumber": "1-(2)",
+        "reproducedWithAnswer": "We found a coffee shop, ( ) we are, we can always talk online.",
+        "fullSentenceJapanese": "私たちは喫茶店を見つけ、どこにいても、いつでもオンラインで話せる。",
+        "explanation": "この文の後半は「どこにいても、いつでもオンラインで話せる」という意味になります。空欄の後ろにある「we are」は「私たちがいる場所」を示唆しており、「どこにいても」という譲歩の意味を表す複合関係副詞が必要です。選択肢の中でこの意味を持つのは「wherever」です。「wherever」は「どこで～しようとも」「～するところはどこでも」という意味で、場所の譲歩を表します。",
+        "grammarPoint": "複合関係副詞は、関係副詞に「-ever」が付いた形です。場所の譲歩を表す「wherever」は「どこで～しようとも」「～するところはどこでも」という意味を持ち、名詞節または副詞節を作ります。この文では副詞節として働き、主節の条件を示しています。"
+      },
+      "verdict": "corrected",
+      "after": {
+        "problemNumber": "1-(2)",
+        "reproducedWithAnswer": "( ) we are, we can always talk online.",
+        "fullSentenceJapanese": "どこにいても、いつでもオンラインで話せる。",
+        "explanation": "この文の後半は「どこにいても、いつでもオンラインで話せる」という意味になります。空欄の後ろにある「we are」は「私たちがいる場所」を示唆しており、「どこにいても」という譲歩の意味を表す複合関係副詞が必要です。選択肢の中でこの意味を持つのは「wherever」です。「wherever」は「どこで～しようとも」「～するところはどこでも」という意味で、場所の譲歩を表します。",
+        "grammarPoint": "複合関係副詞は、関係副詞に「-ever」が付いた形です。場所の譲歩を表す「wherever」は「どこで～しようとも」「～するところはどこでも」という意味を持ち、名詞節または副詞節を作ります。この文では副詞節として働き、主節の条件を示しています。"
+      }
     }
   ]
 }
