@@ -5020,7 +5020,15 @@
         "lessonTitle": "",
         "transcription": "",
         "transcriptionAnalysis": [],
-        "putIntoJapaneseAnswers": [],
+        "putIntoJapaneseAnswers": [
+          {
+            "num": "",
+            "english": "I go to school",
+            "japanese": "私は病院に行きました",
+            "translationPoint": "",
+            "commonMistake": ""
+          }
+        ],
         "vocabulary": [],
         "questions": [
           {
