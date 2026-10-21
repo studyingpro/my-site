@@ -6328,6 +6328,307 @@
           "grammarPoint": "「as if / as though」を用いた仮定法：\n「as if」または「as though」は、「まるで〜であるかのように」という意味で、事実とは異なる状況や仮定を述べるときに使われます。\n・現在の事実に反する仮定：as if/as though S + 仮定法過去（動詞の過去形）。例: He acts as if he were rich. (彼はお金持ちであるかのように振る舞う。)\n・過去の事実に反する仮定：as if/as though S + 仮定法過去完了（had + 過去分詞）。例: He talks as if he had seen the ghost. (彼はまるで幽霊を見たかのように話す。)\n仮定法過去では、be動詞は主語が単数でも「were」を使うのが一般的です。"
         }
       ]
+    },
+    {
+      "id": "L14P61",
+      "title": "Lesson14 教科書P61",
+      "lessonLabel": "Lesson14",
+      "problems": [
+        {
+          "problemNumber": "1-1",
+          "reproducedWithAnswer": "( **No** / Not / None ) children were in the playground.",
+          "fullSentenceJapanese": "遊び場には子供が一人もいなかった。",
+          "explanation": "「子供が一人もいなかった」というように、名詞 `children` を直接否定して「全く～ない」という意味を表すには、形容詞の役割をする `No` が適切です。`Not` は動詞などを否定する副詞、`None` は単独で使われる代名詞です。",
+          "grammarPoint": "否定を表す語句「No」「Not」「None」の使い分け。`No` は名詞の前に置いて「全く～ない」という意味の形容詞、`Not` は動詞や形容詞などを否定する副詞、`None` は単独で「誰も～ない」「何も～ない」という意味の代名詞として使われます。"
+        },
+        {
+          "problemNumber": "1-2",
+          "reproducedWithAnswer": "Can you come with us? - I'm afraid ( so / can't / **not** ). I already have plans.",
+          "fullSentenceJapanese": "私たちと一緒に来られますか？ - 残念ながら無理です。すでに予定があります。",
+          "explanation": "`I'm afraid not` は「残念ながら無理です」「そうではありません」と、丁寧な否定の返答をする際の決まった表現です。`I'm afraid so` は肯定の返答なので文脈に合いません。`can't` は動詞ですが、`I'm afraid` の後に直接置くことはできません。",
+          "grammarPoint": "`I'm afraid so` と `I'm afraid not` の使い分け。相手からの質問に対し、それぞれ「残念ながらそうです」「残念ながらそうではありません」と、丁寧な肯定・否定の意思を伝える際に用いる表現です。"
+        },
+        {
+          "problemNumber": "1-3",
+          "reproducedWithAnswer": "I thought he'd pass the test, and he ( did / really / **never** ) pass it.",
+          "fullSentenceJapanese": "彼は試験に合格すると思っていたが、結局彼は合格しなかった。",
+          "explanation": "文脈から「合格すると思っていたのに、実際はしなかった」という対比があるため、完全な否定を表す `never` が適切です。`did` は過去形を強調する助動詞ですが否定の意味はありません。`really` は「本当に」という意味の副詞で、否定の意味はありません。",
+          "grammarPoint": "`never` を用いた強い否定表現。`never` は「決して～ない」「一度も～ない」という意味で、過去の出来事に対する完全な否定や、経験の否定を表すのに使われます。"
+        },
+        {
+          "problemNumber": "1-4",
+          "reproducedWithAnswer": "My wife loves cooking, and ( so I am / so I do / **so do I** ).",
+          "fullSentenceJapanese": "私の妻は料理が好きで、私もそうです。",
+          "explanation": "前の文 `My wife loves cooking` が一般動詞 `loves` を使った肯定文なので、「私もそうです」と同意を表すには `So + 助動詞 + 主語` の構文を使います。一般動詞に対応する助動詞は `do/does/did` で、主語 `I` に合わせて `do` を選び、倒置形 `so do I` となります。",
+          "grammarPoint": "同意を表す `So + 助動詞 + 主語` の構文。前の文がbe動詞の文なら `So am I`、一般動詞の文なら `So do I`（または `So does she` など）、助動詞を含む文なら `So can I` のように、前の文の動詞の種類と時制に合わせて助動詞を選びます。"
+        },
+        {
+          "problemNumber": "1-5",
+          "reproducedWithAnswer": "Is Bill your boyfriend? -No, ( anything / **far** / free ) from it. He's just one of my classmates.",
+          "fullSentenceJapanese": "ビルはあなたの彼氏ですか？ -いいえ、全く違います。彼はただのクラスメートの一人です。",
+          "explanation": "`far from it` は「全く違う」「とんでもない」という意味の慣用表現で、質問の内容を強く否定する際に使われます。他の選択肢は文脈に合いません。",
+          "grammarPoint": "慣用表現 `far from it`。「全く～でない」「とんでもない」という意味で、相手の言っていることや推測を強く否定する際に用いる口語表現です。"
+        },
+        {
+          "problemNumber": "2-1",
+          "reproducedWithAnswer": "He doesn't trust me ( **at all** ).",
+          "fullSentenceJapanese": "彼は私を全く信用していない。",
+          "explanation": "`not ~ at all` は「全く～ない」という意味の否定の強調表現です。文頭に `He doesn't trust me` と否定形があるので、これを強調する `at all` が適切です。",
+          "grammarPoint": "否定の強調表現 `not ~ at all`。「全く～ない」という強い否定を表し、否定文の最後に置かれることが一般的です。類義表現に `not ~ in the least` があります。"
+        },
+        {
+          "problemNumber": "2-2",
+          "reproducedWithAnswer": "I can't see Louis ( **without** ) thinking of his father.",
+          "fullSentenceJapanese": "ルイスを見ると、必ず彼の父親を思い出してしまう。",
+          "explanation": "`can't ~ without ...ing` は「～すれば必ず…する」「～せずには…できない」という慣用表現です。この文では、「ルイスを見る（～すれば）必ず父親を思い出す（…する）」という状況を表しています。",
+          "grammarPoint": "慣用表現 `can't ~ without ...ing`。「～すれば必ず…する」「～せずには…できない」という意味で、ある動作が別の動作と密接に結びついていることを示す際に使われます。"
+        },
+        {
+          "problemNumber": "2-3",
+          "reproducedWithAnswer": "No one is ( **free** ) from faults.",
+          "fullSentenceJapanese": "欠点のない人間などいない。",
+          "explanation": "`be free from ~` は「～がない」「～を免れている」という意味の熟語です。この文脈では「欠点がない」という意味になり、`free` が適切です。",
+          "grammarPoint": "熟語 `be free from ~`。「～がない」「～を免れている」「～から解放されている」という意味で、望ましくないものがない状態を表します。"
+        },
+        {
+          "problemNumber": "2-4",
+          "reproducedWithAnswer": "She missed her train and ( **failed** ) to arrive on time.",
+          "fullSentenceJapanese": "彼女は列車に乗り遅れて、時間通りに到着できなかった。",
+          "explanation": "`fail to ~` は「～し損なう」「～できない」という意味です。列車に乗り遅れた結果、時間通りに到着できなかったという状況を表すため、`failed` が適切です。動詞はandで繋がれており、`missed` と時制が一致します。",
+          "grammarPoint": "句動詞 `fail to ~`。「～できない」「～し損なう」という意味で、努力したにもかかわらず目的を達成できなかった状況や、期待された結果が得られなかった状況を表します。"
+        },
+        {
+          "problemNumber": "2-5",
+          "reproducedWithAnswer": "Speak louder. I can ( **hardly** ) hear you.",
+          "fullSentenceJapanese": "もっと大きな声で話して。ほとんど聞き取れないよ。",
+          "explanation": "`hardly` は「ほとんど～ない」という準否定の副詞です。「もっと大きな声で話して」という指示から、「ほとんど聞こえない」という状況であることが自然に推測されます。",
+          "grammarPoint": "準否定の副詞 `hardly`。「ほとんど～ない」「めったに～ない」という意味で、否定的な意味合いを持つ副詞です。他にも `scarcely` や `barely` などがあります。"
+        },
+        {
+          "problemNumber": "2-6",
+          "reproducedWithAnswer": "Where ( **were you** )? I've been looking for you everywhere.",
+          "fullSentenceJapanese": "いったい君はどこにいたんだ？ そこらじゅう探したんだよ。",
+          "explanation": "日本語訳の「いったい君はどこにいたんだ？」に対応する疑問文は `Where were you?` です。空欄にはbe動詞と主語が入り、過去の場所を尋ねています。",
+          "grammarPoint": "疑問文の基本的な構造。`Where + be動詞 + 主語` は、場所を尋ねる際の最も基本的な疑問文の形です。時制に合わせてbe動詞の形（`are`や`were`など）を適切に選びます。"
+        },
+        {
+          "problemNumber": "2-7",
+          "reproducedWithAnswer": "This picture ( **reminds** ) me of the days I spent in Paris.",
+          "fullSentenceJapanese": "この絵を見ると、パリで過ごした日々を思い出す。",
+          "explanation": "`remind A of B` は「AにBを思い出させる」という熟語です。主語が `This picture`（三人称単数）なので、動詞は現在形 `reminds` となります。",
+          "grammarPoint": "熟語 `remind A of B`。「AにBを思い出させる」という意味で、何かを見て過去の記憶や出来事を想起させる際に用いられます。`remind` は「思い出させる」という他動詞です。"
+        },
+        {
+          "problemNumber": "2-8",
+          "reproducedWithAnswer": "Strong winds ( **caused** ) a lot of trees to fall down last night.",
+          "fullSentenceJapanese": "昨夜、強風のためにたくさんの木が倒れた。",
+          "explanation": "`cause O to do` は「Oに～させる」「Oが～する原因となる」という意味の構文です。`Strong winds` が原因で木が倒れたという状況を表すため、`caused`（過去形）が適切です。",
+          "grammarPoint": "構文 `cause O to do`。「Oに～させる」「Oが～する原因となる」という意味で、何かが原因となって別の事態が発生する因果関係を表す際に使われます。"
+        },
+        {
+          "problemNumber": "3-1",
+          "reproducedWithAnswer": "a. We have no more questions. b. We ( **don't** ) have ( **any** ) more questions.",
+          "fullSentenceJapanese": "私たちにはもう質問がありません。",
+          "explanation": "`no more ~` と `not any more ~` は同じ意味を表す否定表現です。`no` は `not any` と置き換えられるため、`We don't have any more questions` となります。",
+          "grammarPoint": "否定表現 `no ~` と `not any ~` の書き換え。`no + 名詞` は `not any + 名詞` と同じ意味になります。`no` は形容詞として名詞を直接否定し、`not any` は `not` で動詞を否定し、`any` で名詞を修飾する形です。"
+        },
+        {
+          "problemNumber": "3-2",
+          "reproducedWithAnswer": "a. His first book became a best seller, and his second one did too. b. His first book became a best seller, and ( **so did** ) his second one.",
+          "fullSentenceJapanese": "彼の最初の本はベストセラーになり、2冊目の本もまたそうだった。",
+          "explanation": "前の文 `His first book became a best seller` の事実に「～もまたそうです」と同意を表すには `So + 助動詞 + 主語` の構文を使います。`became` は一般動詞の過去形なので、助動詞は `did` を用い、倒置形 `so did his second one` となります。",
+          "grammarPoint": "同意を表す `So + 助動詞 + 主語` の構文。前の文の動詞（be動詞、一般動詞、助動詞）の種類と時制を正確に判断し、適切な助動詞を選んで倒置させることがポイントです。"
+        },
+        {
+          "problemNumber": "3-3",
+          "reproducedWithAnswer": "a. We never asked to be paid for our services. b. We ( **didn't ever** ) ask to be paid for our services.",
+          "fullSentenceJapanese": "私たちは自分たちのサービスに対する支払いを決して求めなかった。",
+          "explanation": "`never` は `not ever` と置き換え可能です。この文は過去形なので `didn't` を使い、`never` の代わりに `ever` を用いて `We didn't ever ask to be paid for our services` となります。`ask` は原形に戻ります。",
+          "grammarPoint": "否定表現 `never` と `not ever` の書き換え。`never` は単独で強い否定を表しますが、`not ever` は助動詞 `do` を使った否定文の中で用いられます。時制に注意して助動詞の形（`don't` `doesn't` `didn't`）を選び、本動詞は原形に戻します。"
+        },
+        {
+          "problemNumber": "3-4",
+          "reproducedWithAnswer": "a. Jill speaks Spanish well. b. Jill is a ( **good speaker** ) of Spanish.",
+          "fullSentenceJapanese": "ジルはスペイン語を上手に話す。",
+          "explanation": "動詞句 `speaks well`（上手に話す）を、名詞句 `be a good speaker of ~`（～の良い話し手である）で言い換える問題です。`well` は副詞で動詞 `speak` を修飾しますが、名詞 `speaker` を修飾するには形容詞 `good` が必要です。",
+          "grammarPoint": "動詞句と名詞句による表現の言い換え。動詞と副詞の組み合わせ（例: `speak well`）を、be動詞と形容詞と名詞の組み合わせ（例: `be a good speaker`）で同じ意味を表すことができる場合があります。文法的な役割の違いに注意して語形を選択します。"
+        }
+      ]
+    },
+    {
+      "id": "L14P62",
+      "title": "Lesson14教科書P62",
+      "lessonLabel": "Lesson14",
+      "problems": [
+        {
+          "problemNumber": "4(1)",
+          "reproducedWithAnswer": "I didn't eat **all** the cookies.",
+          "fullSentenceJapanese": "私はクッキーを全部食べたわけではありません。",
+          "explanation": "この文は、部分否定を表す「not all」の構造を持っています。「全部は食べなかった」という意味で、「一部は食べたかもしれないが、全部ではない」というニュアンスになります。全部食べなかったことを強調する場合は、「I didn't eat any of the cookies.」や「I ate none of the cookies.」となります。",
+          "grammarPoint": "「not all」のように「not」と全体を表す語句（all, every, bothなど）が組み合わされると、「すべてが～というわけではない」「必ずしも～ではない」という部分否定の意味になります。全体否定と混同しないように注意しましょう。全体否定は「none of ～」「not any ～」などを用います。"
+        },
+        {
+          "problemNumber": "4(2)",
+          "reproducedWithAnswer": "The last thing I want to do **is** **to make** you angry.",
+          "fullSentenceJapanese": "私が一番したくないことは、あなたを怒らせることです。",
+          "explanation": "この文は、「The last thing S V is to do」という構文で、「Sが最もしたくないことは～である」という意味になります。動名詞（making）も可能ですが、ここでは「to make」が最も自然です。be動詞の後ろの不定詞は補語の働きをします。",
+          "grammarPoint": "「The last thing (that) S V is to do」は、「Sが最も～したくないこと」を表現する定型表現です。ここでのto不定詞は名詞的用法で、be動詞の補語として使われています。同様に、「The first thing S V is to do」で「Sが真っ先にすべきこと」という意味になります。"
+        },
+        {
+          "problemNumber": "4(3)",
+          "reproducedWithAnswer": "**To be successful** does **not necessarily** mean **to get** wealth or power.",
+          "fullSentenceJapanese": "成功することは、必ずしも富や権力を得ることと意味するわけではない。",
+          "explanation": "この文の主語は不定詞句の「To be successful」です。動詞は「mean」で、その前に部分否定を表す「not necessarily」が来ています。「necessarily」は「必然的に、必ず」という意味の副詞で、「not necessarily」で「必ずしも～ではない」という部分否定を形成します。meanの目的語も不定詞句「to get wealth or power」となっています。",
+          "grammarPoint": "「not necessarily」は「必ずしも～ではない」という意味の部分否定を表す重要なフレーズです。全体否定の「never」や「not at all」とは異なり、一部の可能性を否定しないニュアンスを持ちます。また、不定詞句（To V）が文の主語になることもあり、その場合は単数扱いとなります。"
+        },
+        {
+          "problemNumber": "4(4)",
+          "reproducedWithAnswer": "Carol looked angry, and **in fact** she **was**.",
+          "fullSentenceJapanese": "キャロルは怒っているように見えたが、実際そうだった。",
+          "explanation": "「in fact」は「実際は、実のところ」という意味で、前の文の内容を補足したり、強調したりする際に使われる接続副詞句です。後半の「she was」は、直前の動詞句「looked angry」を繰り返すのを避けるために、be動詞で代用されています。この場合、be動詞は「（怒っている状態）だった」という意味を含んでいます。",
+          "grammarPoint": "「in fact」は、前の内容が真実であることを強調したり、修正したりする際に用いられる頻出表現です。また、英語では同じ動詞や動詞句の繰り返しを避けるために、be動詞、do動詞、助動詞などを代用動詞として使うことが非常に多いです。この場合、どの動詞が省略されているかを文脈から判断する必要があります。"
+        },
+        {
+          "problemNumber": "4(5)",
+          "reproducedWithAnswer": "I have heard **nothing but** good things about Mr. Johnson.",
+          "fullSentenceJapanese": "ジョンソン先生については良いことしか聞いたことがない。",
+          "explanation": "「nothing but ～」は「～以外に何もない」という意味で、「～だけだ」「～にすぎない」という限定を表す構文です。この文では、「ジョンソン先生について良いこと以外は何も聞いていない」という構造から、「ジョンソン先生については良いことばかり聞いている」という意味になります。",
+          "grammarPoint": "「nothing but ～」は「only ～」と同じ意味を持つ重要な表現です。他にも「anything but ～」（決して～ない）、「all but ～」（ほとんど～、～以外すべて）など、「but」を使った様々な慣用表現があります。文脈に合わせて正しく理解することが大切です。"
+        },
+        {
+          "problemNumber": "4(6)",
+          "reproducedWithAnswer": "**It is through** learning from our mistakes **that** we grow.",
+          "fullSentenceJapanese": "私たちは、自分たちの過ちから学ぶことによって成長するのです。",
+          "explanation": "この文は、「It is ～ that ...」の強調構文（分裂文、cleft sentence）です。強調したい部分「through learning from our mistakes」（私たちの過ちから学ぶことによって）を「It is」と「that」で挟むことで、その部分を強調しています。元の文は「We grow through learning from our mistakes.」です。",
+          "grammarPoint": "「It is ～ that ...」の強調構文は、文中の主語、目的語、副詞句などを強調するために使われます。強調される部分が人であればthatの代わりにwho、場所であればwhere、時であればwhenを使うこともできますが、thatは万能です。元の文の構造を理解し、どの部分が強調されているかを見抜く練習をしましょう。"
+        },
+        {
+          "problemNumber": "4(7)",
+          "reproducedWithAnswer": "**Thinking about going** on a picnic **made** the children **feel excited**.",
+          "fullSentenceJapanese": "ピクニックに行くことを考えると、子供たちはわくわくした。",
+          "explanation": "この文の主語は動名詞句「Thinking about going on a picnic」です。動名詞（-ing形）が主語になる場合、その動名詞句全体で一つの名詞の働きをします。動詞は「made」で、これは使役動詞（make, have, let）の一つです。「make O 原形動詞」で「Oに～させる」という意味になります。ここでは「子供たちをわくわくさせた」となります。",
+          "grammarPoint": "動名詞は名詞的用法を持ち、文の主語、補語、目的語として使うことができます。また、使役動詞「make O 原形動詞」は頻出の構文です。Oには目的語、原形動詞には動詞の原型が入ります。「make O do」の「do」は動作、「make O be done」の「be done」は状態を表すことが多く、ここでは「feel excited」（わくわくした気持ちになる）という状態を表しています。"
+        },
+        {
+          "problemNumber": "5(1)",
+          "reproducedWithAnswer": "You should ask him. I **don't** **think** **he** **will** **get** angry.",
+          "fullSentenceJapanese": "彼に尋ねてみたら？彼は怒らないと思うよ。",
+          "explanation": "「～だとは思わない」という否定の考えを表現する場合、「I don't think (that) S V」の形をとります。thinkが否定されることで、「S Vではないと思う」という意味になります。この文では、heが主語、will get angryが動詞句となり、「彼は怒らないだろう」という内容をI don't thinkが修飾しています。",
+          "grammarPoint": "「I don't think S V」は、that節の内容を否定する際によく使われる表現で、「think」だけでなく、「believe」「suppose」「imagine」なども同様に否定されます。否定語が主節の動詞につくことで、従属節の内容を否定する「移動否定」と呼ばれる現象です。"
+        },
+        {
+          "problemNumber": "5(2)",
+          "reproducedWithAnswer": "**This** **pass** **enables** **you** **to** **save** up to 40 percent off the regular admission price.",
+          "fullSentenceJapanese": "このパスを使用すれば、通常の入場料から最大40%割引になります。",
+          "explanation": "この文は、「enable O to V」という構文を使います。「OがVすることを可能にする」という意味です。主語は「This pass」で、動詞が「enables」、目的語が「you」、そして「to save up to 40 percent off the regular admission price」が不定詞句として続きます。",
+          "grammarPoint": "「enable O to V」は、「OがVできるようにする」「OにVすることを可能にする」という許可や能力を与える意味を表す重要な構文です。この形の動詞には他に、「allow O to V」「permit O to V」などがあります。不定詞「to V」は目的語に対する補語の役割を果たしています。"
+        },
+        {
+          "problemNumber": "5(3)",
+          "reproducedWithAnswer": "**Inside** **the** **box** **was** **the** **ring** I thought I had lost.",
+          "fullSentenceJapanese": "その箱の中には、私がなくしたと思っていた指輪が入っていた。",
+          "explanation": "この文は、場所を表す副詞句「Inside the box」が文頭に来て、主語と動詞が倒置された形（倒置構文）になっています。通常の語順であれば「The ring I thought I had lost was inside the box.」となりますが、場所を強調するために倒置されています。主語は「the ring I thought I had lost」で、その後に動詞「was」が来ています。動詞の後ろの「I thought I had lost」は関係代名詞が省略された形で「the ring」を修飾しています。",
+          "grammarPoint": "場所を表す副詞句が文頭に来ると、主語が長い場合などに動詞と主語が倒置されることがあります（副詞句 + 動詞 + 主語）。特にbe動詞や自動詞でよく見られます。また、「I thought I had lost」のように、関係代名詞（ここではwhich/that）と動詞が省略されて名詞を修飾する形も頻出です。この場合、関係代名詞の後に主語＋動詞が続く「挿入節」と呼ばれる形が使われています。"
+        }
+      ]
+    },
+    {
+      "id": "L14P63",
+      "title": "Lesson14教科書P63",
+      "lessonLabel": "Lesson14",
+      "problems": [
+        {
+          "problemNumber": "1.1",
+          "reproducedWithAnswer": "1 We go **seldom** to the movies. We go only once or twice a year.",
+          "fullSentenceJapanese": "私たちはめったに映画に行きません。年に1、2回しか行きません。",
+          "explanation": "「年に1、2回しか行かない」という情報が、行動の頻度が低いことを示しています。選択肢の中で「めったに～ない」という意味を表すのはd. seldomです。b. neverは「決して～ない」で頻度が0回を意味するため、この文脈には合いません。",
+          "grammarPoint": "頻度を表す副詞：seldom (めったに～ない), never (決して～ない), rarely (めったに～ない), sometimes (時々), often/frequently (しばしば), always (いつも) などがあります。文脈に応じて適切な頻度を表す副詞を選びましょう。seldomは準否定語です。"
+        },
+        {
+          "problemNumber": "1.2",
+          "reproducedWithAnswer": "2 He is always **daydreaming**. (Options: a. anything b. never c. daydreaming d. daydream)",
+          "fullSentenceJapanese": "彼はいつも空想にふけっています。",
+          "explanation": "括弧内の「夢想にふける」という日本語のヒントから、動詞daydream（空想にふける）の現在分詞形が適切です。be動詞(is) + always + 動名詞/現在分詞で「いつも～している」という状態を表します。",
+          "grammarPoint": "動詞のing形：現在分詞としてbe動詞と共に進行形を形成したり、動名詞として使われたりします。この文脈では、'He is always daydreaming' で「彼はいつも空想にふけっている」という継続的な状態を表しています。また、`always` などの頻度副詞が進行形と共に使われると、「いつも～してばかりいる」という強調や、話し手の感情（不満など）を表すことがあります。"
+        },
+        {
+          "problemNumber": "1.3",
+          "reproducedWithAnswer": "3 Not until the 1950s **was there any significant** growth of modern industry in Japan.",
+          "fullSentenceJapanese": "1950年代になって初めて、日本の近代産業に目立った成長が見られた。",
+          "explanation": "「Not until...」の構文では、Not until + 時を表す句/節 の後に、倒置が起こります。通常の語順は「S + V」ですが、倒置では「助動詞/be動詞 + S + (本動詞)」の語順になります。この文では「growth（成長）」が主語で単数形なので、be動詞はwasが適切です。「any significant growth」は「目立った成長」という意味です。d. was there any significant が「there was any significant growth」の倒置形であり、文法的にも意味的にも正解です。",
+          "grammarPoint": "Not until... 倒置構文：「Not until 時を表す語句/節 + 助動詞/be動詞 + 主語 + 動詞...」の形で、「～になって初めて…した」という意味を表します。強調のため、否定語句が文頭に来ることで倒置が起こる重要な文法事項です。同様の倒置が起こる表現には、`Never`, `Hardly`, `Scarcely`, `Little`, `Only when/after/if` などがあります。"
+        },
+        {
+          "problemNumber": "2.1",
+          "reproducedWithAnswer": "1 **It wasn't until yesterday that I heard about the accident**.",
+          "fullSentenceJapanese": "昨日になって初めてその事故のことを聞いた。",
+          "explanation": "「～になって初めて…した」という表現は、「It is/was not until ～ that ...」という強調構文で表すことができます。与えられた語句を使ってこの形を組み立てると、「It wasn't until yesterday that I heard about the accident」となります。",
+          "grammarPoint": "It is/was not until ～ that ... 構文：「～になって初めて…する/した」という意味を表す強調構文です。`Not until ～` を文頭に置く倒置構文（例: `Not until yesterday did I hear about the accident.`）と意味は同じですが、こちらは`It is/was`で始まる形式です。"
+        },
+        {
+          "problemNumber": "2.2",
+          "reproducedWithAnswer": "2 There is **little hope that he will work with us on this project**.",
+          "fullSentenceJapanese": "このプロジェクトで彼が私たちに協力してくれる望みはほとんどない。",
+          "explanation": "「ほとんどない」という否定的な意味合いと、「望み」という名詞があるので、「There is little hope」という表現が適切です。その後に「～するという望み」という意味で`that`節を続けて「that he will work with us on this project」となります。`little`は「ほとんどない」という否定的な意味で使われます。",
+          "grammarPoint": "There is/are... 構文と `little` の使い方：`There is/are + 名詞`で「～がある/いる」という意味を表します。`little`は不可算名詞と共に用いられ、「ほとんどない」（準否定）という意味になります。`a little`だと「少しある」という肯定的な意味になります。`that`節は`hope`の内容を説明する同格の節として機能します。"
+        },
+        {
+          "problemNumber": "2.3",
+          "reproducedWithAnswer": "3 **A few minutes' walk brought us to the zoo**.",
+          "fullSentenceJapanese": "数分歩くと、私たちは動物園に着いた。",
+          "explanation": "「～が私たちを…へ連れてきた」という表現で、「A few minutes' walk brought us to the zoo」とすることで、「数分の徒歩が私たちを動物園に連れてきた」つまり「数分歩くと動物園に着いた」という意味になります。`a few minutes' walk`は「数分間の散歩/徒歩」という名詞句です。",
+          "grammarPoint": "無生物主語構文：人間以外のもの（時間、距離、出来事など）を主語にして文を構成する構文です。日本語では「～によって…した」と訳されることが多いですが、英語では自然な表現です。例: `This road will take you to the station.` (この道を行けば駅に着きます)。`a few minutes' walk`のように、時間や距離を示す名詞が所有格を持つことがあります。"
+        },
+        {
+          "problemNumber": "3.1",
+          "reproducedWithAnswer": "1 He was **far from satisfied** with the results.",
+          "fullSentenceJapanese": "彼は結果に全く満足していなかった。",
+          "explanation": "「at all」は「全く～ない」という強い否定を表す表現です。これを`far`を使って言い換えるには、「far from + 名詞/形容詞」で「全く～でない」「～からはほど遠い」という意味を表すのが適切です。したがって、「far from satisfied」とすることで「全く満足していない」というニュアンスを表現できます。",
+          "grammarPoint": "「far from + 名詞/形容詞」の慣用表現：「全く～でない」「～からはほど遠い」という意味を表し、強い否定のニュアンスを持つ表現です。`not at all`と同じような意味で使われます。例: `It was far from easy.` (それは決して簡単ではなかった)。"
+        },
+        {
+          "problemNumber": "3.2",
+          "reproducedWithAnswer": "2 The news **says that the Prime Minister will be resigning**.",
+          "fullSentenceJapanese": "ニュースによると、首相は辞任するそうだ。",
+          "explanation": "「According to the news」は「ニュースによると」という意味で、情報の出所を示します。「say」を使って言い換える場合、主語を「The news」にして「The news says that...」とするのが最も自然です。`that`節以下は元の文の内容をそのまま引き継ぎます。",
+          "grammarPoint": "情報の出所を示す表現の言い換え：`According to A, S + V` (AによるとSはVする) は、`A says that S + V` や、受動態の`It is said that S + V` （特に主語がはっきりしない場合）など、様々な形で言い換えることができます。文脈やニュアンスによって使い分けましょう。"
+        },
+        {
+          "problemNumber": "3.3",
+          "reproducedWithAnswer": "3 What **made you decide to work in Japan**?",
+          "fullSentenceJapanese": "なぜあなたは日本で働くことを決めたのですか？",
+          "explanation": "「Why did you decide to...？」は理由を尋ねる疑問文です。「What」を使って同様の質問をする場合、「What made you do...?」という構文を用います。「何があなたに～させたのか」という形で理由を尋ねます。`decide to work in Japan`は元の文のままです。",
+          "grammarPoint": "疑問詞 `What` を用いた「理由」を尋ねる表現：`What made you do...?` (何があなたに～させたのですか？) は、`Why did you do...?` と同様に理由を尋ねる際によく使われる表現です。`make + O + 原形不定詞`の使役動詞の構文が応用されています。"
+        },
+        {
+          "problemNumber": "4.1",
+          "reproducedWithAnswer": "1 His honesty does not **allow him to tell a lie**.",
+          "fullSentenceJapanese": "彼は正直なので、うそをつげない。",
+          "explanation": "「彼の正直さが、彼に嘘をつくことを許さない」という無生物主語の構文で表現するのが自然です。`allow + O + to V`（OがVするのを許す）という形を用いて、「彼の正直さが彼に嘘をつくことを許さない」と表現します。",
+          "grammarPoint": "無生物主語構文（`allow + O + to V`）：人間以外のものが主語となり、人に何かの行動を可能にしたり不可能にしたりする意味を表します。日本語では「～なので、…できる/できない」のように因果関係で訳されることが多いです。例: `This ticket allows you to enter the museum.` (このチケットで博物館に入れます)。"
+        },
+        {
+          "problemNumber": "4.2",
+          "reproducedWithAnswer": "2 We stopped at two restaurants, but **neither was open**.",
+          "fullSentenceJapanese": "2つのレストランに立ち寄ったが、どちらも開いていなかった。",
+          "explanation": "「どちらも～ない」という否定を表す場合、`neither`を使います。`neither`は単数扱いなので、動詞は`was`となります。`neither of them`としても間違いではありませんが、`of them`は省略されることが多いです。",
+          "grammarPoint": "否定代名詞 `neither`：2つのものや人について「どちらも～ない」という意味を表します。`neither`は通常、単数扱いとなり、動詞も単数形になります。例: `Neither of the brothers is tall.` (兄弟のどちらも背が高くない)。"
+        },
+        {
+          "problemNumber": "4.3",
+          "reproducedWithAnswer": "3 The dish was **so spicy that I could hardly eat it**.",
+          "fullSentenceJapanese": "その料理はとても辛かったので、私はほとんど食べられなかった。",
+          "explanation": "「とても～なので…できない」という結果を表す構文には、「so + 形容詞/副詞 + that節」を用います。「ほとんど～できない」という部分は`hardly`（ほとんど～ない）を使って表現します。",
+          "grammarPoint": "so ... that 構文と `hardly`：`so + 形容詞/副詞 + that + S + V`で「とても～なので…だ」という結果を表します。`hardly`は「ほとんど～ない」という準否定の副詞で、動詞の前や助動詞・be動詞の後に置かれます。`can hardly`で「ほとんど～できない」という意味になります。"
+        },
+        {
+          "problemNumber": "4.4",
+          "reproducedWithAnswer": "4 I fell asleep **while watching a movie**.",
+          "fullSentenceJapanese": "私は映画を見ている間に眠ってしまった。",
+          "explanation": "「～している間に」という同時進行の状況は`while`を使って表現します。`while`の後には通常節（`while I was watching a movie`）が来ますが、主語が主節と同じでbe動詞がある場合は、`while`の後に動名詞（現在分詞）句を続けることができます。ここでは`while watching a movie`とすることで簡潔に表現できます。",
+          "grammarPoint": "接続詞 `while` の省略形：`while`節の主語が主節の主語と同じで、`be`動詞を含む場合、`while + (主語 + be動詞) + 動名詞/現在分詞` の形で、主語とbe動詞を省略して`while + 動名詞/現在分詞`とすることができます。例: `While studying, I listen to music.` (勉強している間、私は音楽を聴く)。"
+        }
+      ]
     }
   ],
   "corners": [
