@@ -117,6 +117,32 @@
         "explanation": "この文では、先行詞「the town」が場所を示しており、空欄の後には「I grew up」（私は育った）というS+Vの完全な文が続いています。場所の先行詞を説明し、完全な文を導くのは関係副詞「where」です。「which」は関係代名詞で、後に不完全な文が続きます。「when」は時を表すため、ここでは不適切です。",
         "grammarPoint": "関係副詞（where）：先行詞が場所（例: town, city, house）である場合に、その場所で「何が起こるか」や「誰が何をするか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
       }
+    },
+    {
+      "id": "a3bcb448-ff39-4fa1-8b4a-7a5bc7c12c2d",
+      "at": "2026-10-21T03:35:33.720Z",
+      "kind": "ronri",
+      "sectionId": "L10P43",
+      "sectionTitle": "Lesson10 教科書P43",
+      "path": "1",
+      "device": "dgigf5sqsez9mvglkjli",
+      "itemLabel": "問題2",
+      "reason": "問題文、解答、和訳、解説、文法ポイントのすべてにおいて、事実としての誤りはありません。内容も適切です。",
+      "before": {
+        "problemNumber": "2",
+        "reproducedWithAnswer": "(2) Do you remember the day (**when**) we first met?",
+        "fullSentenceJapanese": "私たちが初めて会った日を覚えていますか？",
+        "explanation": "この文では、先行詞「the day」が時を示しており、空欄の後には「we first met」（私たちは初めて会った）というS+Vの完全な文が続いています。時の先行詞を説明し、完全な文を導くのは関係副詞「when」です。「which」は関係代名詞、「where」は場所を表すため、ここでは不適切です。",
+        "grammarPoint": "関係副詞（when）：先行詞が時（例: day, year, time）である場合に、その時に「何が起こるか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
+      },
+      "verdict": "ok",
+      "after": {
+        "problemNumber": "2",
+        "reproducedWithAnswer": "(2) Do you remember the day (**when**) we first met?",
+        "fullSentenceJapanese": "私たちが初めて会った日を覚えていますか？",
+        "explanation": "この文では、先行詞「the day」が時を示しており、空欄の後には「we first met」（私たちは初めて会った）というS+Vの完全な文が続いています。時の先行詞を説明し、完全な文を導くのは関係副詞「when」です。「which」は関係代名詞、「where」は場所を表すため、ここでは不適切です。",
+        "grammarPoint": "関係副詞（when）：先行詞が時（例: day, year, time）である場合に、その時に「何が起こるか」といった情報を補足説明する際に使われます。関係副詞の後には、主語、動詞、目的語などが揃った完全な文が続きます。"
+      }
     }
   ]
 }
