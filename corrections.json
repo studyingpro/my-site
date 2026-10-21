@@ -1,0 +1,15 @@
+{
+  "records": [
+    {
+      "id": "a708b835-495e-4dc1-99b8-aefc8ca4ae9b",
+      "at": "2026-10-21T02:19:34.915Z",
+      "kind": "eikomi",
+      "sectionId": "k",
+      "sectionTitle": "j",
+      "path": "questions.0",
+      "device": "dgigf5sqsez9mvglkjli",
+      "verdict": "stale",
+      "reason": "該当の問題が見つかりません（セクションが変更された可能性）"
+    }
+  ]
+}
