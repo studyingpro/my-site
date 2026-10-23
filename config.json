@@ -72,15 +72,5 @@
     "essay": true
   },
   "examRanges": [],
-  "protectedInFirestore": true,
-  "globalSchedules": [],
-  "extraSections": [],
-  "ronriSections": [],
-  "classes": [],
-  "exams": [],
-  "examRangeTitle": "",
-  "examRangeEnabled": true,
-  "summerTasks": [],
-  "summerTaskEnabled": true,
-  "summerTaskTitle": ""
+  "protectedInFirestore": true
 }
