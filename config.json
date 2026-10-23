@@ -1,6 +1,16 @@
 {
   "announcements": [
     {
+      "badge": "INFO",
+      "badgeColor": "#06b6d4",
+      "version": "dev-1792741239687",
+      "title": "セクション選択、カレンダー記録が消えている事象について。",
+      "body": "現在大型アップデートの準備を進めております。\nその準備で一時的にこのような事象が起こっております。\nアップデートが行われ次第、順次復旧予定となっています。",
+      "link": "",
+      "createdAt": "2026-10-23T07:40:39.687Z",
+      "updatedAt": "2026-10-23T07:40:39.687Z"
+    },
+    {
       "badge": "",
       "badgeColor": "#06b6d4",
       "version": "dev-1792677545958",
@@ -62,5 +72,15 @@
     "essay": true
   },
   "examRanges": [],
-  "protectedInFirestore": true
+  "protectedInFirestore": true,
+  "globalSchedules": [],
+  "extraSections": [],
+  "ronriSections": [],
+  "classes": [],
+  "exams": [],
+  "examRangeTitle": "",
+  "examRangeEnabled": true,
+  "summerTasks": [],
+  "summerTaskEnabled": true,
+  "summerTaskTitle": ""
 }
