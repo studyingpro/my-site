@@ -170,6 +170,17 @@
         "explanation": "\"than\"があるので比較級を使うのが適切です。形容詞\"expensive\"は3音節以上の語なので、比較級は\"more expensive\"の形になります。",
         "grammarPoint": "比較級を作る際のルールを理解しましょう。ほとんどの1音節の形容詞・副詞には-erをつけますが、3音節以上の形容詞・副詞には\"more\"を前置します。また、\"than\"は比較の対象を示すキーワードです。"
       }
+    },
+    {
+      "id": "d69a1499-8a5a-42c9-8443-f7ea29c6b9dc",
+      "at": "2026-10-23T07:45:39.635Z",
+      "kind": "eikomi",
+      "sectionId": "L1S1",
+      "sectionTitle": "Section1",
+      "path": "transcriptionAnalysis.0.translation",
+      "device": "dgigf5sqsez9mvglkjli",
+      "verdict": "stale",
+      "reason": "該当の問題が見つかりません（セクションが変更された可能性）"
     }
   ]
 }
