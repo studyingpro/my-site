@@ -15,10 +15,10 @@
       "badgeColor": "#06b6d4",
       "version": "dev-1792677545958",
       "title": "PHPの脆弱性について",
-      "body": "最近ニュースになっている、PHPというプログラムの重大な弱点（脆弱性）について確認しました。\nこのサイトはPHPを使っていないため、今回の問題の影響は受けないと考えています。パスワードの変更やアプリの入れ直しは必要ありません。\n\nただ、こうしたニュースに便乗して「アカウントが危険です」「今すぐログインしてください」といった偽のメールやメッセージが出回ることがあります。このサイトがパスワードそのものをメールやDMで聞くことはありません。心当たりのない連絡のリンクは開かないでください。\n\n気になることがあれば、アプリ内のお問い合わせからご連絡ください。",
+      "body": "最近ニュースになっている、PHPというプログラムの重大な弱点（脆弱性）について確認しました。\nこのサイトはPHPを使っていないため、今回の問題の影響は受けないと考えています。パスワードの変更やアプリの入れ直しは必要ありません。気になることがあれば、アプリ内のお問い合わせからご連絡ください。",
       "link": "https://forms.gle/uw3yLYqxwoSAt34v5",
       "createdAt": "2026-10-22T13:59:05.958Z",
-      "updatedAt": "2026-10-22T13:59:05.958Z"
+      "updatedAt": "2026-10-25T06:01:53.326Z"
     },
     {
       "badge": "UPDATE",
@@ -72,5 +72,15 @@
     "essay": true
   },
   "examRanges": [],
-  "protectedInFirestore": true
+  "protectedInFirestore": true,
+  "globalSchedules": [],
+  "extraSections": [],
+  "ronriSections": [],
+  "classes": [],
+  "exams": [],
+  "examRangeTitle": "",
+  "examRangeEnabled": true,
+  "summerTasks": [],
+  "summerTaskEnabled": true,
+  "summerTaskTitle": ""
 }
