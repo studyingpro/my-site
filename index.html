@@ -192,30 +192,6 @@
         .geo-assist-blink { animation: geoAssistBlink 0.6s ease-in-out 3; border-color: #f59e0b !important; }
 
 
-        /* ツアーオーバーレイ */
-        /* ツアー: overlayは全体を覆いclickをブロック。tooltipとspotlight内はauto */
-        #tour-overlay {
-            position: fixed; inset: 0; z-index: 9999;
-            pointer-events: auto;   /* ← 背面クリックをブロック */
-        }
-        #tour-spotlight {
-            position: fixed; z-index: 10000;
-            border-radius: 16px;
-            box-shadow: 0 0 0 9999px rgba(0,0,0,0.65);
-            transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-            pointer-events: none;   /* spotlight自体は透過 */
-        }
-        #tour-tooltip {
-            position: fixed; z-index: 10001;
-            background: var(--color-surface);
-            border: 1.5px solid var(--color-border);
-            border-radius: 18px;
-            padding: 18px 20px;
-            max-width: 320px;
-            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-            font-family: sans-serif;
-            pointer-events: auto;   /* ← tooltipのボタンはクリック可能 */
-        }
         /* ===== ロゴ行はスクロールで上に隠れる & マウスを画面上部に置くとニョコっと出てくる =====
            （タブバー #mode-tab-bar は sticky-header 自体には手を付けず、常に表示させる） */
         #sticky-header {
@@ -1112,6 +1088,190 @@
 .pm-radio:checked::before{transform:scale(1)}
 .pm-radio:disabled{cursor:default;opacity:.75}
 </style>
+
+    <!-- ===== モーションレイヤー（アニメーション全般） =====
+         ・画面の切り替え／モーダル／ボタン／下部タブ／リスト／開発者ページ／トーストの動きをまとめて定義している
+         ・<html> に pm-fx が付いている間だけ動く。端末の「視差効果を減らす」設定がオンなら自動でオフ。設定メニューの「アニメーション」でも切り替えられる
+         ・動きの速さや強さは、この<style>の --pm-* と @keyframes だけ変えればよい -->
+    <script>
+    (function () {
+        try {
+            var v = localStorage.getItem('pm_motion');
+            var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+            if (v === 'on' || (v !== 'off' && !reduce)) document.documentElement.classList.add('pm-fx');
+        } catch (e) { document.documentElement.classList.add('pm-fx'); }
+    })();
+    </script>
+    <style id="pm-motion-css">
+        :root { --pm-ease: cubic-bezier(.22, 1, .36, 1); --pm-spring: cubic-bezier(.34, 1.56, .64, 1); }
+
+        @keyframes pmFade { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pmRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        @keyframes pmScreenIn { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
+        @keyframes pmPageIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+        @keyframes pmPop { 0% { opacity: 0; transform: translateY(18px) scale(.92); } 60% { opacity: 1; transform: translateY(-2px) scale(1.012); } 100% { opacity: 1; transform: none; } }
+        @keyframes pmSheetUp { from { opacity: .4; transform: translateY(60%); } to { opacity: 1; transform: none; } }
+        @keyframes pmSlideX { from { opacity: 0; transform: translateX(-14px); } to { opacity: 1; transform: none; } }
+        @keyframes pmRebound { 0% { scale: .965; } 55% { scale: 1.03; } 100% { scale: 1; } }
+        @keyframes pmRipple { from { transform: translate(-50%, -50%) scale(0); opacity: .9; } to { transform: translate(-50%, -50%) scale(1); opacity: 0; } }
+        @keyframes pmTabPop { 0% { transform: scale(.7) rotate(-8deg); } 55% { transform: scale(1.22) rotate(4deg); } 100% { transform: none; } }
+        @keyframes pmGrowX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+        @keyframes pmGrowY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+        @keyframes pmFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+        @keyframes pmRing { 0% { transform: scale(.9); opacity: .55; } 100% { transform: scale(1.65); opacity: 0; } }
+        @keyframes pmSweep { from { transform: translateX(-120%); } to { transform: translateX(260%); } }
+        @keyframes pmToastBar { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+        @keyframes pmDotOk { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,.55); } 100% { box-shadow: 0 0 0 9px rgba(16,185,129,0); } }
+
+        /* ---------- 画面の切り替わり ---------- */
+        .pm-fx :is(#essay-panel,#home-container,#english-home,#ronri-entry-selector,#ronri-section-list-panel,#ronri-hyogen-panel,#japanese-home,#kobun-home,#kobun-reader-panel,#kobun-vocab-panel,#kobun-katsuyou-panel,#math-home,#science-home,#social-home,#social-qa-panel,#geo-puzzle-panel,#formula-panel,#target1900-panel,#scan-panel-wrapper,#grades-panel,#preset-section-selector,#english-entry-selector,#calendar-panel,#mypage-panel,#seasonal-corner-panel):not(.hidden) { animation: pmScreenIn .46s var(--pm-ease) backwards; }
+
+        /* ---------- モーダル：背景はふわっと、カードは弾むように。下から出るシートは下から ---------- */
+        .pm-fx .fixed.inset-0:is([class*="bg-slate-900/"],[class*="bg-black/"],[class*="bg-slate-950/"],[class*="bg-slate-800/"]):not(.hidden):not(.opacity-0):not(.pointer-events-none) { animation: pmFade .25s ease backwards; }
+        .pm-fx .fixed.inset-0:is([class*="bg-slate-900/"],[class*="bg-black/"],[class*="bg-slate-950/"],[class*="bg-slate-800/"]):not(.hidden):not(.opacity-0):not(.pointer-events-none) > :first-child { animation: pmPop .44s var(--pm-spring) backwards; }
+        .pm-fx .fixed.inset-0:is([class*="bg-slate-900/"],[class*="bg-black/"],[class*="bg-slate-950/"],[class*="bg-slate-800/"]):not(.hidden):not(.opacity-0):not(.pointer-events-none)[class*="items-end"] > :first-child { animation: pmSheetUp .48s var(--pm-ease) backwards; }
+        .pm-fx .fixed.inset-0:is([class*="bg-white"],[class*="bg-slate-50"],[class*="bg-slate-100"],[class*="bg-[#"]):not([class*="/"]):not(.hidden):not(.opacity-0):not(.pointer-events-none) { animation: pmPageIn .42s var(--pm-ease) backwards; }
+
+        /* ---------- ボタン：押し込み（離したときの弾みと、タップの波紋は JS） ---------- */
+        .pm-fx :is(button, [role="button"], summary, a[href], .cursor-pointer, [onclick]):not(:disabled):not(.fixed):not(.inset-0):not(td):not(tr):not(th):not(.pm-no-press):active { scale: .965; }
+        .pm-fx .pm-rebound { animation: pmRebound .38s var(--pm-spring); }
+        .pm-ripple { position: fixed; width: 150px; height: 150px; border-radius: 50%; pointer-events: none; z-index: 2147483600;
+            background: radial-gradient(circle, var(--pm-ripple-c, rgba(37,99,235,.26)) 0%, transparent 70%); animation: pmRipple .6s ease-out forwards; }
+        html.dark .pm-ripple { --pm-ripple-c: rgba(103,232,249,.28); }
+
+        /* ---------- 下部タブ：現在地のバーがスライドし、アイコンが跳ねる ---------- */
+        #pm-tab-ind { position: absolute; top: 0; left: 0; height: 3px; width: 28px; border-radius: 0 0 4px 4px; pointer-events: none; opacity: 0;
+            background: var(--pm-accent, #2563eb); box-shadow: 0 3px 12px rgba(37,99,235,.45);
+            transform: translateX(var(--x, 0px)); transition: transform .5s var(--pm-spring), opacity .2s ease; }
+        #pm-tab-ind.on { opacity: 1; }
+        html.dark #pm-tab-ind { background: #22d3ee; box-shadow: 0 3px 12px rgba(34,211,238,.5); }
+        html:not(.pm-fx) #pm-tab-ind { transition: none; }
+        .pm-fx #bottom-tab-bar > button.pm-tab-pop svg { animation: pmTabPop .5s var(--pm-spring); }
+
+        /* ---------- カード・リストが順番に出てくる ---------- */
+        .pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > * { animation: pmRise .55s var(--pm-ease) backwards; }
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(1){animation-delay:0.000s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(2){animation-delay:0.045s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(3){animation-delay:0.090s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(4){animation-delay:0.135s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(5){animation-delay:0.180s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(6){animation-delay:0.225s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(7){animation-delay:0.270s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(8){animation-delay:0.315s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(9){animation-delay:0.360s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(10){animation-delay:0.405s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(11){animation-delay:0.450s}
+.pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > *:nth-child(12){animation-delay:0.495s}
+        .pm-fx #leaderboard-list > * { animation: pmRise .5s var(--pm-ease) backwards; }
+        .pm-fx #leaderboard-list > *:nth-child(1){animation-delay:0.000s}
+        .pm-fx #leaderboard-list > *:nth-child(2){animation-delay:0.030s}
+        .pm-fx #leaderboard-list > *:nth-child(3){animation-delay:0.060s}
+        .pm-fx #leaderboard-list > *:nth-child(4){animation-delay:0.090s}
+        .pm-fx #leaderboard-list > *:nth-child(5){animation-delay:0.120s}
+        .pm-fx #leaderboard-list > *:nth-child(6){animation-delay:0.150s}
+        .pm-fx #leaderboard-list > *:nth-child(7){animation-delay:0.180s}
+        .pm-fx #leaderboard-list > *:nth-child(8){animation-delay:0.210s}
+        .pm-fx #leaderboard-list > *:nth-child(9){animation-delay:0.240s}
+        .pm-fx #leaderboard-list > *:nth-child(10){animation-delay:0.270s}
+        .pm-fx #leaderboard-list > *:nth-child(11){animation-delay:0.300s}
+        .pm-fx #leaderboard-list > *:nth-child(12){animation-delay:0.330s}
+
+        /* ---------- トースト：弾むように出て、残り時間のバーが縮む ---------- */
+        .pm-fx :is(#toast, #undo-toast, #error-toast) { transition-timing-function: cubic-bezier(.34, 1.56, .64, 1) !important; transition-duration: .5s !important; overflow: hidden; }
+        .pm-fx #toast::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--pm-accent, #2563eb); transform-origin: left; transform: scaleX(0); }
+        .pm-fx #toast.translate-y-0::after { animation: pmToastBar 5s linear forwards; }
+
+        /* ---------- 開発者ページ ---------- */
+        .pm-fx #dev-settings-modal:not(.opacity-0) { animation: pmPageIn .4s var(--pm-ease) backwards; }
+        .pm-fx .dev-panel:not(.hidden) > :is([data-dev-panel-head], .dev-hero, .dev-stats, .dev-card) { animation: pmRise .5s var(--pm-ease) backwards; }
+        .pm-fx .dev-panel:not(.hidden) > *:nth-child(1){animation-delay:0.000s}
+        .pm-fx .dev-panel:not(.hidden) > *:nth-child(2){animation-delay:0.070s}
+        .pm-fx .dev-panel:not(.hidden) > *:nth-child(3){animation-delay:0.140s}
+        .pm-fx .dev-panel:not(.hidden) > *:nth-child(4){animation-delay:0.210s}
+        .pm-fx .dev-panel:not(.hidden) > *:nth-child(5){animation-delay:0.280s}
+        .pm-fx .dev-panel:not(.hidden) > *:nth-child(6){animation-delay:0.350s}
+        .pm-fx .dev-panel:not(.hidden) > *:nth-child(7){animation-delay:0.420s}
+        .pm-fx .dev-stats > .dev-stat { animation: pmRise .55s var(--pm-ease) backwards; }
+        .pm-fx .dev-stats > .dev-stat:nth-child(1){animation-delay:0.120s}
+        .pm-fx .dev-stats > .dev-stat:nth-child(2){animation-delay:0.190s}
+        .pm-fx .dev-stats > .dev-stat:nth-child(3){animation-delay:0.260s}
+        .pm-fx .dev-stats > .dev-stat:nth-child(4){animation-delay:0.330s}
+        .pm-fx .dev-menu > * { animation: pmRise .5s var(--pm-ease) backwards; }
+        .pm-fx .dev-menu > *:nth-child(1){animation-delay:0.100s}
+        .pm-fx .dev-menu > *:nth-child(2){animation-delay:0.135s}
+        .pm-fx .dev-menu > *:nth-child(3){animation-delay:0.170s}
+        .pm-fx .dev-menu > *:nth-child(4){animation-delay:0.205s}
+        .pm-fx .dev-menu > *:nth-child(5){animation-delay:0.240s}
+        .pm-fx .dev-menu > *:nth-child(6){animation-delay:0.275s}
+        .pm-fx .dev-menu > *:nth-child(7){animation-delay:0.310s}
+        .pm-fx .dev-menu > *:nth-child(8){animation-delay:0.345s}
+        .pm-fx .dev-menu > *:nth-child(9){animation-delay:0.380s}
+        .pm-fx .dev-menu > *:nth-child(10){animation-delay:0.415s}
+        .pm-fx .dev-menu > *:nth-child(11){animation-delay:0.450s}
+        .pm-fx .dev-menu > *:nth-child(12){animation-delay:0.485s}
+        .pm-fx .dev-usage-sum { animation: pmPop .5s var(--pm-spring) backwards; }
+        .pm-fx .dev-usage-sum:nth-child(1){animation-delay:0.050s}
+        .pm-fx .dev-usage-sum:nth-child(2){animation-delay:0.110s}
+        .pm-fx .dev-usage-sum:nth-child(3){animation-delay:0.170s}
+        .pm-fx .dev-usage-sum:nth-child(4){animation-delay:0.230s}
+        .pm-fx .dev-usage-row { animation: pmRise .45s var(--pm-ease) backwards; }
+        .pm-fx .dev-usage-row:nth-child(1){animation-delay:0.100s}
+        .pm-fx .dev-usage-row:nth-child(2){animation-delay:0.130s}
+        .pm-fx .dev-usage-row:nth-child(3){animation-delay:0.160s}
+        .pm-fx .dev-usage-row:nth-child(4){animation-delay:0.190s}
+        .pm-fx .dev-usage-row:nth-child(5){animation-delay:0.220s}
+        .pm-fx .dev-usage-row:nth-child(6){animation-delay:0.250s}
+        .pm-fx .dev-usage-row:nth-child(7){animation-delay:0.280s}
+        .pm-fx .dev-usage-row:nth-child(8){animation-delay:0.310s}
+        .pm-fx .dev-usage-row:nth-child(9){animation-delay:0.340s}
+        .pm-fx .dev-usage-row:nth-child(10){animation-delay:0.370s}
+        .pm-fx .dev-usage-row:nth-child(11){animation-delay:0.400s}
+        .pm-fx .dev-usage-row:nth-child(12){animation-delay:0.430s}
+        .pm-fx .dev-usage-bar i { transform-origin: left; animation: pmGrowX .9s var(--pm-ease) .15s backwards; }
+        .pm-fx .dev-trend-bar i { transform-origin: bottom; animation: pmGrowY .8s var(--pm-ease) .1s backwards; }
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn { animation: pmSlideX .5s var(--pm-ease) backwards; }
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(1){animation-delay:0.100s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(2){animation-delay:0.130s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(3){animation-delay:0.160s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(4){animation-delay:0.190s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(5){animation-delay:0.220s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(6){animation-delay:0.250s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(7){animation-delay:0.280s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(8){animation-delay:0.310s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(9){animation-delay:0.340s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(10){animation-delay:0.370s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(11){animation-delay:0.400s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(12){animation-delay:0.430s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(13){animation-delay:0.460s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(14){animation-delay:0.490s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(15){animation-delay:0.520s}
+        .pm-fx #dev-settings-modal:not(.opacity-0) .dev-side-btn:nth-child(16){animation-delay:0.550s}
+        .pm-fx .dev-save-chip:not(.hidden) { animation: pmPop .45s var(--pm-spring); }
+        .pm-fx .dev-dot.is-ok { animation: pmDotOk 2s ease-out infinite; }
+        .pm-fx .dev-hero { position: relative; overflow: hidden; }
+        .pm-fx .dev-hero::after { content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 38%; pointer-events: none;
+            background: linear-gradient(100deg, transparent, rgba(255,255,255,.14), transparent); animation: pmSweep 2.2s .45s ease-in-out both; }
+        .pm-fx :is(.dev-stat, .dev-menu-card) { transition: transform .28s var(--pm-ease), box-shadow .28s var(--pm-ease), border-color .15s; }
+        .pm-fx :is(.dev-stat, .dev-menu-card):hover { transform: translateY(-3px); box-shadow: 0 12px 26px rgba(15,23,42,.10); }
+        .pm-fx .dev-side-btn { transition: background .2s, color .2s, padding-left .28s var(--pm-ease); }
+        .pm-fx .dev-side-btn:hover { padding-left: .95rem; }
+        .pm-fx .dev-chip { transition: background .25s, color .25s, transform .35s var(--pm-spring); }
+        .pm-fx .dev-chip.is-active { transform: scale(1.06); }
+        /* ログインページ */
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > *:not(.dev-login-icon) { animation: pmRise .65s var(--pm-ease) backwards; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(2) { animation-delay: 0.08s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(3) { animation-delay: 0.16s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(4) { animation-delay: 0.24s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(5) { animation-delay: 0.32s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(6) { animation-delay: 0.40s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(7) { animation-delay: 0.48s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(8) { animation-delay: 0.56s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(9) { animation-delay: 0.64s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(10) { animation-delay: 0.72s; }
+        .pm-fx #dev-login-modal:not(.opacity-0) #dev-login-card > :nth-child(11) { animation-delay: 0.80s; }
+        .pm-fx .dev-login-icon { position: relative; animation: pmPop .8s var(--pm-spring) backwards, pmFloat 3.4s .8s ease-in-out infinite; }
+        .pm-fx .dev-login-icon::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 2px solid rgba(245,158,11,.5); animation: pmRing 2.4s ease-out infinite; }
+    </style>
 </head>
 <body class="bg-white dark:bg-black text-slate-800 dark:text-slate-100 min-h-screen flex flex-col font-sans transition-colors duration-500 antialiased relative overflow-x-hidden w-full" style="padding-bottom: 72px;">
     <noscript>
@@ -1421,6 +1581,15 @@
                                     <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-1"></span>
                                 </span>
                             </button>
+                            <button onclick="pmToggleMotion()" id="pm-motion-toggle-btn" data-keep-open class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
+                                <span class="flex items-center space-x-3 min-w-0">
+                                    <i data-lucide="sparkles" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
+                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">アニメーション</span>
+                                </span>
+                                <span id="pm-motion-toggle-switch" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 bg-slate-300 dark:bg-slate-600 shrink-0">
+                                    <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-1"></span>
+                                </span>
+                            </button>
                             <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
                             <button onclick="toggleAiChatFabVisibility()" id="aichat-fab-toggle-btn" data-keep-open class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <span class="flex items-center space-x-3 min-w-0">
@@ -1456,14 +1625,10 @@
                             </button>
                         </div>
                 </div>
-                <!-- その他（使い方ツアー・テーマ切替） -->
+                <!-- その他（テーマ切替） -->
                 <div class="pt-4 border-t border-slate-200 dark:border-slate-800">
                     <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 ml-1">その他</p>
                     <div class="flex flex-col">
-                        <button id="tour-start-btn" onclick="startTour()" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors" title="使い方ツアーを見る">
-                        <i data-lucide="circle-help" class="w-4 h-4 text-blue-500 dark:text-cyan-400"></i>
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200">使い方ツアー</span>
-                        </button>
                         <button id="theme-toggle-btn" data-keep-open onclick="toggleTheme()" class="w-full flex items-center space-x-3 px-3.5 py-2.5 text-left rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors" title="テーマを切り替える">
                         <span id="theme-toggle-icon-container" class="flex items-center justify-center">
                         <i data-lucide="sun" class="w-4 h-4 text-cyan-400 hidden dark:block"></i>
@@ -4720,10 +4885,6 @@
          ================================================== -->
     <!-- ===== 下部固定タブバー（マイページ／カレンダー／成績管理／学習コンテンツ） ===== -->
     <nav id="bottom-tab-bar" class="fixed bottom-0 left-0 right-0 z-[9980] bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 flex items-stretch justify-around px-1 pb-[env(safe-area-inset-bottom)]" style="display:none;">
-        <button data-pm-restricted id="bottom-tab-timeline" onclick="showTimelineScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <i data-lucide="users" class="w-5 h-5"></i>
-            <span class="text-[10px] font-bold">クラス</span>
-        </button>
         <button id="bottom-tab-mypage" onclick="showMyPageScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
             <i data-lucide="user-circle" class="w-5 h-5"></i>
             <span class="text-[10px] font-bold">マイページ</span>
@@ -5430,89 +5591,6 @@
                 <i data-lucide="send" class="w-3 h-3"></i>
                 <span>報告する</span>
             </button>
-        </div>
-    </div>
-
-    <!-- ツアーオーバーレイ -->
-    <!-- 初めて訪れた人向け：使い方ツアーの案内 -->
-    <div id="welcome-tour-modal" class="hidden fixed inset-0 z-[9997] flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm">
-        <div class="bg-white dark:bg-[#0c1220] rounded-3xl p-6 max-w-xs w-full text-center border border-slate-200 dark:border-slate-800">
-            <div class="w-14 h-14 mx-auto mb-3 rounded-2xl bg-gradient-to-br from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center">
-                <i data-lucide="book-open" class="w-7 h-7 text-white"></i>
-            </div>
-            <h3 class="text-sm font-black text-slate-900 dark:text-white mb-1.5">はじめまして！</h3>
-            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-5">初めての方は、使い方ツアー（約1分）で基本の操作をすばやく確認できます。あとからでも設定メニューからいつでも見られます。</p>
-            <div class="grid grid-cols-2 gap-2.5">
-                <button onclick="closeWelcomeTourModal()" class="py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition-all">あとで見る</button>
-                <button onclick="startTourFromWelcome()" class="py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black transition-all hover:opacity-90">ツアーを見る</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="tour-overlay" class="hidden">
-        <div id="tour-spotlight"></div>
-        <div id="tour-tooltip">
-            <div class="flex items-center justify-between mb-3">
-                <span id="tour-step-badge" class="text-[10px] font-black text-blue-500 dark:text-cyan-400 bg-pink-50 dark:bg-cyan-900/30 px-2.5 py-1 rounded-lg tracking-wider uppercase">Step 1 / 7</span>
-                <div class="flex items-center gap-1">
-                    <button id="tour-edit-btn" onclick="tourToggleEdit()" class="hidden text-slate-400 hover:text-cyan-500 transition-colors" title="このステップを編集（開発者モード）">
-                        <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
-                    </button>
-                    <button onclick="endTour()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
-                        <i data-lucide="x" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            </div>
-            <h4 id="tour-title" class="text-sm font-black text-slate-900 dark:text-white mb-1.5 flex items-center gap-2">
-                <span id="tour-icon-wrap" class="shrink-0 w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 via-blue-500 to-violet-500 text-white flex items-center justify-center">
-                    <i id="tour-icon" data-lucide="info" class="w-4 h-4"></i>
-                </span>
-                <span id="tour-title-text"></span>
-            </h4>
-            <p id="tour-desc" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium mb-4"></p>
-
-            <!-- 開発者モード限定：このステップをその場で編集するフォーム -->
-            <div id="tour-edit-form" class="hidden space-y-2 mb-4 pt-3 border-t border-slate-200 dark:border-slate-800">
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">タイトル</label>
-                    <input type="text" id="tour-edit-title" class="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">説明文</label>
-                    <textarea id="tour-edit-desc" rows="3" class="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400"></textarea>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">アイコン（lucideアイコン名）</label>
-                    <input type="text" id="tour-edit-icon" placeholder="例：sparkles" class="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400">
-                    <p class="text-[9px] text-slate-400 mt-0.5">一覧は lucide.dev で確認できます（例：sparkles, image-plus, wand-2, book-marked, calendar-check-2）</p>
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">スポットライトを当てる要素のID</label>
-                    <input type="text" id="tour-edit-target" placeholder="例：header-home-btn" class="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400">
-                </div>
-                <div>
-                    <label class="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">画面遷移（表示前に自動で行う操作）</label>
-                    <select id="tour-edit-action" class="w-full px-2.5 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400">
-                        <option value="none">なし（今の画面のまま）</option>
-                        <option value="showTopHome">学習コンテンツを表示</option>
-                        <option value="showEnglishUploadDemo">英語アップロード画面を表示</option>
-                    </select>
-                </div>
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <button onclick="tourDeleteCurrentStep()" class="py-2 bg-rose-50 dark:bg-rose-950/30 text-rose-500 rounded-lg text-[11px] font-black hover:bg-rose-100 dark:hover:bg-rose-900/40 transition-all">このステップを削除</button>
-                    <button onclick="tourSaveCurrentStep()" class="py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-lg text-[11px] font-black hover:opacity-90 transition-all">この内容で保存</button>
-                </div>
-                <button onclick="tourAddStepAfterCurrent()" class="w-full py-2 border border-dashed border-slate-300 dark:border-slate-600 text-slate-400 hover:text-cyan-500 hover:border-cyan-400 rounded-lg text-[11px] font-black transition-all flex items-center justify-center gap-1">
-                    <i data-lucide="plus" class="w-3.5 h-3.5"></i><span>この後にステップを追加</span>
-                </button>
-                <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">保存した内容を全員に反映するには、開発者設定の「GitHubに保存して公開」を押してください。</p>
-            </div>
-
-            <div class="flex items-center justify-between">
-                <button id="tour-prev-btn" onclick="tourPrev()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-bold transition-all">← 前へ</button>
-                <div id="tour-dots" class="flex space-x-1.5"></div>
-                <button id="tour-next-btn" onclick="tourNext()" class="px-3.5 py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black transition-all hover:opacity-90">次へ →</button>
-            </div>
         </div>
     </div>
 
@@ -8760,9 +8838,6 @@
             updateExamBoardEntry();
             // GitHub上のHTML自体が新しいものに更新されていないかの監視を開始
             startVersionWatcher();
-            // 初めて訪れた人には、少し間を置いてから使い方ツアーをそっと案内する
-            // （お知らせのポップアップが出る場合はそちらを優先し、重ならないようにする）
-            maybeShowWelcomeTourPrompt();
             // 利用制限UIを更新
             updateScanUI();
             const limTomEl = document.getElementById('limit-tomorrow');
@@ -9916,13 +9991,6 @@
             }
             updateThemeIcon();
             refreshDynamicTheme();
-            // ツアーツールチップのテーマも即時反映
-            const tooltip = document.getElementById('tour-tooltip');
-            if (tooltip) {
-                tooltip.style.background = globalTheme === 'dark' ? '#0c1220' : '#ffffff';
-                tooltip.style.borderColor = globalTheme === 'dark' ? '#1e293b' : '#e2e8f0';
-                tooltip.style.color = globalTheme === 'dark' ? '#e2e8f0' : '#1e293b';
-            }
         }
 
         function refreshDynamicTheme() {
@@ -24366,6 +24434,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             try {
                 const count = await window.AppFirebase.getRegisteredUserCount();
                 setAll(count.toLocaleString('ja-JP') + ' 人');
+                if (typeof pmCountUpIn === 'function') pmCountUpIn('#dev-user-count, #dev-hub-user-count');
             } catch (e) {
                 console.error('load user count error', e);
                 setAll('取得に失敗しました');
@@ -24633,6 +24702,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             );
             set('dev-usage-screens', devUsageRowsHtml('screens', agg));
             set('dev-usage-features', devUsageRowsHtml('features', agg));
+            if (typeof pmCountUpIn === 'function') pmCountUpIn('#dev-usage-sums .dev-usage-sum:not(:last-child) b, #dev-usage-screens .dev-usage-num b, #dev-usage-features .dev-usage-num b');
         }
         function devUsageError(e) {
             const denied = !!(e && e.code === 'permission-denied');
@@ -24692,6 +24762,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             try {
                 const [n] = await window.AppFirebase.loadUsageCounts([devUsageJstToday()]);
                 el.textContent = n.toLocaleString('ja-JP') + ' 人';
+                if (typeof pmCountUp === 'function') pmCountUp(el);
             } catch (e) {
                 el.textContent = (e && e.code === 'permission-denied') ? 'ルール未設定' : '取得に失敗';
             }
@@ -27493,328 +27564,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             setTimeout(() => window.open('https://forms.gle/byfhaFViuqJkjoSY7', '_blank'), 200);
         }
 
-        // ===== 使い方ツアー =====
-        // デフォルトのツアー内容。config.json に tourSteps が保存されている場合はそちらが優先される
-        // （開発者モードでツアーを開くと、その場で内容を編集できる）。
-        // onShow の代わりに action（文字列）で画面遷移を指定し、JSON化・保存できるようにしている。
-        // 初めてこのアプリに触れる人でも迷わないよう、専門用語を避けてやさしい言葉で説明している。
-        const DEFAULT_TOUR_STEPS = [
-            {
-                icon: 'info',
-                targetId: 'bottom-tab-study',
-                title: 'はじめまして！学習ProMasterです',
-                desc: 'このアプリは、教科書やプリントの写真を撮ってアップロードするだけで、AIが予習ノートを自動で作ってくれるアプリです。使い方を1分ほどでご案内しますね。下の「学習コンテンツ」タブはいつでもここに戻れるボタンなので、迷ったらここを押してください。',
-                action: 'none',
-            },
-            {
-                icon: 'layout-grid',
-                targetId: 'subject-card-en',
-                title: '① まずは教科を選びます',
-                desc: '学習コンテンツの画面に並んでいるカードから、勉強したい教科をタップします。国語・数学・英語・理科・社会の5教科があり、今は英語と社会がまるごと使えます（他の教科は少しずつ増えていきます）。まずは「英語」で試してみましょう。',
-                action: 'showTopHome',
-            },
-            {
-                icon: 'image-plus',
-                targetId: 'image-upload-panel',
-                title: '② プリントの写真を追加します',
-                desc: 'スマホやパソコンで撮った教科書・プリントの写真を、ここにドラッグするか、タップして選びます。写真は1枚でもOKです。',
-                action: 'showEnglishUploadDemo',
-            },
-            {
-                icon: 'sliders-horizontal',
-                targetId: 'scan-start-btn',
-                title: '③ ボタン1つでAIが読み取ります',
-                desc: '写真を追加したら、このボタンをタップするだけ。数十秒待つと、AIが本文の内容・和訳・単語の意味・問題の解説をまとめて作ってくれます。読むだけで予習が終わる感覚です。1日に使える回数には上限があるので、ここぞという時に使ってくださいね。',
-                action: 'showEnglishUploadDemo',
-            },
-            {
-                icon: 'book-marked',
-                targetId: 'pm-tab-t19',
-                title: '④ 単語は自動で単語帳に貯まります',
-                desc: 'スキャンした英単語は「ターゲットモード」の単語帳に自動で追加されます。フラッシュカードやミニテストで復習したり、読み上げ機能で発音を確認したりできます。すきま時間の復習にぴったりです。',
-                action: 'showEnglishUploadDemo',
-            },
-            {
-                icon: 'calendar-check-2',
-                targetId: 'bottom-tab-calendar',
-                title: '⑤ テストや提出物も管理できます',
-                desc: '下の「カレンダー」タブから、テストや提出物の予定をいつでも確認・追加できます。提出物にはチェックボックスが付いていて、終わったらチェックを入れるだけで管理できます。',
-                action: 'none',
-            },
-            {
-                icon: 'party-popper',
-                targetId: 'bottom-tab-mypage',
-                title: 'これでツアーは完了です！',
-                desc: 'お疲れさまでした。困ったときは、下の「マイページ」タブから「お知らせ」の確認、クラスへの参加、通知のオン/オフ、フィードバックの送信ができます。それでは、さっそく最初の1枚をアップロードしてみましょう！',
-                action: 'none',
-            },
-        ];
-
-        // action名 → 実際に画面を切り替える処理。ここに無いaction名は何もしない。
-        const TOUR_ACTIONS = {
-            none: () => {},
-            showTopHome: () => { showTopHome(); },
-            showEnglishUploadDemo: () => { selectSubject('english'); selectTab(0); },
-        };
-
-        // 現在有効なツアー内容を返す。config.jsonにtourStepsがあればそちらを優先する
-        function getTourSteps() {
-            const remote = window._remoteTourSteps;
-            return (Array.isArray(remote) && remote.length > 0) ? remote : DEFAULT_TOUR_STEPS;
-        }
-
-        let tourCurrentStep = 0;
-        let tourActive = false;
-
-        // ===== 初めて訪れた人への、使い方ツアーのお誘い =====
-        function maybeShowWelcomeTourPrompt() {
-            if (safeStorage.get('pm_welcome_tour_prompt_shown')) return;
-            setTimeout(() => {
-                const annModal = document.getElementById('announcement-banner');
-                const isAnnouncementShowing = annModal && !annModal.classList.contains('hidden');
-                if (isAnnouncementShowing) {
-                    // お知らせのポップアップが先に出ている場合は、閉じられるまで少し長めに待つ
-                    setTimeout(showWelcomeTourModal, 4000);
-                } else {
-                    showWelcomeTourModal();
-                }
-            }, 1200);
-        }
-        function showWelcomeTourModal() {
-            safeStorage.set('pm_welcome_tour_prompt_shown', true);
-            const modal = document.getElementById('welcome-tour-modal');
-            if (!modal) return;
-            modal.classList.remove('hidden');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-        function closeWelcomeTourModal() {
-            const modal = document.getElementById('welcome-tour-modal');
-            if (modal) modal.classList.add('hidden');
-        }
-        function startTourFromWelcome() {
-            closeWelcomeTourModal();
-            startTour();
-        }
-
-        function startTour() {
-            tourActive = true;
-            tourCurrentStep = 0;
-            document.body.style.overflow = 'hidden'; // 背景スクロール禁止
-            const overlay = document.getElementById('tour-overlay');
-            if (overlay) overlay.classList.remove('hidden');
-            renderTourStep(tourCurrentStep);
-        }
-
-        function endTour() {
-            tourActive = false;
-            document.body.style.overflow = ''; // スクロール復元
-            const overlay = document.getElementById('tour-overlay');
-            const spotlight = document.getElementById('tour-spotlight');
-            const tooltip = document.getElementById('tour-tooltip');
-            if (overlay) overlay.classList.add('hidden');
-            if (spotlight) spotlight.style.cssText = '';
-            if (tooltip) tooltip.style.cssText = '';
-            const linkBtn = document.getElementById('tour-link-btn');
-            if (linkBtn) linkBtn.remove();
-        }
-
-        // ===== 使い方ツアーの編集（開発者モード限定） =====
-        // 初めて編集するときは、内蔵デフォルトの内容をコピーして編集可能なデータへ「昇格」させる
-        function tourEnsureEditableSteps() {
-            if (!Array.isArray(cmsConfigData.tourSteps) || cmsConfigData.tourSteps.length === 0) {
-                cmsConfigData.tourSteps = JSON.parse(JSON.stringify(DEFAULT_TOUR_STEPS));
-            }
-            window._remoteTourSteps = cmsConfigData.tourSteps;
-        }
-
-        function tourToggleEdit() {
-            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard('github'); return; }
-            const form = document.getElementById('tour-edit-form');
-            if (!form) return;
-            const opening = form.classList.contains('hidden');
-            form.classList.toggle('hidden');
-            if (opening) {
-                const step = getTourSteps()[tourCurrentStep];
-                document.getElementById('tour-edit-title').value = step.title || '';
-                document.getElementById('tour-edit-desc').value = step.desc || '';
-                document.getElementById('tour-edit-icon').value = step.icon || 'info';
-                document.getElementById('tour-edit-target').value = step.targetId || '';
-                document.getElementById('tour-edit-action').value = step.action || 'none';
-            }
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        function tourSaveCurrentStep() {
-            tourEnsureEditableSteps();
-            const step = window._remoteTourSteps[tourCurrentStep];
-            if (!step) return;
-            step.title = document.getElementById('tour-edit-title').value.trim() || '(無題)';
-            step.desc = document.getElementById('tour-edit-desc').value.trim();
-            step.targetId = document.getElementById('tour-edit-target').value.trim();
-            step.action = document.getElementById('tour-edit-action').value;
-            step.icon = document.getElementById('tour-edit-icon').value.trim() || 'sparkles';
-            cmsMarkDirty();
-            showToast('ステップを保存しました（GitHubへの保存が必要です）');
-            renderTourStep(tourCurrentStep);
-        }
-
-        function tourDeleteCurrentStep() {
-            tourEnsureEditableSteps();
-            const steps = window._remoteTourSteps;
-            if (steps.length <= 1) { showToast('最後の1つのステップは削除できません'); return; }
-            if (!confirm('このステップを削除しますか？')) return;
-            steps.splice(tourCurrentStep, 1);
-            cmsMarkDirty();
-            if (tourCurrentStep >= steps.length) tourCurrentStep = steps.length - 1;
-            renderTourStep(tourCurrentStep);
-            showToast('ステップを削除しました（GitHubへの保存が必要です）');
-        }
-
-        function tourAddStepAfterCurrent() {
-            tourEnsureEditableSteps();
-            const steps = window._remoteTourSteps;
-            steps.splice(tourCurrentStep + 1, 0, { icon: 'info', targetId: 'header-home-btn', title: '新しいステップ', desc: '', action: 'none' });
-            cmsMarkDirty();
-            tourCurrentStep++;
-            renderTourStep(tourCurrentStep);
-            tourToggleEdit();
-        }
-
-        function tourNext() {
-            if (tourCurrentStep < getTourSteps().length - 1) {
-                tourCurrentStep++;
-                renderTourStep(tourCurrentStep);
-            } else {
-                endTour();
-            }
-        }
-
-        function tourPrev() {
-            if (tourCurrentStep > 0) {
-                tourCurrentStep--;
-                renderTourStep(tourCurrentStep);
-            }
-        }
-
-        function renderTourStep(idx) {
-            const steps = getTourSteps();
-            const step = steps[idx];
-            if (!step) return;
-
-            const action = step.action && TOUR_ACTIONS[step.action] ? TOUR_ACTIONS[step.action] : (step.onShow || null);
-            if (action) action();
-
-            const titleEl = document.getElementById('tour-title-text');
-            const iconEl  = document.getElementById('tour-icon');
-            const descEl  = document.getElementById('tour-desc');
-            const badgeEl = document.getElementById('tour-step-badge');
-            const prevBtn = document.getElementById('tour-prev-btn');
-            const nextBtn = document.getElementById('tour-next-btn');
-            const dotsEl  = document.getElementById('tour-dots');
-            const tooltip  = document.getElementById('tour-tooltip');
-            const spotlight = document.getElementById('tour-spotlight');
-            if (!tooltip || !spotlight) return;
-
-            if (titleEl) titleEl.textContent = step.title;
-            if (iconEl) {
-                iconEl.setAttribute('data-lucide', step.icon || 'info');
-                // data-lucide属性を書き換えただけではアイコンが再描画されないため、
-                // 一度中身を空にしてlucide.createIconsで再生成する
-                iconEl.innerHTML = '';
-            }
-            if (descEl) {
-                descEl.style.whiteSpace = 'pre-line';
-                descEl.textContent = step.desc;
-            }
-            // 開発者モードの時だけ編集ボタンを表示し、ステップを移動したら編集フォームは閉じておく
-            const editBtn = document.getElementById('tour-edit-btn');
-            const editForm = document.getElementById('tour-edit-form');
-            if (editBtn) editBtn.classList.toggle('hidden', !devUnlocked);
-            if (editForm) editForm.classList.add('hidden');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-            // リンクボタン
-            const existingLink = document.getElementById('tour-link-btn');
-            if (existingLink) existingLink.remove();
-            if (step.link) {
-                const linkBtn = document.createElement('a');
-                linkBtn.id = 'tour-link-btn';
-                linkBtn.href = step.link.url;
-                linkBtn.target = '_blank';
-                linkBtn.rel = 'noopener noreferrer';
-                linkBtn.className = 'inline-flex items-center space-x-1.5 mt-2 mb-1 px-3 py-1.5 bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/40 dark:hover:bg-blue-800/60 text-blue-700 dark:text-blue-300 rounded-lg text-[11px] font-black transition-all pointer-events-auto no-underline';
-                linkBtn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg><span>' + step.link.label + '</span>';
-                if (descEl) descEl.insertAdjacentElement('afterend', linkBtn);
-            }
-            if (badgeEl) badgeEl.textContent = `Step ${idx + 1} / ${steps.length}`;
-            if (prevBtn) { prevBtn.style.opacity = idx === 0 ? '0.3' : '1'; prevBtn.style.pointerEvents = idx === 0 ? 'none' : 'auto'; }
-            if (nextBtn) nextBtn.textContent = idx === steps.length - 1 ? '完了 ✓' : '次へ →';
-
-            // ドット
-            if (dotsEl) {
-                dotsEl.innerHTML = '';
-                steps.forEach((_, i) => {
-                    const d = document.createElement('div');
-                    d.style.cssText = `width:${i===idx?'12px':'6px'};height:6px;border-radius:9999px;background:${i===idx?(globalTheme==='dark'?'#22d3ee':'#ec4899'):'#cbd5e1'};transition:all 0.3s`;
-                    dotsEl.appendChild(d);
-                });
-            }
-
-            // テーマに合わせてtooltipの色を強制設定
-            const isDark = globalTheme === 'dark';
-            tooltip.style.background   = isDark ? '#0c1220' : '#ffffff';
-            tooltip.style.borderColor  = isDark ? '#1e293b' : '#e2e8f0';
-            tooltip.style.color        = isDark ? '#e2e8f0' : '#1e293b';
-
-            const targetEl = document.getElementById(step.targetId);
-            const pad = 10;
-
-            const positionTooltip = () => {
-                const r = targetEl ? targetEl.getBoundingClientRect() : null;
-
-                // スポットライト
-                if (r && r.width > 0) {
-                    spotlight.style.cssText = `
-                        left:${r.left-pad}px; top:${r.top-pad}px;
-                        width:${r.width+pad*2}px; height:${r.height+pad*2}px;
-                        border-radius:16px;
-                        box-shadow:0 0 0 9999px rgba(0,0,0,0.65);
-                        pointer-events:none;
-                        position:fixed; z-index:10000;
-                        transition:all 0.35s cubic-bezier(0.4,0,0.2,1);
-                    `;
-                } else {
-                    spotlight.style.cssText = 'position:fixed;width:0;height:0;box-shadow:0 0 0 9999px rgba(0,0,0,0.65);top:50%;left:50%;z-index:10000;pointer-events:none;';
-                }
-
-                // ツールチップ位置
-                const tipW = 310;
-                const tipH = tooltip.offsetHeight || 240;
-                let tx, ty;
-                if (r && r.width > 0) {
-                    tx = r.right + 16;
-                    ty = r.top + r.height / 2 - tipH / 2;
-                    if (tx + tipW > window.innerWidth - 12) tx = r.left - tipW - 16;
-                    if (tx < 12) tx = Math.max(12, window.innerWidth/2 - tipW/2);
-                    if (ty < 12) ty = 12;
-                    if (ty + tipH > window.innerHeight - 12) ty = window.innerHeight - tipH - 12;
-                } else {
-                    tx = window.innerWidth/2 - tipW/2;
-                    ty = window.innerHeight/2 - tipH/2;
-                }
-                tooltip.style.left     = tx + 'px';
-                tooltip.style.top      = ty + 'px';
-                tooltip.style.maxWidth = tipW + 'px';
-                tooltip.style.position = 'fixed';
-                tooltip.style.zIndex   = '10001';
-            };
-
-            if (targetEl) {
-                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                setTimeout(positionTooltip, 250);
-            } else {
-                positionTooltip();
-            }
-        }
     </script>
 
     <!-- ★ スキャンパネル：幅リサイズ＋最小化機能 -->
@@ -28039,7 +27788,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
     <script>
     (function pmModalScrollLock() {
         'use strict';
-        var SEL  = '.fixed.inset-0, #tour-overlay';
+        var SEL  = '.fixed.inset-0';
         var root = document.documentElement;
         var locked = false, raf = 0;
 
@@ -28253,6 +28002,112 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         }
         SCREENS.forEach(function (i) { wrap(i, 'screens'); });
         FEATURES.forEach(function (i) { wrap(i, 'features'); });
+    })();
+    </script>
+    <!-- ===== モーションレイヤー（スクリプト部分）：ボタンの弾み・タップの波紋・下部タブのバー・数字のカウントアップ・オン/オフ切替 ===== -->
+    <script>
+    (function pmMotion() {
+        'use strict';
+        var root = document.documentElement;
+        var fx = function () { return root.classList.contains('pm-fx'); };
+
+        // ---- オン/オフ（設定メニュー）。端末の「視差効果を減らす」がオンなら、最初はオフ ----
+        function syncSwitch() { if (typeof setToggleSwitchUI === 'function') setToggleSwitchUI('pm-motion-toggle-switch', fx()); }
+        window.pmToggleMotion = function () {
+            var on = !fx();
+            root.classList.toggle('pm-fx', on);
+            try { localStorage.setItem('pm_motion', on ? 'on' : 'off'); } catch (e) {}
+            syncSwitch();
+            if (on) setTimeout(moveIndicator.bind(null, false), 30);
+            if (typeof showToast === 'function') showToast(on ? 'アニメーションをオンにしました' : 'アニメーションをオフにしました');
+        };
+        syncSwitch();
+
+        // ---- ボタン：指を離したときの弾み＋タップ位置の波紋 ----
+        var TAP = 'button, [role="button"], summary, a[href], .cursor-pointer, [onclick]';
+        function tapTarget(t) {
+            var el = t && t.nodeType === 1 ? t.closest(TAP) : null;
+            if (!el || el.disabled || el.classList.contains('pm-no-press') || /^(TD|TR|TH)$/.test(el.tagName)) return null;
+            var r = el.getBoundingClientRect();
+            if (r.width >= innerWidth * 0.9 && r.height >= innerHeight * 0.9) return null; // 背景全体（モーダルの外側など）は対象外
+            return el;
+        }
+        var pressed = null;
+        document.addEventListener('pointerdown', function (e) {
+            if (!fx() || (e.pointerType === 'mouse' && e.button !== 0)) return;
+            var el = tapTarget(e.target);
+            if (!el) return;
+            pressed = el;
+            var r = document.createElement('span');
+            r.className = 'pm-ripple';
+            r.style.left = e.clientX + 'px'; r.style.top = e.clientY + 'px';
+            r.addEventListener('animationend', function () { r.remove(); });
+            document.body.appendChild(r);
+        }, { passive: true, capture: true });
+        function release() {
+            var el = pressed; pressed = null;
+            if (!el || !fx()) return;
+            el.classList.remove('pm-rebound'); void el.offsetWidth; el.classList.add('pm-rebound');
+            el.addEventListener('animationend', function h(ev) { if (ev.animationName !== 'pmRebound') return; el.classList.remove('pm-rebound'); el.removeEventListener('animationend', h); });
+        }
+        document.addEventListener('pointerup', release, { passive: true, capture: true });
+        document.addEventListener('pointercancel', function () { pressed = null; }, { passive: true, capture: true });
+        document.addEventListener('touchstart', function () {}, { passive: true }); // iOSで :active を効かせるため
+
+        // ---- 下部タブ：現在地のバーがスライドし、選ばれたアイコンが跳ねる ----
+        var nav = document.getElementById('bottom-tab-bar'), ind = null, lastKey = '', lastActive = null, placed = false;
+        function activeTab() { return nav ? nav.querySelector(':scope > button.text-cyan-600') : null; }
+        function moveIndicator(pop) {
+            if (!nav) return;
+            if (!ind) { ind = document.createElement('span'); ind.id = 'pm-tab-ind'; nav.appendChild(ind); }
+            var a = activeTab();
+            if (!a || !nav.getClientRects().length) { ind.classList.remove('on'); lastActive = a; return; }
+            var nr = nav.getBoundingClientRect(), r = a.getBoundingClientRect(), w = 28;
+            if (!placed) { ind.style.transition = 'none'; }
+            ind.style.width = w + 'px';
+            ind.style.setProperty('--x', (r.left - nr.left + (r.width - w) / 2) + 'px');
+            ind.classList.add('on');
+            if (!placed) { placed = true; requestAnimationFrame(function () { requestAnimationFrame(function () { ind.style.transition = ''; }); }); }
+            if (pop && fx() && a !== lastActive) {
+                a.classList.remove('pm-tab-pop'); void a.offsetWidth; a.classList.add('pm-tab-pop');
+                setTimeout(function () { a.classList.remove('pm-tab-pop'); }, 600);
+            }
+            lastActive = a;
+        }
+        if (nav) {
+            new MutationObserver(function () {   // タブの色（選択状態）か、表示/非表示が変わったときだけ動かす
+                var a = activeTab(), key = (a ? a.id : '') + '|' + nav.style.display;
+                if (key === lastKey) return;
+                lastKey = key; moveIndicator(true);
+            }).observe(nav, { subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+            window.addEventListener('resize', function () { moveIndicator(false); });
+            window.addEventListener('orientationchange', function () { setTimeout(function () { moveIndicator(false); }, 200); });
+            moveIndicator(false);
+        }
+
+        // ---- 数字のカウントアップ（最初に見つかった数字だけを 0 から動かす。「12/28」のような日付には使わない） ----
+        window.pmCountUp = function (el, ms) {
+            if (!el || !fx()) return;
+            var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), n;
+            while ((n = w.nextNode())) {
+                var m = /(\d[\d,]*)(\.\d+)?/.exec(n.nodeValue);
+                if (!m) continue;
+                var target = parseFloat((m[1] + (m[2] || '')).replace(/,/g, ''));
+                if (!isFinite(target) || target <= 0) return;
+                var dec = m[2] ? m[2].length - 1 : 0, comma = m[1].indexOf(',') > -1;
+                var before = n.nodeValue.slice(0, m.index), after = n.nodeValue.slice(m.index + m[0].length);
+                var t0 = performance.now(), dur = ms || 800;
+                (function step(t) {
+                    var p = Math.min(1, (t - t0) / dur), v = target * (1 - Math.pow(1 - p, 3));
+                    var txt = dec ? v.toFixed(dec) : String(Math.round(v));
+                    if (comma) txt = Number(txt).toLocaleString('ja-JP', { minimumFractionDigits: dec, maximumFractionDigits: dec });
+                    n.nodeValue = before + txt + after;
+                    if (p < 1 && n.parentNode) requestAnimationFrame(step);
+                })(t0);
+                return;
+            }
+        };
+        window.pmCountUpIn = function (sel, ms) { document.querySelectorAll(sel).forEach(function (el) { window.pmCountUp(el, ms); }); };
     })();
     </script>
 </body>
