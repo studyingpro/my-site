@@ -4006,8 +4006,14 @@ html.dark .dev-log-link { color: #e2e8f0; }
                         <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">「どこが危ないか」「攻撃されていないか」を調べる、開発者だけの画面です（利用者には見えません）。押すたびに、いまの状態を調べ直します。</p>
                         <button id="secmon-run-btn" onclick="secmonRun()" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-lg text-xs font-black hover:opacity-90 transition-all">診断する</button>
                         <div id="secmon-summary"></div>
+                        <div id="secmon-tools" style="display:none" class="flex flex-wrap items-center gap-3">
+                            <label class="flex items-center gap-1.5 text-[11px] font-bold text-slate-600 dark:text-slate-300 cursor-pointer"><input type="checkbox" id="secmon-hide-ok" onchange="secmonRender()"> 正常な項目を隠す</label>
+                            <button type="button" onclick="secmonCopy()" class="dev-btn"><i data-lucide="copy" class="w-4 h-4"></i><span>結果をコピー</span></button>
+                        </div>
+                        <div id="secmon-stats"></div>
+                        <div id="secmon-trend" class="space-y-4"></div>
                         <div id="secmon-result" class="space-y-4"></div>
-                        <p class="text-[10px] text-slate-400 leading-relaxed">見えるもの：ルールの穴、公開ファイルの中身、公式アカウントと人数、Workerの設定、GitHubの変更履歴、AIの利用状況、Workerが記録した不審なアクセス。見えないもの：Googleアカウントの乗っ取りや、ログインの失敗の履歴（これらは、各サービスの画面で確認してください）。</p>
+                        <p class="text-[10px] text-slate-400 leading-relaxed">見えるもの：ルールの穴、公開ファイルの中身、公式アカウントと人数、Workerの設定、GitHubの変更履歴、AIの利用状況、Workerが記録した不審なアクセス、アクセスログから見つけた不審な動き（ひとつのアカウントを別々のIPから多重に使っている・ゲストアカウントの大量作成・大量アクセス・初めての国からのアクセス・急な増加）、前回の診断との違い。見えないもの：Googleアカウントの乗っ取りや、ログインの失敗の履歴（これらは、各サービスの画面で確認してください）。</p>
                     </div>
             </div>
         </section>
@@ -22992,7 +22998,9 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (type) params.set('type', type);
             if (q) params.set('q', q);
             if (before) params.set('before', String(before));
-            const res = await fetch(base + '/admin/logs?' + params.toString(), { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' });
+            let res;
+            try { res = await fetch(base + '/admin/logs?' + params.toString(), { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' }); }
+            catch (e) { throw new Error('Workerに届きませんでした。worker.js を貼ってデプロイ済みか、通信が使えるかを確認してください'); }
             if (res.status === 404 || res.status === 405) throw new Error('未対応：Workerに worker-accesslog.js を組み込んでください');
             if (res.status === 401 || res.status === 403) throw new Error('公式アカウントとして確認できませんでした（公式マークのついたアカウントでログインしているか確認してください）');
             if (!res.ok) throw new Error('Workerの応答がおかしいです（' + res.status + '）');
@@ -25332,6 +25340,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 <div class="flex items-start gap-2"><span class="shrink-0 text-[10px] font-black px-2 py-0.5 rounded-full ${cls}">${label}</span><p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${escapeHtml(it.title)}</p></div>
                 ${it.detail ? `<p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">${escapeHtml(it.detail)}</p>` : ''}
                 ${it.fix && (it.level === 'bad' || it.level === 'warn') ? `<p class="text-[11px] font-bold text-blue-600 dark:text-cyan-400 leading-relaxed">対処：${escapeHtml(it.fix)}</p>` : ''}
+                ${it.q ? `<button type="button" data-q="${escapeHtml(it.q)}" onclick="secmonOpenLog(this.dataset.q)" class="text-[11px] font-black text-blue-600 dark:text-cyan-400 underline underline-offset-2">アクセスログで見る</button>` : ''}
             </div>`;
         }
         function secmonSection(title, items, emptyText) {
@@ -25349,13 +25358,109 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (!res.ok) throw new Error('Workerの応答がおかしいです（' + res.status + '）');
             return res.json();
         }
+        async function secmonFetchLogSummary() {
+            const base = (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, '');
+            const fail = (code, msg) => { const e = new Error(msg); e.code = code; return e; };
+            if (!base) throw fail('error', 'WorkerのURLが分かりません');
+            const token = await window.AppFirebase.getIdToken();
+            if (!token) throw fail('error', 'ログインしていません');
+            let res;
+            try { res = await fetch(base + '/admin/log-summary', { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' }); }
+            catch (e) { throw fail('unsupported', 'Workerに届きませんでした'); }   // 古いWorkerは、この入り口を許可していないため、通信ごと失敗する
+            if (res.status === 404 || res.status === 405) throw fail('unsupported', 'Workerが古い版のままです');
+            if (res.status === 401 || res.status === 403) throw fail('error', '公式アカウントとして確認できませんでした');
+            if (res.status === 500) { let j = null; try { j = await res.json(); } catch (_) {} throw fail(j && j.error === 'db-not-bound' ? 'nodb' : 'error', j && j.error === 'db-not-bound' ? 'D1データベースが結びつけられていません' : 'Workerでエラーが起きました'); }
+            if (!res.ok) throw fail('error', 'Workerの応答がおかしいです（' + res.status + '）');
+            return res.json();
+        }
+        function secmonDays(n) {
+            const out = [], base = Date.now() + 9 * 3600 * 1000;
+            for (let i = n - 1; i >= 0; i--) out.push(new Date(base - i * 86400000).toISOString().slice(0, 10));
+            return out;
+        }
+        function secmonBars(title, rows, color) {
+            const max = Math.max(1, ...rows.map(r => r.v));
+            const line = r => {
+                const sub = r.sub ? `<span class="text-slate-400 font-semibold"> / ${escapeHtml(r.sub)}</span>` : '';
+                return `<div class="flex items-center gap-2 text-[11px]"><span class="w-11 shrink-0 text-slate-500 dark:text-slate-400 tabular-nums">${escapeHtml(r.label)}</span><div class="flex-1 h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden"><div class="h-full rounded-full ${color}" style="width:${Math.round(r.v / max * 100)}%"></div></div><span class="w-20 shrink-0 text-right font-bold text-slate-600 dark:text-slate-300 tabular-nums">${r.v}${sub}</span></div>`;
+            };
+            return `<div class="space-y-1.5"><p class="text-xs font-black text-slate-700 dark:text-slate-200">${escapeHtml(title)}</p>${rows.map(line).join('')}</div>`;
+        }
+        function secmonOpenLog(q) {
+            devPageShow('accesslog');
+            setTimeout(() => devLogFilter(q), 60);
+        }
+        function secmonKey(it) { return it.level + '|' + String(it.title).replace(/\d+/g, '#'); }
+        let _secmonState = null;
+        function secmonFinish(state) {
+            const all = state.risks.concat(state.signals);
+            const nb = all.filter(x => x.level === 'bad').length, nw = all.filter(x => x.level === 'warn').length;
+            const keys = all.filter(x => x.level === 'bad' || x.level === 'warn').map(secmonKey);
+            let prev = null; try { prev = JSON.parse(localStorage.getItem('sec_last_report') || 'null'); } catch (_) {}
+            state.diff = '';
+            if (prev && Array.isArray(prev.keys)) {
+                const added = keys.filter(k => !prev.keys.includes(k)).length, solved = prev.keys.filter(k => !keys.includes(k)).length;
+                state.diff = '前回（' + new Date(prev.t).toLocaleString('ja-JP') + '）より：新しい問題 ' + added + ' 件、解消 ' + solved + ' 件';
+            }
+            try { localStorage.setItem('sec_last_report', JSON.stringify({ t: Date.now(), nb, nw, keys })); } catch (_) {}
+            state.nb = nb; state.nw = nw; state.at = new Date();
+            _secmonState = state;
+            secmonRender();
+        }
+        function secmonRender() {
+            const st = _secmonState; if (!st) return;
+            const sumEl = document.getElementById('secmon-summary'), out = document.getElementById('secmon-result');
+            const statsEl = document.getElementById('secmon-stats'), trendEl = document.getElementById('secmon-trend'), tools = document.getElementById('secmon-tools');
+            if (!sumEl || !out) return;
+            const hideOk = !!(document.getElementById('secmon-hide-ok') || {}).checked;
+            const keep = list => hideOk ? list.filter(x => x.level !== 'ok') : list;
+            const tone = st.nb ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-900'
+                : st.nw ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-900'
+                : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900';
+            const head = st.nb ? '危険 ' + st.nb + ' 件' + (st.nw ? '、注意 ' + st.nw + ' 件' : '') : st.nw ? '注意 ' + st.nw + ' 件' : 'いま見つかった問題はありません';
+            sumEl.innerHTML = `<div class="rounded-xl border p-3 ${tone}"><p class="text-sm font-black">${escapeHtml(head)}</p><p class="text-[10px] font-bold mt-0.5 opacity-80">調べた時刻：${escapeHtml(st.at.toLocaleString('ja-JP'))}</p>${st.diff ? `<p class="text-[10px] font-bold mt-0.5 opacity-80">${escapeHtml(st.diff)}</p>` : ''}</div>`;
+            if (tools) tools.style.display = 'flex';
+
+            const t = st.last24h;
+            const tile = (n, label) => `<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220]/95 p-2.5 text-center"><p class="text-lg font-black text-slate-800 dark:text-white tabular-nums">${n}</p><p class="text-[10px] font-bold text-slate-500 dark:text-slate-400">${escapeHtml(label)}</p></div>`;
+            if (statsEl) statsEl.innerHTML = t ? `<div class="space-y-1.5"><p class="text-xs font-black text-slate-700 dark:text-slate-200">直近24時間のアクセス</p><div class="grid grid-cols-2 sm:grid-cols-4 gap-2">${tile(t.events, '記録の数')}${tile(t.users, '利用者（アカウント）')}${tile(t.ips, '接続元（IP）')}${tile(t.guests, 'うちゲスト')}</div></div>` : '';
+
+            if (trendEl) {
+                const days = secmonDays(7), lab = d => d.slice(5).replace('-', '/');
+                let html = '';
+                if (st.logDays) {
+                    const by = {}; st.logDays.forEach(r => { by[r.day] = r; });
+                    html += secmonBars('アクセスの推移（7日間　記録数 / 利用者）', days.map(d => ({ label: lab(d), v: (by[d] && by[d].events) || 0, sub: ((by[d] && by[d].users) || 0) + '人' })), 'bg-blue-400 dark:bg-cyan-500');
+                }
+                const cnt = {}; (st.events || []).forEach(e => { const d = new Date(Date.parse(e.t) + 9 * 3600 * 1000).toISOString().slice(0, 10); cnt[d] = (cnt[d] || 0) + 1; });
+                html += secmonBars('不審なアクセスの記録（7日間）', days.map(d => ({ label: lab(d), v: cnt[d] || 0 })), 'bg-rose-400');
+                trendEl.innerHTML = html;
+            }
+            out.innerHTML = secmonSection('危ない所（直すべきこと）', keep(st.risks), '') + secmonSection('攻撃・不審な動き（直近の記録）', keep(st.signals), '') + secmonSection('状況', keep(st.facts), '');
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        async function secmonCopy() {
+            const st = _secmonState; if (!st) return;
+            const lv = { bad: '危険', warn: '注意', info: '情報', ok: '安全' };
+            const block = (title, list) => '■ ' + title + '\n' + (list.length ? list.slice().sort((a, b) => (SECMON_ORDER[a.level] ?? 9) - (SECMON_ORDER[b.level] ?? 9)).map(i => '[' + (lv[i.level] || i.level) + '] ' + i.title + (i.detail ? '\n    ' + String(i.detail).replace(/\n/g, '\n    ') : '') + (i.fix && (i.level === 'bad' || i.level === 'warn') ? '\n    対処：' + i.fix : '')).join('\n') : '（なし）');
+            const text = ['セキュリティ診断　' + st.at.toLocaleString('ja-JP'), (st.nb ? '危険 ' + st.nb + ' 件' : '') + (st.nb && st.nw ? '、' : '') + (st.nw ? '注意 ' + st.nw + ' 件' : '') || '問題は見つかりませんでした', st.diff || '', '',
+                block('危ない所', st.risks), '', block('攻撃・不審な動き', st.signals), '', block('状況', st.facts)].join('\n');
+            try { await navigator.clipboard.writeText(text); showToast('診断の結果をコピーしました'); }
+            catch (_) {
+                const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select();
+                try { document.execCommand('copy'); showToast('診断の結果をコピーしました'); } catch (e) { showToast('コピーできませんでした'); }
+                ta.remove();
+            }
+        }
         async function secmonRun() {
             const btn = document.getElementById('secmon-run-btn'), sumEl = document.getElementById('secmon-summary'), out = document.getElementById('secmon-result');
             if (!btn || !out) return;
             btn.disabled = true; btn.textContent = '調べています…（30秒ほどかかります）';
             sumEl.innerHTML = ''; out.innerHTML = '';
+            ['secmon-stats', 'secmon-trend'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
             const risks = [], signals = [], facts = [];
-            const add = (list, level, title, detail, fix) => list.push({ level, title, detail, fix });
+            let secEvents = [], logSummary = null;
+            const add = (list, level, title, detail, fix, q) => list.push({ level, title, detail, fix, q });
             const safe = async (name, fn) => { try { await fn(); } catch (e) { add(risks, 'warn', name + 'を調べられませんでした', String((e && e.message) || e)); } };
 
             await safe('ルールの診断', async () => { (await window.AppFirebase.runRuleProbes()).forEach(r => add(risks, r.level, r.title, r.detail, r.fix)); });
@@ -25399,7 +25504,8 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             });
 
             await safe('不審なアクセスの記録', async () => {
-                const evs = await window.AppFirebase.loadSecurityEvents(150);
+                const evs = await window.AppFirebase.loadSecurityEvents(400);
+                secEvents = evs;
                 const now = Date.now(), day = 24 * 3600 * 1000;
                 const recent = evs.filter(e => now - Date.parse(e.t) < day);
                 const cnt = {}; recent.forEach(e => { cnt[e.type] = (cnt[e.type] || 0) + 1; });
@@ -25443,11 +25549,38 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 if (al.dependabot && typeof al.dependabot.open === 'number' && al.dependabot.open) add(risks, 'warn', 'GitHubの「古い部品の警告」：未対応 ' + al.dependabot.open + ' 件', '', 'GitHubの Security → Dependabot を開く');
             }
 
-            const count = lv => risks.concat(signals).filter(x => x.level === lv).length;
-            const nb = count('bad'), nw = count('warn');
-            const tone = nb ? 'bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-900' : nw ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-900' : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900';
-            sumEl.innerHTML = `<div class="rounded-xl border p-3 ${tone}"><p class="text-sm font-black">${nb ? '危険 ' + nb + ' 件' : nw ? '注意 ' + nw + ' 件' : 'いま見つかった問題はありません'}${nb && nw ? '、注意 ' + nw + ' 件' : ''}</p><p class="text-[10px] font-bold mt-0.5 opacity-80">調べた時刻：${escapeHtml(new Date().toLocaleString('ja-JP'))}</p></div>`;
-            out.innerHTML = secmonSection('危ない所（直すべきこと）', risks, '') + secmonSection('攻撃・不審な動き（直近の記録）', signals, '') + secmonSection('状況', facts, '');
+            // ---- 端末側だけの確認になっていないか ----
+            add(risks, 'warn', '開発者モードのパスワード確認は、端末側（ブラウザの中）だけで行われています', 'パスワードのハッシュが index.html に入っていて、確認もブラウザの中だけで行われます。ブラウザの開発ツールを使える人なら、突破できる可能性があります。実際の書き込みにはGitHubのトークンが必要なので、被害は限られますが、最終的な守りにはなりません。', '開発者の画面を、Workerと同じ「公式アカウント」の確認に切り替える');
+            if (location.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(location.hostname)) add(risks, 'bad', 'このページは、暗号化されていない通信（HTTP）で開かれています', '通信の内容を、途中で盗み見・書き換えされる恐れがあります。', 'HTTPS（https:// から始まるURL）で公開する');
+            else add(risks, 'ok', 'ページは、暗号化された通信（HTTPS）で配信されています', '');
+
+            // ---- アクセスログから見つける不審な動き ----
+            try { logSummary = await secmonFetchLogSummary(); }
+            catch (e) {
+                if (e && e.code === 'unsupported') add(facts, 'info', 'アクセスログの集計は、まだ使えません', 'Workerに最新の worker.js を貼ってデプロイすると、アクセスログからの不審な動きの検出が使えるようになります。');
+                else if (e && e.code === 'nodb') add(risks, 'warn', 'アクセスログのD1データベースが、Workerに結びつけられていません', '', 'Workerの「設定」→「バインド」で、D1を変数名 DB で追加する');
+                else add(risks, 'warn', 'アクセスログの集計を取得できませんでした', String((e && e.message) || e));
+            }
+            if (logSummary) {
+                const ls = logSummary, who = x => (x.anon ? 'ゲスト ' : 'ユーザー ') + String(x.uid || '').slice(0, 8) + '…';
+                (ls.manyIps || []).forEach(x => add(signals, x.ips >= 8 ? 'bad' : 'warn', 'ひとつのアカウントが、24時間に ' + x.ips + ' 個の別のIPから使われています', who(x) + '　記録 ' + x.events + ' 件\n自宅・学校・モバイル回線で2〜3個になるのは普通です。多いときは、アカウントの共有や乗っ取りの可能性があります。', 'アクセスログで、このユーザーのIPと地域を確認する', x.uid));
+                (ls.sharedIps || []).forEach(x => {
+                    if (x.guests >= 10) add(signals, x.guests >= 30 ? 'bad' : 'warn', 'ひとつのIP（' + x.ip + '）から、ゲストアカウントが ' + x.guests + ' 個使われています', '自動プログラムが、ゲストアカウントを大量に作っている可能性があります。', 'アクセスログで、このIPの動きを確認する', x.ip);
+                    else add(facts, 'info', 'ひとつのIP（' + x.ip + '）から、' + x.users + ' 人が使っています', '学校などの共有回線なら普通です。記録 ' + x.events + ' 件。', '', x.ip);
+                });
+                (ls.heavy || []).forEach(x => add(signals, x.events >= 1000 ? 'bad' : 'warn', '短時間に大量のアクセスがありました（' + x.events + ' 件）', who(x) + '　IP ' + x.ip + '\n人の操作としては多すぎます。自動化された動きの可能性があります。', 'アクセスログで、このIPの動きを確認する', x.ip));
+                const foreign = (ls.countries || []).filter(c => c.country && c.country !== 'JP');
+                const known = new Set(ls.earlierCountries || []), haveHistory = (ls.days || []).length >= 2;
+                const fresh = haveHistory ? foreign.filter(c => !known.has(c.country)) : [];
+                fresh.forEach(c => add(signals, 'warn', '初めての国（' + c.country + '）からのアクセスがあります', c.users + ' 人・' + c.events + ' 件。旅行・VPN・留学などの可能性もあります。', 'アクセスログで確認する'));
+                if (foreign.length) add(facts, 'info', '日本以外からのアクセス（24時間）', foreign.map(c => c.country + '：' + c.events + ' 件（' + c.users + ' 人）').join('\n'));
+                const before = (ls.days || []).slice(0, -1).filter(d => d.day !== secmonDays(1)[0]);
+                const avg = before.length ? before.reduce((a, d) => a + d.events, 0) / before.length : 0;
+                if (before.length >= 3 && avg >= 20 && ls.last24h.events > avg * 3) add(signals, 'warn', '直近24時間のアクセスが、普段の約 ' + Math.round(ls.last24h.events / avg) + ' 倍です', '普段（過去' + before.length + '日の平均）は 1日 ' + Math.round(avg) + ' 件、いまは ' + ls.last24h.events + ' 件です。テスト期間などの理由がなければ、確認してください。', 'アクセスログで確認する');
+                if (!(ls.manyIps || []).length && !(ls.heavy || []).length && !fresh.length) add(signals, 'ok', 'アクセスログに、不審な動きは見つかりませんでした', '記録は ' + (ls.retentionDays || 90) + ' 日で自動的に削除されます。');
+            }
+
+            secmonFinish({ risks, signals, facts, events: secEvents, last24h: logSummary && logSummary.last24h, logDays: logSummary && logSummary.days });
             if (typeof lucide !== 'undefined') lucide.createIcons();
             btn.disabled = false; btn.textContent = 'もう一度診断する';
         }
