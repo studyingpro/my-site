@@ -369,7 +369,18 @@
         .dev-usage-num { font-size: .8125rem; font-weight: 700; color: #475569; white-space: nowrap; text-align: right; min-width: 5.5rem; }
         .dev-usage-num b { font-weight: 900; color: #0f172a; font-size: 1rem; }
         html.dark .dev-usage-num b { color: #f1f5f9; }
-        .dev-usage-num small { font-size: 11px; color: #94a3b8; }
+        .dev-log-row { padding: .65rem 0; border-bottom: 1px solid #e2e8f0; }
+html.dark .dev-log-row { border-color: #1e293b; }
+.dev-log-row:last-child { border-bottom: 0; }
+.dev-log-main { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; font-size: .8125rem; font-weight: 800; color: #334155; }
+html.dark .dev-log-main { color: #e2e8f0; }
+.dev-log-time { font-variant-numeric: tabular-nums; color: #64748b; font-weight: 700; }
+.dev-log-badge { padding: .1rem .5rem; border-radius: 999px; font-size: 10.5px; font-weight: 900; background: #f1f5f9; color: #475569; }
+html.dark .dev-log-badge { background: #1e293b; color: #cbd5e1; }
+.dev-log-sub { margin-top: .2rem; font-size: 11.5px; font-weight: 600; color: #64748b; overflow-wrap: anywhere; line-height: 1.6; }
+.dev-log-link { padding: 0; border: 0; background: none; font: inherit; font-weight: 800; color: #334155; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 2px; }
+html.dark .dev-log-link { color: #e2e8f0; }
+.dev-usage-num small { font-size: 11px; color: #94a3b8; }
         .dev-trend { display: flex; gap: .25rem; align-items: stretch; height: 9.5rem; }
         .dev-trend-col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .2rem; border-radius: .5rem; padding: .25rem 0; }
         .dev-trend-col:hover { background: #f8fafc; }
@@ -3796,6 +3807,46 @@
                 <h3 class="dev-card-title"><span class="dev-step">2</span>設定・管理</h3>
                 <p class="dev-card-desc">公開の設定、ユーザーやセキュリティの管理などはこちらです。</p>
                 <div id="dev-hub-menu" class="dev-menu"></div>
+            </div>
+        </section>
+
+        <section data-dev-panel="accesslog" class="dev-panel hidden">
+            <div data-dev-panel-head></div>
+            <div class="dev-card">
+                <div class="dev-usage-toolbar">
+                    <button type="button" onclick="devLogShift(-1)" class="dev-btn" aria-label="前の日"><i data-lucide="chevron-left" class="w-4 h-4"></i></button>
+                    <input type="date" id="dev-log-date" onchange="devLogLoad(this.value)" class="dev-date-input" aria-label="日付">
+                    <button type="button" onclick="devLogShift(1)" class="dev-btn" aria-label="次の日"><i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                    <button type="button" onclick="devLogToday()" class="dev-btn"><span>今日</span></button>
+                    <button type="button" onclick="devLogLoad()" class="dev-btn" aria-label="更新" title="最新の状態に更新"><i data-lucide="refresh-cw" class="w-4 h-4"></i></button>
+                </div>
+                <div class="dev-usage-toolbar">
+                    <select id="dev-log-type" onchange="devLogLoad()" class="dev-date-input" aria-label="記録の種類">
+                        <option value="">すべての記録</option>
+                        <option value="screen">画面を開いた</option>
+                        <option value="feature">機能を使った</option>
+                        <option value="session">アプリを開いた</option>
+                    </select>
+                    <input type="search" id="dev-log-q" maxlength="64" placeholder="ユーザーID または IPアドレス" onkeydown="if(event.key==='Enter')devLogLoad()" class="dev-date-input" style="flex:1;min-width:10rem" aria-label="検索">
+                    <button type="button" onclick="devLogLoad()" class="dev-btn"><i data-lucide="search" class="w-4 h-4"></i><span>検索</span></button>
+                </div>
+                <p id="dev-log-status" class="dev-card-desc" style="margin-bottom:0"></p>
+            </div>
+
+            <div class="dev-card">
+                <div id="dev-log-list"></div>
+                <button type="button" id="dev-log-more" onclick="devLogMore()" class="dev-btn" style="display:none;margin-top:.75rem"><span>もっと見る</span></button>
+            </div>
+
+            <div class="dev-card">
+                <h3 class="dev-card-title"><i data-lucide="info" class="w-4 h-4"></i>このしくみについて</h3>
+                <ul class="dev-note-list">
+                    <li>ログインしている人（ゲスト含む）が、画面を開いた・機能を使った・アプリを開いたときに、日時・ユーザーID・IPアドレス・おおよその地域・ブラウザや端末の種類を記録します。入力した内容（文章・写真・チャット）は記録しません。</li>
+                    <li>IPアドレスと地域は、アプリではなくWorker（サーバー側）が付けます。この画面を見られるのは、公式マークのついたアカウントだけです（セキュリティ監視と同じ確認方法です）。</li>
+                    <li>記録は90日たつと自動で削除されます。開発者モード中の操作は記録しません。</li>
+                    <li>ユーザーIDや「IP」を押すと、その人・その回線の記録だけに絞り込めます。</li>
+                    <li>Workerに <code>worker-accesslog.js</code> の内容を貼り足して、D1を結びつけるまでは、この画面は「未対応」と表示されます。</li>
+                </ul>
             </div>
         </section>
 
@@ -7692,6 +7743,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const section = PRESET_SECTIONS.find(s => s.id === sectionId);
             if (!section) return;
             if (!presetSectionHasData(section)) { showToast('このセクションにはまだ解析データがありません'); return; }
+            activeTabIndex = 0;
             modeStates[0].analysisResult = section.data;
             modeStates[0].hasAnalyzed = true;
             modeStates[0].isAnalyzing = false;
@@ -7738,6 +7790,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (backBtn) backBtn.classList.add('hidden');
             if (qnav) qnav.classList.add('hidden');
             hideAllPanels();
+            activeTabIndex = 0;
             if (!modeTabBar) modeTabBar = document.getElementById('mode-tab-bar');
             if (modeTabBar) modeTabBar.classList.remove('hidden');
             setTabHighlight(0);
@@ -7753,6 +7806,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function showEnglishSectionMode() {
             if (!pmRequireMember()) return;
             hideAllPanels();
+            activeTabIndex = 0;
             document.getElementById('english-entry-selector').classList.add('hidden');
             const presetSel = document.getElementById('preset-section-selector');
             if (presetSel) { presetSel.classList.remove('hidden'); renderPresetSectionGrid(); }
@@ -7767,6 +7821,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
 
         function showManualScanPanel(fromSection) {
             hideAllPanels();
+            activeTabIndex = 0;
             if (!imageUploadPanel) imageUploadPanel = document.getElementById('image-upload-panel');
             if (!rightContentPanel) rightContentPanel = document.getElementById('right-content-panel');
             if (!notebookInterface) notebookInterface = document.getElementById('notebook-interface');
@@ -9417,8 +9472,9 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 '1. 当運営は、本アプリの提供・運営のために、以下の情報を取得・利用することがあります。',
                 '・アカウント情報（メールアドレス、ユーザー名等）',
                 '・本アプリ内での学習記録、進捗データ、設定情報',
-                '・アクセスログ、端末情報等',
-                '2. 取得した情報は、サービスの提供・改善・不具合対応、およびお問い合わせへの回答の目的にのみ使用し、法令に基づく場合を除き、第三者に開示・提供することはありません。',
+                '・アクセスログ（IPアドレス、アクセス日時、閲覧した画面・利用した機能、ブラウザや端末の種類、おおよその地域など）',
+                '2. 取得した情報は、サービスの提供・改善・不具合対応、不正利用の防止、およびお問い合わせへの回答の目的にのみ使用し、法令に基づく場合を除き、第三者に開示・提供することはありません。',
+                '3. アクセスログは、取得から90日が経過したものを自動的に削除します。',
             ] },
             { t: '第4条（禁止事項）', p: [
                 'ユーザーは、本アプリの利用にあたり、以下の行為を行ってはならないものとします。',
@@ -9784,7 +9840,6 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             }
 
             activeTabIndex = index;
-            currentSubject = 'english';
 
             if (!imageUploadPanel) imageUploadPanel = document.getElementById('image-upload-panel');
             if (!rightContentPanel) rightContentPanel = document.getElementById('right-content-panel');
@@ -19456,10 +19511,7 @@ const KOBUN_TANGO = [
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        let currentSubject = null;
-
         function _showTopHome() {
-            currentSubject = null;
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
@@ -19476,7 +19528,6 @@ const KOBUN_TANGO = [
 
         function _showEnglishHome() {
             if (!isModeEnabled('english')) { showToast(modeDisabledMessage('english')); _showTopHome(); return; }
-            currentSubject = 'english';
             hideAllPanels();
             if (!modeTabBar) modeTabBar = document.getElementById('mode-tab-bar');
             if (modeTabBar) modeTabBar.classList.remove('hidden');
@@ -19577,7 +19628,6 @@ const KOBUN_TANGO = [
         function _prepareRonriScreen() {
             hideAllPanels();
             activeTabIndex = 1;
-            currentSubject = 'english';
             if (!modeTabBar) modeTabBar = document.getElementById('mode-tab-bar');
             if (modeTabBar) {
                 modeTabBar.classList.remove('hidden');
@@ -20042,7 +20092,6 @@ const KOBUN_TANGO = [
 
         function _showJapaneseHome() {
             if (!isModeEnabled('japanese')) { showToast(modeDisabledMessage('japanese')); _showTopHome(); return; }
-            currentSubject = 'japanese';
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
@@ -20092,7 +20141,6 @@ const KOBUN_TANGO = [
 
         function _showEssay() {
             if (!isModeEnabled('essay')) { showToast(modeDisabledMessage('essay')); _showTopHome(); return; }
-            currentSubject = 'english';
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-stretch relative z-10';
@@ -20866,7 +20914,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         function _showMathHome() {
             if (!isModeEnabled('math')) { showToast(modeDisabledMessage('math')); _showTopHome(); return; }
-            currentSubject = 'math';
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
@@ -20886,7 +20933,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         function _showScienceHome() {
             if (!isModeEnabled('science')) { showToast(modeDisabledMessage('science')); _showTopHome(); return; }
-            currentSubject = 'science';
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
@@ -20904,7 +20950,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         function _showSocialHome() {
             if (!isModeEnabled('social')) { showToast(modeDisabledMessage('social')); _showTopHome(); return; }
-            currentSubject = 'social';
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
@@ -21720,13 +21765,11 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         function _showScan() {
             if (!isModeEnabled('scan')) { showToast(modeDisabledMessage('scan')); _showTopHome(); return; }
-            currentSubject = 'english';
             showManualScanPanel();
         }
 
         function _showTarget() {
             if (!isModeEnabled('target')) { showToast(modeDisabledMessage('target')); _showTopHome(); return; }
-            currentSubject = 'english';
             t19_currentGroup = 'english';
             if ((T19_BOOKS[t19_currentBook].group || 'english') !== 'english') t19_currentBook = pmEnglishBookKey();
             hideAllPanels();
@@ -21742,7 +21785,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         function _showGrades() {
             if (!isModeEnabled('grades')) { showToast(modeDisabledMessage('grades')); _showTopHome(); return; }
-            currentSubject = null;
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
@@ -21754,7 +21796,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         function _showCalendar() {
             if (!isModeEnabled('calendar')) { showToast(modeDisabledMessage('calendar')); _showTopHome(); return; }
-            currentSubject = null;
             hideAllPanels();
             const mc = document.getElementById('main-container');
             if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
@@ -22696,6 +22737,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         const DEV_PANELS = [
             { key: 'home',        icon: 'layout-dashboard', label: 'ホーム',              group: null,               desc: '', short: '' },
             { key: 'usage',       icon: 'activity',         label: '利用状況',            group: '状況の確認',       desc: 'その日に何人が使ったか、どのページ・機能が使われたかを確認します。', short: '人数・ページ・機能' },
+            { key: 'accesslog',   icon: 'list-checks',      label: 'アクセスログ',        group: '状況の確認',       desc: 'いつ・誰が・どの画面や機能を使ったかを、IPアドレスや端末の情報つきで確認します。', short: '日時・IP・端末' },
             { key: 'github',      icon: 'github',           label: 'GitHub連携・公開',    group: '公開・コンテンツ', desc: '編集した内容を GitHub の config.json に保存して、全ユーザーへ公開するための接続です。', short: '公開の接続・保存' },
             { key: 'mode',        icon: 'toggle-left',      label: 'モード管理',          group: '公開・コンテンツ', desc: '機能ごとの点検・停止の切り替えと、点検のための移動ができます。', short: '点検・機能の停止' },
             { key: 'summertitle', icon: 'sun',              label: '長期休暇課題',        group: '公開・コンテンツ', desc: '夏休み・冬休みなどの課題コーナーの表示と名称を設定します。', short: '表示ON/OFF・名称' },
@@ -22746,6 +22788,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             try {
                 if (key === 'home') { devHubRefreshStatus(); devHubLoadToday(); }
                 else if (key === 'usage') devUsageInit();
+                else if (key === 'accesslog') devLogInit();
                 else if (key === 'mode' && typeof cmsRenderModeList === 'function') cmsRenderModeList();
                 else if (key === 'terms' && typeof cmsTermsRefreshStatus === 'function') cmsTermsRefreshStatus();
                 else if (key === 'reports' && typeof cmsLoadReports === 'function') cmsLoadReports();
@@ -22921,6 +22964,104 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                     `<button type="button" class="dev-trend-col${d === selected ? ' is-active' : ''}" onclick="devUsageLoad('${d}')" title="${d}：${counts[i]}人"><span class="dev-trend-n">${counts[i]}</span><span class="dev-trend-bar"><i style="height:${Math.round(counts[i] / max * 100)}%"></i></span><span class="dev-trend-d">${Number(d.slice(5, 7))}/${Number(d.slice(8))}</span></button>`
                 ).join('') + '</div>';
             } catch (e) { el.innerHTML = '<p class="dev-card-desc">取得できませんでした</p>'; }
+        }
+        let devLogDay = '', devLogNext = null, devLogSeq = 0, devLogShown = 0;
+        function devLogBase() { try { return (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, ''); } catch (e) { return ''; } }
+        function devLogInit() { devLogLoad(devLogDay || devUsageJstToday()); }
+        function devLogToday() { devLogLoad(devUsageJstToday()); }
+        function devLogShift(n) { devLogLoad(devUsageAddDays(devLogDay || devUsageJstToday(), n)); }
+        function devLogFilter(q) {
+            const inp = document.getElementById('dev-log-q');
+            if (inp) inp.value = q || '';
+            devLogLoad();
+        }
+        function devLogStatus(text, isErr) {
+            const el = document.getElementById('dev-log-status'); if (!el) return;
+            el.className = 'dev-card-desc';
+            el.style.color = isErr ? '#e11d48' : '';
+            el.textContent = text;
+        }
+        async function devLogRequest(day, before) {
+            const base = devLogBase();
+            if (!base) throw new Error('WorkerのURLが分かりません');
+            const token = await window.AppFirebase.getIdToken();
+            if (!token) throw new Error('ログインしていません');
+            const type = (document.getElementById('dev-log-type') || {}).value || '';
+            const q = ((document.getElementById('dev-log-q') || {}).value || '').trim();
+            const params = new URLSearchParams({ day, limit: '100' });
+            if (type) params.set('type', type);
+            if (q) params.set('q', q);
+            if (before) params.set('before', String(before));
+            const res = await fetch(base + '/admin/logs?' + params.toString(), { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' });
+            if (res.status === 404 || res.status === 405) throw new Error('未対応：Workerに worker-accesslog.js を組み込んでください');
+            if (res.status === 401 || res.status === 403) throw new Error('公式アカウントとして確認できませんでした（公式マークのついたアカウントでログインしているか確認してください）');
+            if (!res.ok) throw new Error('Workerの応答がおかしいです（' + res.status + '）');
+            return res.json();
+        }
+        function devLogRowHtml(r) {
+            const esc = escapeHtmlText;
+            const lab = window.PM_USAGE_LABELS || { screens: {}, features: {} };
+            let what, badge;
+            if (r.type === 'screen') { badge = '画面'; what = (lab.screens && lab.screens[r.key]) || r.key; }
+            else if (r.type === 'feature') { badge = '機能'; what = (lab.features && lab.features[r.key]) || r.key; }
+            else { badge = 'アプリを開いた'; what = ''; }
+            const time = new Date(r.ts + 9 * 3600 * 1000).toISOString().slice(11, 19);
+            const who = r.uid
+                ? `<button type="button" class="dev-log-link" data-q="${esc(r.uid)}" onclick="devLogFilter(this.dataset.q)" title="${esc(r.uid)}">${r.anon ? 'ゲスト' : 'ユーザー'} ${esc(String(r.uid).slice(0, 8))}…</button>`
+                : '不明';
+            const ip = r.ip ? `<button type="button" class="dev-log-link" data-q="${esc(r.ip)}" onclick="devLogFilter(this.dataset.q)">${esc(r.ip)}</button>` : '不明';
+            const place = [r.country, r.region, r.city].filter(Boolean).join(' / ');
+            const dev = [r.browser, r.os, r.device].filter(Boolean).join(' / ');
+            const extra = [r.standalone ? 'ホーム画面から起動' : '', (r.vw && r.vh) ? r.vw + '×' + r.vh : '', r.ref ? '参照元 ' + r.ref : ''].filter(Boolean).join('・');
+            return `<div class="dev-log-row">
+                <div class="dev-log-main"><span class="dev-log-time">${time}</span><span class="dev-log-badge">${esc(badge)}</span>${what ? '<span>' + esc(what) + '</span>' : ''}</div>
+                <div class="dev-log-sub">${who}　IP ${ip}${place ? '　' + esc(place) : ''}</div>
+                <div class="dev-log-sub">${esc(dev || '端末情報なし')}${extra ? '　' + esc(extra) : ''}</div>
+            </div>`;
+        }
+        async function devLogLoad(day) {
+            const inp = document.getElementById('dev-log-date');
+            const today = devUsageJstToday();
+            day = day || (inp && inp.value) || devLogDay || today;
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(day) || day > today) day = today;
+            devLogDay = day;
+            if (inp) { inp.value = day; inp.max = today; }
+            const list = document.getElementById('dev-log-list'), more = document.getElementById('dev-log-more');
+            if (list) list.innerHTML = '';
+            if (more) more.style.display = 'none';
+            devLogNext = null; devLogShown = 0;
+            devLogStatus('読み込み中…');
+            const seq = ++devLogSeq;
+            try {
+                const data = await devLogRequest(day, null);
+                if (seq !== devLogSeq) return;
+                const rows = data.rows || [];
+                if (list) list.innerHTML = rows.length ? rows.map(devLogRowHtml).join('') : '<p class="dev-card-desc" style="margin:0">この条件の記録はありません</p>';
+                devLogShown = rows.length; devLogNext = data.next || null;
+                devLogStatus(`${data.total != null ? data.total : rows.length}件中 ${devLogShown}件を表示`);
+                if (more) more.style.display = devLogNext ? '' : 'none';
+            } catch (e) {
+                if (seq !== devLogSeq) return;
+                console.warn('access log load error', e);
+                devLogStatus((e && e.message) || '取得できませんでした', true);
+            }
+        }
+        async function devLogMore() {
+            if (!devLogNext) return;
+            const seq = ++devLogSeq;
+            const list = document.getElementById('dev-log-list'), more = document.getElementById('dev-log-more');
+            if (more) more.disabled = true;
+            try {
+                const data = await devLogRequest(devLogDay, devLogNext);
+                if (seq !== devLogSeq) return;
+                const rows = data.rows || [];
+                if (list) list.insertAdjacentHTML('beforeend', rows.map(devLogRowHtml).join(''));
+                devLogShown += rows.length; devLogNext = data.next || null;
+                devLogStatus(`${data.total != null ? data.total : devLogShown}件中 ${devLogShown}件を表示`);
+                if (more) more.style.display = devLogNext ? '' : 'none';
+            } catch (e) {
+                devLogStatus((e && e.message) || '取得できませんでした', true);
+            } finally { if (more) more.disabled = false; }
         }
         async function devHubLoadToday() {
             const el = document.getElementById('dev-hub-today-users');
@@ -25849,6 +25990,78 @@ ${pmReportButtonHtml('kobun', 'all', t)}
     })();
     </script>
     <script>
+    (function pmAccessLogger() {
+        'use strict';
+        var queue = [], timer = null, sending = false, stopped = false, fails = 0, lastKey = '', lastAt = 0, lastUid = '';
+        var MAX_BATCH = 20, KEY_RE = /^[A-Za-z0-9_\-]{1,40}$/;
+        var TYPES = { screens: 'screen', features: 'feature', screen: 'screen', feature: 'feature', session: 'session' };
+
+        function base() { try { return (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, ''); } catch (e) { return ''; } }
+        function envInfo() {
+            var standalone = false, ref = '', tz = '';
+            try { standalone = (window.matchMedia && matchMedia('(display-mode: standalone)').matches) || navigator.standalone === true; } catch (e) {}
+            try { if (document.referrer) ref = new URL(document.referrer).host; } catch (e) {}
+            try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
+            return { vw: window.innerWidth | 0, vh: window.innerHeight | 0, tp: navigator.maxTouchPoints | 0, sa: standalone ? 1 : 0, lang: String(navigator.language || '').slice(0, 12), tz: tz.slice(0, 40), ref: ref.slice(0, 80) };
+        }
+        function devMode() { try { return typeof devUnlocked !== 'undefined' && devUnlocked; } catch (e) { return false; } }
+
+        function add(type, key) {
+            if (stopped || devMode()) return;
+            type = TYPES[type]; key = String(key || '');
+            if (!type || !KEY_RE.test(key)) return;
+            var now = Date.now();
+            if (type === 'screen') {
+                if (lastKey === key && now - lastAt < 1500) return;
+                lastKey = key; lastAt = now;
+            }
+            queue.push({ t: now, type: type, key: key });
+            if (queue.length > 100) queue.shift();
+            schedule();
+        }
+        window.pmAccessLog = add;
+
+        function schedule() { if (!timer && !stopped) timer = setTimeout(function () { timer = null; flush(); }, 5000); }
+        function flush() {
+            if (stopped || sending || !queue.length) return;
+            var b = base(), fb = window.AppFirebase;
+            if (!b || !fb || typeof fb.getIdToken !== 'function' || !fb.auth || !fb.auth.currentUser) { schedule(); return; }
+            var batch = queue.splice(0, MAX_BATCH);
+            sending = true;
+            fb.getIdToken().then(function (token) {
+                if (!token) throw new Error('no-token');
+                return fetch(b + '/log', {
+                    method: 'POST', keepalive: true,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ env: envInfo(), events: batch })
+                });
+            }).then(function (res) {
+                if (res.status === 404 || res.status === 405) { stopped = true; queue = []; return; }
+                if (!res.ok) throw new Error('http ' + res.status);
+                fails = 0;
+            }).catch(function () {
+                fails++;
+                if (fails >= 5) { stopped = true; queue = []; return; }
+                queue = batch.concat(queue).slice(0, 100);
+            }).then(function () { sending = false; if (queue.length && !stopped) schedule(); });
+        }
+        document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') flush(); });
+        window.addEventListener('pagehide', flush);
+
+        var tries = 0;
+        (function waitAuth() {
+            var fb = window.AppFirebase;
+            if (fb && fb.auth && typeof fb.auth.onAuthStateChanged === 'function') {
+                fb.auth.onAuthStateChanged(function (u) {
+                    if (u && u.uid !== lastUid) { lastUid = u.uid; add('session', 'open'); }
+                });
+                return;
+            }
+            if (++tries < 40) setTimeout(waitAuth, 500);
+        })();
+    })();
+    </script>
+    <script>
     (function pmUsageTracker() {
         'use strict';
         var el = function (id) { return document.getElementById(id); };
@@ -25921,6 +26134,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         var buf = { screens: {}, features: {} }, pending = false, flushing = false, stopped = false, fails = 0, lastId = '', lastAt = 0;
         function track(kind, key) {
+            try { if (window.pmAccessLog) window.pmAccessLog(kind, key); } catch (e) {}
             if (stopped) return;
             try { if (typeof devUnlocked !== 'undefined' && devUnlocked) return; } catch (e) {}
             var now = Date.now();
