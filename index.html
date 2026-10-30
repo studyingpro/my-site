@@ -369,7 +369,12 @@
         .dev-usage-num { font-size: .8125rem; font-weight: 700; color: #475569; white-space: nowrap; text-align: right; min-width: 5.5rem; }
         .dev-usage-num b { font-weight: 900; color: #0f172a; font-size: 1rem; }
         html.dark .dev-usage-num b { color: #f1f5f9; }
-        .dev-log-row { padding: .65rem 0; border-bottom: 1px solid #e2e8f0; }
+        .secmon-details > summary { list-style: none; }
+.secmon-details > summary::-webkit-details-marker { display: none; }
+.secmon-details .secmon-close-label { display: none; }
+.secmon-details[open] .secmon-open-label { display: none; }
+.secmon-details[open] .secmon-close-label { display: inline; }
+.dev-log-row { padding: .65rem 0; border-bottom: 1px solid #e2e8f0; }
 html.dark .dev-log-row { border-color: #1e293b; }
 .dev-log-row:last-child { border-bottom: 0; }
 .dev-log-main { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; font-size: .8125rem; font-weight: 800; color: #334155; }
@@ -25336,16 +25341,21 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         const SECMON_ORDER = { bad: 0, warn: 1, info: 2, ok: 3 };
         function secmonRow(it) {
             const [label, cls] = SECMON_PILL[it.level] || SECMON_PILL.info;
-            return `<div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-xl p-3 space-y-1">
+            const strip = { bad: 'border-l-rose-400', warn: 'border-l-amber-400', ok: 'border-l-emerald-400', info: 'border-l-slate-300 dark:border-l-slate-600' }[it.level] || 'border-l-slate-300';
+            return `<div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 border-l-4 ${strip} rounded-xl p-3 space-y-1">
                 <div class="flex items-start gap-2"><span class="shrink-0 text-[10px] font-black px-2 py-0.5 rounded-full ${cls}">${label}</span><p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${escapeHtml(it.title)}</p></div>
                 ${it.detail ? `<p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">${escapeHtml(it.detail)}</p>` : ''}
                 ${it.fix && (it.level === 'bad' || it.level === 'warn') ? `<p class="text-[11px] font-bold text-blue-600 dark:text-cyan-400 leading-relaxed">対処：${escapeHtml(it.fix)}</p>` : ''}
                 ${it.q ? `<button type="button" data-q="${escapeHtml(it.q)}" onclick="secmonOpenLog(this.dataset.q)" class="text-[11px] font-black text-blue-600 dark:text-cyan-400 underline underline-offset-2">アクセスログで見る</button>` : ''}
             </div>`;
         }
-        function secmonSection(title, items, emptyText) {
+        function secmonSection(title, items, emptyText, opts) {
+            opts = opts || {};
             const sorted = items.slice().sort((a, b) => (SECMON_ORDER[a.level] ?? 9) - (SECMON_ORDER[b.level] ?? 9));
-            return `<div class="space-y-2"><p class="text-xs font-black text-slate-700 dark:text-slate-200">${escapeHtml(title)}</p>${sorted.length ? sorted.map(secmonRow).join('') : `<p class="text-[11px] text-slate-400">${escapeHtml(emptyText || '')}</p>`}</div>`;
+            const head = `<span class="w-1 h-4 rounded-full ${opts.bar || 'bg-slate-400'}"></span><span class="text-sm font-black text-slate-800 dark:text-white">${escapeHtml(title)}</span><span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">${sorted.length}</span>`;
+            const body = sorted.length ? sorted.map(secmonRow).join('') : `<p class="text-[11px] text-slate-400">${escapeHtml(emptyText || '')}</p>`;
+            if (opts.collapsible) return `<details class="secmon-details"><summary class="flex items-center gap-2 cursor-pointer select-none">${head}<span class="ml-auto text-[10px] font-bold text-slate-400"><span class="secmon-open-label">開く</span><span class="secmon-close-label">閉じる</span></span></summary><div class="space-y-2 mt-3">${body}</div></details>`;
+            return `<div class="space-y-3"><div class="flex items-center gap-2">${head}</div><div class="space-y-2">${body}</div></div>`;
         }
         async function secmonFetchWorker() {
             const base = (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, '');
@@ -25435,8 +25445,10 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 const cnt = {}; (st.events || []).forEach(e => { const d = new Date(Date.parse(e.t) + 9 * 3600 * 1000).toISOString().slice(0, 10); cnt[d] = (cnt[d] || 0) + 1; });
                 html += secmonBars('不審なアクセスの記録（7日間）', days.map(d => ({ label: lab(d), v: cnt[d] || 0 })), 'bg-rose-400');
                 trendEl.innerHTML = html;
+                trendEl.className = 'space-y-5 rounded-xl border border-slate-200 dark:border-slate-800 p-3.5';
             }
-            out.innerHTML = secmonSection('危ない所（直すべきこと）', keep(st.risks), '') + secmonSection('攻撃・不審な動き（直近の記録）', keep(st.signals), '') + secmonSection('状況', keep(st.facts), '');
+            out.className = 'space-y-7 mt-2 pt-5 border-t border-slate-200 dark:border-slate-800';
+            out.innerHTML = secmonSection('危ない所（直すべきこと）', keep(st.risks), '', { bar: 'bg-rose-400' }) + secmonSection('攻撃・不審な動き（直近の記録）', keep(st.signals), '', { bar: 'bg-amber-400' }) + secmonSection('状況（参考）', keep(st.facts), '', { bar: 'bg-slate-400', collapsible: true });
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
         async function secmonCopy() {
