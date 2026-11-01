@@ -5492,6 +5492,12 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 return results;
             },
             async getIdToken() { return auth.currentUser ? auth.currentUser.getIdToken() : null; },
+            // admins/{自分のuid} があるか。このドキュメントは本人しか読めず、作れるのもFirebaseコンソールからだけ（ルールで固定）。
+            async isAdmin() {
+                const u = auth.currentUser;
+                if (!u || u.isAnonymous) return false;
+                try { const s = await getDoc(doc(db, 'admins', u.uid)); return s.exists(); } catch (e) { return false; }
+            },
             async loadSecurityEvents(max = 100) {
                 const snap = await getDocs(query(collection(db, 'security_events'), orderBy('t', 'desc'), limit(max)));
                 return snap.docs.map(d => d.data());
@@ -13179,7 +13185,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     <div class="py-5 border-b border-slate-100 dark:border-slate-800/60 last:border-0 space-y-4 select-text animate-fade-in">
 ${pmReportPairHtml('eikomi', 'transcriptionAnalysis.' + li, data, [['text', '本文', '本文がおかしい'], ['translation', '訳', '訳・解説がおかしい']])}
                         <p class="text-base sm:text-lg font-black text-blue-600 dark:text-cyan-400 leading-relaxed tracking-wide">
-                            ${formatSentenceBreaks(line.english)}
+                            ${formatSentenceBreaks(line.english, { comma: true })}
                         </p>
                         <p class="text-xs sm:text-sm font-extrabold text-slate-700 dark:text-slate-300 leading-relaxed tracking-wide bg-slate-50 dark:bg-slate-900/40 px-3 py-2 rounded-xl border-l-4 border-blue-400 dark:border-cyan-500">
                             <strong>[日本語訳]:</strong> ${formatSentenceBreaks(line.japanese)}
@@ -13224,7 +13230,7 @@ ${pmReportPairHtml('eikomi', 'transcriptionAnalysis.' + li, data, [['text', '本
 ${pmReportButtonHtml('eikomi', 'putIntoJapaneseAnswers.' + idx, data)}
                             <div class="flex items-start space-x-3 animate-fade-in">
                                 <span class="px-3.5 py-1 rounded-xl bg-blue-100 text-blue-600 dark:bg-slate-800 dark:text-cyan-400 text-sm font-black shrink-0">${escapeHtml(parsedNum)}</span>
-                                <p class="text-base font-black text-blue-500 dark:text-cyan-400 leading-relaxed tracking-wide pt-0.5">${formatSentenceBreaks(item.english)}</p>
+                                <p class="text-base font-black text-blue-500 dark:text-cyan-400 leading-relaxed tracking-wide pt-0.5">${formatSentenceBreaks(item.english, { comma: true })}</p>
                             </div>
                             <div class="bg-pink-50/50 dark:bg-slate-900/40 p-4 rounded-2xl border border-pink-100 dark:border-slate-800 space-y-2.5 text-slate-700 dark:text-slate-300">
                                 <p class="text-sm font-extrabold text-slate-800 dark:text-slate-100 leading-relaxed tracking-wide">
@@ -13323,14 +13329,14 @@ ${pmReportButtonHtml('eikomi', 'questions.' + qi, data)}
                         <div class="flex items-start space-x-3 animate-fade-in">
                             <span class="px-3 py-1 rounded-xl bg-blue-100 text-blue-600 dark:bg-slate-800 dark:text-cyan-400 text-xs font-black shrink-0 mt-0.5">Q</span>
                             <div>
-                                <p class="text-sm sm:text-base font-black text-slate-900 dark:text-slate-100 leading-relaxed tracking-wide">${formatSentenceBreaks(q.question)}</p>
+                                <p class="text-sm sm:text-base font-black text-slate-900 dark:text-slate-100 leading-relaxed tracking-wide">${formatSentenceBreaks(q.question, { comma: true })}</p>
                                 <p class="text-xs font-semibold text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">${formatSentenceBreaks(q.questionJapanese || '')}</p>
                             </div>
                         </div>
                         <div class="bg-slate-50 dark:bg-[#090d16]/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-3.5">
                             <div class="flex items-start space-x-2 leading-relaxed tracking-wide text-sm font-black text-emerald-600 dark:text-emerald-400">
                                 <i data-lucide="check" class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"></i>
-                                <span><strong>A (Answer):</strong> ${formatSentenceBreaks(q.answer)}</span>
+                                <span><strong>A (Answer):</strong> ${formatSentenceBreaks(q.answer, { comma: true })}</span>
                             </div>
                             <div class="text-xs font-bold text-slate-600 dark:text-slate-300 pl-7 leading-relaxed">
                                 <strong>[日本語訳]:</strong> ${formatSentenceBreaks(q.answerJapanese)}
@@ -13376,12 +13382,16 @@ ${pmReportButtonHtml('eikomi', 'questions.' + qi, data)}
             return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
         }
 
-        function formatSentenceBreaks(str) {
+        // opts.comma が true のときは、英文のコンマ（,）でも改行する（英コの本文・問題など、英語を表示する所で使う）
+        function formatSentenceBreaks(str, opts) {
             if (!str) return "";
             const BREAK_TOKEN = "@@SBR@@";
             const ABBR_EXCEPTIONS = /\b(Mr|Mrs|Ms|Dr|Prof|St|Jr|Sr|vs|etc|e\.g|i\.e|U\.S|U\.K)\.$/i;
-            let marked = str.replace(/([.?!]+|[。？！]+)(["'」』）\)]*)/g, (match, punct, closer, offset, full) => {
+            const useComma = !!(opts && opts.comma);
+            const breakRe = useComma ? /([.?!,]+|[。？！]+)(["'」』）\)]*)/g : /([.?!]+|[。？！]+)(["'」』）\)]*)/g;
+            let marked = str.replace(breakRe, (match, punct, closer, offset, full) => {
                 if (offset + match.length >= full.length) return match;
+                if (punct.slice(-1) === ',' && /[0-9]/.test(full.charAt(offset + match.length))) return match;
                 if (punct === '.') {
                     const nextChar = full.charAt(offset + match.length);
                     if (/[0-9]/.test(nextChar)) return match;
@@ -22439,9 +22449,13 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             const u = window.currentAppUser;
             return !!(u && !u.isAnonymous && window.currentAppIsOfficial === true && window.currentAppIsOfficialUid === u.uid);
         }
-        function openDevLoginByShortcut() {
+        async function openDevLoginByShortcut() {
             if (!canOpenDevModeByShortcut()) return;
             if (devUnlocked) { showToast('すでに開発者モードです'); return; }
+            // admins に登録された自分のアカウントなら、パスワードなしで入る（確認はFirestoreのルールが行う）
+            let admin = false;
+            try { admin = await window.AppFirebase.isAdmin(); } catch (e) {}
+            if (admin) { devEnter(false); return; }
             showDevLogin();
         }
         document.addEventListener('keydown', (e) => {
@@ -22472,6 +22486,16 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             unlockScroll();
         }
 
+        function devEnter(fromLoginModal) {
+            devUnlocked = true;
+            if (fromLoginModal) closeDevLogin();
+            updateDevFloatingIndicator();
+            showToast('開発者モードを開始しました');
+            refreshAllDevEditableViews();
+            cmsSilentAutoConnect().then(() => refreshAllDevEditableViews());
+            openDevDashboard('home');
+        }
+
         async function devLogin() {
             const input = document.getElementById('dev-pw-input');
             const err   = document.getElementById('dev-pw-error');
@@ -22479,13 +22503,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             const hash = await sha256(input.value);
             const storedHash = safeStorage.get('dev_pw_hash') || DEV_PW_HASH_DEFAULT;
             if (hash === storedHash) {
-                devUnlocked = true;
-                closeDevLogin();
-                updateDevFloatingIndicator();
-                showToast('開発者モードを開始しました');
-                refreshAllDevEditableViews();
-                cmsSilentAutoConnect().then(() => refreshAllDevEditableViews());
-                openDevDashboard('home');
+                devEnter(true);
             } else {
                 if (err) err.classList.remove('hidden');
                 input.value = '';
@@ -26058,6 +26076,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                             <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400">${esc(m.from || '開発者')}より${m.read ? '' : ' <span class="ml-1 text-blue-600 dark:text-cyan-400">新着</span>'}　<span class="font-medium text-slate-400">${fmt(m.createdMs)}</span></p>
                             <button type="button" onclick="pmInboxDelete('${esc(m.id)}')" class="text-[10px] text-slate-400 hover:text-rose-500">削除</button>
                         </div>
+                        ${m.title ? `<p class="text-xs font-bold text-slate-900 dark:text-white mt-1 break-words">${esc(m.title)}</p>` : ''}
                         <p class="text-xs text-slate-800 dark:text-slate-100 mt-1 leading-relaxed whitespace-pre-wrap break-words">${esc(m.body)}</p>
                         ${m.ref ? `<p class="text-[10px] text-slate-400 mt-1.5 break-words">あなたの報告：「${esc(m.ref)}」</p>` : ''}
                     </div>`).join('')}</div>
