@@ -1347,7 +1347,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <div class="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
             </div>
             <div class="space-y-3">
-                <input type="text" id="email-auth-email" placeholder="メールアドレス または ユーザーネーム" autocomplete="email"
+                <input type="text" id="email-auth-email" placeholder="メールアドレス" autocomplete="email"
                     class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
                 <input type="password" id="email-auth-password" placeholder="パスワード" autocomplete="current-password"
                     class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
@@ -1686,15 +1686,13 @@ html.dark .dev-log-link { color: #e2e8f0; }
             </div>
             <input type="text" id="profile-setup-name" maxlength="20" placeholder="ニックネーム（必須・例：やまだ たろう）"
                 class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 mb-3">
-            <input type="text" id="profile-setup-bio" maxlength="40" placeholder="一言コメント（例：テストで100位以内）"
-                class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 mb-3">
             <div class="mb-3">
                 <div class="flex items-center px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus-within:border-blue-400">
                     <span class="text-sm font-black text-slate-400 mr-0.5">@</span>
                     <input type="text" id="profile-setup-username" maxlength="20" placeholder="ユーザーネーム（必須・半角英数・アンダースコア）"
                         class="flex-1 min-w-0 bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none">
                 </div>
-                <p class="text-[10px] font-bold text-slate-400 mt-1 ml-1">ログインにも使えるIDです（3〜20文字）。あとから変更できます。</p>
+                <p class="text-[10px] font-bold text-slate-400 mt-1 ml-1">アプリ内で使うIDです（3〜20文字）。あとから変更できます。</p>
             </div>
             <button onclick="submitProfileSetup()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">保存して始める</button>
             <p id="profile-setup-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-2"></p>
@@ -1784,65 +1782,28 @@ html.dark .dev-log-link { color: #e2e8f0; }
             </div>
         </div>
 
-        <div class="sw-page hidden" data-sw-step="name">
-            <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 border-b border-slate-100 dark:border-slate-800 z-10">
-                <h2 class="text-base font-black text-slate-800 dark:text-white">名前の設定</h2>
-            </div>
-            <div class="p-5 max-w-md mx-auto space-y-4">
-                <div class="grid grid-cols-2 gap-3">
-                    <div>
-                        <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1">姓</p>
-                        <input type="text" id="sw-name-last" maxlength="10" oninput="swValidateNameStep()"
-                            class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                        <p id="sw-name-last-err" class="hidden text-[10px] font-bold text-rose-500 mt-0.5">入力してください</p>
-                    </div>
-                    <div>
-                        <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1">名</p>
-                        <input type="text" id="sw-name-first" maxlength="10" oninput="swValidateNameStep()"
-                            class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                        <p id="sw-name-first-err" class="hidden text-[10px] font-bold text-rose-500 mt-0.5">入力してください</p>
-                    </div>
-                    <div>
-                        <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1">セイ</p>
-                        <input type="text" id="sw-name-last-kana" maxlength="10" oninput="swValidateNameStep()"
-                            class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                        <p id="sw-name-last-kana-err" class="hidden text-[10px] font-bold text-rose-500 mt-0.5">入力してください</p>
-                    </div>
-                    <div>
-                        <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1">メイ</p>
-                        <input type="text" id="sw-name-first-kana" maxlength="10" oninput="swValidateNameStep()"
-                            class="w-full px-3 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                        <p id="sw-name-first-kana-err" class="hidden text-[10px] font-bold text-rose-500 mt-0.5">入力してください</p>
-                    </div>
-                </div>
-                <p class="text-[11px] font-bold text-slate-400 leading-relaxed">アカウント利用者の確認に使用する場合があります。学習ProMasterのサービス上で他の利用者に公開されることはありません。</p>
-                <button id="sw-name-submit-btn" onclick="swSubmitName()" disabled class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all disabled:opacity-40">次へ</button>
-                <p id="sw-name-error" class="hidden text-[11px] font-bold text-rose-500 text-center"></p>
-            </div>
-        </div>
-
-        <div class="sw-page hidden" data-sw-step="grade">
-            <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 border-b border-slate-100 dark:border-slate-800 z-10">
-                <h2 class="text-base font-black text-slate-800 dark:text-white">学年・職業の設定</h2>
-            </div>
-            <div class="max-w-md mx-auto">
-                <div id="sw-grade-options" class="divide-y divide-slate-100 dark:divide-slate-800"></div>
-                <div class="p-5">
-                    <button id="sw-grade-submit-btn" onclick="swSubmitGrade()" disabled class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all disabled:opacity-40">次へ</button>
-                    <p id="sw-grade-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-2"></p>
-                </div>
-            </div>
-        </div>
-
         <div class="sw-page hidden" data-sw-step="nickname">
             <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 border-b border-slate-100 dark:border-slate-800 z-10">
-                <h2 class="text-base font-black text-slate-800 dark:text-white">ニックネームの設定</h2>
+                <h2 class="text-base font-black text-slate-800 dark:text-white">プロフィールの設定</h2>
             </div>
-            <div class="p-5 max-w-md mx-auto space-y-3">
-                <p class="text-[11px] font-black text-slate-500 dark:text-slate-400">ニックネーム</p>
-                <input type="text" id="sw-nickname-input" maxlength="32" oninput="swValidateNickname()"
-                    class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                <p id="sw-nickname-count" class="text-right text-[10px] font-bold text-slate-400">0/32</p>
+            <div class="p-5 max-w-md mx-auto space-y-4">
+                <p class="text-[11px] font-bold text-slate-400 leading-relaxed">アプリの中で表示される名前とIDです。本名を入力する必要はありません。</p>
+                <div>
+                    <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1">ニックネーム</p>
+                    <input type="text" id="sw-nickname-input" maxlength="32" autocomplete="off" oninput="swValidateNickname()"
+                        class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                    <p id="sw-nickname-count" class="text-right text-[10px] font-bold text-slate-400 mt-1">0/32</p>
+                </div>
+                <div>
+                    <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1">ユーザーネーム</p>
+                    <div class="flex items-center px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl focus-within:border-blue-400">
+                        <span class="text-sm font-black text-slate-400 mr-0.5">@</span>
+                        <input type="text" id="sw-username-input" maxlength="20" autocomplete="username" autocapitalize="off" oninput="swValidateNickname()"
+                            class="flex-1 min-w-0 bg-transparent text-sm font-bold text-slate-900 dark:text-white focus:outline-none">
+                    </div>
+                    <p class="text-[10px] font-bold text-slate-400 mt-1 ml-1">アプリ内で使うIDです（半角英数字とアンダースコア、3〜20文字）。あとから変更できます。</p>
+                    <p id="sw-username-hint" class="hidden text-[10px] font-bold text-rose-500 mt-0.5 ml-1">半角英数字とアンダースコアで3〜20文字にしてください</p>
+                </div>
                 <button id="sw-nickname-submit-btn" onclick="swSubmitNickname()" disabled class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all disabled:opacity-40">次へ</button>
                 <p id="sw-nickname-error" class="hidden text-[11px] font-bold text-rose-500 text-center"></p>
             </div>
@@ -1873,92 +1834,11 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <span>Googleアカウントと連携</span>
                 </button>
                 <p class="text-[10px] font-bold text-slate-400 mt-4">設定 &gt; アカウント設定 &gt; 外部アカウント連携から設定することも可能です。</p>
-                <button onclick="swGoto('highschool')" class="w-full mt-8 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">あとで</button>
+                <button onclick="swFinishWizard()" class="w-full mt-8 py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">あとで</button>
                 <p id="sw-google-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-2"></p>
             </div>
         </div>
 
-        <div class="sw-page hidden" data-sw-step="highschool">
-            <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 border-b border-slate-100 dark:border-slate-800 z-10">
-                <h2 class="text-base font-black text-slate-800 dark:text-white">高校の設定</h2>
-            </div>
-            <div class="p-5 max-w-md mx-auto space-y-3">
-                <p class="text-[11px] font-black text-slate-500 dark:text-slate-400">高校を検索</p>
-                <input type="text" id="sw-highschool-search" oninput="swSearchHighSchool()" placeholder="学校名で検索"
-                    class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                <div id="sw-highschool-results" class="divide-y divide-slate-100 dark:divide-slate-800"></div>
-                <p class="text-[10px] font-bold text-slate-400">※学校名の一覧は簡易的なサンプルデータです。見つからない場合はそのまま検索欄の名前で登録されます。</p>
-            </div>
-            <div id="sw-highschool-selected-wrap" class="hidden">
-                <div class="px-5 py-3">
-                    <p id="sw-highschool-selected-name" class="text-sm font-bold text-slate-800 dark:text-slate-100"></p>
-                </div>
-                <div class="p-5">
-                    <button onclick="swSubmitHighSchool()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">次へ</button>
-                </div>
-            </div>
-            <div class="p-5 max-w-md mx-auto">
-                <button onclick="swGoto('goals')" class="w-full py-2.5 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">スキップする</button>
-            </div>
-        </div>
-
-        <div class="sw-page hidden" data-sw-step="goals">
-            <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 border-b border-slate-100 dark:border-slate-800 z-10">
-                <h2 class="text-base font-black text-slate-800 dark:text-white">達成目標・志望大学の選択</h2>
-            </div>
-            <div class="max-w-md mx-auto">
-                <p class="px-5 pt-4 text-[11px] font-black text-slate-400">志望大学（いま興味のある大学）</p>
-                <button onclick="swGoto('universities')" class="w-full flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <span id="sw-goals-univ-label" class="text-sm font-black text-slate-800 dark:text-white">大学を選択</span>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
-                </button>
-                <p class="px-5 pt-4 text-[11px] font-black text-slate-400">達成目標（資格取得やスキルアップなど）</p>
-                <button onclick="swGoto('achievements')" class="w-full flex items-center justify-between px-5 py-4 border-b border-slate-100 dark:border-slate-800">
-                    <span id="sw-goals-achievement-label" class="text-sm font-black text-slate-800 dark:text-white">達成目標を選択</span>
-                    <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
-                </button>
-                <div class="p-5">
-                    <button onclick="swFinishWizard()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">はじめる</button>
-                </div>
-            </div>
-        </div>
-
-        <div class="sw-page hidden" data-sw-step="universities">
-            <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10">
-                <button onclick="swGoto('goals')" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                <h2 class="text-sm font-black text-slate-800 dark:text-white">志望大学の選択</h2>
-            </div>
-            <div class="p-4 max-w-md mx-auto space-y-3">
-                <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-[11px] font-bold text-slate-500 dark:text-slate-400 leading-relaxed">
-                    実際に受験を予定している大学、または興味がある・受験を検討している大学を選んでください<br>
-                    <span id="sw-univ-count-label">0校選択中</span>（※志望大学の上限は20校です）
-                </div>
-                <input type="text" id="sw-univ-search" oninput="swRenderUniversityList()" placeholder="大学名で検索"
-                    class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                <select id="sw-univ-pref-filter" onchange="swRenderUniversityList()" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none"></select>
-                <div class="flex gap-2" id="sw-univ-type-filter">
-                    <button data-type="" onclick="swSetUnivTypeFilter('')" class="sw-univ-type-btn px-3 py-1.5 rounded-full text-xs font-black border">すべて</button>
-                    <button data-type="国公立" onclick="swSetUnivTypeFilter('国公立')" class="sw-univ-type-btn px-3 py-1.5 rounded-full text-xs font-black border">国公立</button>
-                    <button data-type="私立" onclick="swSetUnivTypeFilter('私立')" class="sw-univ-type-btn px-3 py-1.5 rounded-full text-xs font-black border">私立</button>
-                </div>
-                <div id="sw-univ-list" class="divide-y divide-slate-100 dark:divide-slate-800"></div>
-                <p class="text-[10px] font-bold text-slate-400">※大学の一覧は主要大学のみのサンプルデータです。</p>
-                <button onclick="swGoto('goals')" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">決定する</button>
-            </div>
-        </div>
-
-        <div class="sw-page hidden" data-sw-step="achievements">
-            <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 z-10">
-                <button onclick="swGoto('goals')" class="p-1.5 -ml-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="chevron-left" class="w-5 h-5 text-slate-600 dark:text-slate-300"></i></button>
-                <h2 class="text-sm font-black text-slate-800 dark:text-white">達成目標を選択</h2>
-            </div>
-            <div class="p-4 max-w-md mx-auto space-y-3">
-                <input type="text" id="sw-achievement-search" placeholder="英検、TOEIC、簿記 などで検索" oninput="swRenderAchievementList()"
-                    class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                <div id="sw-achievement-list" class="divide-y divide-slate-100 dark:divide-slate-800"></div>
-                <button onclick="swGoto('goals')" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">決定する</button>
-            </div>
-        </div>
     </div>
 
     <div id="timeline-screen" class="fixed inset-0 z-[900] bg-white dark:bg-[#0b1120] hidden flex flex-col">
@@ -4456,27 +4336,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 </section>
 
                 <section class="space-y-4">
-                    <h3 class="text-sm font-semibold text-slate-900 dark:text-white">氏名</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <div><label for="ps-last-name" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">姓</label><input id="ps-last-name" type="text" placeholder="山田" class="w-full px-3 py-2.5 text-sm" ></div>
-                        <div><label for="ps-first-name" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">名</label><input id="ps-first-name" type="text" placeholder="太郎" class="w-full px-3 py-2.5 text-sm" ></div>
-                        <div><label for="ps-last-kana" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">せい（ふりがな）</label><input id="ps-last-kana" type="text" placeholder="やまだ" class="w-full px-3 py-2.5 text-sm" ></div>
-                        <div><label for="ps-first-kana" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">めい（ふりがな）</label><input id="ps-first-kana" type="text" placeholder="たろう" class="w-full px-3 py-2.5 text-sm" ></div>
-                    </div>
-                </section>
-
-                <section class="space-y-4">
-                    <h3 class="text-sm font-semibold text-slate-900 dark:text-white">学年・高校</h3>
-                    <div><label for="ps-grade" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">学年</label><select id="ps-grade" class="w-full px-3 py-2.5 text-sm"></select></div>
-                    <div>
-                        <label for="ps-hs-search" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mb-1.5">高校</label>
-                        <p id="ps-hs-selected" class="text-sm font-medium text-slate-900 dark:text-white mb-2 hidden"></p>
-                        <input id="ps-hs-search" type="text" oninput="psSearchHighSchool()" placeholder="学校名で検索（例：東京）" class="w-full px-3 py-2.5 text-sm">
-                        <div id="ps-hs-results" class="mt-1 divide-y divide-slate-100 dark:divide-slate-800"></div>
-                    </div>
-                </section>
-
-                <section class="space-y-4">
                     <h3 class="text-sm font-semibold text-slate-900 dark:text-white">目標</h3>
                     <div>
                         <div class="flex items-center justify-between mb-2">
@@ -4484,10 +4343,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             <button onclick="openTargetSchoolsModal()" class="text-xs font-medium hover:underline" style="color:var(--pm-accent)">編集する</button>
                         </div>
                         <p id="ps-target-schools" class="text-sm text-slate-900 dark:text-white leading-relaxed"></p>
-                    </div>
-                    <div>
-                        <p class="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">達成目標（複数選択できます）</p>
-                        <div id="ps-achievements" class="flex flex-wrap gap-2"></div>
                     </div>
                 </section>
 
@@ -5262,7 +5117,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
         import {
             getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp,
             collection, getDocs, increment, addDoc, query, where, orderBy, limit, writeBatch,
-            getCountFromServer, onSnapshot
+            getCountFromServer, onSnapshot, deleteField
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -5292,6 +5147,19 @@ html.dark .dev-log-link { color: #e2e8f0; }
             return d.toISOString().slice(0, 10);
         }
 
+        // 以前の新規登録で集めていた、いまは使わない個人情報（氏名・ふりがな・学年・高校・達成目標・電話番号）を、
+        // ログインしたときに本人のデータから削除する。
+        const LEGACY_USER_FIELDS = ['lastName', 'firstName', 'lastNameKana', 'firstNameKana', 'grade', 'gradeVisibility', 'highSchool', 'highSchoolVisibility', 'achievementGoals', 'phoneNumber'];
+        async function purgeLegacyUserData(uid, data) {
+            if (!data) return;
+            const present = LEGACY_USER_FIELDS.filter(k => Object.prototype.hasOwnProperty.call(data, k));
+            if (!present.length) return;
+            const patch = {};
+            present.forEach(k => { patch[k] = deleteField(); });
+            try { await updateDoc(doc(db, 'users', uid), patch); }
+            catch (e) { console.warn('古い個人情報の削除に失敗しました', e); }
+        }
+
         async function ensureUserDoc(user) {
             const ref = doc(db, 'users', user.uid);
             const snap = await getDoc(ref);
@@ -5299,7 +5167,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 await setDoc(ref, {
                     displayName: user.displayName || 'ゲスト',
                     email: user.email || null,
-                    phoneNumber: user.phoneNumber || null,
                     isAnonymous: user.isAnonymous,
                     provider: user.isAnonymous ? 'anonymous' : (user.providerData[0]?.providerId || 'unknown'),
                     classId: null,
@@ -5310,15 +5177,14 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 await updateDoc(ref, {
                     lastLoginAt: serverTimestamp(),
                     email: user.email || snap.data().email || null,
-                    phoneNumber: user.phoneNumber || snap.data().phoneNumber || null,
                 });
                 const uname = snap.data().username;
-                if (uname && user.email) {
+                if (uname) {
                     try {
                         const mapRef = doc(db, 'usernames', uname);
                         const mapSnap = await getDoc(mapRef);
-                        if (mapSnap.exists() && !mapSnap.data().email) {
-                            await setDoc(mapRef, { uid: user.uid, email: user.email }, { merge: true });
+                        if (mapSnap.exists() && mapSnap.data().uid === user.uid && Object.prototype.hasOwnProperty.call(mapSnap.data(), 'email')) {
+                            await setDoc(mapRef, { uid: user.uid, email: deleteField() }, { merge: true });
                         }
                     } catch (e) {  }
                 }
@@ -5633,18 +5499,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
             async resetPassword(email) {
                 await sendPasswordResetEmail(auth, email);
             },
-            async getEmailForUsername(usernameRaw) {
-                const key = (usernameRaw || '').trim().toLowerCase();
-                const mapSnap = await getDoc(doc(db, 'usernames', key));
-                if (!mapSnap.exists()) {
-                    throw Object.assign(new Error('username not found'), { code: 'auth/user-not-found' });
-                }
-                const email = mapSnap.data().email || null;
-                if (!email) {
-                    throw Object.assign(new Error('no email registered for this username'), { code: 'username/no-email' });
-                }
-                return email;
-            },
             async setUsername(usernameRaw) {
                 const user = auth.currentUser;
                 if (!user) throw new Error('not logged in');
@@ -5663,26 +5517,12 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 if (prevUsername && prevUsername !== key) {
                     try { await deleteDoc(doc(db, 'usernames', prevUsername)); } catch (e) {  }
                 }
-                await setDoc(mapRef, { uid: user.uid, email: user.email || null }, { merge: true });
+                await setDoc(mapRef, { uid: user.uid, email: deleteField() }, { merge: true });
                 await updateDoc(doc(db, 'users', user.uid), { username: key });
                 window.currentAppUsername = key;
                 try {
                     await setDoc(doc(db, 'publicProfiles', user.uid), { username: key, uid: user.uid }, { merge: true });
                 } catch (e) {  }
-            },
-            async loginWithUsername(usernameRaw, password) {
-                const key = (usernameRaw || '').trim().toLowerCase();
-                const mapSnap = await getDoc(doc(db, 'usernames', key));
-                if (!mapSnap.exists()) {
-                    throw Object.assign(new Error('username not found'), { code: 'auth/user-not-found' });
-                }
-                const email = mapSnap.data().email || null;
-                if (!email) {
-                    throw Object.assign(new Error('no email registered for this username'), { code: 'username/no-email' });
-                }
-                const { user } = await signInWithEmailAndPassword(auth, email, password);
-                await ensureUserDoc(user);
-                return user;
             },
             getUserDoc(uid) {
                 return getDoc(doc(db, 'users', uid));
@@ -5706,42 +5546,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 await ensureUserDoc(resultUser);
                 return resultUser;
             },
-            async setFullName({ lastName, firstName, lastNameKana, firstNameKana }) {
-                const user = auth.currentUser;
-                if (!user) throw new Error('not logged in');
-                await updateDoc(doc(db, 'users', user.uid), {
-                    lastName: (lastName || '').trim(),
-                    firstName: (firstName || '').trim(),
-                    lastNameKana: (lastNameKana || '').trim(),
-                    firstNameKana: (firstNameKana || '').trim(),
-                });
-            },
-            async setGradeOccupation(grade, visibility) {
-                const user = auth.currentUser;
-                if (!user) throw new Error('not logged in');
-                await updateDoc(doc(db, 'users', user.uid), {
-                    grade: grade || null,
-                    gradeVisibility: visibility || '全体',
-                });
-                window.currentAppGrade = grade || null;
-            },
-            async setHighSchool(name, visibility) {
-                const user = auth.currentUser;
-                if (!user) throw new Error('not logged in');
-                await updateDoc(doc(db, 'users', user.uid), {
-                    highSchool: name || null,
-                    highSchoolVisibility: visibility || '全体',
-                });
-                window.currentAppHighSchool = name || null;
-            },
-            async setAchievementGoals(list) {
-                const user = auth.currentUser;
-                if (!user) throw new Error('not logged in');
-                const cleaned = (list || []).map(s => String(s).trim()).filter(Boolean);
-                await updateDoc(doc(db, 'users', user.uid), { achievementGoals: cleaned });
-                window.currentAppAchievementGoals = cleaned;
-            },
-
             async ensurePublicProfile() {
                 const user = auth.currentUser;
                 if (!user) return;
@@ -6248,10 +6052,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     window.currentAppBio = data.bio || null;
                     window.currentAppTargetSchools = Array.isArray(data.targetSchools) ? data.targetSchools : [];
                     window.currentAppUsername = data.username || null;
-                    window.currentAppGrade = data.grade || null;
-                    window.currentAppHighSchool = data.highSchool || null;
-                    window.currentAppAchievementGoals = Array.isArray(data.achievementGoals) ? data.achievementGoals : [];
-                    window.currentAppFullName = { lastName: data.lastName || '', firstName: data.firstName || '', lastNameKana: data.lastNameKana || '', firstNameKana: data.firstNameKana || '' };
+                    purgeLegacyUserData(user.uid, data);
                     window.currentAppIsPrivate = !!data.isPrivate;
                     window.currentAppIsOfficial = false;
                     window.currentAppIsOfficialUid = null;
@@ -6302,10 +6103,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 window.currentAppProfilePhoto = null;
                 window.currentAppBio = null;
                 window.currentAppTargetSchools = [];
-                window.currentAppGrade = null;
-                window.currentAppHighSchool = null;
-                window.currentAppAchievementGoals = [];
-                window.currentAppFullName = null;
                 window.currentAppIsPrivate = false;
                 window.currentAppProfileSetupRequired = false;
             }
@@ -6519,9 +6316,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 case 'auth/email-already-in-use': return 'このメールアドレスはすでに登録されています。ログインをお試しください。';
                 case 'auth/invalid-email': return 'メールアドレスの形式が正しくありません。';
                 case 'auth/weak-password': return 'パスワードは6文字以上で設定してください。';
-                case 'auth/user-not-found': return 'このメールアドレス・ユーザーネームのアカウントが見つかりません。';
+                case 'auth/user-not-found': return 'このメールアドレスのアカウントが見つかりません。';
                 case 'auth/wrong-password': return 'パスワードが違います。';
-                case 'auth/invalid-credential': return 'メールアドレス（またはユーザーネーム）・パスワードが正しくありません。';
+                case 'auth/invalid-credential': return 'メールアドレス・パスワードが正しくありません。';
                 case 'auth/too-many-requests': return '試行回数が多すぎます。しばらく時間をおいてお試しください。';
                 case 'auth/credential-already-in-use': return 'このメールアドレスはすでに別のアカウントで使われています。';
                 case 'auth/operation-not-allowed': return 'メール／パスワードでのログインが現在無効になっています。管理者に設定の確認を依頼してください（Firebaseコンソール →Authentication→Sign-in methodで「メール/パスワード」を有効にする必要があります）。';
@@ -6553,15 +6350,15 @@ html.dark .dev-log-link { color: #e2e8f0; }
             const password = (passInput && passInput.value || '');
             if (errEl) errEl.classList.add('hidden');
             if (!identifier || !password) {
-                if (errEl) { errEl.textContent = 'メールアドレス（またはユーザーネーム）とパスワードを入力してください'; errEl.classList.remove('hidden'); }
+                if (errEl) { errEl.textContent = 'メールアドレスとパスワードを入力してください'; errEl.classList.remove('hidden'); }
                 return;
             }
             try {
-                if (identifier.includes('@')) {
-                    await window.AppFirebase.loginEmail(identifier, password);
-                } else {
-                    await window.AppFirebase.loginWithUsername(identifier, password);
+                if (!identifier.includes('@')) {
+                    if (errEl) { errEl.textContent = 'メールアドレスでログインしてください（ユーザーネームではログインできません）'; errEl.classList.remove('hidden'); }
+                    return;
                 }
+                await window.AppFirebase.loginEmail(identifier, password);
                 closeEmailAuthModal();
                 showToast('ログインしました');
             } catch (e) {
@@ -6651,7 +6448,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
         function openProfileSetupModal(user) {
             const modal = document.getElementById('profile-setup-modal');
             const input = document.getElementById('profile-setup-name');
-            const bioInput = document.getElementById('profile-setup-bio');
             const usernameInput = document.getElementById('profile-setup-username');
             const errEl = document.getElementById('profile-setup-error');
             if (errEl) errEl.classList.add('hidden');
@@ -6659,7 +6455,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 const cand = window.currentAppProfileName || (user && user.displayName) || '';
                 input.value = isPlaceholderProfileName(cand) ? '' : cand;
             }
-            if (bioInput) bioInput.value = window.currentAppBio || '';
             if (usernameInput) usernameInput.value = window.currentAppUsername || '';
             if (modal) modal.classList.remove('hidden');
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -6691,13 +6486,11 @@ html.dark .dev-log-link { color: #e2e8f0; }
         }
         async function submitProfileSetup() {
             const input = document.getElementById('profile-setup-name');
-            const bioInput = document.getElementById('profile-setup-bio');
             const usernameInput = document.getElementById('profile-setup-username');
             const errEl = document.getElementById('profile-setup-error');
             const showErr = (msg) => { if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); } };
             if (errEl) errEl.classList.add('hidden');
             const name = (input && input.value || '').trim();
-            const bio = (bioInput && bioInput.value || '').trim();
             const username = (usernameInput && usernameInput.value || '').trim().replace(/^@/, '');
             if (!name) return showErr('ニックネームを入力してください');
             if (isPlaceholderProfileName(name)) return showErr('「' + name + '」は仮の名前なので使えません。あなたのニックネームを入力してください');
@@ -6713,7 +6506,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     }
                 }
                 await window.AppFirebase.setProfileName(name);
-                try { await window.AppFirebase.setBio(bio); } catch (be) { console.warn('bio save error', be); }
                 if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
                 window.currentAppProfileSetupRequired = false;
                 closeProfileSetupModal();
@@ -6727,11 +6519,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
         const swState = {
             email: '',
             emailVerified: false,
-            grade: null,
-            gradeVisibility: '全体',
-            highschool: null,
-            highschoolVisibility: '全体',
-            achievements: [],
         };
         let swHistory = [];
         function swShowStep(step) {
@@ -6751,11 +6538,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 const ii = document.getElementById('sw-invite-input'); if (ii) { ii.value = ''; setTimeout(() => ii.focus(), 50); }
                 const ie = document.getElementById('sw-invite-error'); if (ie) ie.classList.add('hidden');
             }
-            if (step === 'grade') swRenderGradeOptions();
-            if (step === 'highschool') swSearchHighSchool();
-            if (step === 'goals') swUpdateGoalsLabels();
-            if (step === 'universities') swRenderUniversityList();
-            if (step === 'achievements') swRenderAchievementList();
+            if (step === 'nickname') swValidateNickname();
         }
         function swBack() {
             const prev = swHistory.pop();
@@ -6766,11 +6549,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
             }
         }
         function openSignupWizard() {
-            swState.email = ''; swState.emailVerified = false; swState.grade = null;
-            swState.gradeVisibility = '全体'; swState.highschool = null; swState.highschoolVisibility = '全体';
-            swState.achievements = [];
+            swState.email = ''; swState.emailVerified = false;
             swHistory = [];
-            ['sw-email-input','sw-password-1','sw-password-2','sw-name-last','sw-name-first','sw-name-last-kana','sw-name-first-kana','sw-nickname-input','sw-highschool-search','sw-univ-search','sw-achievement-search'].forEach(id => {
+            ['sw-email-input','sw-password-1','sw-password-2','sw-nickname-input','sw-username-input'].forEach(id => {
                 const el = document.getElementById(id); if (el) el.value = '';
             });
             showAuthGate(false);
@@ -6813,7 +6594,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
             try {
                 const verified = await window.AppFirebase.refreshEmailVerifiedState();
                 if (verified) {
-                    swGoto('name');
+                    swGoto('nickname');
                 } else {
                     if (errEl) { errEl.textContent = 'まだ確認が完了していないようです。メール内のリンクをクリックしてから、もう一度お試しください。'; errEl.classList.remove('hidden'); }
                 }
@@ -6910,96 +6691,43 @@ html.dark .dev-log-link { color: #e2e8f0; }
             }
         }
 
-        function swValidateNameStep() {
-            const fields = ['sw-name-last', 'sw-name-first', 'sw-name-last-kana', 'sw-name-first-kana'];
-            let allOk = true;
-            fields.forEach(id => {
-                const val = (document.getElementById(id) && document.getElementById(id).value || '').trim();
-                const errEl = document.getElementById(id + '-err');
-                const bad = !val;
-                if (errEl) errEl.classList.toggle('hidden', !bad);
-                if (bad) allOk = false;
-            });
-            const btn = document.getElementById('sw-name-submit-btn');
-            if (btn) btn.disabled = !allOk;
-        }
-        async function swSubmitName() {
-            const errEl = document.getElementById('sw-name-error');
-            if (errEl) errEl.classList.add('hidden');
-            const lastName = document.getElementById('sw-name-last').value.trim();
-            const firstName = document.getElementById('sw-name-first').value.trim();
-            const lastNameKana = document.getElementById('sw-name-last-kana').value.trim();
-            const firstNameKana = document.getElementById('sw-name-first-kana').value.trim();
-            swSetBtnLoading('sw-name-submit-btn', true, '保存中…');
-            try {
-                await window.AppFirebase.setFullName({ lastName, firstName, lastNameKana, firstNameKana });
-                swGoto('grade');
-            } catch (e) {
-                console.error('save name error', e);
-                if (errEl) { errEl.textContent = '保存に失敗しました。もう一度お試しください'; errEl.classList.remove('hidden'); }
-            } finally {
-                swSetBtnLoading('sw-name-submit-btn', false, '', '次へ');
-            }
-        }
-
-        const SW_GRADE_OPTIONS = ['中学1年生','中学2年生','中学3年生','高校1年生','高校2年生','高校3年生','浪人生','大学1年生','大学2年生','大学3年生','大学4年生','大学5年生','大学6年生','大学院生','専門学校生','社会人'];
-        function swRenderGradeOptions() {
-            const wrap = document.getElementById('sw-grade-options');
-            const visLabel = document.getElementById('sw-grade-visibility-label');
-            if (visLabel) visLabel.textContent = swState.gradeVisibility;
-            if (!wrap) return;
-            wrap.innerHTML = SW_GRADE_OPTIONS.map(g => {
-                const checked = swState.grade === g;
-                return `<button type="button" onclick="swSelectGrade('${g}')" class="w-full flex items-center gap-3 px-5 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                    <span class="w-4 h-4 rounded-full border-2 ${checked ? 'border-blue-500 bg-blue-500' : 'border-slate-300 dark:border-slate-600'} flex items-center justify-center shrink-0">${checked ? '<span class="w-1.5 h-1.5 rounded-full bg-white"></span>' : ''}</span>
-                    <span class="text-sm font-bold text-slate-800 dark:text-slate-100">${g}</span>
-                </button>`;
-            }).join('');
-        }
-        function swSelectGrade(g) {
-            swState.grade = g;
-            swRenderGradeOptions();
-            const btn = document.getElementById('sw-grade-submit-btn');
-            if (btn) btn.disabled = false;
-        }
-        async function swSubmitGrade() {
-            const errEl = document.getElementById('sw-grade-error');
-            if (errEl) errEl.classList.add('hidden');
-            if (!swState.grade) return;
-            swSetBtnLoading('sw-grade-submit-btn', true, '保存中…');
-            try {
-                await window.AppFirebase.setGradeOccupation(swState.grade, swState.gradeVisibility);
-                swGoto('nickname');
-            } catch (e) {
-                console.error('save grade error', e);
-                if (errEl) { errEl.textContent = '保存に失敗しました。もう一度お試しください'; errEl.classList.remove('hidden'); }
-            } finally {
-                swSetBtnLoading('sw-grade-submit-btn', false, '', '次へ');
-            }
-        }
-
         function swValidateNickname() {
-            const val = (document.getElementById('sw-nickname-input').value || '');
+            const nick = (document.getElementById('sw-nickname-input').value || '');
+            const user = ((document.getElementById('sw-username-input') || {}).value || '').trim().replace(/^@/, '');
             const countEl = document.getElementById('sw-nickname-count');
-            if (countEl) countEl.textContent = val.length + '/32';
+            if (countEl) countEl.textContent = nick.length + '/32';
+            const userOk = /^[A-Za-z0-9_]{3,20}$/.test(user);
+            const hint = document.getElementById('sw-username-hint');
+            if (hint) hint.classList.toggle('hidden', !user || userOk);
             const btn = document.getElementById('sw-nickname-submit-btn');
-            if (btn) btn.disabled = !val.trim();
+            if (btn) btn.disabled = !(nick.trim() && userOk);
         }
         async function swSubmitNickname() {
             const errEl = document.getElementById('sw-nickname-error');
+            const showErr = (m) => { if (errEl) { errEl.textContent = m; errEl.classList.remove('hidden'); } };
             if (errEl) errEl.classList.add('hidden');
             const nickname = document.getElementById('sw-nickname-input').value.trim();
+            const username = document.getElementById('sw-username-input').value.trim().replace(/^@/, '');
             if (!nickname) return;
+            if (isPlaceholderProfileName(nickname)) return showErr('「' + nickname + '」は仮の名前なので使えません。あなたのニックネームを入力してください');
+            if (!/^[A-Za-z0-9_]{3,20}$/.test(username)) return showErr('ユーザーネームは半角英数字とアンダースコアで3〜20文字にしてください');
             swSetBtnLoading('sw-nickname-submit-btn', true, '保存中…');
             try {
+                try {
+                    if ((window.currentAppUsername || '').toLowerCase() !== username.toLowerCase()) await window.AppFirebase.setUsername(username);
+                } catch (ue) {
+                    console.error('save username error', ue);
+                    return showErr(profileSetupUsernameErrorMessage(ue));
+                }
                 await window.AppFirebase.setProfileName(nickname);
                 if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
                 swGoto((window._remoteProtectedInFirestore && typeof pmIsAllowed === 'function' && !pmIsAllowed()) ? 'invite' : 'google');
             } catch (e) {
                 console.error('save nickname error', e);
-                if (errEl) { errEl.textContent = '保存に失敗しました。もう一度お試しください'; errEl.classList.remove('hidden'); }
+                showErr('保存に失敗しました。もう一度お試しください');
             } finally {
                 swSetBtnLoading('sw-nickname-submit-btn', false, '', '次へ');
+                swValidateNickname();
             }
         }
 
@@ -7032,7 +6760,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
             try {
                 await window.AppFirebase.linkGoogleAccount();
                 showToast('Googleアカウントと連携しました');
-                swGoto('highschool');
+                swFinishWizard();
             } catch (e) {
                 console.error('google link error', e);
                 let msg = 'Google連携に失敗しました。時間をおいて再度お試しください';
@@ -7042,63 +6770,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
             }
         }
 
-        const SW_HIGH_SCHOOLS = [
-            {name:'橘高校', pref:'福島県'}, {name:'橘高校', pref:'東京都'}, {name:'橘高校', pref:'神奈川県'}, {name:'橘学苑高校', pref:'神奈川県'},
-            {name:'開成高等学校', pref:'東京都'}, {name:'麻布高等学校', pref:'東京都'}, {name:'桜蔭高等学校', pref:'東京都'}, {name:'日比谷高等学校', pref:'東京都'},
-            {name:'西高等学校', pref:'東京都'}, {name:'国立高等学校', pref:'東京都'}, {name:'戸山高等学校', pref:'東京都'}, {name:'新宿高等学校', pref:'東京都'},
-            {name:'湘南高等学校', pref:'神奈川県'}, {name:'横浜翠嵐高等学校', pref:'神奈川県'}, {name:'柏陽高等学校', pref:'神奈川県'}, {name:'厚木高等学校', pref:'神奈川県'},
-            {name:'県立浦和高等学校', pref:'埼玉県'}, {name:'浦和第一女子高等学校', pref:'埼玉県'}, {name:'大宮高等学校', pref:'埼玉県'}, {name:'川越高等学校', pref:'埼玉県'},
-            {name:'県立千葉高等学校', pref:'千葉県'}, {name:'船橋高等学校', pref:'千葉県'}, {name:'東葛飾高等学校', pref:'千葉県'},
-            {name:'旭丘高等学校', pref:'愛知県'}, {name:'岡崎高等学校', pref:'愛知県'}, {name:'一宮高等学校', pref:'愛知県'},
-            {name:'北野高等学校', pref:'大阪府'}, {name:'天王寺高等学校', pref:'大阪府'}, {name:'大手前高等学校', pref:'大阪府'}, {name:'茨木高等学校', pref:'大阪府'},
-            {name:'県立長田高等学校', pref:'兵庫県'}, {name:'神戸高等学校', pref:'兵庫県'}, {name:'姫路西高等学校', pref:'兵庫県'},
-            {name:'洛北高等学校', pref:'京都府'}, {name:'堀川高等学校', pref:'京都府'}, {name:'嵯峨野高等学校', pref:'京都府'},
-            {name:'仙台第二高等学校', pref:'宮城県'}, {name:'仙台第一高等学校', pref:'宮城県'},
-            {name:'札幌南高等学校', pref:'北海道'}, {name:'札幌北高等学校', pref:'北海道'},
-            {name:'修猷館高等学校', pref:'福岡県'}, {name:'福岡高等学校', pref:'福岡県'},
-            {name:'熊本高等学校', pref:'熊本県'}, {name:'鶴丸高等学校', pref:'鹿児島県'}, {name:'松山東高等学校', pref:'愛媛県'},
-            {name:'高松高等学校', pref:'香川県'}, {name:'岡山朝日高等学校', pref:'岡山県'}, {name:'広島学院高等学校', pref:'広島県'},
-        ];
-        let swSelectedHighSchool = null;
-        function swSearchHighSchool() {
-            const q = (document.getElementById('sw-highschool-search').value || '').trim();
-            const wrap = document.getElementById('sw-highschool-results');
-            if (!wrap) return;
-            if (!q) { wrap.innerHTML = ''; return; }
-            const matches = SW_HIGH_SCHOOLS.filter(s => s.name.includes(q)).slice(0, 20);
-            wrap.innerHTML = matches.map(s => `
-                <button type="button" onclick='swPickHighSchool(${JSON.stringify(s.name)}, ${JSON.stringify(s.pref)})' class="w-full text-left px-1 py-3 hover:bg-slate-50 dark:hover:bg-slate-800/60">
-                    <p class="text-sm font-black text-slate-800 dark:text-slate-100">${s.name}</p>
-                    <p class="text-[11px] font-bold text-slate-400">${s.pref}</p>
-                </button>`).join('');
-        }
-        function swPickHighSchool(name, pref) {
-            swSelectedHighSchool = { name, pref };
-            const nameEl = document.getElementById('sw-highschool-selected-name');
-            if (nameEl) nameEl.textContent = name + (pref ? '（' + pref + '）' : '');
-            const wrap = document.getElementById('sw-highschool-selected-wrap');
-            if (wrap) wrap.classList.remove('hidden');
-            document.getElementById('sw-highschool-results').innerHTML = '';
-        }
-        async function swSubmitHighSchool() {
-            if (!swSelectedHighSchool) return;
-            swState.highschool = swSelectedHighSchool.name;
-            try {
-                await window.AppFirebase.setHighSchool(swSelectedHighSchool.name, swState.highschoolVisibility);
-                swGoto('goals');
-            } catch (e) {
-                console.error('save highschool error', e);
-                showToast('高校の保存に失敗しました。もう一度お試しください');
-            }
-        }
-
-        function swUpdateGoalsLabels() {
-            const univLabel = document.getElementById('sw-goals-univ-label');
-            const achLabel = document.getElementById('sw-goals-achievement-label');
-            const univCount = (window.currentAppTargetSchools || []).length;
-            if (univLabel) univLabel.textContent = univCount > 0 ? (univCount + '校を選択中') : '大学を選択';
-            if (achLabel) achLabel.textContent = swState.achievements.length > 0 ? swState.achievements.join('、') : '達成目標を選択';
-        }
         async function swFinishWizard() {
             if (window._pmReloadAfterWizard) { window._pmReloadAfterWizard = false; location.reload(); return; }
             const modal = document.getElementById('signup-wizard-modal');
@@ -7107,128 +6778,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
             if (typeof updateAccountMenuDisplay === 'function') updateAccountMenuDisplay(window.currentAppUser);
             if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
             if (typeof enforceProfileSetup === 'function') enforceProfileSetup();
-        }
-
-        const SW_PREFECTURES = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
-        const SW_UNIVERSITIES = [
-            {name:'早稲田大学', type:'私立', prefs:['東京都','埼玉県','福岡県'], count:'108,627人'},
-            {name:'東京大学', type:'国公立', prefs:['東京都'], count:'83,253人'},
-            {name:'慶應義塾大学', type:'私立', prefs:['神奈川県','東京都'], count:'79,262人'},
-            {name:'明治大学', type:'私立', prefs:['東京都','神奈川県'], count:'70,515人'},
-            {name:'京都大学', type:'国公立', prefs:['京都府'], count:'52,340人'},
-            {name:'大阪大学', type:'国公立', prefs:['大阪府'], count:'38,210人'},
-            {name:'一橋大学', type:'国公立', prefs:['東京都'], count:'21,050人'},
-            {name:'東京工業大学', type:'国公立', prefs:['東京都'], count:'19,870人'},
-            {name:'筑波大学', type:'国公立', prefs:['茨城県'], count:'24,110人'},
-            {name:'名古屋大学', type:'国公立', prefs:['愛知県'], count:'22,430人'},
-            {name:'九州大学', type:'国公立', prefs:['福岡県'], count:'27,880人'},
-            {name:'北海道大学', type:'国公立', prefs:['北海道'], count:'25,940人'},
-            {name:'東北大学', type:'国公立', prefs:['宮城県'], count:'26,110人'},
-            {name:'神戸大学', type:'国公立', prefs:['兵庫県'], count:'23,760人'},
-            {name:'上智大学', type:'私立', prefs:['東京都'], count:'45,220人'},
-            {name:'立教大学', type:'私立', prefs:['東京都'], count:'48,610人'},
-            {name:'青山学院大学', type:'私立', prefs:['東京都','神奈川県'], count:'52,340人'},
-            {name:'中央大学', type:'私立', prefs:['東京都'], count:'49,880人'},
-            {name:'法政大学', type:'私立', prefs:['東京都'], count:'55,210人'},
-            {name:'同志社大学', type:'私立', prefs:['京都府'], count:'44,320人'},
-            {name:'立命館大学', type:'私立', prefs:['京都府','滋賀県','大阪府'], count:'50,760人'},
-            {name:'関西大学', type:'私立', prefs:['大阪府'], count:'41,230人'},
-            {name:'関西学院大学', type:'私立', prefs:['兵庫県'], count:'40,110人'},
-            {name:'東京理科大学', type:'私立', prefs:['東京都','千葉県'], count:'35,540人'},
-            {name:'国際基督教大学', type:'私立', prefs:['東京都'], count:'8,120人'},
-            {name:'横浜国立大学', type:'国公立', prefs:['神奈川県'], count:'18,340人'},
-            {name:'千葉大学', type:'国公立', prefs:['千葉県'], count:'19,880人'},
-            {name:'埼玉大学', type:'国公立', prefs:['埼玉県'], count:'12,340人'},
-            {name:'広島大学', type:'国公立', prefs:['広島県'], count:'17,220人'},
-            {name:'岡山大学', type:'国公立', prefs:['岡山県'], count:'15,110人'},
-        ];
-        let swUnivTypeFilter = '';
-        function swSetUnivTypeFilter(type) {
-            swUnivTypeFilter = type;
-            document.querySelectorAll('.sw-univ-type-btn').forEach(btn => {
-                const on = btn.getAttribute('data-type') === type;
-                btn.className = 'sw-univ-type-btn px-3 py-1.5 rounded-full text-xs font-black border ' + (on ? 'bg-blue-500 border-blue-500 text-white' : 'border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400');
-            });
-            swRenderUniversityList();
-        }
-        function swPopulatePrefFilter() {
-            const sel = document.getElementById('sw-univ-pref-filter');
-            if (!sel || sel.options.length) return;
-            sel.innerHTML = '<option value="">すべての都道府県</option>' + SW_PREFECTURES.map(p => `<option value="${p}">${p}</option>`).join('');
-        }
-        function swRenderUniversityList() {
-            swPopulatePrefFilter();
-            swSetUnivTypeFilter(swUnivTypeFilter);
-            const q = (document.getElementById('sw-univ-search').value || '').trim();
-            const prefFilter = document.getElementById('sw-univ-pref-filter').value;
-            const selected = window.currentAppTargetSchools || [];
-            const countLabel = document.getElementById('sw-univ-count-label');
-            if (countLabel) countLabel.textContent = selected.length + '校選択中（上限20校）';
-            let list = SW_UNIVERSITIES.filter(u => {
-                if (q && !u.name.includes(q)) return false;
-                if (prefFilter && !u.prefs.includes(prefFilter)) return false;
-                if (swUnivTypeFilter && u.type !== swUnivTypeFilter) return false;
-                return true;
-            });
-            const wrap = document.getElementById('sw-univ-list');
-            if (!wrap) return;
-            wrap.innerHTML = list.map(u => {
-                const added = selected.includes(u.name);
-                return `<div class="flex items-center gap-3 py-3">
-                    <div class="w-9 h-9 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0"><i data-lucide="graduation-cap" class="w-4 h-4 text-slate-400"></i></div>
-                    <div class="flex-1 min-w-0">
-                        <p class="text-sm font-black text-slate-800 dark:text-slate-100 truncate">${u.name}</p>
-                        <p class="text-[10px] font-bold text-slate-400 truncate">${u.type} / ${u.prefs.join('、')}</p>
-                        <p class="text-[10px] font-bold text-blue-500 dark:text-cyan-400">志望大学登録数：${u.count}</p>
-                    </div>
-                    <button type="button" onclick='swToggleUniversity(${JSON.stringify(u.name)})' class="shrink-0 px-3 py-1.5 rounded-full text-xs font-black border ${added ? 'bg-blue-500 border-blue-500 text-white' : 'border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'}">${added ? '追加済み' : '＋ 追加'}</button>
-                </div>`;
-            }).join('') || '<p class="text-xs font-bold text-slate-400 text-center py-6">該当する大学が見つかりません</p>';
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-        async function swToggleUniversity(name) {
-            const current = (window.currentAppTargetSchools || []).slice();
-            const idx = current.indexOf(name);
-            if (idx >= 0) {
-                current.splice(idx, 1);
-            } else {
-                if (current.length >= 20) { showToast('志望大学は20校まで登録できます'); return; }
-                current.push(name);
-            }
-            try {
-                await window.AppFirebase.setTargetSchools(current);
-                if (typeof renderTargetSchoolsList === 'function') renderTargetSchoolsList();
-                swRenderUniversityList();
-            } catch (e) {
-                console.error('toggle university error', e);
-                showToast('保存に失敗しました。もう一度お試しください');
-            }
-        }
-
-        const SW_ACHIEVEMENT_CATEGORIES = ['専門学校進学', 'TOEIC・TOEFL・英検・英会話', '外国語習得', '資格取得', 'スキルアップ', '読書・趣味・教養', '定期テスト成績アップ'];
-        function swRenderAchievementList() {
-            const q = (document.getElementById('sw-achievement-search').value || '').trim();
-            const wrap = document.getElementById('sw-achievement-list');
-            if (!wrap) return;
-            const list = SW_ACHIEVEMENT_CATEGORIES.filter(a => !q || a.includes(q));
-            wrap.innerHTML = list.map(a => {
-                const on = swState.achievements.includes(a);
-                return `<button type="button" onclick='swToggleAchievement(${JSON.stringify(a)})' class="w-full flex items-center justify-between py-4 text-left">
-                    <span class="text-sm font-bold ${on ? 'text-blue-600 dark:text-cyan-400' : 'text-slate-800 dark:text-slate-100'}">${a}</span>
-                    ${on ? '<i data-lucide="check" class="w-4 h-4 text-blue-500 dark:text-cyan-400"></i>' : '<i data-lucide=\"chevron-right\" class=\"w-4 h-4 text-slate-300\"></i>'}
-                </button>`;
-            }).join('');
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-        async function swToggleAchievement(a) {
-            const idx = swState.achievements.indexOf(a);
-            if (idx >= 0) swState.achievements.splice(idx, 1); else swState.achievements.push(a);
-            swRenderAchievementList();
-            try {
-                await window.AppFirebase.setAchievementGoals(swState.achievements);
-            } catch (e) {
-                console.error('save achievements error', e);
-            }
         }
 
         window.addEventListener('app-need-profile-setup', (e) => {
@@ -24994,9 +24543,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
         })();
 
-        let psSelectedHighSchool = undefined;
-        let psAchievements = [];
-        const psFill = (sel, list, cur) => { sel.innerHTML = list.map(v => `<option value="${escapeHtml(v)}"${v === cur ? ' selected' : ''}>${escapeHtml(v)}</option>`).join(''); };
         async function openProfileSettings() {
             if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
             const modal = document.getElementById('profile-settings-modal');
@@ -25006,17 +24552,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             try { const snap = await window.AppFirebase.getUserDoc(window.currentAppUser.uid); d = (snap && snap.exists && snap.exists()) ? snap.data() : {}; } catch (e) {  }
             val('ps-nickname', isPlaceholderProfileName(window.currentAppProfileName) ? '' : window.currentAppProfileName);
             val('ps-username', window.currentAppUsername); val('ps-bio', window.currentAppBio);
-            val('ps-last-name', d.lastName); val('ps-first-name', d.firstName); val('ps-last-kana', d.lastNameKana); val('ps-first-kana', d.firstNameKana);
-            const gradeSel = document.getElementById('ps-grade');
-            psFill(gradeSel, ['選択してください'].concat(SW_GRADE_OPTIONS), d.grade || window.currentAppGrade || '選択してください');
-            psSelectedHighSchool = undefined;
-            const hs = d.highSchool || window.currentAppHighSchool || null;
-            const hsEl = document.getElementById('ps-hs-selected');
-            hsEl.innerHTML = hs ? `${escapeHtml(hs)} <button type="button" onclick="psClearHighSchool()" class="ml-2 text-xs font-normal text-slate-400 hover:text-slate-700">解除</button>` : '';
-            hsEl.classList.toggle('hidden', !hs);
-            val('ps-hs-search', ''); document.getElementById('ps-hs-results').innerHTML = '';
-            psAchievements = (d.achievementGoals || window.currentAppAchievementGoals || []).slice();
-            psRenderAchievements();
             document.getElementById('ps-email').textContent = (window.currentAppUser.email || d.email || 'メールアドレス未登録');
             document.getElementById('ps-error').classList.add('hidden');
             psRefreshLinks();
@@ -25040,39 +24575,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             const tl = document.getElementById('target-schools-list');
             if (tl) new MutationObserver(psRefreshLinks).observe(tl, { childList: true });
         });
-        function psSearchHighSchool() {
-            const q = (document.getElementById('ps-hs-search').value || '').trim();
-            const wrap = document.getElementById('ps-hs-results');
-            if (!q) { wrap.innerHTML = ''; return; }
-            wrap.innerHTML = SW_HIGH_SCHOOLS.filter(x => x.name.includes(q)).slice(0, 20).map(x => `
-                <button type="button" onclick='psPickHighSchool(${JSON.stringify(x.name)}, ${JSON.stringify(x.pref)})' class="w-full text-left py-3 hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                    <p class="text-sm font-medium text-slate-900 dark:text-white">${escapeHtml(x.name)}</p>
-                    <p class="text-xs text-slate-400">${escapeHtml(x.pref || '')}</p>
-                </button>`).join('');
-        }
-        function psPickHighSchool(name, pref) {
-            psSelectedHighSchool = { name, pref };
-            const el = document.getElementById('ps-hs-selected');
-            el.innerHTML = `${escapeHtml(name)}${pref ? '（' + escapeHtml(pref) + '）' : ''} <button type="button" onclick="psClearHighSchool()" class="ml-2 text-xs font-normal text-slate-400 hover:text-slate-700">解除</button>`;
-            el.classList.remove('hidden');
-            document.getElementById('ps-hs-search').value = ''; document.getElementById('ps-hs-results').innerHTML = '';
-        }
-        function psClearHighSchool() {
-            psSelectedHighSchool = null;
-            const el = document.getElementById('ps-hs-selected'); el.innerHTML = ''; el.classList.add('hidden');
-        }
-        function psRenderAchievements() {
-            const wrap = document.getElementById('ps-achievements');
-            wrap.innerHTML = SW_ACHIEVEMENT_CATEGORIES.map(a => {
-                const on = psAchievements.includes(a);
-                return `<button type="button" onclick='psToggleAchievement(${JSON.stringify(a)})' class="px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${on ? 'text-white border-transparent' : 'text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/50'}" ${on ? 'style="background:var(--pm-accent)"' : ''}>${escapeHtml(a)}</button>`;
-            }).join('');
-        }
-        function psToggleAchievement(a) {
-            const i = psAchievements.indexOf(a);
-            if (i >= 0) psAchievements.splice(i, 1); else psAchievements.push(a);
-            psRenderAchievements();
-        }
         async function saveProfileSettings() {
             const errEl = document.getElementById('ps-error');
             const fail = m => { errEl.textContent = m; errEl.classList.remove('hidden'); };
@@ -25089,13 +24591,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 }
                 await window.AppFirebase.setProfileName(nickname);
                 await window.AppFirebase.setBio(bio);
-                await window.AppFirebase.setFullName({ lastName: v('ps-last-name'), firstName: v('ps-first-name'), lastNameKana: v('ps-last-kana'), firstNameKana: v('ps-first-kana') });
-                const grade = document.getElementById('ps-grade').value;
-                await window.AppFirebase.setGradeOccupation(grade === '選択してください' ? null : grade);
-                if (psSelectedHighSchool !== undefined) {
-                    await window.AppFirebase.setHighSchool(psSelectedHighSchool ? psSelectedHighSchool.name : null);
-                }
-                await window.AppFirebase.setAchievementGoals(psAchievements);
                 window.currentAppProfileSetupRequired = false;
                 if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
                 if (typeof updateAccountMenuDisplay === 'function') updateAccountMenuDisplay(window.currentAppUser);
