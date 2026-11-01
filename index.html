@@ -383,6 +383,12 @@ html.dark .dev-log-main { color: #e2e8f0; }
 .dev-log-badge { padding: .1rem .5rem; border-radius: 999px; font-size: 10.5px; font-weight: 900; background: #f1f5f9; color: #475569; }
 html.dark .dev-log-badge { background: #1e293b; color: #cbd5e1; }
 .dev-log-sub { margin-top: .2rem; font-size: 11.5px; font-weight: 600; color: #64748b; overflow-wrap: anywhere; line-height: 1.6; }
+.dev-log-who { display: flex; align-items: center; gap: .55rem; margin-top: .45rem; }
+.dev-log-name { font-size: .8125rem; font-weight: 800; color: #1e293b; }
+html.dark .dev-log-name { color: #f1f5f9; }
+.dev-log-handle { margin-left: .4rem; font-size: 11px; font-weight: 700; color: #64748b; }
+.dev-log-official { margin-left: .4rem; padding: .05rem .4rem; border-radius: 999px; font-size: 9.5px; font-weight: 900; background: #dbeafe; color: #1d4ed8; }
+html.dark .dev-log-official { background: #1e3a8a; color: #bfdbfe; }
 .dev-log-link { padding: 0; border: 0; background: none; font: inherit; font-weight: 800; color: #334155; cursor: pointer; text-decoration: underline dotted; text-underline-offset: 2px; }
 html.dark .dev-log-link { color: #e2e8f0; }
 .dev-usage-num small { font-size: 11px; color: #94a3b8; }
@@ -3419,6 +3425,8 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 </button>
             </div>
 
+            <div id="my-messages" class="hidden mb-4"></div>
+
             <div class="space-y-3 animate-fade-in max-h-72 overflow-y-auto scrollbar-none pr-0.5">
                 <div class="py-3">
                     <h4 class="text-xs font-bold text-slate-800 dark:text-slate-100">テスト運用中です</h4>
@@ -3574,7 +3582,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <input type="checkbox" id="reset-announcement" class="w-4 h-4 accent-rose-500">
                     <div>
                         <p class="text-xs font-black text-slate-800 dark:text-slate-200">お知らせ既読状態</p>
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400">次回起動時にお知らせを再表示</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400">お知らせの赤い点と通知を、もう一度表示</p>
                     </div>
                 </label>
             </div>
@@ -4426,54 +4434,57 @@ html.dark .dev-log-link { color: #e2e8f0; }
     </div>
 
     <button id="feedback-fab" type="button" onclick="openFeedbackModal()" aria-label="ご意見・不具合を送る" title="ご意見・不具合を送る"
-        class="hidden fixed right-0 top-[42%] z-[9970] flex-col items-center gap-1 pl-1.5 pr-1 py-3 rounded-l-xl bg-blue-500/90 dark:bg-cyan-600/90 text-white shadow-lg active:scale-95 transition-transform"
+        class="hidden fixed right-0 top-[42%] z-[9970] flex-col items-center px-1.5 py-3 rounded-l-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md active:opacity-80"
         style="margin-right:env(safe-area-inset-right,0px)">
-        <i data-lucide="message-circle" class="w-4 h-4"></i>
-        <span class="text-[10px] font-black tracking-wider" style="writing-mode:vertical-rl">ご意見・不具合</span>
+        <span class="text-[10px] font-bold tracking-widest" style="writing-mode:vertical-rl">ご意見・不具合</span>
     </button>
 
-    <div id="feedback-modal" class="hidden fixed inset-0 z-[10020] bg-slate-900/70 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-5" role="dialog" aria-modal="true" aria-labelledby="feedback-title" onclick="if(event.target===this) closeFeedbackModal()">
-        <div class="bg-white dark:bg-slate-900 w-full sm:max-w-md rounded-t-3xl sm:rounded-3xl border border-slate-200 dark:border-slate-700 max-h-[92vh] flex flex-col" style="padding-bottom:env(safe-area-inset-bottom,0px)">
-            <div class="flex items-center justify-between px-5 pt-4 pb-3 shrink-0">
-                <h2 id="feedback-title" class="text-base font-black text-slate-800 dark:text-white">ご意見・不具合を送る</h2>
-                <button type="button" onclick="closeFeedbackModal()" class="p-2 -mr-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="閉じる"><i data-lucide="x" class="w-5 h-5 text-slate-500"></i></button>
+    <div id="feedback-modal" class="hidden fixed inset-0 z-[10020] bg-black/50 flex items-end sm:items-center justify-center sm:p-5" role="dialog" aria-modal="true" aria-labelledby="feedback-title" onclick="if(event.target===this) closeFeedbackModal()">
+        <div class="bg-white dark:bg-slate-900 w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl border border-slate-200 dark:border-slate-700 max-h-[92vh] flex flex-col" style="padding-bottom:env(safe-area-inset-bottom,0px)">
+            <div class="flex items-center justify-between px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 shrink-0">
+                <h2 id="feedback-title" class="text-sm font-bold text-slate-900 dark:text-white">ご意見・不具合の報告</h2>
+                <button type="button" onclick="closeFeedbackModal()" class="p-1.5 -mr-1.5 rounded-md hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="閉じる"><i data-lucide="x" class="w-5 h-5 text-slate-500"></i></button>
             </div>
 
-            <div id="feedback-form-view" class="overflow-y-auto px-5 pb-5 space-y-4">
+            <div id="feedback-form-view" class="overflow-y-auto px-5 py-4 space-y-5">
+                <fieldset>
+                    <legend class="text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">種類</legend>
+                    <div id="fb-cat-grid" role="radiogroup" class="border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden divide-y divide-slate-200 dark:divide-slate-700"></div>
+                </fieldset>
                 <div>
-                    <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-1.5">どんなことですか？</p>
-                    <div class="grid grid-cols-2 gap-2" id="fb-cat-grid"></div>
-                </div>
-                <div>
+                    <label for="fb-message" class="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-2">内容</label>
                     <textarea id="fb-message" rows="5" maxlength="1000" oninput="fbUpdateCount()"
-                        class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400 resize-none"></textarea>
-                    <p id="fb-count" class="text-right text-[10px] font-bold text-slate-400 mt-1">0/1000</p>
+                        class="w-full px-3 py-2.5 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg text-sm text-slate-900 dark:text-white focus:outline-none focus:border-slate-500 dark:focus:border-slate-300 resize-none"></textarea>
+                    <p id="fb-count" class="text-right text-[11px] text-slate-400 mt-1">0/1000</p>
                 </div>
-                <div id="fb-error-box" class="hidden rounded-xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900 px-3 py-2">
-                    <p class="text-[10px] font-black text-rose-600 dark:text-rose-300 mb-1">アプリのエラー内容（自動で一緒に送ります）</p>
-                    <p id="fb-error-text" class="text-[11px] font-mono text-rose-700 dark:text-rose-300 break-all max-h-20 overflow-y-auto"></p>
+                <div id="fb-error-box" class="hidden border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2">
+                    <p class="text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">エラーの内容（一緒に送ります）</p>
+                    <p id="fb-error-text" class="text-[11px] font-mono text-slate-600 dark:text-slate-300 break-all max-h-20 overflow-y-auto"></p>
                 </div>
-                <div class="rounded-xl bg-slate-50 dark:bg-slate-800/60 px-3 py-2.5 space-y-2">
-                    <p class="text-[11px] font-bold text-slate-600 dark:text-slate-300">いまの画面：<span id="fb-screen" class="font-black"></span></p>
+                <div class="space-y-2 text-xs text-slate-600 dark:text-slate-300">
+                    <p>画面：<span id="fb-screen" class="font-bold text-slate-800 dark:text-slate-100"></span></p>
                     <label class="flex items-start gap-2 cursor-pointer select-none">
-                        <input type="checkbox" id="fb-env" checked class="mt-0.5 w-4 h-4 rounded accent-blue-500 shrink-0">
-                        <span class="text-[11px] font-bold text-slate-600 dark:text-slate-300 leading-relaxed">端末・ブラウザの情報も送る（原因を調べやすくなります）<br><span class="text-slate-400 font-medium">送るのは、ブラウザの種類・画面の大きさ・明るい／暗いの設定だけです。</span></span>
+                        <input type="checkbox" id="fb-env" checked class="mt-0.5 w-4 h-4 shrink-0 accent-slate-800">
+                        <span class="leading-relaxed">端末・ブラウザの情報を添付する<br><span class="text-[11px] text-slate-400">ブラウザの種類・画面の大きさ・ライト／ダークの設定だけです。</span></span>
                     </label>
                 </div>
-                <p class="text-[10px] font-bold text-slate-400 leading-relaxed">送った内容は開発者だけが見ます。内容を整理するため、本文はAIにも送られます。本名・電話番号・パスワードなどは書かないでください。</p>
-                <button id="fb-submit-btn" type="button" onclick="fbSubmit()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all disabled:opacity-50">送信する</button>
-                <p id="fb-error" class="hidden text-[11px] font-bold text-rose-500 text-center"></p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">送った内容は開発者だけが見ます。要約を自動で作るため、本文はAIにも送られます。本名・電話番号・パスワードは書かないでください。</p>
+                <div>
+                    <button id="fb-submit-btn" type="button" onclick="fbSubmit()" class="w-full py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-bold hover:opacity-90 disabled:opacity-50">送信する</button>
+                    <p id="fb-error" class="hidden text-xs text-rose-600 dark:text-rose-400 mt-2"></p>
+                </div>
             </div>
 
-            <div id="feedback-done-view" class="hidden overflow-y-auto px-5 pb-6 space-y-4">
-                <div class="text-center pt-2">
-                    <div class="w-12 h-12 mx-auto rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white mb-3"><i data-lucide="check" class="w-6 h-6"></i></div>
-                    <p class="text-sm font-black text-slate-800 dark:text-white">送信しました。ありがとうございます！</p>
-                    <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">いただいた内容は、これからのアプリの改善に使います。</p>
+            <div id="feedback-done-view" class="hidden overflow-y-auto px-5 py-5 space-y-5">
+                <div>
+                    <p class="text-sm font-bold text-slate-900 dark:text-white">送信しました</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">ご連絡ありがとうございます。内容は開発者が確認します。返信があるときは、マイページの「お知らせ」（ベルのマーク）に届きます。</p>
                 </div>
-                <div id="fb-ai-box" class="hidden rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-3 space-y-1.5"></div>
-                <button type="button" onclick="closeFeedbackModal()" class="w-full py-3 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-sm font-black hover:opacity-90 transition-opacity">閉じる</button>
-                <button type="button" onclick="openFeedbackModal()" class="w-full py-2 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">もう1件送る</button>
+                <div id="fb-ai-box" class="hidden border-t border-slate-200 dark:border-slate-800 pt-4 space-y-1.5"></div>
+                <div class="flex items-center gap-3">
+                    <button type="button" onclick="closeFeedbackModal()" class="flex-1 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-lg text-sm font-bold hover:opacity-90">閉じる</button>
+                    <button type="button" onclick="openFeedbackModal()" class="px-3 py-2.5 text-xs font-bold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200">続けて送る</button>
+                </div>
             </div>
         </div>
     </div>
@@ -5647,6 +5658,29 @@ html.dark .dev-log-link { color: #e2e8f0; }
             async deleteFeedback(id) {
                 await deleteDoc(doc(db, 'feedback', id));
             },
+
+            async sendInbox(d) {
+                await addDoc(collection(db, 'inbox'), {
+                    toUid: d.toUid, from: '開発者', title: d.title || '', body: d.body,
+                    feedbackId: d.feedbackId || '', ref: d.ref || '', read: false, createdAt: serverTimestamp(),
+                });
+            },
+            async markFeedbackReplied(id, count, done) {
+                const patch = { replyCount: count, lastReplyAt: serverTimestamp() };
+                if (done) patch.status = 'done';
+                await updateDoc(doc(db, 'feedback', id), patch);
+            },
+            async listInbox() {
+                const user = auth.currentUser;
+                if (!user) return [];
+                const snap = await getDocs(query(collection(db, 'inbox'), where('toUid', '==', user.uid), limit(30)));
+                return snap.docs.map(d => {
+                    const x = d.data();
+                    return { id: d.id, ...x, createdMs: x.createdAt && x.createdAt.toMillis ? x.createdAt.toMillis() : 0 };
+                }).sort((a, b) => b.createdMs - a.createdMs);
+            },
+            async markInboxRead(id) { await updateDoc(doc(db, 'inbox', id), { read: true }); },
+            async deleteInbox(id) { await deleteDoc(doc(db, 'inbox', id)); },
 
             async ensurePublicProfile() {
                 const user = auth.currentUser;
@@ -7306,8 +7340,14 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!list || list.length === 0) return;
             const latest = getLatestAnnouncementVersion();
             const seen = safeStorage.get('pm_announcement_seen');
+            updateAnnouncementBellBadge();
             if (seen !== latest) {
-                showAnnouncementBanner();
+                let notified = null;
+                try { notified = localStorage.getItem('pm_announcement_notified'); } catch (e) {}
+                if (notified !== String(latest)) {
+                    try { localStorage.setItem('pm_announcement_notified', String(latest)); } catch (e) {}
+                    showToast('お知らせがあります');
+                }
             }
         }
 
@@ -22793,7 +22833,8 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 ).join('') + '</div>';
             } catch (e) { el.innerHTML = '<p class="dev-card-desc">取得できませんでした</p>'; }
         }
-        let devLogDay = '', devLogNext = null, devLogSeq = 0, devLogShown = 0;
+        let devLogDay = '', devLogNext = null, devLogSeq = 0, devLogShown = 0, devLogAllRows = [], _devLogProfErr = false;
+        const _devLogProfiles = new Map(), _devLogPending = new Set();
         function devLogBase() { try { return (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, ''); } catch (e) { return ''; } }
         function devLogInit() { devLogLoad(devLogDay || devUsageJstToday()); }
         function devLogToday() { devLogLoad(devUsageJstToday()); }
@@ -22828,6 +22869,29 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (!res.ok) throw new Error('Workerの応答がおかしいです（' + res.status + '）');
             return res.json();
         }
+        function devLogSafePhoto(p) {
+            return typeof p === 'string' && /^(data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+\/=]+|https:\/\/[^\s"'<>]+)$/.test(p) ? p : '';
+        }
+        function devLogAvatarHtml(r, prof) {
+            const size = 'w-8 h-8';
+            if (r.anon) return `<span class="${size} rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center shrink-0"><i data-lucide="user" class="w-4 h-4 text-slate-500 dark:text-slate-300"></i></span>`;
+            const photo = prof ? devLogSafePhoto(prof.photo) : '';
+            if (photo) return `<img src="${escapeHtmlText(photo)}" alt="" class="${size} rounded-full object-cover shrink-0 bg-slate-100 dark:bg-slate-800">`;
+            const initial = escapeHtmlText(String((prof && prof.nickname) || '?').charAt(0));
+            return `<span class="${size} rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center text-white text-xs font-black shrink-0">${initial}</span>`;
+        }
+        function devLogWhoHtml(r) {
+            const esc = escapeHtmlText;
+            if (!r.uid) return '<div class="dev-log-who"><span class="dev-log-name">不明</span></div>';
+            const prof = _devLogProfiles.get(r.uid);   // undefined＝読み込み中、null＝プロフィールなし
+            const idBtn = `<button type="button" class="dev-log-link" data-q="${esc(r.uid)}" onclick="devLogFilter(this.dataset.q)" title="${esc(r.uid)}">ID ${esc(String(r.uid).slice(0, 8))}…</button>`;
+            let nameHtml;
+            if (r.anon) nameHtml = '<span class="dev-log-name">ゲスト</span>';
+            else if (prof === undefined) nameHtml = '<span class="dev-log-name" style="opacity:.5">読み込み中…</span>';
+            else if (!prof) nameHtml = `<span class="dev-log-name" style="opacity:.6">${_devLogProfErr ? '（名前を取得できません）' : '（プロフィールなし）'}</span>`;
+            else nameHtml = `<span class="dev-log-name">${esc(prof.nickname || '名前なし')}</span>${prof.username ? `<span class="dev-log-handle">@${esc(prof.username)}</span>` : ''}${prof.isOfficial ? '<span class="dev-log-official">公式</span>' : ''}`;
+            return `<div class="dev-log-who">${devLogAvatarHtml(r, r.anon ? null : prof)}<div class="min-w-0"><div>${nameHtml}</div><div class="dev-log-sub" style="margin-top:0">${idBtn}</div></div></div>`;
+        }
         function devLogRowHtml(r) {
             const esc = escapeHtmlText;
             const lab = window.PM_USAGE_LABELS || { screens: {}, features: {} };
@@ -22836,18 +22900,38 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             else if (r.type === 'feature') { badge = '機能'; what = (lab.features && lab.features[r.key]) || r.key; }
             else { badge = 'アプリを開いた'; what = ''; }
             const time = new Date(r.ts + 9 * 3600 * 1000).toISOString().slice(11, 19);
-            const who = r.uid
-                ? `<button type="button" class="dev-log-link" data-q="${esc(r.uid)}" onclick="devLogFilter(this.dataset.q)" title="${esc(r.uid)}">${r.anon ? 'ゲスト' : 'ユーザー'} ${esc(String(r.uid).slice(0, 8))}…</button>`
-                : '不明';
             const ip = r.ip ? `<button type="button" class="dev-log-link" data-q="${esc(r.ip)}" onclick="devLogFilter(this.dataset.q)">${esc(r.ip)}</button>` : '不明';
             const place = [r.country, r.region, r.city].filter(Boolean).join(' / ');
             const dev = [r.browser, r.os, r.device].filter(Boolean).join(' / ');
             const extra = [r.standalone ? 'ホーム画面から起動' : '', (r.vw && r.vh) ? r.vw + '×' + r.vh : '', r.ref ? '参照元 ' + r.ref : ''].filter(Boolean).join('・');
             return `<div class="dev-log-row">
                 <div class="dev-log-main"><span class="dev-log-time">${time}</span><span class="dev-log-badge">${esc(badge)}</span>${what ? '<span>' + esc(what) + '</span>' : ''}</div>
-                <div class="dev-log-sub">${who}　IP ${ip}${place ? '　' + esc(place) : ''}</div>
+                ${devLogWhoHtml(r)}
+                <div class="dev-log-sub">IP ${ip}${place ? '　' + esc(place) : ''}</div>
                 <div class="dev-log-sub">${esc(dev || '端末情報なし')}${extra ? '　' + esc(extra) : ''}</div>
             </div>`;
+        }
+        function devLogRenderAll() {
+            const list = document.getElementById('dev-log-list'); if (!list) return;
+            list.innerHTML = devLogAllRows.length ? devLogAllRows.map(devLogRowHtml).join('') : '<p class="dev-card-desc" style="margin:0">この条件の記録はありません</p>';
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        // 表示している記録の人たちのプロフィールを、10人ずつ取り寄せる（取得済みの人は、もう読まない）
+        async function devLogEnsureProfiles() {
+            if (!(window.AppFirebase && typeof window.AppFirebase.getPublicProfile === 'function')) return;
+            const need = [...new Set(devLogAllRows.filter(r => r.uid && !r.anon && !_devLogProfiles.has(r.uid) && !_devLogPending.has(r.uid)).map(r => r.uid))];
+            need.forEach(u => _devLogPending.add(u));
+            for (let i = 0; i < need.length; i += 10) {
+                await Promise.all(need.slice(i, i + 10).map(async uid => {
+                    try {
+                        const p = await window.AppFirebase.getPublicProfile(uid);
+                        const none = !p || (p.nickname === '名無しさん' && !p.username && !p.photo);   // ドキュメントが無いときの代わりの値
+                        _devLogProfiles.set(uid, none ? null : p);
+                    } catch (e) { _devLogProfErr = true; _devLogProfiles.set(uid, null); }
+                    _devLogPending.delete(uid);
+                }));
+                devLogRenderAll();
+            }
         }
         async function devLogLoad(day) {
             const inp = document.getElementById('dev-log-date');
@@ -22859,17 +22943,18 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             const list = document.getElementById('dev-log-list'), more = document.getElementById('dev-log-more');
             if (list) list.innerHTML = '';
             if (more) more.style.display = 'none';
-            devLogNext = null; devLogShown = 0;
+            devLogNext = null; devLogShown = 0; devLogAllRows = [];
             devLogStatus('読み込み中…');
             const seq = ++devLogSeq;
             try {
                 const data = await devLogRequest(day, null);
                 if (seq !== devLogSeq) return;
                 const rows = data.rows || [];
-                if (list) list.innerHTML = rows.length ? rows.map(devLogRowHtml).join('') : '<p class="dev-card-desc" style="margin:0">この条件の記録はありません</p>';
+                devLogAllRows = rows; devLogRenderAll();
                 devLogShown = rows.length; devLogNext = data.next || null;
                 devLogStatus(`${data.total != null ? data.total : rows.length}件中 ${devLogShown}件を表示`);
                 if (more) more.style.display = devLogNext ? '' : 'none';
+                devLogEnsureProfiles();
             } catch (e) {
                 if (seq !== devLogSeq) return;
                 console.warn('access log load error', e);
@@ -22879,16 +22964,17 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         async function devLogMore() {
             if (!devLogNext) return;
             const seq = ++devLogSeq;
-            const list = document.getElementById('dev-log-list'), more = document.getElementById('dev-log-more');
+            const more = document.getElementById('dev-log-more');
             if (more) more.disabled = true;
             try {
                 const data = await devLogRequest(devLogDay, devLogNext);
                 if (seq !== devLogSeq) return;
                 const rows = data.rows || [];
-                if (list) list.insertAdjacentHTML('beforeend', rows.map(devLogRowHtml).join(''));
+                devLogAllRows = devLogAllRows.concat(rows); devLogRenderAll();
                 devLogShown += rows.length; devLogNext = data.next || null;
                 devLogStatus(`${data.total != null ? data.total : devLogShown}件中 ${devLogShown}件を表示`);
                 if (more) more.style.display = devLogNext ? '' : 'none';
+                devLogEnsureProfiles();
             } catch (e) {
                 devLogStatus((e && e.message) || '取得できませんでした', true);
             } finally { if (more) more.disabled = false; }
@@ -25483,6 +25569,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
             if (doAnnounce) {
                 safeStorage.remove('pm_announcement_seen');
+                try { localStorage.removeItem('pm_announcement_notified'); localStorage.removeItem('pm_inbox_notified'); } catch (e) {}
                 messages.push('お知らせ');
             }
             closeResetModal();
@@ -25623,10 +25710,10 @@ ${pmReportButtonHtml('kobun', 'all', t)}
     <script>
     (function () {
         const CATS = {
-            bug:    { label: '不具合',             icon: '🐞', ph: '例：成績の「保存」を押しても反応しない。何をしたあとにどうなったか、わかる範囲で書いてください。' },
-            design: { label: 'デザイン・見にくい', icon: '🎨', ph: '例：ダークモードだと文字が薄くて読みにくい。どの画面のどこかを書いてください。' },
-            idea:   { label: '要望・アイデア',     icon: '💡', ph: '例：単語テストで、間違えた問題だけをもう一度解けるようにしてほしい。' },
-            other:  { label: 'その他',             icon: '💬', ph: '自由に書いてください。' }
+            bug:    { label: '不具合',             desc: '動かない・表示がおかしい',     badge: 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300',   ph: '何をしたときに、どうなりましたか？（例：保存ボタンを押しても反応しない）' },
+            design: { label: 'デザイン・使いにくさ', desc: '見にくい・わかりにくい',       badge: 'bg-sky-100 text-sky-700 dark:bg-sky-950 dark:text-sky-300',       ph: 'どの画面の、どこが見にくいですか？（例：ダークモードで文字が薄い）' },
+            idea:   { label: '要望',               desc: '追加してほしい機能・改善案',   badge: 'bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300', ph: 'こうなると便利、というものを書いてください' },
+            other:  { label: 'その他',             desc: 'それ以外',                     badge: 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200', ph: '自由に書いてください' }
         };
         const STATUS = { new: '新規', doing: '対応中', done: '完了', hold: '見送り' };
         const fbState = { category: null, errText: '' };
@@ -25641,7 +25728,10 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         function fbRenderCats() {
             $('fb-cat-grid').innerHTML = Object.keys(CATS).map(k => {
                 const on = fbState.category === k;
-                return `<button type="button" onclick="fbSelectCategory('${k}')" class="px-3 py-2.5 rounded-xl border-2 text-xs font-black text-left transition-colors ${on ? 'border-blue-500 bg-blue-50 text-blue-600 dark:bg-slate-800 dark:text-cyan-400 dark:border-cyan-500' : 'border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300'}">${CATS[k].icon} ${CATS[k].label}</button>`;
+                return `<button type="button" role="radio" aria-checked="${on}" onclick="fbSelectCategory('${k}')" class="w-full flex items-center gap-3 px-3 py-2.5 text-left ${on ? 'bg-slate-100 dark:bg-slate-800' : 'bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800/50'}">
+                    <span class="w-4 h-4 rounded-full border-2 ${on ? 'border-slate-900 dark:border-white' : 'border-slate-300 dark:border-slate-600'} flex items-center justify-center shrink-0">${on ? '<span class="w-2 h-2 rounded-full bg-slate-900 dark:bg-white"></span>' : ''}</span>
+                    <span class="min-w-0"><span class="block text-xs font-bold text-slate-900 dark:text-white">${CATS[k].label}</span><span class="block text-[11px] text-slate-500 dark:text-slate-400">${CATS[k].desc}</span></span>
+                </button>`;
             }).join('');
         }
         window.fbSelectCategory = function (k) {
@@ -25659,7 +25749,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             fbState.errText = opts.errorText ? String(opts.errorText).slice(0, 500) : '';
             $('fb-message').value = opts.message || '';
             fbUpdateCount();
-            $('fb-message').placeholder = opts.category ? CATS[opts.category].ph : '種類を選んでから、内容を書いてください。';
+            $('fb-message').placeholder = opts.category ? CATS[opts.category].ph : '種類を選んでから、内容を書いてください';
             fbRenderCats();
             $('fb-screen').textContent = fbScreenName();
             $('fb-error-box').classList.toggle('hidden', !fbState.errText);
@@ -25757,9 +25847,9 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             const box = $('fb-ai-box');
             if (!ai) { box.classList.add('hidden'); return; }
             box.classList.remove('hidden');
-            box.innerHTML = `<p class="text-[10px] font-black text-slate-400">AIが内容を整理しました</p>
-                <p class="text-xs font-bold text-slate-700 dark:text-slate-200 leading-relaxed">${esc(ai.summary)}</p>
-                ${ai.userTip ? `<p class="text-[11px] font-bold text-blue-600 dark:text-cyan-400 leading-relaxed">💡 ${esc(ai.userTip)}</p>` : ''}`;
+            box.innerHTML = `<p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">内容の要約（自動で作成）</p>
+                <p class="text-xs text-slate-800 dark:text-slate-100 leading-relaxed">${esc(ai.summary)}</p>
+                ${ai.userTip ? `<p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${esc(ai.userTip)}</p>` : ''}`;
         }
 
         window.fbSubmit = async function () {
@@ -25769,7 +25859,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (!window.currentAppUser) return showErr('先にログインしてください');
             const cat = fbState.category;
             const msg = $('fb-message').value.trim();
-            if (!cat) return showErr('「どんなことですか？」から種類を選んでください');
+            if (!cat) return showErr('種類を選んでください');
             if (msg.length < 3) return showErr('内容をもう少し詳しく書いてください（3文字以上）');
             let last = 0; try { last = Number(localStorage.getItem('pm_fb_last') || 0); } catch (e) {}
             if (Date.now() - last < 30000) return showErr('続けて送るときは、少し時間をおいてください（30秒ほど）');
@@ -25795,7 +25885,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (!runAiFlag) { $('fb-ai-box').classList.add('hidden'); return; }
             const box = $('fb-ai-box');
             box.classList.remove('hidden');
-            box.innerHTML = '<p class="text-[11px] font-bold text-slate-400 animate-pulse">AIが内容を整理しています…（閉じても大丈夫です）</p>';
+            box.innerHTML = '<p class="text-xs text-slate-500 dark:text-slate-400">要約を作成しています。閉じても、送信は完了しています。</p>';
             try {
                 const ai = await runAi(item);
                 renderUserAi(ai);
@@ -25809,8 +25899,55 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         // ---------- 開発者ページ ----------
         let devItems = [], devLoaded = false;
+        const profCache = new Map();
+        const REPLY_TEMPLATES = ['直しました。ご報告ありがとうございました！', '確認しました。対応を進めます。', '再現できませんでした。どの画面で、何をしたときか、もう少し詳しく教えてください。', '要望として受け取りました。検討します。'];
         const SEV = { low: ['低', 'bg-slate-200 text-slate-600'], medium: ['中', 'bg-amber-100 text-amber-700'], high: ['高', 'bg-rose-100 text-rose-700'] };
         const fmt = (ms) => { if (!ms) return ''; const d = new Date(ms); return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
+
+        function fbWho(uid) {
+            if (!uid) return '不明';
+            const p = profCache.get(uid);
+            if (p === undefined) return '読み込み中…';
+            if (!p) return esc(String(uid).slice(0, 8)) + '…（プロフィールなし）';
+            return esc(p.nickname || '名前なし') + (p.username ? ' @' + esc(p.username) : '');
+        }
+        async function fbDevEnsureProfiles() {
+            if (!(window.AppFirebase && typeof window.AppFirebase.getPublicProfile === 'function')) return;
+            const need = [...new Set(devItems.map(x => x.uid).filter(u => u && !profCache.has(u)))];
+            need.forEach(u => profCache.set(u, undefined));
+            for (let i = 0; i < need.length; i += 10) {
+                await Promise.all(need.slice(i, i + 10).map(async uid => {
+                    try {
+                        const p = await window.AppFirebase.getPublicProfile(uid);
+                        const none = !p || (p.nickname === '名無しさん' && !p.username && !p.photo);
+                        profCache.set(uid, none ? null : p);
+                    } catch (e) { profCache.set(uid, null); }
+                }));
+                fbDevRender();
+            }
+        }
+        window.fbDevToggleReply = function (id) { const el = $('fb-reply-' + id); if (el) el.classList.toggle('hidden'); };
+        window.fbDevFillReply = function (id, i) { const ta = $('fb-reply-text-' + id); if (ta) { ta.value = REPLY_TEMPLATES[i]; ta.focus(); } };
+        window.fbDevSendReply = async function (id, btn) {
+            const it = devItems.find(x => x.id === id); if (!it) return;
+            const ta = $('fb-reply-text-' + id), body = ta ? ta.value.trim() : '';
+            if (!it.uid) { showToast('送信先がわかりません'); return; }
+            if (!body) { showToast('メッセージを入力してください'); return; }
+            const done = !!($('fb-reply-done-' + id) && $('fb-reply-done-' + id).checked);
+            btn.disabled = true; const old = btn.textContent; btn.textContent = '送信中';
+            try {
+                await window.AppFirebase.sendInbox({ toUid: it.uid, body, feedbackId: id, ref: clip(it.message, 80) });
+                const n = (it.replyCount || 0) + 1;
+                await window.AppFirebase.markFeedbackReplied(id, n, done);
+                it.replyCount = n; if (done) it.status = 'done';
+                showToast('送信しました');
+                fbDevRender();
+            } catch (e) {
+                console.error(e);
+                showToast(e && e.code === 'permission-denied' ? '送信できません（Firestoreのルールに inbox の設定が必要です）' : '送信できませんでした');
+                btn.disabled = false; btn.textContent = old;
+            }
+        };
 
         window.fbDevLoad = async function (force) {
             if (devLoaded && !force) { fbDevRender(); return; }
@@ -25820,6 +25957,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 devItems = await window.AppFirebase.listFeedback(80);
                 devLoaded = true;
                 fbDevRender();
+                fbDevEnsureProfiles();
             } catch (e) {
                 console.error(e);
                 list.innerHTML = '<p class="text-[11px] font-bold text-rose-500">読み込めませんでした。公式アカウントでログインしているか、Firestoreのルールに feedback の設定があるか確認してください。</p>';
@@ -25844,17 +25982,28 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                     </div>` : `<p class="mt-2 text-[10px] text-slate-400">${x.aiStatus === 'pending' ? 'AIの編集案：作成中、または未完了' : x.aiStatus === 'skipped' ? 'AIの編集案：対象外（その他）' : 'AIの編集案：作れませんでした'}</p>`;
                 return `<div class="rounded-xl border border-slate-200 dark:border-slate-700 p-3">
                     <div class="flex items-center justify-between gap-2">
-                        <p class="text-[11px] font-black text-slate-700 dark:text-slate-200">${c.icon} ${c.label} <span class="font-medium text-slate-400 ml-1">${fmt(x.createdMs)}</span></p>
+                        <p class="text-[11px] text-slate-700 dark:text-slate-200"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${c.badge}">${c.label}</span> <span class="text-slate-400 ml-1">${fmt(x.createdMs)}</span></p>
                         <select onchange="fbDevSetStatus('${esc(x.id)}', this.value)" class="text-[10px] font-bold px-1.5 py-1 rounded-lg">${Object.keys(STATUS).map(k => `<option value="${k}" ${k === st ? 'selected' : ''}>${STATUS[k]}</option>`).join('')}</select>
                     </div>
                     <p class="text-[10px] text-slate-400 mt-0.5">画面：${esc(x.screen || '不明')}${ctx.viewport ? '・' + esc(ctx.viewport) : ''}${ctx.theme ? '・' + esc(ctx.theme) : ''}</p>
+                    <p class="text-[10px] text-slate-400">送信者：${fbWho(x.uid)}${x.replyCount ? `<span class="ml-2 px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 font-bold">返信済み ${esc(x.replyCount)}件</span>` : ''}</p>
                     <p class="text-xs font-bold text-slate-800 dark:text-slate-100 whitespace-pre-wrap leading-relaxed mt-1.5">${esc(x.message)}</p>
                     ${ctx.error ? `<p class="mt-1.5 text-[10px] font-mono text-rose-600 break-all">${esc(ctx.error)}</p>` : ''}
                     ${aiHtml}
                     <div class="flex items-center gap-3 mt-2">
+                        <button onclick="fbDevToggleReply('${esc(x.id)}')" class="text-[10px] font-black" style="color:var(--pm-accent)">返信を送る</button>
                         <button onclick="fbDevRegen('${esc(x.id)}', this)" class="text-[10px] font-black" style="color:var(--pm-accent)">AIで作り直す</button>
                         <button onclick="fbDevCopy('${esc(x.id)}')" class="text-[10px] font-black" style="color:var(--pm-accent)">修正依頼用にコピー</button>
                         <button onclick="fbDevDelete('${esc(x.id)}')" class="text-[10px] font-black text-rose-500 ml-auto">削除</button>
+                    </div>
+                    <div id="fb-reply-${esc(x.id)}" class="hidden mt-2 pt-2 border-t border-slate-200 dark:border-slate-700 space-y-2">
+                        <p class="text-[10px] text-slate-500">送信者のお知らせ（マイページのベル）に届きます。</p>
+                        <div class="flex flex-wrap gap-1">${REPLY_TEMPLATES.map((s, i) => `<button type="button" onclick="fbDevFillReply('${esc(x.id)}', ${i})" class="text-[10px] font-bold px-2 py-1 rounded border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">${esc(s.slice(0, 12))}…</button>`).join('')}</div>
+                        <textarea id="fb-reply-text-${esc(x.id)}" rows="3" maxlength="1000" class="w-full px-2.5 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+                        <div class="flex items-center justify-between gap-2">
+                            <label class="flex items-center gap-1.5 text-[10px] text-slate-600 dark:text-slate-300"><input type="checkbox" id="fb-reply-done-${esc(x.id)}" class="w-3.5 h-3.5"> 送ったあと「完了」にする</label>
+                            <button type="button" onclick="fbDevSendReply('${esc(x.id)}', this)" class="text-[11px] font-bold px-3 py-1.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900">送信</button>
+                        </div>
                     </div>
                 </div>`;
             }).join('');
@@ -25886,6 +26035,80 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             try { await window.AppFirebase.deleteFeedback(id); devItems = devItems.filter(x => x.id !== id); fbDevRender(); }
             catch (e) { showToast('削除できませんでした'); }
         };
+    })();
+    </script>
+
+    <script>
+    (function () {
+        const $ = (id) => document.getElementById(id);
+        const esc = (s) => escapeHtml(String(s == null ? '' : s));
+        let inbox = [], lastLoad = 0, toasted = false;
+        const unread = () => inbox.filter(m => !m.read).length;
+        const fmt = (ms) => { if (!ms) return ''; const d = new Date(ms); const p = n => String(n).padStart(2, '0'); return `${d.getFullYear()}/${p(d.getMonth() + 1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+
+        function render() {
+            const box = $('my-messages');
+            if (!box) return;
+            if (!inbox.length) { box.classList.add('hidden'); box.innerHTML = ''; return; }
+            box.classList.remove('hidden');
+            box.innerHTML = `<p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-2">あなた宛てのメッセージ</p>
+                <div class="space-y-2 max-h-56 overflow-y-auto">${inbox.map(m => `
+                    <div class="rounded-xl border ${m.read ? 'border-slate-200 dark:border-slate-700' : 'border-blue-300 dark:border-cyan-700 bg-blue-50/50 dark:bg-slate-800/60'} px-3 py-2.5">
+                        <div class="flex items-center justify-between gap-2">
+                            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400">${esc(m.from || '開発者')}より${m.read ? '' : ' <span class="ml-1 text-blue-600 dark:text-cyan-400">新着</span>'}　<span class="font-medium text-slate-400">${fmt(m.createdMs)}</span></p>
+                            <button type="button" onclick="pmInboxDelete('${esc(m.id)}')" class="text-[10px] text-slate-400 hover:text-rose-500">削除</button>
+                        </div>
+                        <p class="text-xs text-slate-800 dark:text-slate-100 mt-1 leading-relaxed whitespace-pre-wrap break-words">${esc(m.body)}</p>
+                        ${m.ref ? `<p class="text-[10px] text-slate-400 mt-1.5 break-words">あなたの報告：「${esc(m.ref)}」</p>` : ''}
+                    </div>`).join('')}</div>
+                <div class="border-t border-slate-200 dark:border-slate-800 mt-4"></div>`;
+        }
+
+        async function load(force) {
+            if (!window.currentAppUser || !window.AppFirebase || typeof window.AppFirebase.listInbox !== 'function') return;
+            if (!force && Date.now() - lastLoad < 60000) return;
+            lastLoad = Date.now();
+            try { inbox = await window.AppFirebase.listInbox(); } catch (e) { console.warn('inbox load failed', e); return; }
+            render();
+            if (typeof updateAnnouncementBellBadge === 'function') updateAnnouncementBellBadge();
+            const newest = inbox.filter(m => !m.read).reduce((a, m) => Math.max(a, m.createdMs || 0), 0);
+            let prev = 0; try { prev = Number(localStorage.getItem('pm_inbox_notified') || 0); } catch (e) {}
+            if (newest > prev) {
+                try { localStorage.setItem('pm_inbox_notified', String(newest)); } catch (e) {}
+                showToast('お知らせがあります');
+            }
+        }
+
+        // ベルの赤い点：運営のお知らせか、自分宛ての未読があれば出す
+        const origBadge = window.updateAnnouncementBellBadge;
+        window.updateAnnouncementBellBadge = function () {
+            if (typeof origBadge === 'function') origBadge();
+            const dot = $('mypage-announcement-dot');
+            if (dot && unread() > 0) dot.classList.remove('hidden');
+        };
+        // お知らせを開いたとき：最新を読み込み、表示したら既読にする
+        const origToggle = window.toggleAnnouncementModal;
+        window.toggleAnnouncementModal = function (show) {
+            if (typeof origToggle === 'function') origToggle(show);
+            if (!show) return;
+            render();
+            load(true).then(async () => {
+                const ids = inbox.filter(m => !m.read).map(m => m.id);
+                if (!ids.length) return;
+                setTimeout(async () => {
+                    for (const id of ids) { try { await window.AppFirebase.markInboxRead(id); const m = inbox.find(x => x.id === id); if (m) m.read = true; } catch (e) {} }
+                    if (typeof updateAnnouncementBellBadge === 'function') updateAnnouncementBellBadge();
+                }, 1500);
+            });
+        };
+        window.pmInboxDelete = async function (id) {
+            try { await window.AppFirebase.deleteInbox(id); inbox = inbox.filter(m => m.id !== id); render(); if (typeof updateAnnouncementBellBadge === 'function') updateAnnouncementBellBadge(); }
+            catch (e) { showToast('削除できませんでした'); }
+        };
+
+        window.addEventListener('app-auth-changed', () => { inbox = []; lastLoad = 0; toasted = false; setTimeout(() => load(true), 1500); });
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) load(false); });
+        setTimeout(() => load(false), 3000);
     })();
     </script>
 
