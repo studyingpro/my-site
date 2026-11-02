@@ -1,5 +1,6 @@
+// （このファイルは .cjs です。scripts/package.json が "type": "module" のため、.js だと require が使えず動きません）
 // 毎朝のセキュリティ日報 → オーナーだけの「お知らせ」（Firestore の inbox）に書き込む
-// 実行：GitHub Actions（毎日 08:00 JST）。手元で試すときは  node scripts/security-digest.js --dry
+// 実行：GitHub Actions（毎日 08:00 JST）。手元で試すときは  node scripts/security-digest.cjs --dry
 //   --dry … お知らせには書き込まず、内容を画面に出すだけ
 // 必要な環境変数：FIREBASE_SERVICE_ACCOUNT（サービスアカウントのJSON）, OWNER_UID（あなたのFirebaseユーザーID）
 // あれば使う：GITHUB_TOKEN と GITHUB_REPOSITORY（Actions が自動で入れる）, FIREBASE_WEB_API_KEY / WORKER_BASE（index.html から自動で読むので通常は不要）
