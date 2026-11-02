@@ -30,3 +30,34 @@ jobs:
           DRY: ${{ github.event.inputs.dry }}
         run: node scripts/security-digest.js
 
+name: security-digest
+
+on:
+  schedule:
+    - cron: '0 23 * * *'   # 毎日 08:00（日本時間）。GitHubの仕様で、数分〜数十分おくれることがあります
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: 'true にすると、お知らせには書き込まず、内容だけをログに表示します（試し用）'
+        default: 'false'
+
+permissions:
+  contents: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm install --no-save firebase-admin@12
+      - name: セキュリティ日報を作ってお知らせに送る
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          OWNER_UID: ${{ secrets.OWNER_UID }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY: ${{ github.event.inputs.dry }}
+        run: node scripts/security-digest.cjs
