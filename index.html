@@ -3891,6 +3891,10 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             <p id="cms-reports-count" class="text-[11px] font-bold text-slate-500"></p>
                             <button onclick="cmsLoadReports(true)" class="text-[11px] font-bold" style="color:var(--pm-accent)">再読み込み</button>
                         </div>
+                        <div class="rounded-xl border border-slate-200 dark:border-slate-700 px-3 py-2.5">
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">公開の corrections.json に、限定データの訂正記録（問題文・解答の訂正前後）が残っていると、誰でも読めてしまいます。下のボタンで、それだけを非公開の場所（Firestore）へ移し、公開ファイルから取り除きます。ほかの記録は、そのまま残ります。管理者のアカウントだけが使えます。</p>
+                            <button id="cms-move-corr-btn" onclick="cmsMoveLimitedCorrections()" class="dev-btn mt-2 justify-center"><span>限定データの記録を、公開ファイルから Firestore へ移す</span></button>
+                        </div>
                         <div id="cms-reports-list" class="space-y-2"></div>
                     </div>
             </div>
@@ -5506,7 +5510,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     await check('自分を公式アカウントにできる？', '誰でも開発者になれてしまう（最も危険）', () => setDoc(doc(d2, 'publicProfiles', uid), { uid, nickname: 'probe', isOfficial: true }), rulesFix, () => deleteDoc(doc(d2, 'publicProfiles', uid)));
                     await check('限定データを書き換えられる？', '教材の内容を改ざんされる', () => setDoc(doc(d2, 'protected', 'probe_doc'), { json: 'null' }), rulesFix, () => deleteDoc(doc(d2, 'protected', 'probe_doc')));
                     await check('セキュリティの記録を偽造できる？', '攻撃の形跡を隠される・偽の警告を出される', () => setDoc(doc(d2, 'security_events', 'probe_doc'), { t: 'x' }), rulesFix, () => deleteDoc(doc(d2, 'security_events', 'probe_doc')));
-                    await check('ゲスト（匿名）でも、投稿を書き込める？', '荒らし・宣伝の書き込みに使われる恐れ', () => setDoc(doc(d2, 'posts', 'probe_doc'), { uid, text: 'probe', createdAt: serverTimestamp() }), 'ルールで、登録済みの人だけに絞れます（ゲスト機能への影響があるため、相談してから）', () => deleteDoc(doc(d2, 'posts', 'probe_doc')), 'warn');
+                    await check('ゲスト（匿名）でも、投稿を書き込める？', '荒らし・宣伝の書き込みに使われる恐れ', () => setDoc(doc(d2, 'posts', 'probe_doc'), { uid, text: 'probe', createdAt: serverTimestamp() }), rulesFix, () => deleteDoc(doc(d2, 'posts', 'probe_doc')), 'warn');
                 } finally {
                     try { if (cred) await deleteUser(cred.user); } catch (_) {}
                     try { await signOut(getAuth(app2)); } catch (_) {}
@@ -5520,6 +5524,12 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 const u = auth.currentUser;
                 if (!u || u.isAnonymous) return false;
                 try { const s = await getDoc(doc(db, 'admins', u.uid)); return s.exists(); } catch (e) { return false; }
+            },
+            // 公式アカウントか、Firestoreのルールで確かめる（private/invite は、公式だけが読める。書類がなくても、公式なら「読めた」になる）
+            async verifyOfficial() {
+                const u = auth.currentUser;
+                if (!u || u.isAnonymous) return false;
+                try { await getDoc(doc(db, 'private', 'invite')); return true; } catch (e) { return false; }
             },
             async loadSecurityEvents(max = 100) {
                 const snap = await getDocs(query(collection(db, 'security_events'), orderBy('t', 'desc'), limit(max)));
@@ -22355,7 +22365,8 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             showToast('記録を削除しました');
         }
 
-        const DEV_PW_HASH_DEFAULT = '8c5bd985a0628410b9eebe2f13fcb30345c756f36c567a12a6d7f2eb1d531365';
+        // 以前はここに、開発者パスワードのハッシュが入っていた。いまは、パスワードでは入れない（誰とも一致しない値）。
+        const DEV_PW_HASH_DEFAULT = '3508e179315d3fe906c8ed71e62081bccaa8547fea5170d9820cddceab789374';
         let devUnlocked = false;
 
         async function sha256(str) {
@@ -22380,9 +22391,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         const DEV_SHORTCUT_CODE = 'KeyD';
         function requestDevLogin() {
             if (devUnlocked) { showToast('開発者モードはすでに開始しています'); return; }
-            const modal = document.getElementById('dev-login-modal');
-            if (modal && !modal.classList.contains('opacity-0')) return;
-            showDevLogin();
+            openDevLoginByShortcut();
         }
         document.addEventListener('keydown', (e) => {
             if (e.code !== DEV_SHORTCUT_CODE || !e.shiftKey || e.ctrlKey || e.metaKey || e.altKey || e.repeat) return;
@@ -22473,14 +22482,22 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             const u = window.currentAppUser;
             return !!(u && !u.isAnonymous && window.currentAppIsOfficial === true && window.currentAppIsOfficialUid === u.uid);
         }
+        // 開発者モードに入れるのは、サーバー（Firestoreのルール）が確かめた「管理者」か「公式アカウント」だけ。
+        // パスワードは使わない（ブラウザの中だけの確認は、突破できてしまうため）。
+        let _devEntering = false;
         async function openDevLoginByShortcut() {
-            if (!canOpenDevModeByShortcut()) return;
             if (devUnlocked) { showToast('すでに開発者モードです'); return; }
-            // admins に登録された自分のアカウントなら、パスワードなしで入る（確認はFirestoreのルールが行う）
-            let admin = false;
-            try { admin = await window.AppFirebase.isAdmin(); } catch (e) {}
-            if (admin) { devEnter(false); return; }
-            showDevLogin();
+            if (_devEntering) return;
+            const u = window.currentAppUser;
+            if (!u || u.isAnonymous) { showToast('開発者モードは、公式アカウントでログインしているときだけ使えます'); return; }
+            _devEntering = true;
+            try {
+                let ok = false;
+                try { ok = await window.AppFirebase.isAdmin(); } catch (e) {}
+                if (!ok) { try { ok = await window.AppFirebase.verifyOfficial(); } catch (e) {} }
+                if (ok) devEnter(false);
+                else showToast('開発者モードは、公式アカウントだけが入れます');
+            } finally { _devEntering = false; }
         }
         document.addEventListener('keydown', (e) => {
             if (e.shiftKey && e.altKey && !e.ctrlKey && !e.metaKey && e.code === 'KeyK') {
@@ -24947,6 +24964,42 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             }
         }
 
+        // 公開の corrections.json にある「限定データの訂正記録」を、非公開のFirestoreへ移して、公開ファイルから取り除く
+        async function cmsMoveLimitedCorrections() {
+            const btn = document.getElementById('cms-move-corr-btn');
+            if (!cmsSession) { showToast('先にGitHubへ接続してください'); return; }
+            let admin = false; try { admin = await window.AppFirebase.isAdmin(); } catch (e) {}
+            if (!admin) { showToast('管理者（admins）のアカウントだけが使えます'); return; }
+            if (!confirm('公開の corrections.json から、限定データの訂正記録を取り除いて、Firestoreへ移します。よろしいですか？')) return;
+            const setBtn = (txt, dis) => { if (btn) { btn.disabled = dis; const s = btn.querySelector('span'); if (s) s.textContent = txt; } };
+            const label = '限定データの記録を、公開ファイルから Firestore へ移す';
+            setBtn('移しています…', true);
+            try {
+                const res = await fetch(cmsCorrectionsApiUrl(), { headers: { 'Authorization': `Bearer ${cmsSession.token}`, 'Accept': 'application/vnd.github+json' }, cache: 'no-store' });
+                if (res.status === 404) { showToast('corrections.json はありません'); return; }
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const j = await res.json();
+                const recs = JSON.parse(decodeURIComponent(escape(atob(j.content.replace(/\n/g, ''))))).records || [];
+                const isLimited = (x) => x && (x.kind === 'eikomi' || x.kind === 'ronri') && x.source !== 'scan' && x.before;
+                const limited = recs.filter(isLimited);
+                if (!limited.length) { showToast('移す記録はありません（公開ファイルに、限定データの記録はありません）'); return; }
+                let n = 0;
+                for (const rec of limited) {
+                    const id = String(rec.id || rec.at || ('moved_' + Date.now() + '_' + n)).replace(/[\/\s]/g, '_').slice(0, 200);
+                    await window.AppFirebase.saveProtectedCorrection(id, rec);   // 先にFirestoreへ。ここで失敗したら、公開ファイルには触らない
+                    n++;
+                }
+                const remaining = recs.filter(x => !isLimited(x));
+                const body = { message: '限定データの訂正記録を、公開ファイルから取り除きました', content: btoa(unescape(encodeURIComponent(JSON.stringify({ records: remaining }, null, 2)))), branch: cmsSession.branch, sha: j.sha };
+                const put = await fetch(`https://api.github.com/repos/${cmsSession.repo}/contents/corrections.json`, { method: 'PUT', headers: { 'Authorization': `Bearer ${cmsSession.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                if (!put.ok) throw new Error('公開ファイルを書き換えられませんでした（HTTP ' + put.status + '）。Firestoreには移してあります。もう一度押せば、続きができます');
+                showToast(n + '件を移しました。公開ファイルから取り除きました');
+                cmsLoadReports(true);
+            } catch (e) {
+                showToast('移せませんでした：' + (e && e.message || e));
+            } finally { setBtn(label, false); }
+        }
+
         let cmsCorrections = [];
         let cmsCorrectionsSha = null;
         function cmsCorrectionsApiUrl() { return `https://api.github.com/repos/${cmsSession.repo}/contents/corrections.json?ref=${encodeURIComponent(cmsSession.branch)}`; }
@@ -25382,7 +25435,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                         const recs = (await r.json()).records || [];
                         const limited = recs.filter(x => (x.kind === 'eikomi' || x.kind === 'ronri') && x.source !== 'scan' && x.before).length;
                         const scans = recs.filter(x => x.source === 'scan' && x.before).length;
-                        if (limited) add(risks, 'warn', '公開の corrections.json に、限定データの訂正記録が ' + limited + ' 件あります', '問題文や解答の訂正前後が、誰でも読める状態です。', 'GitHubで corrections.json を開き、中身を {"records": []} に書き換えて保存する');
+                        if (limited) add(risks, 'warn', '公開の corrections.json に、限定データの訂正記録が ' + limited + ' 件あります', '問題文や解答の訂正前後が、誰でも読める状態です。', '開発者モードの「報告・訂正」で、「限定データの記録を、公開ファイルから Firestore へ移す」を押す（管理者のみ）');
                         if (scans) add(risks, 'warn', '公開の corrections.json に、利用者の撮影内容が ' + scans + ' 件あります', '利用者が撮影した内容の一部が、誰でも読める状態です。', 'Workerを最新版にして、corrections.json の該当記録を消す');
                         if (!limited && !scans) add(risks, 'ok', '公開の corrections.json に、限定データ・撮影内容はありません', '');
                     }
@@ -25455,7 +25508,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             }
 
             // ---- 端末側だけの確認になっていないか ----
-            add(risks, 'warn', '開発者モードのパスワード確認は、端末側（ブラウザの中）だけで行われています', 'パスワードのハッシュが index.html に入っていて、確認もブラウザの中だけで行われます。ブラウザの開発ツールを使える人なら、突破できる可能性があります。実際の書き込みにはGitHubのトークンが必要なので、被害は限られますが、最終的な守りにはなりません。', '開発者の画面を、Workerと同じ「公式アカウント」の確認に切り替える');
+            add(risks, 'ok', '開発者モードは、サーバー側の確認（管理者・公式アカウント）で守られています', 'パスワードは使っていません。入れるのは、Firestoreのルールが認めた管理者と公式アカウントだけです。', '');
             if (location.protocol !== 'https:' && !['localhost', '127.0.0.1'].includes(location.hostname)) add(risks, 'bad', 'このページは、暗号化されていない通信（HTTP）で開かれています', '通信の内容を、途中で盗み見・書き換えされる恐れがあります。', 'HTTPS（https:// から始まるURL）で公開する');
             else add(risks, 'ok', 'ページは、暗号化された通信（HTTPS）で配信されています', '');
 
