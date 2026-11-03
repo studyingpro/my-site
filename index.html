@@ -3755,6 +3755,29 @@ html.dark .dev-log-link { color: #e2e8f0; }
             </div>
         </section>
 
+        <section data-dev-panel="aiedit" class="dev-panel hidden">
+            <div data-dev-panel-head></div>
+            <div class="dev-card">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-2">
+                        <label for="ae-file" class="text-[11px] font-bold text-slate-600 dark:text-slate-300 shrink-0">コードの対象</label>
+                        <select id="ae-file" onchange="aeChangeFile(this.value)" class="text-[11px] font-bold px-2 py-1.5 rounded-lg min-w-0"><option value="index.html">index.html</option></select>
+                        <span id="ae-status" class="ml-auto text-[10px] text-slate-400 whitespace-nowrap"></span>
+                    </div>
+                    <div id="ae-log" class="rounded-xl border border-slate-200 dark:border-slate-700 h-[46vh] overflow-y-auto p-3 space-y-2.5"></div>
+                    <div class="flex items-end gap-2">
+                        <textarea id="ae-input" rows="2" placeholder="やりたいことを書いてください（Ctrl＋Enterで送信）" class="flex-1 min-w-0 px-3 py-2 text-xs rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-white resize-none"></textarea>
+                        <button id="ae-send" type="button" onclick="aeSend()" class="dev-btn is-primary justify-center shrink-0 disabled:opacity-50">送る</button>
+                    </div>
+                    <div>
+                        <p class="text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">反映した変更</p>
+                        <div id="ae-history" class="rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-1"></div>
+                    </div>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">使えるのは、管理者（admins）のアカウントだけです。GitHub連携が必要です。設定の変更は、開発者モードの「保存」と同じ処理で config.json に保存されます。アプリのコードの変更は、GitHubの本番ファイルに保存され、1〜2分後に全員のアプリが変わります。AIの案は間違うことがあるので、中身を見てから「反映する」を押してください。フィードバックへの返信は、取り消せません。</p>
+                </div>
+            </div>
+        </section>
+
         <section data-dev-panel="github" class="dev-panel hidden">
             <div data-dev-panel-head></div>
             <div class="dev-card">
@@ -22623,6 +22646,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             { key: 'usage',       icon: 'activity',         label: '利用状況',            group: '状況の確認',       desc: 'その日に何人が使ったか、どのページ・機能が使われたかを確認します。', short: '人数・ページ・機能' },
             { key: 'accesslog',   icon: 'list-checks',      label: 'アクセスログ',        group: '状況の確認',       desc: 'いつ・誰が・どの画面や機能を使ったかを、IPアドレスや端末の情報つきで確認します。', short: '日時・IP・端末' },
             { key: 'feedback',    icon: 'message-circle',   label: 'フィードバック',      group: '状況の確認',       desc: '利用者から届いた不具合・デザイン・要望と、AIが作った編集案を確認します。', short: '報告・AIの編集案' },
+            { key: 'aiedit',      icon: 'message-square',   label: 'チャットで操作（AI）', group: '公開・コンテンツ', desc: 'お知らせ・予定・クラス・課題・モードの設定や、フィードバックへの返信を、チャットで頼めます。アプリのデザインや動きの変更もできます。AIが変更案を作り、確認してから反映します。', short: 'チャットで操作' },
             { key: 'github',      icon: 'github',           label: 'GitHub連携・公開',    group: '公開・コンテンツ', desc: '編集した内容を GitHub の config.json に保存して、全ユーザーへ公開するための接続です。', short: '公開の接続・保存' },
             { key: 'mode',        icon: 'toggle-left',      label: 'モード管理',          group: '公開・コンテンツ', desc: '機能ごとの点検・停止の切り替えと、点検のための移動ができます。', short: '点検・機能の停止' },
             { key: 'summertitle', icon: 'sun',              label: '長期休暇課題',        group: '公開・コンテンツ', desc: '夏休み・冬休みなどの課題コーナーの表示と名称を設定します。', short: '表示ON/OFF・名称' },
@@ -22679,6 +22703,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 else if (key === 'reports' && typeof cmsLoadReports === 'function') cmsLoadReports();
                 else if (key === 'photostore' && typeof cmsRenderPhotoStore === 'function') cmsRenderPhotoStore();
                 else if (key === 'feedback' && typeof fbDevLoad === 'function') fbDevLoad();
+                else if (key === 'aiedit' && typeof aeInit === 'function') aeInit();
                 else if (key === 'users') loadDevUserCount();
                 else if (key === 'protect') { if (typeof cmsUpdateProtectedStatus === 'function') cmsUpdateProtectedStatus(); if (typeof cmsLoadInviteCode === 'function') cmsLoadInviteCode(); }
             } catch (e) { console.warn('開発者ページの更新に失敗:', e); }
@@ -26129,6 +26154,645 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         document.addEventListener('visibilitychange', () => { if (!document.hidden) load(false); });
         setTimeout(() => load(false), 3000);
     })();
+    </script>
+
+    <script>
+(function () {
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => escapeHtml(String(s == null ? '' : s));
+    const clip = (s, n) => { s = String(s == null ? '' : s); return s.length > n ? s.slice(0, n) + '…' : s; };
+    const clone = (x) => x === undefined ? undefined : JSON.parse(JSON.stringify(x));
+    const ae = { file: 'index.html', loadedFile: null, text: null, lines: null, lower: null, sha: null, busy: false, pending: new Map(), recap: [], history: [], admin: null, inited: false, acornReady: null, seq: 0, fb: [] };
+
+    // ---------- GitHub ----------
+    const session = () => (typeof cmsSession !== 'undefined' && cmsSession) || (typeof cmsLoadSavedSession === 'function' ? cmsLoadSavedSession() : null);
+    const gh = (s, extra) => Object.assign({ Authorization: 'Bearer ' + s.token, Accept: 'application/vnd.github+json' }, extra || {});
+    const apiUrl = (s, path) => 'https://api.github.com/repos/' + s.repo + '/contents/' + path.split('/').map(encodeURIComponent).join('/');
+    const refQ = (s) => '?ref=' + encodeURIComponent(s.branch || 'main');
+    function toB64(str) {
+        const bytes = new TextEncoder().encode(str); let bin = ''; const CH = 0x8000;
+        for (let i = 0; i < bytes.length; i += CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+        return btoa(bin);
+    }
+    function needSession() {
+        const s = session();
+        if (!s) throw new Error('GitHubにつながっていません。「GitHub連携・公開」でつないでから、もう一度どうぞ（つないだ状態は12時間で切れます）');
+        return s;
+    }
+    function setStatus(t) { const el = $('ae-status'); if (el) el.textContent = t || ''; }
+    async function remoteSha(s, file) {
+        const r = await fetch(apiUrl(s, file) + refQ(s), { headers: gh(s, { Accept: 'application/vnd.github.object+json' }), cache: 'no-store' });
+        if (!r.ok) throw new Error('GitHubから ' + file + ' の情報を読めませんでした（' + r.status + '）');
+        return (await r.json()).sha;
+    }
+    async function loadFile(force) {
+        const s = needSession();
+        if (!force && ae.text != null && ae.loadedFile === ae.file) return;
+        setStatus('読み込み中…');
+        const raw = await fetch(apiUrl(s, ae.file) + refQ(s), { headers: gh(s, { Accept: 'application/vnd.github.raw+json' }), cache: 'no-store' });
+        if (!raw.ok) throw new Error('GitHubから ' + ae.file + ' を読めませんでした（' + raw.status + '）');
+        ae.text = await raw.text();
+        ae.sha = await remoteSha(s, ae.file);
+        ae.lines = ae.text.split('\n'); ae.lower = ae.lines.map(x => x.toLowerCase()); ae.loadedFile = ae.file;
+        setStatus(ae.file + '：' + ae.lines.length.toLocaleString('ja-JP') + '行');
+    }
+    async function loadFileList() {
+        const s = session(); const sel = $('ae-file'); if (!s || !sel) return;
+        try {
+            const r = await fetch('https://api.github.com/repos/' + s.repo + '/contents/' + refQ(s), { headers: gh(s), cache: 'no-store' });
+            if (!r.ok) return;
+            const names = (await r.json()).filter(x => x.type === 'file' && /\.(html?|m?js|json|css|md|ya?ml|txt)$/i.test(x.name) && x.size < 6e6).map(x => x.name);
+            names.sort((a, b) => (a === 'index.html' ? -1 : b === 'index.html' ? 1 : a.localeCompare(b)));
+            if (names.length) sel.innerHTML = names.map(n => '<option value="' + esc(n) + '"' + (n === ae.file ? ' selected' : '') + '>' + esc(n) + '</option>').join('');
+        } catch (e) { /* 一覧が取れなくても index.html は使える */ }
+    }
+    async function commit(file, text, message, sha) {
+        const s = needSession();
+        const r = await fetch(apiUrl(s, file), { method: 'PUT', headers: gh(s, { 'Content-Type': 'application/json' }), body: JSON.stringify({ message, content: toB64(text), sha, branch: s.branch || 'main' }) });
+        if (!r.ok) { let m = ''; try { m = (await r.json()).message; } catch (e) {} throw new Error('GitHubに保存できませんでした（' + r.status + '）' + (m ? '：' + m : '')); }
+        const j = await r.json();
+        return { sha: j.content && j.content.sha, url: j.commit && j.commit.html_url };
+    }
+
+    // ================= ① コード（index.html など）の編集 =================
+    function searchCode(terms) {
+        const R = 10, MAXPER = 6, CAP = 70000, LINECAP = 1200;
+        const wins = [], report = [];
+        terms.slice(0, 12).forEach(term => {
+            const q = String(term).trim().toLowerCase(); if (q.length < 2) return;
+            const hits = []; for (let i = 0; i < ae.lower.length; i++) if (ae.lower[i].includes(q)) hits.push(i);
+            report.push('「' + term + '」' + hits.length + '件' + (hits.length > MAXPER ? '（先頭' + MAXPER + '件を表示）' : ''));
+            hits.slice(0, MAXPER).forEach(i => wins.push([Math.max(0, i - R), Math.min(ae.lines.length - 1, i + R)]));
+        });
+        wins.sort((a, b) => a[0] - b[0]);
+        const merged = []; wins.forEach(w => { const l = merged[merged.length - 1]; if (l && w[0] <= l[1] + 2) l[1] = Math.max(l[1], w[1]); else merged.push(w.slice()); });
+        let text = '', size = 0;
+        for (const [a, b] of merged) {
+            let block = '--- 行 ' + (a + 1) + '〜' + (b + 1) + ' ---\n' + ae.lines.slice(a, b + 1).map(l => l.length > LINECAP ? l.slice(0, LINECAP) + '…（長いので省略）' : l).join('\n') + '\n\n';
+            if (size + block.length > CAP) { text += '（量が多いので、ここから先は省略しました。検索語を絞ってください）\n'; break; }
+            text += block; size += block.length;
+        }
+        if (!text) text = '（ひとつも見つかりませんでした。別の言い方・別の検索語を試してください）';
+        return { text, report };
+    }
+    const countOcc = (hay, needle) => { let n = 0, i = 0; while ((i = hay.indexOf(needle, i)) !== -1) { n++; i += needle.length; if (n > 50) break; } return n; };
+    const lineOf = (text, idx) => { let n = 1; for (let i = text.indexOf('\n'); i !== -1 && i < idx; i = text.indexOf('\n', i + 1)) n++; return n; };
+    function loadAcorn() {
+        if (window.acorn) return Promise.resolve(true);
+        if (ae.acornReady) return ae.acornReady;
+        ae.acornReady = new Promise(res => {
+            const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/npm/acorn@8.11.3/dist/acorn.js';
+            s.onload = () => res(!!window.acorn); s.onerror = () => res(false); document.head.appendChild(s);
+        });
+        return ae.acornReady;
+    }
+    function scriptsOf(file, text) {
+        if (/\.m?js$/i.test(file)) return [{ code: text, mod: /^\s*(import|export)\b/m.test(text) }];
+        const out = [], re = /<script([^>]*)>([\s\S]*?)<\/script>/gi; let m;
+        while ((m = re.exec(text))) {
+            const a = m[1];
+            if (/\bsrc\s*=/.test(a) || /type\s*=\s*["'](application\/(ld\+)?json|importmap)/i.test(a) || !m[2].trim()) continue;
+            out.push({ code: m[2], mod: /type\s*=\s*["']module/i.test(a) });
+        }
+        return out;
+    }
+    async function checkSyntax(file, before, after) {
+        const res = { errors: [], warns: [] };
+        if (/\.json$/i.test(file)) { try { JSON.parse(after); } catch (e) { res.errors.push('JSONとして読めなくなります：' + e.message); } return res; }
+        const isHtml = /\.html?$/i.test(file);
+        if (isHtml) {
+            const bal = (s) => (s.match(/<div[\s>]/gi) || []).length - (s.match(/<\/div>/gi) || []).length;
+            if (bal(before) !== bal(after)) res.warns.push('<div> の開き・閉じの数が変わっています（閉じ忘れの可能性）');
+        }
+        if (!isHtml && !/\.m?js$/i.test(file)) return res;
+        if (!(await loadAcorn())) { res.warns.push('構文チェックの部品を読み込めなかったので、JavaScriptの構文は確認できていません'); return res; }
+        const parse = (u) => window.acorn.parse(u.code, { ecmaVersion: 'latest', sourceType: u.mod ? 'module' : 'script' });
+        let bad = null;
+        for (const u of scriptsOf(file, after)) { try { parse(u); } catch (e) { bad = e; break; } }
+        if (bad) {
+            let was = false;
+            for (const u of scriptsOf(file, before)) { try { parse(u); } catch (e) { was = true; break; } }
+            if (was) res.warns.push('もともと構文のエラーがあるファイルなので、変更後の構文は判定できません');
+            else res.errors.push('JavaScriptの構文エラーになります：' + bad.message);
+        }
+        return res;
+    }
+    function riskNotes(before, edits) {
+        const notes = new Set(), known = new Set();
+        (before.match(/https?:\/\/[^\/'"\s)<>`]+/g) || []).forEach(u => known.add(u.replace(/^https?:\/\//, '').toLowerCase()));
+        edits.forEach(e => {
+            const r = e.replace || '', f = e.find || '';
+            (r.match(/https?:\/\/[^\/'"\s)<>`]+/g) || []).forEach(u => { const h = u.replace(/^https?:\/\//, '').toLowerCase(); if (!known.has(h)) notes.add('新しい通信先・リンク先が入ります：' + h); });
+            if (/<script[^>]*\ssrc\s*=/i.test(r)) notes.add('外部スクリプトを読み込む記述が入ります');
+            if (/\beval\s*\(|new\s+Function\s*\(|document\.write\s*\(/.test(r)) notes.add('eval や document.write など、危険になりやすい書き方が入っています');
+            if (/isAdmin|isOfficial|firebaseConfig|apiKey|DEV_PW_HASH|signIn|password|admins/i.test(f)) notes.add('ログイン・権限・パスワードに関わる部分を変更します');
+            if (r.length > 8000) notes.add('大きな変更です（' + r.length.toLocaleString('ja-JP') + '文字）');
+        });
+        return [...notes];
+    }
+    async function validateEdits(edits) {
+        const problems = []; let out = ae.text; const view = [];
+        if (!Array.isArray(edits) || !edits.length) return { problems: ['edits が空です'], view, newText: ae.text };
+        edits.forEach((e, i) => {
+            const tag = '変更' + (i + 1) + '：';
+            if (!e || typeof e.find !== 'string' || !e.find) { problems.push(tag + 'find がありません'); return; }
+            if (typeof e.replace !== 'string') { problems.push(tag + 'replace がありません'); return; }
+            if (e.find === e.replace) { problems.push(tag + 'find と replace が同じです'); return; }
+            const c = countOcc(out, e.find);
+            if (c === 0) { problems.push(tag + 'find がファイルの中に見つかりません（空白・改行・インデントまで一字一句そのままコピーしてください）。先頭：' + e.find.slice(0, 60)); return; }
+            if (c > 1) { problems.push(tag + 'find が ' + c + ' か所にあります。前後の行を足して、1か所だけに絞ってください。先頭：' + e.find.slice(0, 60)); return; }
+            const idx = out.indexOf(e.find);
+            view.push({ n: i + 1, reason: e.reason || '', line: lineOf(out, idx), find: e.find, replace: e.replace });
+            out = out.slice(0, idx) + e.replace + out.slice(idx + e.find.length);
+        });
+        if (problems.length) return { problems, view, newText: ae.text };
+        const syntax = await checkSyntax(ae.file, ae.text, out);
+        return { problems, view, newText: out, syntax, risks: riskNotes(ae.text, edits) };
+    }
+
+    // ================= ② 設定データ（お知らせ・予定・クラスなど）の編集 =================
+    const CFG_KEYS = ['announcements', 'globalSchedules', 'extraSections', 'classes', 'ronriSections', 'featureFlags', 'exams', 'examRangeTitle', 'examRangeEnabled', 'summerTasks', 'summerTaskEnabled', 'summerTaskTitle'];
+    const CFG_ARRAYS = ['announcements', 'globalSchedules', 'extraSections', 'classes', 'ronriSections', 'exams', 'summerTasks'];
+    const CFG_LABEL = { announcements: 'お知らせ', globalSchedules: '全員向けの予定', extraSections: '英コのセクション', classes: 'クラス', ronriSections: '論表のセクション', featureFlags: 'モードの表示切替', exams: '試験', examRangeTitle: '試験範囲の見出し', examRangeEnabled: '試験範囲の表示', summerTasks: '長期休暇課題', summerTaskEnabled: '長期休暇課題の表示', summerTaskTitle: '長期休暇課題の見出し' };
+    const isDate = (s) => typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s;
+
+    function parsePath(p) {
+        const segs = String(p || '').match(/[^.\[]+(?:\[[^\]]*\])?/g);
+        if (!segs) throw new Error('path が空です');
+        return segs.map(s => {
+            const m = s.match(/^([A-Za-z0-9_\-]+)(?:\[(?:(\d+)|([A-Za-z0-9_]+)=(.+))\])?$/);
+            if (!m) throw new Error('path の形が正しくありません：' + s);
+            return { key: m[1], index: m[2] != null ? Number(m[2]) : null, field: m[3] || null, val: m[4] != null ? m[4] : null };
+        });
+    }
+    function pickEl(arr, seg) {
+        if (!Array.isArray(arr)) throw new Error(seg.key + ' は配列ではありません');
+        if (seg.index != null) { if (seg.index >= arr.length) throw new Error(seg.key + '[' + seg.index + '] はありません（' + arr.length + '件）'); return seg.index; }
+        const hits = []; arr.forEach((el, i) => { if (el && String(el[seg.field]) === seg.val) hits.push(i); });
+        if (hits.length !== 1) throw new Error(seg.key + '[' + seg.field + '=' + seg.val + '] が ' + hits.length + ' 件に当たります（ちょうど1件になるように指定してください）');
+        return hits[0];
+    }
+    function locate(root, path) {
+        const segs = parsePath(path);
+        if (!CFG_KEYS.includes(segs[0].key)) throw new Error('「' + segs[0].key + '」は設定データのキーではありません');
+        let cur = root;
+        for (let i = 0; i < segs.length; i++) {
+            const seg = segs[i], last = i === segs.length - 1, hasSel = seg.index != null || seg.field != null;
+            if (cur == null || typeof cur !== 'object') throw new Error(path + ' をたどれません');
+            if (last) {
+                if (hasSel) { const arr = cur[seg.key]; return { kind: 'el', arr, idx: pickEl(arr, seg), top: segs[0].key, depth: segs.length }; }
+                return { kind: 'prop', obj: cur, key: seg.key, top: segs[0].key, depth: segs.length };
+            }
+            if (!(seg.key in cur)) throw new Error(path + ' の「' + seg.key + '」がありません');
+            cur = cur[seg.key];
+            if (hasSel) cur = cur[pickEl(cur, seg)];
+        }
+    }
+    function parseValue(v) {
+        if (v === undefined || v === null) throw new Error('value がありません');
+        if (typeof v !== 'string') return v;
+        try { return JSON.parse(v); } catch (e) {
+            if (/^\s*[\[{]/.test(v)) throw new Error('value のJSONが壊れています：' + e.message);
+            return v;
+        }
+    }
+    function normalizeNew(top, it, i) {
+        if (it === null || typeof it !== 'object' || Array.isArray(it)) return it;
+        const o = clone(it), now = new Date().toISOString(), base = Date.now() + i;
+        if (top === 'announcements') {
+            o.badge = o.badge == null ? '' : o.badge; o.badgeColor = o.badgeColor || '#64748b'; o.version = o.version || ('dev-' + base);
+            o.title = o.title == null ? '' : o.title; o.body = o.body == null ? '' : o.body; o.link = o.link == null ? '' : o.link;
+            o.createdAt = o.createdAt || now; o.updatedAt = o.updatedAt || now;
+        } else if (top === 'globalSchedules') {
+            if (o.id == null) o.id = base; o.type = o.type || 'test'; o.subject = o.subject || null; o.classIds = Array.isArray(o.classIds) ? o.classIds : []; o.memo = o.memo || null; o.notifyAt = o.notifyAt || null;
+        } else if (top === 'classes') {
+            if (!o.id) o.id = 'c' + base; o.subjects = Array.isArray(o.subjects) ? o.subjects : [];
+        } else if (top === 'summerTasks') {
+            if (o.id == null) o.id = base; o.title = o.title == null ? '' : o.title; o.dueDate = o.dueDate == null ? '' : o.dueDate; o.classIds = Array.isArray(o.classIds) ? o.classIds : [];
+            o.createdAt = o.createdAt || now; o.updatedAt = o.updatedAt || now;
+        }
+        return o;
+    }
+    function applyOps(orig, ops) {
+        const cfg = clone(orig), steps = [], problems = [];
+        if (!Array.isArray(ops) || !ops.length) return { cfg, steps, problems: ['ops が空です'] };
+        ops.forEach((op, n) => {
+            const tag = '操作' + (n + 1) + '：';
+            try {
+                if (!op || !['set', 'add', 'remove'].includes(op.op)) throw new Error('op は set / add / remove のどれかにしてください');
+                const loc = locate(cfg, op.path);
+                const st = { n: n + 1, op: op.op, path: op.path, reason: op.reason || '', top: loc.top };
+                if (op.op === 'set') {
+                    const value = parseValue(op.value);
+                    if (loc.kind === 'el') { st.before = clone(loc.arr[loc.idx]); loc.arr[loc.idx] = value; }
+                    else { st.before = clone(loc.obj[loc.key]); loc.obj[loc.key] = value; }
+                    st.after = clone(value);
+                } else if (op.op === 'add') {
+                    if (loc.kind !== 'prop' || !Array.isArray(loc.obj[loc.key])) throw new Error('add は、配列（例：announcements）に対してだけ使えます');
+                    if (loc.depth === 1 && (loc.top === 'extraSections' || loc.top === 'ronriSections' || loc.top === 'exams')) throw new Error(loc.top + ' は大きく複雑なので、チャットでは新しく作れません（開発者モードの画面から作ってください）');
+                    let value = parseValue(op.value);
+                    const items = (Array.isArray(value) && loc.depth === 1) ? value : [value];
+                    const norm = loc.depth === 1 ? items.map((x, i) => normalizeNew(loc.top, x, i)) : items;
+                    const start = op.position === 'start' || (op.position !== 'end' && loc.depth === 1 && loc.top === 'announcements');
+                    if (start) loc.obj[loc.key].unshift(...norm); else loc.obj[loc.key].push(...norm);
+                    st.after = norm.length === 1 ? clone(norm[0]) : clone(norm);
+                } else {
+                    if (loc.kind === 'el') { st.before = clone(loc.arr[loc.idx]); loc.arr.splice(loc.idx, 1); }
+                    else { if (loc.depth === 1) throw new Error('設定のキーそのものは削除できません。set で空にしてください'); st.before = clone(loc.obj[loc.key]); delete loc.obj[loc.key]; }
+                }
+                steps.push(st);
+            } catch (e) { problems.push(tag + (e && e.message || e)); }
+        });
+        return { cfg, steps, problems };
+    }
+    function validateConfig(cfg) {
+        const errors = [], warns = [];
+        CFG_ARRAYS.forEach(k => { if (!Array.isArray(cfg[k])) errors.push(k + ' は配列である必要があります'); });
+        if (!cfg.featureFlags || typeof cfg.featureFlags !== 'object' || Array.isArray(cfg.featureFlags)) errors.push('featureFlags はオブジェクトである必要があります');
+        else Object.keys(cfg.featureFlags).forEach(k => { if (typeof cfg.featureFlags[k] !== 'boolean') errors.push('featureFlags.' + k + ' は true / false にしてください'); });
+        ['examRangeTitle', 'summerTaskTitle'].forEach(k => { if (typeof cfg[k] !== 'string') errors.push(k + ' は文字列にしてください'); });
+        ['examRangeEnabled', 'summerTaskEnabled'].forEach(k => { if (typeof cfg[k] !== 'boolean') errors.push(k + ' は true / false にしてください'); });
+        if (errors.length) return { errors, warns };
+        const objOk = (x, t) => { if (!x || typeof x !== 'object' || Array.isArray(x)) { errors.push(t + 'オブジェクトではありません'); return false; } return true; };
+        const classIds = new Set(cfg.classes.map(c => String(c && c.id)));
+        const checkIds = (ids, t) => { if (!Array.isArray(ids)) { errors.push(t + 'classIds は配列にしてください'); return; } ids.forEach(id => { if (!classIds.has(String(id))) warns.push(t + '存在しないクラスID「' + id + '」が入っています'); }); };
+        cfg.announcements.forEach((a, i) => {
+            const t = 'announcements[' + i + ']：'; if (!objOk(a, t)) return;
+            if (!String(a.title || '').trim()) errors.push(t + 'title が空です');
+            if (typeof a.body !== 'string') errors.push(t + 'body は文字列にしてください');
+            if (a.badgeColor && !/^#[0-9a-fA-F]{3,8}$/.test(a.badgeColor)) errors.push(t + 'badgeColor は #RRGGBB の形にしてください');
+            if (a.link && !/^https:\/\//.test(a.link)) errors.push(t + 'link は https:// から始めてください（なければ空にする）');
+        });
+        const seenSch = new Set();
+        cfg.globalSchedules.forEach((s, i) => {
+            const t = 'globalSchedules[' + i + ']：'; if (!objOk(s, t)) return;
+            if (!String(s.title || '').trim()) errors.push(t + 'title が空です');
+            if (!isDate(s.date)) errors.push(t + 'date は実在する日付を YYYY-MM-DD の形にしてください');
+            if (!['test', 'submission'].includes(s.type)) errors.push(t + 'type は test（テスト）か submission（提出物）にしてください');
+            if (s.notifyAt && isNaN(Date.parse(s.notifyAt))) errors.push(t + 'notifyAt は日時（ISO形式）か null にしてください');
+            checkIds(s.classIds || [], t);
+            const k = String(s.id); if (seenSch.has(k)) errors.push(t + 'id が重なっています'); seenSch.add(k);
+        });
+        const seenCls = new Set();
+        cfg.classes.forEach((c, i) => {
+            const t = 'classes[' + i + ']：'; if (!objOk(c, t)) return;
+            if (!c.id || typeof c.id !== 'string') errors.push(t + 'id は文字列にしてください');
+            if (!String(c.name || '').trim()) errors.push(t + 'name が空です');
+            if (!Array.isArray(c.subjects) || c.subjects.some(x => typeof x !== 'string')) errors.push(t + 'subjects は文字列の配列にしてください');
+            if (seenCls.has(c.id)) errors.push(t + 'id が重なっています'); seenCls.add(c.id);
+        });
+        cfg.summerTasks.forEach((s, i) => {
+            const t = 'summerTasks[' + i + ']：'; if (!objOk(s, t)) return;
+            if (!String(s.subject || '').trim()) errors.push(t + 'subject が空です');
+            if (!String(s.content || '').trim()) errors.push(t + 'content が空です');
+            if (s.dueDate && !isDate(s.dueDate)) errors.push(t + 'dueDate は YYYY-MM-DD の形にするか、空にしてください');
+            checkIds(s.classIds || [], t);
+        });
+        cfg.exams.forEach((x, i) => { const t = 'exams[' + i + ']：'; if (!objOk(x, t)) return; if (!String(x.name || '').trim()) errors.push(t + 'name が空です'); });
+        return { errors, warns };
+    }
+    function cfgOutline() {
+        if (typeof cmsConfigData === 'undefined' || !cmsConfigData) return '（設定データはまだ読み込まれていません。必要なら config_read を使ってください）';
+        const c = cmsConfigData, lab = (x) => clip((x && (x.title || x.name || [x.subject, x.title].filter(Boolean).join(' ') || x.id)) || '', 26);
+        const lines = CFG_ARRAYS.map(k => { const a = c[k]; if (!Array.isArray(a)) return '・' + k + '：なし'; return '・' + k + '（' + CFG_LABEL[k] + '）：' + a.length + '件' + (a.length ? '　' + a.slice(0, 6).map((x, i) => '[' + i + ']' + lab(x)).join(' / ') + (a.length > 6 ? ' …' : '') : ''); });
+        lines.push('・featureFlags（' + CFG_LABEL.featureFlags + '）：' + JSON.stringify(c.featureFlags || {}));
+        ['examRangeTitle', 'examRangeEnabled', 'summerTaskEnabled', 'summerTaskTitle'].forEach(k => lines.push('・' + k + '（' + CFG_LABEL[k] + '）：' + JSON.stringify(c[k])));
+        return lines.join('\n');
+    }
+    async function ensureConfig(task) {
+        const s = needSession();
+        if (typeof cmsDirty !== 'undefined' && cmsDirty) { const e = new Error('開発者モードに、まだ保存していない変更があります。先に「保存」するか、ページを読み込み直してから、もう一度頼んでください（読み込み直すと、保存していない変更は消えます）。'); e.dirty = true; throw e; }
+        if (typeof cmsSession !== 'undefined' && !cmsSession) cmsSession = s;
+        if (!task.cfgFresh || typeof cmsCurrentSha === 'undefined') { await cmsReloadFromGitHub(); task.cfgFresh = true; }
+    }
+
+    // ================= ③ フィードバック・利用状況 =================
+    const CAT = { bug: '不具合', design: 'デザイン', idea: '要望', other: 'その他' }, ST = { new: '新規', doing: '対応中', done: '完了', hold: '見送り' };
+    async function feedbackListText() {
+        const list = await window.AppFirebase.listFeedback(40); ae.fb = list;
+        if (!list.length) return '（フィードバックはまだありません）';
+        return list.map(x => [x.id, CAT[x.category] || x.category, ST[x.status || 'new'] || x.status, '返信' + (x.replyCount || 0) + '件', clip(x.screen, 20), clip(String(x.message || '').replace(/\s+/g, ' '), 90), (x.ai && x.ai.summary) ? 'AI要約:' + clip(x.ai.summary, 60) : ''].join(' | ')).join('\n');
+    }
+    const jstDay = (ms) => new Date(ms + 9 * 3600 * 1000).toISOString().slice(0, 10);
+    async function statsText() {
+        const days = []; for (let i = 6; i >= 0; i--) days.push(jstDay(Date.now() - i * 864e5));
+        const counts = await window.AppFirebase.loadUsageCounts(days);
+        let mem = null; try { mem = await window.AppFirebase.getMemberCount(); } catch (e) {}
+        return '1日あたりの利用者数（日本時間）：\n' + days.map((d, i) => d + '：' + counts[i] + '人').join('\n') + (mem != null ? '\n限定番号を入力して認められた人：' + mem + '人' : '');
+    }
+
+    // ================= AI =================
+    const SYSTEM = [
+        'あなたは、高校生向け学習アプリ「学習ProMaster」の開発者のためのアシスタントです。開発者モードでやっている作業を、チャットで代わりに行います。必ず、指定のJSON形式だけで答えてください。1回の返事で出せる action は1つだけです。',
+        '',
+        '【できること（action）】',
+        '・config_read：設定データを読む。keys に、読みたいキー名を入れる。',
+        '・config_edit：設定データ（お知らせ・予定・クラス・長期休暇課題・試験の見出し・モードの表示切替など）を変更する。ops に、操作を並べる。',
+        '・feedback_list：利用者から届いたフィードバックの一覧を読む。',
+        '・feedback_reply：フィードバックを送ってくれた人に、お知らせで返信する（id、text、done）。text を空にして done を true にすると、返信せず「完了」にだけする。summary に、何をするかを短く書く。',
+        '・stats：直近7日の利用者数などを読む。',
+        '・search / edit：アプリのコード（画面のデザイン・動作・文言）を変更する。search でコードを探し、場所が分かったら edit で変更案を出す。',
+        '・answer：質問への答え、または、決めきれないときの確認（質問は1つだけ）。',
+        '',
+        '【どれを使うか】お知らせの追加、予定の登録、クラス、課題、モードのオン・オフなど「内容・設定」の変更は config_edit。ボタンの色・画面のつくり・動き・文言など「アプリそのもの」の変更は search → edit。書かれていないことを勝手に決めず、足りない情報（日付など）は answer で聞く。',
+        '',
+        '【設定データ config の中身】',
+        '・announcements：お知らせ。新しいものが先頭。1件は { badge:短いラベル(例 UPDATE / INFO / WARNING / IMPORTANT), badgeColor:"#6b8f71"などの色, title, body, link:"" または https:// のURL }。version・createdAt・updatedAt は自動で付くので書かない。',
+        '・globalSchedules：全員に出る予定。{ type:"test"(テスト) か "submission"(提出物), title, subject:教科または null, classIds:[クラスID…], date:"YYYY-MM-DD", memo:文字列か null, notifyAt:null }。id は自動で付く。',
+        '・classes：[{ id:"c…", name, subjects:[教科名…] }]。',
+        '・summerTasks：長期休暇課題。{ subject, title, content, dueDate:"YYYY-MM-DD"または"", classIds:[…] }。summerTaskEnabled（表示するか）と summerTaskTitle（見出し）もある。',
+        '・exams：試験（複雑）。examRangeTitle・examRangeEnabled。exams の中身（timetables・sessions）は複雑なので、新しくは作れない。既存の項目の、頼まれた部分だけを set で直す。',
+        '・featureFlags：{ モード名: true/false }。false にするとそのモードが非表示。',
+        '・extraSections / ronriSections：英語・論表の学習ノート（大きく複雑）。新しく作らない。名前の変更や削除など、頼まれた最小の操作だけ。',
+        '',
+        '【config_edit の ops】各要素は { reason, op, path, value, position }。',
+        '・op は set（置き換え）/ add（配列に追加）/ remove（削除）。value は JSON を文字列で書く（文字列なら "…" のように引用符で囲む）。',
+        '・path の書き方：announcements（配列そのもの）、announcements[0].title（番号）、classes[id=c123].subjects（idで1件を選ぶ）、featureFlags.キー名、examRangeTitle。',
+        '・要素を選ぶときは、できるだけ id で選ぶ（番号は、追加・削除でずれる）。ちょうど1件に当たるようにする。',
+        '・add の position は "start" か "end"。お知らせは先頭（start）。',
+        '・新しい項目を作るときは、まず config_read で、同じ種類の既存の項目を見て、同じ形式（type・色・classIds の使い方）に合わせる。',
+        '・クラスを指定するときは classIds に、classes の id を入れる。名前から id を引くために、必要なら config_read で classes を読む。',
+        '・今日の日付は、頼まれた文章の先頭に書いてある。「来週の金曜」などは、そこから計算して YYYY-MM-DD にする。',
+        '',
+        '【コードの変更（search / edit）】ファイルが大きいので全体は見えません。search の terms に、画面に出ている日本語の文言・id名・関数名の推測を最大10個入れます。edit の edits は { reason, find, replace }。find は、渡されたコードから一字一句そのまま（空白・改行・インデントも）コピーした、ファイル全体で1か所だけの文字列にします。行番号は含めない。変更は最小限で、ファイル全体を書き直さない。既存のヘルパー（showToast、escapeHtml、safeStorage、lucide）を使い、ダークモードも崩さない。',
+        '',
+        '【共通のルール】頼まれていないのに、ログイン・権限・Firebaseの設定・パスワードに関わる部分は変えない。新しい外部スクリプトや通信先を足さない。個人情報を新しく集めない。送る返信の文章は、利用者（高校生）に向けて、やさしく丁寧な日本語で、短く書く。summary には、何をするのかを、プログラムが分からない人にも伝わる日本語で2〜3文で書く。'
+    ].join('\n');
+    const SCHEMA = {
+        type: 'OBJECT',
+        properties: {
+            action: { type: 'STRING', enum: ['search', 'edit', 'config_read', 'config_edit', 'feedback_list', 'feedback_reply', 'stats', 'answer'] },
+            terms: { type: 'ARRAY', items: { type: 'STRING' } },
+            keys: { type: 'ARRAY', items: { type: 'STRING' } },
+            summary: { type: 'STRING' },
+            answer: { type: 'STRING' },
+            id: { type: 'STRING' },
+            text: { type: 'STRING' },
+            done: { type: 'BOOLEAN' },
+            edits: { type: 'ARRAY', items: { type: 'OBJECT', properties: { reason: { type: 'STRING' }, find: { type: 'STRING' }, replace: { type: 'STRING' } }, required: ['reason', 'find', 'replace'] } },
+            ops: { type: 'ARRAY', items: { type: 'OBJECT', properties: { reason: { type: 'STRING' }, op: { type: 'STRING', enum: ['set', 'add', 'remove'] }, path: { type: 'STRING' }, value: { type: 'STRING' }, position: { type: 'STRING', enum: ['start', 'end'] } }, required: ['reason', 'op', 'path'] } }
+        },
+        required: ['action']
+    };
+    async function askAi(conv) {
+        let lastBig = -1; conv.forEach((m, i) => { if (m.kind === 'search') lastBig = i; });
+        const contents = conv.map((m, i) => ({ role: m.role, parts: [{ text: (m.kind === 'search' && i !== lastBig) ? '（以前の検索結果は省略しました）' : m.text }] }));
+        const payload = { systemInstruction: { parts: [{ text: SYSTEM }] }, contents, generationConfig: { responseMimeType: 'application/json', responseSchema: SCHEMA, maxOutputTokens: 8192 } };
+        const data = await fetchGeminiWithBackoff(payload, 2, 800, 90000);
+        if (data && data.error) throw new Error(data.error.message || 'AIのエラー');
+        const cand = data && data.candidates && data.candidates[0];
+        const raw = cand && geminiExtractText(cand);
+        if (!raw) throw new Error('AIの返事が空でした。もう一度送ってください');
+        let obj; try { obj = JSON.parse(String(raw).replace(/```json|```/g, '').trim()); } catch (e) { throw new Error('AIの返事を読み取れませんでした。もう一度送ってください'); }
+        return { raw, obj };
+    }
+    function taskMessage(instruction) {
+        const recap = ae.recap.length ? '\nこれまでの作業（参考）：\n' + ae.recap.map(r => '・' + r).join('\n') + '\n' : '';
+        const now = new Date(Date.now() + 9 * 3600 * 1000), wd = '日月火水木金土'[now.getUTCDay()];
+        return '今日の日付（日本時間）：' + now.toISOString().slice(0, 10) + '（' + wd + '曜日）\nコードの対象ファイル：' + ae.file + (ae.lines ? '（全 ' + ae.lines.length + ' 行）' : '（必要になったら読み込みます）') + '\n\n現在の設定データの概要：\n' + cfgOutline() + '\n' + recap + '\n開発者からの指示：\n' + instruction;
+    }
+
+    // ================= 画面 =================
+    function logAdd(html) { const el = $('ae-log'); if (!el) return null; const d = document.createElement('div'); d.innerHTML = html; el.appendChild(d); el.scrollTop = el.scrollHeight; return d; }
+    const bubbleUser = (t) => '<div class="flex justify-end"><div class="max-w-[85%] rounded-2xl px-3 py-2 bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-xs whitespace-pre-wrap break-words">' + esc(t) + '</div></div>';
+    const bubbleAi = (t) => '<div class="flex"><div class="max-w-[92%] rounded-2xl px-3 py-2 bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 text-xs whitespace-pre-wrap break-words leading-relaxed">' + esc(t) + '</div></div>';
+    const note = (t) => '<p class="text-[10px] text-slate-400 pl-1 break-words">' + esc(t) + '</p>';
+    function setBusy(b) { const btn = $('ae-send'); if (btn) { btn.disabled = b; btn.textContent = b ? '作業中…' : '送る'; } }
+    async function ensureAdmin() {
+        if (ae.admin === true) return true;
+        try { ae.admin = await window.AppFirebase.isAdmin(); } catch (e) { ae.admin = false; }
+        if (!ae.admin) logAdd(bubbleAi('この機能は、管理者（Firestoreの admins に登録されたアカウント）だけが使えます。いまのアカウントは登録されていないようです。Firebaseコンソールで admins に、自分のユーザーIDのドキュメントを作ってください。'));
+        return ae.admin;
+    }
+    function remember(instruction, result) { ae.recap.push(String(instruction).slice(0, 80) + ' → ' + String(result || '').slice(0, 120)); if (ae.recap.length > 3) ae.recap.shift(); }
+    function block(label, text, cls) {
+        const lines = String(text).split('\n'); const shown = lines.length > 40 ? lines.slice(0, 40).join('\n') + '\n…（あと ' + (lines.length - 40) + ' 行）' : String(text);
+        return '<p class="text-[10px] font-bold text-slate-500 mt-1.5">' + label + '</p><pre class="text-[10px] leading-snug font-mono whitespace-pre-wrap break-all rounded-lg p-2 max-h-48 overflow-y-auto ' + cls + '">' + esc(shown || '（なし）') + '</pre>';
+    }
+    const RED = 'bg-rose-50 dark:bg-rose-950/30 text-rose-900 dark:text-rose-200', GREEN = 'bg-emerald-50 dark:bg-emerald-950/30 text-emerald-900 dark:text-emerald-200';
+    function showCard(o) {
+        const id = 'p' + (++ae.seq);
+        ae.pending.set(id, Object.assign({ id }, o.data));
+        const errs = o.errors || [], warns = o.warns || [];
+        const html = '<div id="ae-card-' + id + '" class="rounded-xl border border-slate-300 dark:border-slate-600 p-3">' +
+            '<p class="text-[10px] font-bold text-slate-400">' + esc(o.label) + '</p>' +
+            '<p class="text-xs font-bold text-slate-900 dark:text-white mt-0.5 leading-relaxed whitespace-pre-wrap">' + esc(o.summary || '') + '</p>' +
+            (errs.length ? '<div class="mt-2 rounded-lg bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900 px-2.5 py-2 text-[11px] font-bold text-rose-700 dark:text-rose-300">' + errs.map(esc).join('<br>') + '<br>この案は反映できません。「やり直して」と送ると、AIが直します。</div>' : (o.okLine ? '<p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 mt-2">' + esc(o.okLine) + '</p>' : '')) +
+            (warns.length ? '<div class="mt-2 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 px-2.5 py-2 text-[11px] font-bold text-amber-800 dark:text-amber-300"><p>確認してください</p>' + warns.map(w => '<p class="font-medium">・' + esc(w) + '</p>').join('') + '</div>' : '') +
+            (o.details ? '<details class="mt-2"><summary class="text-[11px] font-bold text-slate-600 dark:text-slate-300 cursor-pointer">' + esc(o.detailsLabel || '中身を見る') + '</summary>' + o.details + '</details>' : '') +
+            '<div class="mt-3" id="ae-actions-' + id + '">' +
+            (warns.length && !errs.length ? '<label class="flex items-start gap-2 text-[11px] text-slate-600 dark:text-slate-300 mb-2 cursor-pointer"><input type="checkbox" id="ae-ack-' + id + '" class="mt-0.5 w-3.5 h-3.5"><span>上の内容を確認しました</span></label>' : '') +
+            '<div class="flex items-center gap-2"><button type="button" ' + (errs.length ? 'disabled' : '') + ' onclick="aeApply(\'' + id + '\')" class="dev-btn is-primary justify-center disabled:opacity-40"><span>' + esc(o.applyLabel || '反映する') + '</span></button><button type="button" onclick="aeDiscard(\'' + id + '\')" class="dev-btn justify-center"><span>やめる</span></button></div>' +
+            '<p class="text-[10px] text-slate-400 mt-2">' + esc(o.foot || '') + '</p></div></div>';
+        logAdd(html);
+    }
+    function codeCard(instruction, o, v) {
+        const details = v.view.map(e => '<div class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700"><p class="text-[11px] font-bold text-slate-700 dark:text-slate-200">変更' + e.n + '（' + e.line + '行目あたり）' + (e.reason ? '：' + esc(e.reason) : '') + '</p>' + block('変更前', e.find, RED) + block('変更後', e.replace, GREEN) + '</div>').join('');
+        showCard({ label: 'コードの変更案', summary: o.summary, errors: v.syntax.errors, warns: (v.syntax.warns || []).concat(v.risks), okLine: v.syntax.errors.length ? '' : '構文チェック：問題なし', details, detailsLabel: '変更の中身を見る（' + v.view.length + '件）', foot: '「反映する」を押すとGitHubに保存され、1〜2分後に全員のアプリが変わります。あとから「元に戻す」もできます。', data: { kind: 'code', summary: o.summary || '変更', file: ae.file, baseSha: ae.sha, newText: v.newText } });
+    }
+    function configCard(instruction, o, r, changedKeys, warns) {
+        const OPN = { set: '変更', add: '追加', remove: '削除' };
+        const details = r.steps.map(s => '<div class="mt-2 pt-2 border-t border-slate-200 dark:border-slate-700"><p class="text-[11px] font-bold text-slate-700 dark:text-slate-200">操作' + s.n + '：' + (CFG_LABEL[s.top] || s.top) + 'を' + OPN[s.op] + '（' + esc(s.path) + '）' + (s.reason ? '　' + esc(s.reason) : '') + '</p>' +
+            (s.op !== 'add' ? block('変更前', JSON.stringify(s.before, null, 1), RED) : '') + (s.op !== 'remove' ? block(s.op === 'add' ? '追加する内容' : '変更後', JSON.stringify(s.after, null, 1), GREEN) : '') + '</div>').join('');
+        showCard({ label: '設定の変更案', summary: o.summary, errors: [], warns, okLine: '形式チェック：問題なし', details, detailsLabel: '変更の中身を見る（' + r.steps.length + '件）', foot: '「反映する」を押すと、開発者モードの「保存」と同じように config.json に保存され、次にアプリを開いた人から変わります。あとから「元に戻す」もできます。', data: { kind: 'config', summary: o.summary || '設定の変更', after: Object.fromEntries(changedKeys.map(k => [k, r.cfg[k]])), changedKeys } });
+    }
+    async function feedbackCard(o, item, text, done) {
+        let who = '送信者';
+        try { const p = await window.AppFirebase.getPublicProfile(item.uid); if (p && (p.nickname || p.username)) who = (p.nickname || '') + (p.username ? ' @' + p.username : ''); } catch (e) {}
+        const details = block('もとの報告（' + (CAT[item.category] || '') + '）', item.message || '', 'bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-200') + (text ? block('送る返信', text, GREEN) : '');
+        showCard({ label: text ? '返信の案' : '状態の変更案', summary: (o.summary || '') + '\n宛先：' + who + (done ? '\n送ったあと、このフィードバックを「完了」にします' : ''), warns: [], okLine: '', details, detailsLabel: '内容を見る', applyLabel: text ? '送信する' : '完了にする', foot: text ? '送信すると、相手のお知らせ（ベルのマーク）に届きます。取り消せません。' : '', data: { kind: 'feedback', summary: o.summary || '返信', item, text, done } });
+    }
+
+    async function runTask(instruction) {
+        const task = { cfgFresh: false };
+        const conv = [{ role: 'user', kind: 'task', text: taskMessage(instruction) }];
+        let retries = 0;
+        const feed = (kind, text) => conv.push({ role: 'user', kind, text });
+        const retry = (msg, why) => { if (retries++ < 2) { logAdd(note(why)); feed('note', msg); return true; } return false; };
+        for (let round = 0; round < 10; round++) {
+            const { raw, obj: o } = await askAi(conv);
+            conv.push({ role: 'model', kind: 'reply', text: raw });
+
+            if (o.action === 'answer') { logAdd(bubbleAi(o.answer || o.summary || '（返事が空でした）')); remember(instruction, o.answer || o.summary); return; }
+
+            if (o.action === 'search') {
+                const terms = (o.terms || []).filter(Boolean);
+                if (!terms.length) { feed('note', 'terms が空です。検索語を出すか、別の action にしてください。'); continue; }
+                if (ae.loadedFile !== ae.file) { logAdd(note(ae.file + ' を読み込んでいます（大きいので少し時間がかかります）')); await loadFile(false); }
+                const s = searchCode(terms);
+                logAdd(note('コードを探しています：' + s.report.join('、')));
+                feed('search', '検索結果です。\n' + s.report.join('\n') + '\n\n' + s.text);
+                continue;
+            }
+            if (o.action === 'edit') {
+                if (ae.loadedFile !== ae.file) { await loadFile(false); }
+                const v = await validateEdits(o.edits || []);
+                if (v.problems.length) {
+                    if (retry('次の変更は適用できませんでした。\n' + v.problems.join('\n') + '\n\nfind は、渡されたコードから一字一句そのままコピーし、ファイル全体で1か所だけに絞ってください。コードをもう一度見たいときは action:"search" にしてください。', '変更の場所が合わなかったので、AIにやり直してもらっています…')) continue;
+                    logAdd(bubbleAi('変更する場所をうまく特定できませんでした。画面の名前やボタンの文言など、手がかりを足して、もう一度送ってください。')); return;
+                }
+                remember(instruction, o.summary); codeCard(instruction, o, v); return;
+            }
+
+            if (o.action === 'config_read') {
+                const keys = (o.keys || []).filter(k => CFG_KEYS.includes(k));
+                if (!keys.length) { feed('note', 'keys には ' + CFG_KEYS.join('、') + ' のどれかを入れてください。'); continue; }
+                await ensureConfig(task);
+                logAdd(note('設定データを読んでいます：' + keys.join('、')));
+                let out = ''; keys.forEach(k => { out += '### ' + k + '\n' + JSON.stringify(cmsConfigData[k], null, 1) + '\n\n'; });
+                if (out.length > 30000) out = out.slice(0, 30000) + '\n…（長いので、ここから先は省略しました）';
+                feed('note', '設定データです。\n' + out);
+                continue;
+            }
+            if (o.action === 'config_edit') {
+                await ensureConfig(task);
+                const r = applyOps(cmsConfigData, o.ops || []);
+                let errs = r.problems.slice();
+                if (!errs.length) errs = validateConfig(r.cfg).errors;
+                if (errs.length) {
+                    if (retry('次の設定の変更は適用できませんでした。\n' + errs.join('\n') + '\n\nなおして、もう一度 config_edit を出してください。', '設定の形が合わなかったので、AIにやり直してもらっています…')) continue;
+                    logAdd(bubbleAi('設定の変更を、うまく組み立てられませんでした：\n' + errs.slice(0, 4).join('\n'))); return;
+                }
+                const v = validateConfig(r.cfg), warns = v.warns.slice();
+                const changedKeys = CFG_KEYS.filter(k => JSON.stringify(r.cfg[k]) !== JSON.stringify(cmsConfigData[k]));
+                if (!changedKeys.length) { logAdd(bubbleAi('変更の結果、いまの設定と同じでした。何も変わらないので、反映は不要です。')); return; }
+                let removed = 0; CFG_ARRAYS.forEach(k => { const d = (cmsConfigData[k] || []).length - (r.cfg[k] || []).length; if (d > 0) removed += d; });
+                if (removed >= 3) warns.push(removed + '件を削除します');
+                if (changedKeys.some(k => k === 'extraSections' || k === 'ronriSections')) warns.push('英コ・論表のセクション（大きなデータ）を変更します');
+                if (changedKeys.some(k => k === 'exams')) warns.push('試験のデータを変更します');
+                remember(instruction, o.summary); configCard(instruction, o, r, changedKeys, warns); return;
+            }
+
+            if (o.action === 'feedback_list') { logAdd(note('フィードバックの一覧を読んでいます')); feed('note', 'フィードバックの一覧です（id | 種類 | 状態 | 返信 | 画面 | 本文 | AI要約）。\n' + await feedbackListText()); continue; }
+            if (o.action === 'stats') { logAdd(note('利用者数を調べています')); feed('note', await statsText()); continue; }
+            if (o.action === 'feedback_reply') {
+                const item = ae.fb.find(x => x.id === o.id);
+                const text = String(o.text || '').trim();
+                let err = '';
+                if (!item) err = '指定の id が、先に読んだ一覧にありません。先に feedback_list で一覧を読んでください。';
+                else if (!item.uid) err = 'このフィードバックには宛先（送信者）の情報がないので、返信できません。';
+                else if (!text && !o.done) err = 'text（返信の文章）を書くか、done を true にしてください。';
+                else if (text.length > 1000) err = 'text は1000文字までにしてください。';
+                if (err) { if (retry(err, '返信の指定をやり直してもらっています…')) continue; logAdd(bubbleAi('返信の準備ができませんでした：' + err)); return; }
+                remember(instruction, o.summary || '返信'); await feedbackCard(o, item, text, !!o.done); return;
+            }
+            feed('note', 'action は指定された値のどれかにしてください。');
+        }
+        logAdd(bubbleAi('時間内にまとまりませんでした。指示を小さく分けて、もう一度試してください。'));
+    }
+
+    window.aeSend = async function () {
+        if (ae.busy) return;
+        const inp = $('ae-input'); const text = (inp.value || '').trim(); if (!text) return;
+        if (!(await ensureAdmin())) return;
+        inp.value = ''; logAdd(bubbleUser(text));
+        ae.busy = true; setBusy(true);
+        try { await runTask(text); }
+        catch (e) { console.warn(e); logAdd(bubbleAi(e && e.dirty ? e.message : 'うまくいきませんでした：' + (e && e.message || e))); }
+        finally { ae.busy = false; setBusy(false); }
+    };
+    window.aeDiscard = function (id) { ae.pending.delete(id); const a = $('ae-actions-' + id); if (a) a.innerHTML = '<p class="text-[11px] text-slate-400">取りやめました（何も保存していません）</p>'; };
+
+    // ---------- 反映 ----------
+    async function applyCode(p) {
+        const s = needSession();
+        const cur = await remoteSha(s, p.file);
+        if (cur !== p.baseSha) throw new Error('GitHub上の ' + p.file + ' が、読み込んだあとに変わっています（別の編集が入りました）。もう一度、指示を送り直してください');
+        const prevText = ae.text;
+        const r = await commit(p.file, p.newText, 'AI編集: ' + p.summary.replace(/\s+/g, ' ').slice(0, 60), p.baseSha);
+        ae.text = p.newText; ae.lines = ae.text.split('\n'); ae.lower = ae.lines.map(x => x.toLowerCase()); ae.sha = r.sha;
+        ae.history.push({ id: p.id, kind: 'code', file: p.file, summary: p.summary, prevText, newText: p.newText, url: r.url, sha: r.sha, at: Date.now() });
+        const olds = ae.history.filter(h => h.kind === 'code'); if (olds.length > 5) olds[olds.length - 6].prevText = null;
+        return { msg: '反映しました。公開まで1〜2分かかります。', url: r.url, say: '反映しました。ページを再読み込みすると、変更が見られます（公開まで1〜2分かかります）。思っていたのと違うときは、下の「反映した変更」から元に戻せます。' };
+    }
+    async function saveConfigNow() {
+        cmsMarkDirty();
+        await cmsSaveToGitHub();   // 開発者モードの「保存」と同じ処理（限定データのFirestore保存・写真の保存も含む）
+        if (cmsDirty) throw new Error('GitHubへの保存に失敗しました（接続や権限を確認してください）。何も変わっていません');
+        if (typeof cmsSyncAllRealDisplays === 'function') cmsSyncAllRealDisplays();
+        if (typeof refreshAllDevEditableViews === 'function') refreshAllDevEditableViews();
+    }
+    async function applyConfig(p) {
+        await ensureConfig({ cfgFresh: true });
+        const s = needSession();
+        const cur = await remoteSha(s, 'config.json');
+        if (typeof cmsCurrentSha !== 'undefined' && cmsCurrentSha && cur !== cmsCurrentSha) throw new Error('config.json が、案を作ったあとに変わっています。もう一度、頼み直してください');
+        const before = {}; p.changedKeys.forEach(k => { before[k] = clone(cmsConfigData[k]); });
+        p.changedKeys.forEach(k => { cmsConfigData[k] = clone(p.after[k]); });
+        try { await saveConfigNow(); }
+        catch (e) { p.changedKeys.forEach(k => { cmsConfigData[k] = before[k]; }); cmsDirty = false; throw e; }
+        ae.history.push({ id: p.id, kind: 'config', file: 'config.json', summary: p.summary, before, keys: p.changedKeys, at: Date.now() });
+        return { msg: '保存しました。次にアプリを開いた人から変わります。', say: '保存しました。次にアプリを開いた人から、変更が見られます。思っていたのと違うときは、下の「反映した変更」から元に戻せます。' };
+    }
+    async function applyFeedback(p) {
+        const it = p.item;
+        if (p.text) {
+            await window.AppFirebase.sendInbox({ toUid: it.uid, body: p.text, feedbackId: it.id, ref: clip(it.message || '', 80) });
+            await window.AppFirebase.markFeedbackReplied(it.id, (it.replyCount || 0) + 1, !!p.done);
+            it.replyCount = (it.replyCount || 0) + 1; if (p.done) it.status = 'done';
+        } else { await window.AppFirebase.setFeedbackStatus(it.id, 'done'); it.status = 'done'; }
+        ae.history.push({ id: p.id, kind: 'feedback', file: 'フィードバック', summary: p.summary, at: Date.now() });
+        return { msg: p.text ? '送信しました。' : '完了にしました。', say: p.text ? '送信しました。相手のお知らせ（ベルのマーク）に届きます。' : '完了にしました。' };
+    }
+    window.aeApply = async function (id) {
+        const p = ae.pending.get(id); if (!p || ae.busy) return;
+        const ack = $('ae-ack-' + id); if (ack && !ack.checked) { showToast('確認のチェックを入れてください'); return; }
+        if (!(await ensureAdmin())) return;
+        const a = $('ae-actions-' + id); ae.busy = true; setBusy(true);
+        if (a) a.innerHTML = '<p class="text-[11px] text-slate-500">保存しています…</p>';
+        try {
+            const r = p.kind === 'code' ? await applyCode(p) : p.kind === 'config' ? await applyConfig(p) : await applyFeedback(p);
+            ae.pending.delete(id);
+            if (a) a.innerHTML = '<p class="text-[11px] font-bold text-emerald-700 dark:text-emerald-400">' + esc(r.msg) + '</p>' + (r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener noreferrer" class="text-[11px] underline text-slate-500">GitHubで見る</a>' : '');
+            renderHistory(); logAdd(bubbleAi(r.say));
+        } catch (e) {
+            console.warn(e);
+            if (a) a.innerHTML = '<p class="text-[11px] font-bold text-rose-600">' + esc(e && e.message || e) + '</p>';
+        } finally { ae.busy = false; setBusy(false); }
+    };
+
+    // ---------- 履歴・元に戻す ----------
+    const latestOf = (kind) => { for (let i = ae.history.length - 1; i >= 0; i--) if (ae.history[i].kind === kind) return ae.history[i]; return null; };
+    function canUndo(h) { return (h.kind === 'code' && h === latestOf('code') && h.prevText != null) || (h.kind === 'config' && h === latestOf('config')); }
+    function renderHistory() {
+        const box = $('ae-history'); if (!box) return;
+        box.innerHTML = ae.history.length ? ae.history.slice().reverse().map(h => '<div class="flex items-start justify-between gap-2 py-1.5 border-b border-slate-200 dark:border-slate-800 last:border-b-0"><div class="min-w-0"><p class="text-[11px] text-slate-700 dark:text-slate-200 break-words">' + esc(h.summary) + '</p><p class="text-[10px] text-slate-400">' + esc(h.file) + '　' + new Date(h.at).toLocaleTimeString('ja-JP') + (h.url ? '　<a class="underline" target="_blank" rel="noopener noreferrer" href="' + esc(h.url) + '">GitHub</a>' : '') + '</p></div>' + (canUndo(h) ? '<button type="button" onclick="aeUndo(\'' + esc(h.id) + '\')" class="shrink-0 text-[11px] font-bold text-rose-600">元に戻す</button>' : '') + '</div>').join('') : '<p class="text-[11px] text-slate-400">まだありません</p>';
+    }
+    window.aeUndo = async function (id) {
+        const h = ae.history.find(x => x.id === id); if (!h || !canUndo(h) || ae.busy) return;
+        if (!confirm('この変更を元に戻しますか？\n「' + h.summary.slice(0, 50) + '」')) return;
+        if (!(await ensureAdmin())) return;
+        ae.busy = true; setBusy(true);
+        try {
+            if (h.kind === 'code') {
+                const s = needSession(); const cur = await remoteSha(s, h.file);
+                if (cur !== h.sha && !confirm('この変更のあとで、GitHub上のファイルが変わっています。それでも、この変更の前の状態に戻しますか？（あとの変更も消えます）')) return;
+                const r = await commit(h.file, h.prevText, '元に戻す（AI編集）: ' + h.summary.replace(/\s+/g, ' ').slice(0, 50), cur);
+                ae.text = h.prevText; ae.lines = ae.text.split('\n'); ae.lower = ae.lines.map(x => x.toLowerCase()); ae.sha = r.sha;
+            } else {
+                await ensureConfig({ cfgFresh: true });
+                const keep = {}; h.keys.forEach(k => { keep[k] = clone(cmsConfigData[k]); });
+                h.keys.forEach(k => { cmsConfigData[k] = clone(h.before[k]); });
+                try { await saveConfigNow(); } catch (e) { h.keys.forEach(k => { cmsConfigData[k] = keep[k]; }); cmsDirty = false; throw e; }
+            }
+            ae.history.splice(ae.history.indexOf(h), 1); renderHistory();
+            logAdd(bubbleAi('元に戻しました。' + (h.kind === 'code' ? '（公開まで1〜2分かかります）' : '')));
+        } catch (e) { logAdd(bubbleAi('元に戻せませんでした：' + (e && e.message || e))); }
+        finally { ae.busy = false; setBusy(false); }
+    };
+    window.aeChangeFile = function (name) { ae.file = name; ae.loadedFile = null; ae.text = null; ae.lines = null; setStatus(''); logAdd(note('コードの対象を ' + name + ' に変えました')); };
+    window.aeInit = async function () {
+        renderHistory();
+        if (!ae.inited) {
+            ae.inited = true;
+            logAdd(bubbleAi('開発者モードでやっていることを、ここから頼めます。ふつうの言葉で書いてください。\n\n例：\n・「来週の金曜に、2年A組の英語の提出物を登録して」\n・「お知らせに『アプリを更新しました』を追加して」\n・「長期休暇課題の表示をオフにして」\n・「フィードバックを見せて」「直ったと返信して」\n・「ベルのボタンの色を青にして」（アプリのデザインの変更）\n\n・まずAIが内容を確かめて、変更案を見せます。\n・「反映する」を押すまで、何も保存されません。\n・反映したあとも「元に戻す」ができます（返信は取り消せません）。'));
+        }
+        if (!session()) { setStatus('GitHub未接続'); logAdd(note('先に「GitHub連携・公開」でGitHubとつないでください。')); return; }
+        loadFileList();
+    };
+    const inp = $('ae-input');
+    if (inp) inp.addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { e.preventDefault(); aeSend(); } });
+})();
     </script>
 
     <script>
