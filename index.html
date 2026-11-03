@@ -1847,16 +1847,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
 
     </div>
 
-    <div id="timeline-screen" class="fixed inset-0 z-[900] bg-white dark:bg-[#0b1120] hidden flex flex-col">
-            <div class="flex-1 overflow-y-auto">
-                <div class="max-w-2xl mx-auto w-full px-5 md:px-6 pt-8 md:pt-12 pb-28">
-                    <h1 class="text-xl font-bold text-slate-900 dark:text-white">クラス</h1>
-                    <p id="classlog-sub" class="text-xs text-slate-400 dark:text-slate-500 mt-1">クラスのみんなの学習ログ</p>
-                    <div id="classlog-body" class="mt-8"></div>
-                </div>
-            </div>
-        </div>
-
     <div id="class-picker-modal" class="fixed inset-0 z-[10008] bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-5 hidden">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-6 w-full max-w-sm border border-slate-200 dark:border-slate-700 max-h-[80vh] flex flex-col">
             <div class="flex items-center justify-between mb-4">
@@ -10810,10 +10800,15 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             wrap.style.cursor = 'pointer';
             wrap.onclick = () => openScheduleViewModal(item.id);
             if (moreBtn) {
-                const sameDayCount = (allUpcoming || []).filter(s => s.date === item.date).length;
-                const restCount = sameDayCount - 1;
-                if (restCount > 0) {
-                    moreBtn.textContent = `+${restCount}件`;
+                const upcomingAll = allUpcoming || [];
+                const sameTypeRest = upcomingAll.filter(s => s.type === type).length - 1;   // このあとに控えている、同じ種類の予定
+                const sameDayRest = upcomingAll.filter(s => s.date === item.date).length - 1;   // 同じ日の、ほかの予定
+                if (sameTypeRest > 0) {
+                    moreBtn.textContent = `他${sameTypeRest}件`;
+                    moreBtn.setAttribute('onclick', `event.stopPropagation(); openUpcomingTypeListModal('${type}')`);
+                    moreBtn.classList.remove('hidden');
+                } else if (sameDayRest > 0) {
+                    moreBtn.textContent = `+${sameDayRest}件`;
                     moreBtn.dataset.date = item.date;
                     moreBtn.setAttribute('onclick', `event.stopPropagation(); openDayScheduleListModal('${item.date}')`);
                     moreBtn.classList.remove('hidden');
@@ -10848,6 +10843,43 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     </div>
                 </div>`;
             }).join('');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            card.classList.remove('translate-y-4');
+            lockScroll();
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+
+        // ホームの「直近のテスト／提出物」の「他N件」：これからの同じ種類の予定を、日付順に一覧で見せる
+        function openUpcomingTypeListModal(type) {
+            const modal = document.getElementById('upcoming-type-list-modal');
+            const card = document.getElementById('upcoming-type-list-modal-card');
+            const titleEl = document.getElementById('upcoming-type-list-title');
+            const bodyEl = document.getElementById('upcoming-type-list-body');
+            if (!modal || !card || !bodyEl) return;
+            const typeInfo = SCHEDULE_TYPE_INFO[type] || SCHEDULE_TYPE_INFO.test;
+            const items = getUpcomingSchedules().filter(s => s.type === type)
+                .sort((a, b) => (String(a.date) + String(a.time || '')).localeCompare(String(b.date) + String(b.time || '')));
+            if (titleEl) titleEl.textContent = `これからの${scheduleTypeLabelJa(type)}（${items.length}件）`;
+            bodyEl.innerHTML = items.length ? items.map(s => {
+                const done = s.type === 'submission' && isSubmissionDone(s.id);
+                const d = daysUntil(s.date);
+                const when = d === 0 ? '当日' : (d > 0 ? `あと${d}日` : '');
+                const wd = '日月火水木金土'[new Date(s.date + 'T00:00:00Z').getUTCDay()];
+                const md = `${Number(String(s.date).slice(5, 7))}/${Number(String(s.date).slice(8, 10))}`;
+                const openCall = `openScheduleViewModal(${schedIdArg(s.id)})`;
+                return `<div onclick="closeUpcomingTypeListModal(); ${openCall}" class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-xl border border-slate-100 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-700 transition-all cursor-pointer ${done ? 'opacity-50' : ''}">
+                    ${renderSubmissionCheckbox(s)}
+                    <div class="shrink-0 w-12 text-center leading-tight">
+                        <p class="text-xs font-black text-slate-800 dark:text-slate-100">${md}</p>
+                        <p class="text-[10px] font-bold text-slate-400">（${wd}）</p>
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="text-xs font-black text-slate-800 dark:text-slate-200 truncate ${done ? 'line-through' : ''}">${escapeHtml(s.title)}</p>
+                        <p class="text-[10px] text-slate-400 dark:text-slate-500 font-semibold truncate">${s.time ? escapeHtml(s.time + (s.endTime ? '〜' + s.endTime : '')) + '　' : ''}${escapeHtml(s.subject || typeInfo.label)}</p>
+                    </div>
+                    ${when ? `<span class="shrink-0 text-[10px] font-black px-2 py-1 rounded-full" style="background:${typeInfo.color}1a;color:${typeInfo.color}">${when}</span>` : ''}
+                </div>`;
+            }).join('') : '<p class="text-xs text-slate-400 text-center py-8">これからの予定はありません</p>';
             modal.classList.remove('opacity-0', 'pointer-events-none');
             card.classList.remove('translate-y-4');
             lockScroll();
@@ -12973,227 +13005,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             }
         }
 
-        let aiExamDataList = [];
-        let aiExamCurrentIdx = 0;
-        let aiExamAnswersCheck = [];
-
-        async function generateAiPredictiveExam() {
-            const apiKey = getEffectiveApiKey();
-            if (!apiKey) {
-                toggleKeyConfigModal(true);
-                showToast("AI機能を利用するにはAPIキーを登録してください。");
-                return;
-            }
-
-            const examBox = document.getElementById('ai-exam-result-box');
-            if (!examBox) return;
-
-            examBox.classList.remove('hidden');
-            examBox.className = "mt-4 p-5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl animate-fade-in font-sans";
-            examBox.innerHTML = `
-                <div class="flex flex-col items-center justify-center py-6 text-center animate-pulse">
-                    <i data-lucide="file-text" class="w-8 h-8 text-blue-500 dark:text-cyan-400 animate-spin mb-3"></i>
-                    <p class="text-xs font-bold text-slate-600 dark:text-slate-300">学校のテスト問題の構成・和訳・重要構文をもとに3題の予想問題を予測作成中...</p>
-                </div>
-            `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-
-            const scannedData = modeStates[0].analysisResult;
-            const systemPrompt = `You are an elite school teacher making high-quality mock exams for Japanese high school students based on this scanned text context:
-            ---
-            ${JSON.stringify(scannedData)}
-            ---
-            Please generate exactly 3 challenging mock exam questions (combination of grammar fill-in-the-blanks, vocabulary matching, sentence transformation).
-            Provide 4 multiple-choice options for each question.
-            You must output the result strictly as a JSON object matching this schema:
-            {
-                "questions": [
-                    {
-                        "num": "1",
-                        "questionText": "The question prompt in Japanese",
-                        "choices": ["Choice A", "Choice B", "Choice C", "Choice D"],
-                        "correctAnswer": "The exact correct answer (must match one of the choices)",
-                        "hint": "Hint in Japanese",
-                        "explanation": "Detailed explanation of grammar/rules in Japanese"
-                    }
-                ]
-            }`;
-
-            const payload = {
-                contents: [{ role: "user", parts: [{ text: "Generate exam now." }] }],
-                systemInstruction: { parts: [{ text: systemPrompt }] },
-                generationConfig: { responseMimeType: "application/json" }
-            };
-
-            try {
-                const response = await fetch('https://promaster-api.kawaa1456.workers.dev', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                const responseData = await response.json();
-                if (!response.ok || responseData.error) throw new Error(responseData.error?.message || "通信エラー");
-
-                const resultJson = JSON.parse(geminiExtractText(responseData.candidates[0]));
-                aiExamDataList = resultJson.questions;
-                aiExamCurrentIdx = 0;
-                aiExamAnswersCheck = [];
-
-                renderAiPredictiveQuestion();
-                showToast("必勝テスト予想問題の作成が完了しました");
-
-            } catch (err) {
-                console.error(err);
-                examBox.className = "hidden";
-                showToast(`エラーが発生しました: ${err.message}`);
-            }
-        }
-
-        function renderAiPredictiveQuestion() {
-            const examBox = document.getElementById('ai-exam-result-box');
-            if (!examBox || !aiExamDataList || aiExamDataList.length === 0) return;
-
-            if (aiExamCurrentIdx >= aiExamDataList.length) {
-                renderAiExamResultSummary();
-                return;
-            }
-
-            const q = aiExamDataList[aiExamCurrentIdx];
-            let choicesHtml = q.choices.map((choice, i) => `
-                <button onclick="submitAiPredictiveAnswer('${escapeHtml(choice)}')" class="w-full text-left p-3.5 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold bg-white dark:bg-slate-900 hover:bg-pink-50 dark:hover:bg-cyan-950/20 hover:border-pink-300 dark:hover:border-cyan-500 text-slate-800 dark:text-slate-200 transition-all flex items-center justify-between group active:scale-99 animate-fade-in">
-                    <span>${String.fromCharCode(65 + i)}. ${escapeHtml(choice)}</span>
-                    <i data-lucide="arrow-right" class="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-blue-500 dark:group-hover:text-cyan-400 transition-colors"></i>
-                </button>
-            `).join('');
-
-            examBox.className = "mt-4 p-5 bg-blue-500/5 dark:bg-cyan-500/5 border border-pink-100 dark:border-cyan-900/30 rounded-2xl animate-fade-in";
-            examBox.innerHTML = `
-                <div class="space-y-4">
-                    <div class="flex items-center justify-between border-b border-pink-100 dark:border-cyan-900/30 pb-2.5">
-                        <div class="flex items-center space-x-2">
-                            <i data-lucide="file-text" class="w-5 h-5 text-blue-500 dark:text-cyan-400 animate-pulse"></i>
-                            <h5 class="text-sm font-black text-slate-900 dark:text-white">テスト予想特訓: 問 ${q.num} / ${aiExamDataList.length}</h5>
-                        </div>
-                        <span class="text-[10px] font-extrabold bg-blue-100 dark:bg-slate-800 text-blue-600 dark:text-cyan-400 px-2 py-0.5 rounded-lg">AI Predictor</span>
-                    </div>
-
-                    <div class="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl">
-                        <p class="text-xs sm:text-sm font-extrabold text-slate-800 dark:text-slate-100 leading-relaxed">${escapeHtml(q.questionText)}</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 gap-2.5">${choicesHtml}</div>
-
-                    <div class="pt-2 flex justify-between items-center text-[11px] font-bold text-slate-500 dark:text-slate-400">
-                        <button onclick="toggleAiExamHint('${escapeHtml(q.hint)}')" class="hover:text-blue-500 dark:hover:text-cyan-400 transition-colors flex items-center space-x-1">
-                            <i data-lucide="help-circle" class="w-4 h-4"></i>
-                            <span>ヒントを表示</span>
-                        </button>
-                        <span id="ai-exam-hint-text" class="hidden text-blue-600 dark:text-cyan-400"></span>
-                    </div>
-                </div>
-            `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        function toggleAiExamHint(hint) {
-            const el = document.getElementById('ai-exam-hint-text');
-            if (el) {
-                el.textContent = `ヒント: ${hint}`;
-                el.classList.toggle('hidden');
-            }
-        }
-
-        function submitAiPredictiveAnswer(selectedChoice) {
-            const q = aiExamDataList[aiExamCurrentIdx];
-            const isCorrect = selectedChoice === q.correctAnswer;
-            
-            aiExamAnswersCheck.push({
-                num: q.num,
-                questionText: q.questionText,
-                selected: selectedChoice,
-                correct: q.correctAnswer,
-                isCorrect: isCorrect,
-                explanation: q.explanation
-            });
-
-            const examBox = document.getElementById('ai-exam-result-box');
-            if (!examBox) return;
-
-            examBox.innerHTML = `
-                <div class="space-y-4 animate-fade-in select-none text-center">
-                    <div class="py-4 space-y-2">
-                        <div class="inline-flex p-3 rounded-full ${isCorrect ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-rose-600'}">
-                            <i data-lucide="${isCorrect ? 'check-circle' : 'alert-circle'}" class="w-8 h-8"></i>
-                        </div>
-                        <h5 class="text-base font-black ${isCorrect ? 'text-emerald-600 dark:text-emerald-400' : 'text-blue-500 dark:text-rose-400'}">${isCorrect ? 'AI予測に正解' : '予測不一致'}</h5>
-                    </div>
-
-                    <div class="bg-white dark:bg-slate-900 p-4 rounded-xl border border-slate-200 dark:border-slate-800 space-y-2.5 text-xs select-text text-slate-800 dark:text-slate-200 text-left">
-                        <p class="font-bold"><strong>問題:</strong> ${escapeHtml(q.questionText)}</p>
-                        <p class="font-semibold text-slate-600 dark:text-slate-400"><strong>あなたの解答:</strong> <span class="${isCorrect ? 'text-emerald-600' : 'text-blue-500'} font-black">${escapeHtml(selectedChoice)}</span></p>
-                        <p class="font-semibold text-slate-600 dark:text-slate-400"><strong>正解の選択肢:</strong> <span class="text-emerald-500 font-bold">${escapeHtml(q.correctAnswer)}</span></p>
-                        <div class="pt-3 border-t border-slate-200 dark:border-slate-800 leading-relaxed text-slate-500 dark:text-slate-400 font-medium">
-                            <strong>AI予測解説:</strong> ${escapeHtml(q.explanation)}
-                        </div>
-                    </div>
-
-                    <button onclick="goToNextAiPredictiveQuestion()" class="w-full py-3 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-xl text-xs font-bold transition-all flex items-center justify-center space-x-1.5 active:scale-99">
-                        <span>次の問題に進む</span>
-                        <i data-lucide="chevron-right" class="w-4 h-4"></i>
-                    </button>
-                </div>
-            `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
-        function goToNextAiPredictiveQuestion() {
-            aiExamCurrentIdx++;
-            renderAiPredictiveQuestion();
-        }
-
-        function renderAiExamResultSummary() {
-            const examBox = document.getElementById('ai-exam-result-box');
-            if (!examBox) return;
-
-            const correctCount = aiExamAnswersCheck.filter(a => a.isCorrect).length;
-            const accuracy = Math.round((correctCount / aiExamDataList.length) * 100);
-
-            let summaryHtml = aiExamAnswersCheck.map(ans => `
-                <div class="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl space-y-1 text-[11px] text-left leading-relaxed">
-                    <p class="font-bold text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
-                        <i data-lucide="${ans.isCorrect ? 'check-circle' : 'x-circle'}" class="${ans.isCorrect ? 'text-emerald-500' : 'text-blue-500'} w-4 h-4 shrink-0"></i>
-                        <span>問 ${ans.num}: ${escapeHtml(ans.questionText)}</span>
-                    </p>
-                    <p class="text-slate-500 pl-5">正解: <strong class="text-emerald-600">${escapeHtml(ans.correct)}</strong> | あなたの回答: <strong class="${ans.isCorrect ? 'text-emerald-600' : 'text-blue-500'}">${escapeHtml(ans.selected)}</strong></p>
-                </div>
-            `).join('');
-
-            examBox.className = "mt-4 p-5 bg-blue-500/5 dark:bg-cyan-500/5 border border-pink-100 dark:border-cyan-900/30 rounded-2xl animate-fade-in";
-            examBox.innerHTML = `
-                <div class="space-y-4 text-center">
-                    <div class="border-b border-pink-100 dark:border-cyan-900/30 pb-3">
-                        <span class="text-[9px] font-black uppercase text-blue-500 dark:text-cyan-400 tracking-widest block">Summary Report</span>
-                        <h5 class="text-base font-black text-slate-900 dark:text-white mt-1">AI試験対策テスト 採点結果</h5>
-                    </div>
-
-                    <div class="py-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-sm mx-auto space-y-1">
-                        <p class="text-3xl font-black text-blue-500 dark:text-cyan-400 font-mono">${correctCount} / ${aiExamDataList.length}</p>
-                        <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">正答率 ${accuracy}%</p>
-                    </div>
-
-                    <div class="space-y-2 max-w-lg mx-auto">${summaryHtml}</div>
-
-                    <div class="flex items-center justify-center space-x-3 pt-2">
-                        <button onclick="generateAiPredictiveExam()" class="px-5 py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-bold transition-all active:scale-95 flex items-center space-x-1.5">
-                            <i data-lucide="refresh-cw" class="w-4 h-4"></i>
-                            <span>新しい問題を再生成</span>
-                        </button>
-                    </div>
-                </div>
-            `;
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-
+        
         function renderAnalysisResult(data) {
             const scanResultContainer = document.getElementById('scan-result-container');
             if (!scanResultContainer) return;
@@ -18515,12 +18327,6 @@ const KOBUN_TANGO = [
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
             });
-            if (typeof closeTimelineScreen === 'function') {
-                closeTimelineScreen();
-            } else {
-                const timelineScreen = document.getElementById('timeline-screen');
-                if (timelineScreen) timelineScreen.classList.add('hidden');
-            }
             if (typeof closePublicProfileScreen === 'function') closePublicProfileScreen();
             if (typeof closeUserSearchModal === 'function') closeUserSearchModal();
             if (typeof closeFollowListModal === 'function') closeFollowListModal();
@@ -18736,7 +18542,7 @@ const KOBUN_TANGO = [
 
         const BOTTOM_TAB_STUDY_SCREENS = new Set(['top','english','japanese','math','science','social','scan','ronri-hyogen','ronri-section-list','ronri-scan','target','essay']);
         function setBottomTabActive(key) {
-            ['timeline','mypage','calendar','grades','study','seasonal'].forEach(k => {
+            ['mypage','calendar','grades','study','seasonal'].forEach(k => {
                 const btn = document.getElementById('bottom-tab-' + k);
                 if (!btn) return;
                 const active = (k === key);
@@ -18770,31 +18576,6 @@ const KOBUN_TANGO = [
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        function requireRealAccountForSns() {
-            if (!window.currentAppUser) { showToast('先にログインしてください'); return false; }
-            if (window.currentAppUser.isAnonymous) {
-                showToast('ゲストは閲覧のみです。投稿・いいね・フォローなどをするには、アカウントを作成してください');
-                return false;
-            }
-            return true;
-        }
-        let timelineMode = 'all';
-        let timelineFeedUnsubscribe = null;
-        let timelineLikeUnsubscribes = [];
-        function clearTimelineLikeSubscriptions() {
-            timelineLikeUnsubscribes.forEach(unsub => { try { unsub(); } catch (e) {} });
-            timelineLikeUnsubscribes = [];
-        }
-        function timeAgoLabel(ts) {
-            if (!ts) return '';
-            const date = ts.toDate ? ts.toDate() : new Date(ts);
-            const diffSec = Math.floor((Date.now() - date.getTime()) / 1000);
-            if (diffSec < 60) return 'たった今';
-            if (diffSec < 3600) return Math.floor(diffSec / 60) + '分前';
-            if (diffSec < 86400) return Math.floor(diffSec / 3600) + '時間前';
-            if (diffSec < 2592000) return Math.floor(diffSec / 86400) + '日前';
-            return date.toLocaleDateString('ja-JP');
-        }
         function renderAvatarHtml(photo, name, sizeClass) {
             const initial = (name || '?').charAt(0);
             if (photo) {
@@ -18806,244 +18587,20 @@ const KOBUN_TANGO = [
             if (!isOfficial) return '';
             return '<i data-lucide="badge-check" class="w-3.5 h-3.5 text-blue-500 inline-block align-middle shrink-0" title="公式アカウント"></i>';
         }
-        function renderPostCard(post) {
-            return `
-            <div class="rounded-2xl border border-slate-100 dark:border-slate-800 p-4" data-post-id="${post.id}">
-                <div class="flex items-center gap-2.5 mb-2 cursor-pointer" onclick="openPublicProfileScreen('${post.uid}')">
-                    ${renderAvatarHtml(post.authorPhoto, post.authorName, 'w-9 h-9 text-sm')}
-                    <div class="min-w-0">
-                        <p class="text-sm font-black text-slate-800 dark:text-white truncate flex items-center gap-1">${escapeHtmlText(post.authorName || '名無しさん')}${officialBadgeHtml(post.authorIsOfficial)}</p>
-                        <p class="text-[10px] font-bold text-slate-400">${post.authorUsername ? '@' + post.authorUsername + ' · ' : ''}${timeAgoLabel(post.createdAt)}</p>
-                    </div>
-                </div>
-                <p class="text-sm font-bold text-slate-700 dark:text-slate-200 whitespace-pre-wrap leading-relaxed mb-2">${escapeHtmlText(post.text || '')}</p>
-                <div class="flex items-center gap-4">
-                    <button onclick="onLikeButtonClick('${post.id}', this)" class="flex items-center gap-1.5 text-slate-400 hover:text-rose-500 transition-colors" data-like-btn>
-                        <i data-lucide="heart" class="w-4 h-4"></i>
-                        <span class="text-xs font-black" data-like-count>-</span>
-                    </button>
-                    ${(() => {
-                        const myUid = window.currentAppUser && window.currentAppUser.uid;
-                        const isMine = post.uid === myUid;
-                        if (!isMine && !isOfficialUser()) return '';
-                        return `<button onclick="onDeletePostClick('${post.id}', ${!isMine})" title="${isMine ? '削除' : '公式権限で削除'}" class="${isMine ? 'text-slate-300' : 'text-amber-400'} hover:text-rose-500 transition-colors"><i data-lucide="trash-2" class="w-4 h-4"></i></button>`;
-                    })()}
-                </div>
-            </div>`;
-        }
         function escapeHtmlText(text) {
             const div = document.createElement('div');
             div.textContent = text;
             return div.innerHTML;
         }
-        function updateLikeButtonUI(postId, info) {
-            const card = document.querySelector(`[data-post-id="${postId}"]`);
-            if (!card) return;
-            const btn = card.querySelector('[data-like-btn]');
-            const countEl = card.querySelector('[data-like-count]');
-            if (countEl) countEl.textContent = info.count;
-            if (btn) {
-                btn.classList.toggle('text-rose-500', info.likedByMe);
-                btn.classList.toggle('text-slate-400', !info.likedByMe);
-                const icon = btn.querySelector('svg');
-                if (icon) icon.setAttribute('fill', info.likedByMe ? 'currentColor' : 'none');
-            }
-        }
-        function subscribeLikesForPosts(posts) {
-            clearTimelineLikeSubscriptions();
-            posts.forEach(p => {
-                const unsub = window.AppFirebase.subscribeLikes(p.id, (info) => updateLikeButtonUI(p.id, info));
-                timelineLikeUnsubscribes.push(unsub);
-            });
-        }
-        function loadTimelineFeed() {
-            const feedEl = document.getElementById('timeline-feed');
-            if (!feedEl) return;
-            if (timelineFeedUnsubscribe) { timelineFeedUnsubscribe(); timelineFeedUnsubscribe = null; }
-            clearTimelineLikeSubscriptions();
-            feedEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-10">読み込み中…</p>';
-            try {
-                timelineFeedUnsubscribe = window.AppFirebase.subscribeFeed({ mode: timelineMode, max: 30 }, (posts) => {
-                    if (posts.length === 0) {
-                        feedEl.innerHTML = `<p class="text-center text-xs font-bold text-slate-400 py-10 whitespace-pre-line">${timelineMode === 'following' ? 'フォロー中の人の投稿はまだありません。\nユーザーを検索してフォローしてみましょう。' : 'まだ投稿がありません。最初の投稿をしてみましょう！'}</p>`;
-                        clearTimelineLikeSubscriptions();
-                        return;
-                    }
-                    feedEl.innerHTML = posts.map(renderPostCard).join('');
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                    subscribeLikesForPosts(posts);
-                }, (err) => {
-                    feedEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-10">読み込みに失敗しました。時間をおいて再度お試しください。</p>';
-                });
-            } catch (e) {
-                console.error('load feed error', e);
-                feedEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-10">読み込みに失敗しました。時間をおいて再度お試しください。</p>';
-            }
-        }
-        async function onLikeButtonClick(postId, btnEl) {
-            if (!requireRealAccountForSns()) return;
-            btnEl.disabled = true;
-            try {
-                await window.AppFirebase.toggleLike(postId);
-            } catch (e) {
-                console.error('toggle like error', e);
-                showToast('いいねに失敗しました。時間をおいて再度お試しください');
-            } finally {
-                btnEl.disabled = false;
-            }
-        }
         function isOfficialUser() {
             const u = window.currentAppUser;
             return !!(u && !u.isAnonymous && window.currentAppIsOfficial === true && window.currentAppIsOfficialUid === u.uid);
-        }
-        async function onDeletePostClick(postId, byOfficial = false) {
-            const msg = byOfficial
-                ? 'この投稿を公式権限で削除しますか？\n（投稿した人の画面からも消えます）'
-                : 'この投稿を削除しますか？';
-            if (!confirm(msg)) return;
-            if (byOfficial && !isOfficialUser()) { showToast('他の人の投稿を削除できるのは公式アカウントだけです'); return; }
-            try {
-                await window.AppFirebase.deletePost(postId);
-                if (byOfficial) showToast('投稿を削除しました');
-            } catch (e) {
-                console.error('delete post error', e);
-                if (byOfficial && e && e.code === 'permission-denied') {
-                    showToast('削除できませんでした。サーバー側（Firestoreのルール）で公式アカウントの削除が許可されていない可能性があります');
-                } else {
-                    showToast('削除に失敗しました。時間をおいて再度お試しください');
-                }
-            }
-        }
-        function setTimelineMode(mode) {
-            timelineMode = mode;
-            const allBtn = document.getElementById('timeline-tab-all');
-            const followingBtn = document.getElementById('timeline-tab-following');
-            const activeCls = 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-blue-500 text-white';
-            const inactiveCls = 'flex-1 py-2 rounded-xl text-xs font-black transition-all bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400';
-            const isGuest = !!(window.currentAppUser && window.currentAppUser.isAnonymous);
-            if (allBtn) allBtn.className = (mode === 'all') ? activeCls : inactiveCls;
-            if (followingBtn) {
-                followingBtn.className = (mode === 'following') ? activeCls : inactiveCls;
-                followingBtn.classList.toggle('hidden', isGuest);
-            }
-            loadTimelineFeed();
-        }
-        function showTimelineScreen() {
-            if (!window.currentAppUser) { showToast('先にログインしてください'); return; }
-            const screen = document.getElementById('timeline-screen');
-            if (screen) screen.classList.remove('hidden');
-            setBottomTabActive('timeline');
-            loadClassLog();
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
-        function pmMondayOf(dateStr) {
-            const d = new Date(dateStr + 'T00:00:00Z');
-            d.setUTCDate(d.getUTCDate() - ((d.getUTCDay() + 6) % 7));
-            return d.toISOString().slice(0, 10);
-        }
-        function pmDaysBetween(a, b) { return Math.round((new Date(b + 'T00:00:00Z') - new Date(a + 'T00:00:00Z')) / 86400000); }
-        async function loadClassLog() {
-            const body = document.getElementById('classlog-body');
-            const sub = document.getElementById('classlog-sub');
-            if (!body) return;
-            const classId = window.currentUserClassId || null;
-            const classes = (typeof cmsConfigData !== 'undefined' && cmsConfigData && cmsConfigData.classes) || [];
-            const cls = classes.find(c => c.id === classId);
-            if (sub) sub.textContent = cls ? ((cls.name || cls.label || 'クラス') + ' の学習ログ') : 'クラスのみんなの学習ログ';
-            if (!classId) {
-                body.innerHTML = `
-                    <div class="py-10 text-center">
-                        <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">クラスに参加すると、みんなの学習ログが見られます</p>
-                        <p class="text-xs text-slate-400 mt-2">連続学習日数や、今週取り組んだ語数がクラス単位で並びます</p>
-                        <button onclick="openClassPickerModal()" class="mt-6 px-5 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--pm-accent)">クラスを選ぶ</button>
-                    </div>`;
-                return;
-            }
-            body.innerHTML = '<p class="text-xs text-slate-400 py-10 text-center">読み込み中…</p>';
-            let list = [];
-            try { list = await window.AppFirebase.getLeaderboard(); }
-            catch (e) { body.innerHTML = '<p class="text-xs text-slate-400 py-10 text-center">学習ログを読み込めませんでした。通信状況を確認して、もう一度開いてください。</p>'; return; }
-            const today = (window.getJSTDateString ? window.getJSTDateString() : new Date().toISOString().slice(0, 10));
-            const thisWeek = pmMondayOf(today);
-            const myUid = window.currentAppUser ? window.currentAppUser.uid : null;
-            const members = list.filter(e => e.classId === classId).map(e => ({
-                uid: e.uid, name: e.displayName || '名無し', total: e.totalWordsLearned || 0,
-                weekly: e.weekKey === thisWeek ? (e.weeklyCount || 0) : 0,
-                last: e.lastStudyDate || '',
-                streak: (e.lastStudyDate && pmDaysBetween(e.lastStudyDate, today) <= 1) ? (e.streakDays || 0) : 0,
-                today: e.lastStudyDate === today
-            })).sort((x, y) => (y.today - x.today) || (y.weekly - x.weekly) || (y.streak - x.streak));
-            if (members.length === 0) {
-                body.innerHTML = '<p class="text-xs text-slate-400 py-10 text-center leading-relaxed">まだ学習ログがありません。<br>単語クイズやフラッシュカードに取り組むと、ここに記録されます。</p>';
-                return;
-            }
-            const doneToday = members.filter(m => m.today).length;
-            const weekTotal = members.reduce((a, m) => a + m.weekly, 0);
-            const lastLabel = m => {
-                if (m.today) return '今日 学習しました';
-                if (!m.last) return 'まだ学習していません';
-                const d = pmDaysBetween(m.last, today);
-                return d === 1 ? '昨日 学習しました' : (d + '日前に学習');
-            };
-            const stat = (v, label) => `<div><p class="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">${v}</p><p class="text-xs text-slate-400 mt-1">${label}</p></div>`;
-            body.innerHTML = `
-                <div class="grid grid-cols-3 gap-6">
-                    ${stat(doneToday + '<span class="text-base font-medium text-slate-400"> / ' + members.length + '人</span>', '今日 学習した人')}
-                    ${stat(weekTotal, '今週 クラスの合計（語）')}
-                    ${stat(members.reduce((a, m) => Math.max(a, m.streak), 0) + '<span class="text-base font-medium text-slate-400"> 日</span>', '最長の連続学習')}
-                </div>
-                <h2 class="text-sm font-semibold text-slate-900 dark:text-white mt-12 mb-2">メンバー</h2>
-                <ul class="divide-y divide-slate-100 dark:divide-slate-800">
-                    ${members.map(m => `
-                    <li class="flex items-center gap-4 py-4">
-                        <span class="w-2 h-2 rounded-full shrink-0 ${m.today ? '' : 'bg-slate-200 dark:bg-slate-700'}" ${m.today ? 'style="background:var(--pm-accent)"' : ''}></span>
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white truncate">${escapeHtml(m.name)}${m.uid === myUid ? '<span class="ml-2 text-[11px] font-medium text-slate-400">あなた</span>' : ''}</p>
-                            <p class="text-xs text-slate-400 mt-0.5">${lastLabel(m)}</p>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">${m.weekly}<span class="text-xs font-medium text-slate-400"> 語 / 今週</span></p>
-                            <p class="text-xs text-slate-400 mt-0.5">${m.streak > 0 ? '連続 ' + m.streak + '日' : '—'}</p>
-                        </div>
-                    </li>`).join('')}
-                </ul>
-                <p class="text-[11px] text-slate-400 leading-relaxed mt-8">単語クイズやフラッシュカードの結果から、自動で記録されます。</p>`;
-        }
-        function closeTimelineScreen() {
-            const screen = document.getElementById('timeline-screen');
-            if (screen) screen.classList.add('hidden');
-            if (timelineFeedUnsubscribe) { timelineFeedUnsubscribe(); timelineFeedUnsubscribe = null; }
-            clearTimelineLikeSubscriptions();
         }
 
         function closeComposePostModal() {
             const modal = document.getElementById('compose-post-modal');
             if (modal) modal.classList.add('hidden');
         }
-        async function submitComposePost() {
-            const textEl = document.getElementById('compose-post-text');
-            const errEl = document.getElementById('compose-post-error');
-            const btn = document.getElementById('compose-post-submit-btn');
-            const text = (textEl && textEl.value || '').trim();
-            if (errEl) errEl.classList.add('hidden');
-            if (!text) {
-                if (errEl) { errEl.textContent = '投稿内容を入力してください'; errEl.classList.remove('hidden'); }
-                return;
-            }
-            if (btn) { btn.disabled = true; }
-            try {
-                await window.AppFirebase.createPost(text);
-                closeComposePostModal();
-                showToast('投稿しました');
-                setTimelineMode('all');
-            } catch (e) {
-                console.error('create post error', e);
-                if (errEl) { errEl.textContent = '投稿に失敗しました。時間をおいて再度お試しください'; errEl.classList.remove('hidden'); }
-            } finally {
-                if (btn) { btn.disabled = false; }
-            }
-        }
-
         function closeUserSearchModal() {
             const modal = document.getElementById('user-search-modal');
             if (modal) modal.classList.add('hidden');
@@ -19056,59 +18613,6 @@ const KOBUN_TANGO = [
             publicProfileLikeUnsubscribes.forEach(unsub => { try { unsub(); } catch (e) {} });
             publicProfileLikeUnsubscribes = [];
         }
-        async function openPublicProfileScreen(uid) {
-            if (!uid) return;
-            if (window.currentAppUser && uid === window.currentAppUser.uid) { closeUserSearchModal(); showMyPageScreen(); return; }
-            currentPublicProfileUid = uid;
-            const screen = document.getElementById('public-profile-screen');
-            if (screen) screen.classList.remove('hidden');
-            document.getElementById('public-profile-menu').classList.add('hidden');
-            document.getElementById('public-profile-nickname').innerHTML = '読み込み中…';
-            document.getElementById('public-profile-username').textContent = '';
-            document.getElementById('public-profile-posts').innerHTML = '';
-            document.getElementById('public-profile-private-notice').classList.add('hidden');
-            document.getElementById('public-profile-message-btn').classList.add('hidden');
-            if (publicProfilePostsUnsubscribe) { publicProfilePostsUnsubscribe(); publicProfilePostsUnsubscribe = null; }
-            clearPublicProfileLikeSubscriptions();
-            try {
-                const profile = await window.AppFirebase.getPublicProfile(uid);
-                if (currentPublicProfileUid !== uid) return;
-                document.getElementById('public-profile-avatar-wrap').innerHTML = renderAvatarHtml(profile.photo, profile.nickname, 'w-16 h-16 text-xl');
-                document.getElementById('public-profile-nickname').innerHTML = escapeHtmlText(profile.nickname || '名無しさん') + officialBadgeHtml(profile.isOfficial) + (profile.private ? ' <i data-lucide="lock" class="w-3.5 h-3.5 text-slate-400"></i>' : '');
-                document.getElementById('public-profile-username').textContent = profile.username ? '@' + profile.username : '';
-                const [followerCount, followingCount, following, mutual] = await Promise.all([
-                    window.AppFirebase.getFollowerCount(uid),
-                    window.AppFirebase.getFollowingCount(uid),
-                    window.AppFirebase.isFollowing(uid),
-                    window.AppFirebase.isMutualFollow(uid),
-                ]);
-                if (currentPublicProfileUid !== uid) return;
-                document.getElementById('public-profile-follower-count').textContent = followerCount;
-                document.getElementById('public-profile-following-count').textContent = followingCount;
-                const followBtn = document.getElementById('public-profile-follow-btn');
-                followBtn.textContent = following ? 'フォロー中' : 'フォローする';
-                followBtn.className = 'flex-1 py-2.5 rounded-xl font-black text-sm transition-all ' + (following ? 'border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300' : 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white');
-                document.getElementById('public-profile-message-btn').classList.toggle('hidden', !mutual);
-                if (typeof lucide !== 'undefined') lucide.createIcons();
-                const canSeePosts = !profile.private || mutual;
-                document.getElementById('public-profile-private-notice').classList.toggle('hidden', canSeePosts);
-                if (!canSeePosts) return;
-                publicProfilePostsUnsubscribe = await window.AppFirebase.subscribeUserPosts(uid, (posts) => {
-                    if (currentPublicProfileUid !== uid) return;
-                    const postsEl = document.getElementById('public-profile-posts');
-                    postsEl.innerHTML = posts.length ? posts.map(renderPostCard).join('') : '<p class="text-center text-xs font-bold text-slate-400 py-6">まだ投稿がありません</p>';
-                    if (typeof lucide !== 'undefined') lucide.createIcons();
-                    clearPublicProfileLikeSubscriptions();
-                    posts.forEach(p => {
-                        const unsub = window.AppFirebase.subscribeLikes(p.id, (info) => updateLikeButtonUI(p.id, info));
-                        publicProfileLikeUnsubscribes.push(unsub);
-                    });
-                });
-            } catch (e) {
-                console.error('load public profile error', e);
-                document.getElementById('public-profile-nickname').textContent = '読み込みに失敗しました';
-            }
-        }
         function closePublicProfileScreen() {
             const screen = document.getElementById('public-profile-screen');
             if (screen) screen.classList.add('hidden');
@@ -19119,126 +18623,18 @@ const KOBUN_TANGO = [
             clearPublicProfileLikeSubscriptions();
         }
 
-        async function openBlockListModal() {
-            const resultsEl = document.getElementById('block-list-results');
-            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">読み込み中…</p>';
-            const modal = document.getElementById('block-list-modal');
-            if (modal) modal.classList.remove('hidden');
-            try {
-                const list = await window.AppFirebase.getBlockedList();
-                if (list.length === 0) {
-                    resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">ブロック中のユーザーはいません</p>';
-                    return;
-                }
-                resultsEl.innerHTML = list.map(p => `
-                    <div class="flex items-center gap-3 py-3">
-                        <div class="flex items-center gap-3 flex-1 min-w-0">
-                            ${renderAvatarHtml(p.photo, p.nickname, 'w-10 h-10 text-sm')}
-                            <div class="min-w-0">
-                                <p class="text-sm font-black text-slate-800 dark:text-white truncate">${p.nickname || '名無しさん'}</p>
-                                <p class="text-[11px] font-bold text-slate-400 truncate">${p.username ? '@' + p.username : ''}</p>
-                            </div>
-                        </div>
-                        <button onclick="onUnblockClick('${p.uid}')" class="shrink-0 px-3 py-1.5 rounded-full text-xs font-black border border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300">解除</button>
-                    </div>`).join('');
-            } catch (e) {
-                console.error('load block list error', e);
-                resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-rose-500 py-6">読み込みに失敗しました</p>';
-            }
-        }
         function closeBlockListModal() {
             const modal = document.getElementById('block-list-modal');
             if (modal) modal.classList.add('hidden');
         }
-        async function onUnblockClick(uid) {
-            try {
-                await window.AppFirebase.unblockUser(uid);
-                showToast('ブロックを解除しました');
-                openBlockListModal();
-            } catch (e) {
-                console.error('unblock error', e);
-                showToast('解除に失敗しました。時間をおいて再度お試しください');
-            }
-        }
-
         let chatListUnsubscribe = null;
         let chatRoomMessagesUnsubscribe = null;
         let chatRoomOtherUid = null;
         let currentChatId = null;
-        function chatTimeLabel(ts) {
-            if (!ts) return '';
-            const date = ts.toDate ? ts.toDate() : new Date(ts);
-            return date.toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' }) + ' ' + date.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
-        }
-        function showChatListScreen() {
-            if (!requireRealAccountForSns()) return;
-            const screen = document.getElementById('chat-list-screen');
-            if (screen) screen.classList.remove('hidden');
-            const resultsEl = document.getElementById('chat-list-results');
-            resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-10">読み込み中…</p>';
-            if (chatListUnsubscribe) { chatListUnsubscribe(); chatListUnsubscribe = null; }
-            chatListUnsubscribe = window.AppFirebase.subscribeChatList(async (chats) => {
-                if (chats.length === 0) {
-                    resultsEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-10">まだメッセージがありません。<br>プロフィール画面からメッセージを送ってみましょう。</p>';
-                    return;
-                }
-                const myUid = window.currentAppUser.uid;
-                const rows = await Promise.all(chats.map(async (chat) => {
-                    const otherUid = chat.participants.find(p => p !== myUid);
-                    const profile = await window.AppFirebase.getPublicProfile(otherUid);
-                    return { chat, otherUid, profile };
-                }));
-                resultsEl.innerHTML = rows.map(({ chat, otherUid, profile }) => `
-                    <button onclick='openChatRoomScreen(${JSON.stringify(chat.id)}, ${JSON.stringify(otherUid)}, ${JSON.stringify(profile)})' class="w-full flex items-center gap-3 py-3 text-left">
-                        ${renderAvatarHtml(profile.photo, profile.nickname, 'w-11 h-11 text-sm')}
-                        <div class="min-w-0 flex-1">
-                            <p class="text-sm font-black text-slate-800 dark:text-white truncate flex items-center gap-1">${escapeHtmlText(profile.nickname || '名無しさん')}${officialBadgeHtml(profile.isOfficial)}</p>
-                            <p class="text-xs font-bold text-slate-400 truncate">${chat.lastMessage ? escapeHtmlText(chat.lastMessage) : 'メッセージを送ってみましょう'}</p>
-                        </div>
-                    </button>`).join('');
-            });
-            if (typeof lucide !== 'undefined') lucide.createIcons();
-        }
         function closeChatListScreen() {
             const screen = document.getElementById('chat-list-screen');
             if (screen) screen.classList.add('hidden');
             if (chatListUnsubscribe) { chatListUnsubscribe(); chatListUnsubscribe = null; }
-        }
-        function openChatRoomScreen(chatId, otherUid, profile) {
-            currentChatId = chatId;
-            chatRoomOtherUid = otherUid;
-            document.getElementById('chat-room-avatar-wrap').innerHTML = renderAvatarHtml(profile.photo, profile.nickname, 'w-8 h-8 text-xs');
-            document.getElementById('chat-room-title').textContent = profile.nickname || '名無しさん';
-            document.getElementById('chat-room-input').value = '';
-            const screen = document.getElementById('chat-room-screen');
-            if (screen) screen.classList.remove('hidden');
-            const tabBar = document.getElementById('bottom-tab-bar');
-            if (tabBar) tabBar.style.display = 'none';
-            if (chatRoomMessagesUnsubscribe) { chatRoomMessagesUnsubscribe(); chatRoomMessagesUnsubscribe = null; }
-            const messagesEl = document.getElementById('chat-room-messages');
-            messagesEl.innerHTML = '<p class="text-center text-xs font-bold text-slate-400 py-6">読み込み中…</p>';
-            chatRoomMessagesUnsubscribe = window.AppFirebase.subscribeChatMessages(chatId, (messages) => {
-                const myUid = window.currentAppUser && window.currentAppUser.uid;
-                messagesEl.innerHTML = messages.map(m => {
-                    const mine = m.senderUid === myUid;
-                    const bubbleCls = mine ? 'bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-br-sm' : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-sm';
-                    let bodyHtml;
-                    if (m.imageData) {
-                        bodyHtml = `<img src="${m.imageData}" alt="画像" class="rounded-xl max-w-full max-h-72 object-contain cursor-zoom-in" onclick="window.open('${m.imageData}', '_blank')">`;
-                    } else {
-                        bodyHtml = escapeHtmlText(m.text || '');
-                    }
-                    const paddingCls = m.imageData ? 'p-1.5' : 'px-3.5 py-2';
-                    return `<div class="flex ${mine ? 'justify-end' : 'justify-start'}">
-                        <div class="w-fit max-w-[80%] ${paddingCls} rounded-2xl text-sm font-bold whitespace-pre-wrap break-words ${bubbleCls}">
-                            ${bodyHtml}
-                            <div class="text-[9px] font-bold mt-0.5 ${m.imageData ? 'px-1.5 pb-0.5' : ''} ${mine ? 'text-white/70' : 'text-slate-400'}">${chatTimeLabel(m.createdAt)}</div>
-                        </div>
-                    </div>`;
-                }).join('');
-                messagesEl.scrollTop = messagesEl.scrollHeight;
-            });
-            if (typeof lucide !== 'undefined') lucide.createIcons();
         }
         function closeChatRoomScreen() {
             const screen = document.getElementById('chat-room-screen');
@@ -22374,20 +21770,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
         }
 
-        function showDevLogin() {
-            const modal = document.getElementById('dev-login-modal');
-            const card  = document.getElementById('dev-login-card');
-            const input = document.getElementById('dev-pw-input');
-            const err   = document.getElementById('dev-pw-error');
-            if (!modal) return;
-            modal.inert = false;
-            modal.classList.remove('opacity-0','pointer-events-none');
-            card.classList.remove('scale-95'); card.classList.add('scale-100');
-            if (err) err.classList.add('hidden');
-            if (input) { input.value = ''; setTimeout(() => input.focus(), 100); }
-            lockScroll();
-        }
-
         const DEV_SHORTCUT_CODE = 'KeyD';
         function requestDevLogin() {
             if (devUnlocked) { showToast('開発者モードはすでに開始しています'); return; }
@@ -22478,10 +21860,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         setupInstallGate();
         evaluateInstallGate();
 
-        function canOpenDevModeByShortcut() {
-            const u = window.currentAppUser;
-            return !!(u && !u.isAnonymous && window.currentAppIsOfficial === true && window.currentAppIsOfficialUid === u.uid);
-        }
         // 開発者モードに入れるのは、サーバー（Firestoreのルール）が確かめた「管理者」か「公式アカウント」だけ。
         // パスワードは使わない（ブラウザの中だけの確認は、突破できてしまうため）。
         let _devEntering = false;
