@@ -1,36 +1,5 @@
 {
-  "announcements": [
-    {
-      "badge": "INFO",
-      "badgeColor": "#06b6d4",
-      "version": "dev-1793193780161",
-      "title": "進研模試の予定を追加しました",
-      "body": "",
-      "link": "",
-      "createdAt": "2026-10-28T13:23:00.161Z",
-      "updatedAt": "2026-10-28T13:23:00.161Z"
-    },
-    {
-      "badge": "INFO",
-      "badgeColor": "#06b6d4",
-      "version": "dev-1793193708100",
-      "title": "アップデートについて",
-      "body": "アップデートしましたが、完成形ではないので順次修正を入れますが、ちょくちょくバグなどがあります。その場合はお手数ですが以下のフォームまでお問い合わせいただければ嬉しいです。",
-      "link": "https://forms.gle/LBH1LRRVaitryzkN7",
-      "createdAt": "2026-10-28T13:21:48.100Z",
-      "updatedAt": "2026-10-28T13:22:31.673Z"
-    },
-    {
-      "badge": "",
-      "badgeColor": "#06b6d4",
-      "version": "dev-1792677545958",
-      "title": "PHPの脆弱性について",
-      "body": "最近ニュースになっている、PHPというプログラムの重大な弱点（脆弱性）について確認しました。\nこのサイトはPHPを使っていないため、今回の問題の影響は受けないと考えています。パスワードの変更やアプリの入れ直しは必要ありません。気になることがあれば、アプリ内のお問い合わせからご連絡ください。",
-      "link": "https://forms.gle/uw3yLYqxwoSAt34v5",
-      "createdAt": "2026-10-22T13:59:05.958Z",
-      "updatedAt": "2026-10-25T06:01:53.326Z"
-    }
-  ],
+  "announcements": [],
   "weekendBooth": {
     "title": "7/6までの週末課題",
     "body": "・CROSSBEAM PS　Chapter14\n・物理課題2−1　　　リードα　P66~71(145まで)\n・新成古典　　　　　24・25・29・30\n・錬成現代文　　　　16・17",
