@@ -4539,11 +4539,11 @@ html.dark .dev-log-link { color: #e2e8f0; }
 
     <nav id="bottom-tab-bar" class="fixed bottom-0 left-0 right-0 z-[9980] bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 flex items-stretch justify-around px-1 pb-[env(safe-area-inset-bottom)]" style="display:none;">
         <button id="bottom-tab-mypage" onclick="showMyPageScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <i data-lucide="user-circle" class="w-5 h-5"></i>
+            <span id="bottom-tab-icon-mypage" class="relative inline-flex"><i data-lucide="user-circle" class="w-5 h-5"></i><span id="tab-dot-mypage" class="pm-tab-dot hidden"></span></span>
             <span class="text-[10px] font-bold">マイページ</span>
         </button>
         <button id="bottom-tab-calendar" onclick="_navigateTo('calendar')" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <i data-lucide="calendar-days" class="w-5 h-5"></i>
+            <span id="bottom-tab-icon-calendar" class="relative inline-flex"><i data-lucide="calendar-days" class="w-5 h-5"></i><span id="tab-dot-calendar" class="pm-tab-dot hidden"></span></span>
             <span class="text-[10px] font-bold">カレンダー</span>
         </button>
         <button id="bottom-tab-grades" onclick="_navigateTo('grades')" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
@@ -4551,11 +4551,11 @@ html.dark .dev-log-link { color: #e2e8f0; }
             <span class="text-[10px] font-bold">成績管理</span>
         </button>
         <button id="bottom-tab-study" onclick="_navigateTo('top')" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <i data-lucide="book-open" class="w-5 h-5"></i>
+            <span id="bottom-tab-icon-study" class="relative inline-flex"><i data-lucide="book-open" class="w-5 h-5"></i><span id="tab-dot-study" class="pm-tab-dot hidden"></span></span>
             <span class="text-[10px] font-bold">学習コンテンツ</span>
         </button>
         <button data-pm-restricted id="bottom-tab-seasonal" onclick="showSeasonalCornerScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <i data-lucide="calendar-clock" class="w-5 h-5"></i>
+            <span id="bottom-tab-icon-seasonal" class="relative inline-flex"><i data-lucide="calendar-clock" class="w-5 h-5"></i><span id="tab-dot-seasonal" class="pm-tab-dot hidden"></span></span>
             <span class="text-[10px] font-bold">期間限定</span>
         </button>
     </nav>
@@ -7369,14 +7369,15 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!list || list.length === 0) return;
             const latest = getLatestAnnouncementVersion();
             const seen = safeStorage.get('pm_announcement_seen');
+            let notified = null;
+            try { notified = localStorage.getItem('pm_announcement_notified'); } catch (e) {}
+            const willNotify = seen !== latest && notified !== String(latest);
+            if (willNotify) window._pmHoldTabDot = true;   // カードが吸い込まれて着くまで、タブの点は出さない
             updateAnnouncementBellBadge();
-            if (seen !== latest) {
-                let notified = null;
-                try { notified = localStorage.getItem('pm_announcement_notified'); } catch (e) {}
-                if (notified !== String(latest)) {
-                    try { localStorage.setItem('pm_announcement_notified', String(latest)); } catch (e) {}
-                    showToast('お知らせがあります');
-                }
+            if (willNotify) {
+                try { localStorage.setItem('pm_announcement_notified', String(latest)); } catch (e) {}
+                if (typeof pmNoticeFromAnnouncement === 'function') pmNoticeFromAnnouncement();
+                else { window._pmHoldTabDot = false; showToast('お知らせがあります'); }
             }
         }
 
@@ -26114,12 +26115,17 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             lastLoad = Date.now();
             try { inbox = await window.AppFirebase.listInbox(); } catch (e) { console.warn('inbox load failed', e); return; }
             render();
-            if (typeof updateAnnouncementBellBadge === 'function') updateAnnouncementBellBadge();
-            const newest = inbox.filter(m => !m.read).reduce((a, m) => Math.max(a, m.createdMs || 0), 0);
+            const unreadList = inbox.filter(m => !m.read).sort((a, b) => (b.createdMs || 0) - (a.createdMs || 0));
+            const newest = unreadList.length ? (unreadList[0].createdMs || 0) : 0;
             let prev = 0; try { prev = Number(localStorage.getItem('pm_inbox_notified') || 0); } catch (e) {}
-            if (newest > prev) {
+            const fire = newest > prev;
+            if (fire) window._pmHoldTabDot = true;
+            if (typeof updateAnnouncementBellBadge === 'function') updateAnnouncementBellBadge();
+            if (fire) {
                 try { localStorage.setItem('pm_inbox_notified', String(newest)); } catch (e) {}
-                showToast('お知らせがあります');
+                const m = unreadList[0];
+                if (typeof pmNoticeFly === 'function') pmNoticeFly({ badge: m.from === 'セキュリティ日報' ? '日報' : 'メッセージ', color: '#3b82f6', title: m.title || ((m.from || '開発者') + 'より'), body: m.body });
+                else { window._pmHoldTabDot = false; showToast('お知らせがあります'); }
             }
         }
 
@@ -26129,6 +26135,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (typeof origBadge === 'function') origBadge();
             const dot = $('mypage-announcement-dot');
             if (dot && unread() > 0) dot.classList.remove('hidden');
+            if (typeof pmSyncMypageTabDot === 'function') pmSyncMypageTabDot();
         };
         // お知らせを開いたとき：最新を読み込み、表示したら既読にする
         const origToggle = window.toggleAnnouncementModal;
@@ -26154,6 +26161,188 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         document.addEventListener('visibilitychange', () => { if (!document.hidden) load(false); });
         setTimeout(() => load(false), 3000);
     })();
+    </script>
+
+        <style>
+        .pm-tab-dot{position:absolute;top:-2px;right:-6px;width:9px;height:9px;border-radius:9999px;background:#f43f5e;border:1.5px solid #fff}
+        .dark .pm-tab-dot{border-color:#0c1220}
+        .pm-tab-dot.hidden{display:none}
+        .pm-tab-dot.pm-pop{animation:pm-dot-pop .55s cubic-bezier(.34,1.56,.64,1)}
+        @keyframes pm-dot-pop{0%{transform:scale(0)}60%{transform:scale(1.7)}100%{transform:scale(1)}}
+        .pm-icon-bump{animation:pm-icon-bump .5s ease-out}
+        @keyframes pm-icon-bump{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
+        @media (prefers-reduced-motion: reduce){.pm-tab-dot.pm-pop,.pm-icon-bump{animation:none}}
+    </style>
+    <script>
+(function () {
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => escapeHtml(String(s == null ? '' : s));
+    const LS = {
+        get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } },
+        set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+        del(k) { try { localStorage.removeItem(k); } catch (e) {} }
+    };
+    const reduceMotion = () => { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } };
+
+    // ================= ① 学習コンテンツ・期間限定・カレンダーに「新しいもの」の赤い点 =================
+    // 「見た」記録は、この端末の中だけに持つ（サーバーには送らない）。初回は、いまある分を「見た」ことにして、点を出さない。
+    const TABS = ['calendar', 'study', 'seasonal'];
+    const STUDY_MODE_KEYS = ['english', 'japanese', 'math', 'science', 'social', 'target', 'scan', 'ronri-hyogen', 'essay'];
+    const st = { cfgSeen: !!(typeof remoteConfig !== 'undefined' && remoteConfig), cloudReady: false, extraIds: [], active: null, lastEval: 0 };
+    const seenKey = (t) => 'pm_seen_' + t;
+    function readSeen(t) { const raw = LS.get(seenKey(t)); if (raw == null) return null; try { return new Set(JSON.parse(raw)); } catch (e) { return null; } }
+    function writeSeen(t, ids) { LS.set(seenKey(t), JSON.stringify([...new Set(ids)].slice(-600))); }
+
+    function myClassOk(item) {
+        const ids = (item && Array.isArray(item.classIds)) ? item.classIds : (item && item.classId ? [item.classId] : []);
+        return ids.length === 0 || ids.includes(window.currentUserClassId || null);
+    }
+    function currentIds(t) {
+        if (t === 'calendar') return (window._remoteGlobalSchedules || []).filter(s => s && s.id != null && myClassOk(s)).map(s => 's:' + s.id);
+        if (t === 'study') {
+            const flags = window._remoteFeatureFlags || {};
+            return (st.extraIds || []).map(x => 'e:' + x)
+                .concat((window._remoteRonriSections || []).filter(x => x && x.id).map(x => 'r:' + x.id))
+                .concat(STUDY_MODE_KEYS.filter(k => flags[k] !== false).map(k => 'f:' + k));
+        }
+        if (t === 'seasonal') {
+            const tasks = (window._remoteSummerTaskEnabled === false) ? [] : (typeof getVisibleSummerTasks === 'function' ? getVisibleSummerTasks() : []);
+            return tasks.filter(x => x && x.id != null).map(x => 't:' + x.id).concat((window._remoteExams || []).filter(x => x && x.id != null).map(x => 'x:' + x.id));
+        }
+        return [];
+    }
+    // データが出そろったか。出そろう前に「基準」を決めてしまうと、あとで全部が新しい扱いになってしまう
+    function ready() {
+        if (!st.cfgSeen || !st.cloudReady) return false;
+        if (window._remoteProtectedInFirestore) return typeof pmIsAllowed === 'function' && pmIsAllowed() && !!window._pmLoadedUid;
+        return true;
+    }
+    function setDot(t, on) {
+        const el = $('tab-dot-' + t); if (!el) return;
+        const was = !el.classList.contains('hidden');
+        el.classList.toggle('hidden', !on);
+        if (on && !was && !reduceMotion()) { el.classList.remove('pm-pop'); void el.offsetWidth; el.classList.add('pm-pop'); setTimeout(() => el.classList.remove('pm-pop'), 700); }
+    }
+    function evaluate() {
+        const dev = (typeof devUnlocked !== 'undefined') && devUnlocked;
+        TABS.forEach(t => {
+            if (!ready()) { setDot(t, false); return; }
+            const ids = currentIds(t), seen = readSeen(t);
+            if (seen == null || dev || st.active === t) { writeSeen(t, ids.concat(seen ? [...seen] : [])); setDot(t, false); return; }
+            setDot(t, ids.some(id => !seen.has(id)));
+        });
+    }
+    function markSeen(t) { const seen = readSeen(t); writeSeen(t, currentIds(t).concat(seen ? [...seen] : [])); setDot(t, false); }
+    window.pmDotsEvaluate = evaluate;
+
+    // 設定データが入ってきたとき（クラス・予定・セクション・課題など）
+    const origApply = window.applyProtectedKeys;
+    if (typeof origApply === 'function') {
+        window.applyProtectedKeys = function (cfg) {
+            const r = origApply.apply(this, arguments);
+            try {
+                st.cfgSeen = true;
+                if (cfg && Array.isArray(cfg.extraSections)) st.extraIds = cfg.extraSections.filter(x => x && x.id).map(x => x.id);
+                evaluate();
+            } catch (e) { console.warn('dots', e); }
+            return r;
+        };
+    }
+    // タブを開いたら「見た」ことにする（マイページは、ベルを開いたときに消えるので対象外）
+    const origActive = window.setBottomTabActive;
+    if (typeof origActive === 'function') {
+        window.setBottomTabActive = function (key) {
+            const r = origActive.apply(this, arguments);
+            try { st.active = key; if (TABS.includes(key) && ready()) markSeen(key); } catch (e) {}
+            return r;
+        };
+    }
+    window.addEventListener('app-cloud-data-loaded', () => { st.cloudReady = true; evaluate(); });
+    setTimeout(() => { st.cloudReady = true; evaluate(); }, 8000);   // 読み込みの知らせが来なくても、8秒後には動き出す
+    // クラスが変わったら、新しいクラスの分は「見た」ことにする（点だらけにならないように）
+    window.addEventListener('app-class-changed', (e) => {
+        const id = (e && e.detail && e.detail.classId) || null;
+        const prev = LS.get('pm_dots_class');
+        LS.set('pm_dots_class', id == null ? '' : String(id));
+        if (prev != null && prev !== (id == null ? '' : String(id))) TABS.forEach(t => LS.del(seenKey(t)));
+        setTimeout(evaluate, 0);
+    });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) evaluate(); });
+    setInterval(() => { if (!st.cfgSeen && typeof remoteConfig !== 'undefined' && remoteConfig) { st.cfgSeen = true; } evaluate(); }, 4000);
+
+    // ================= ② マイページのタブの赤い点（お知らせ） =================
+    // ベルの赤い点と同じ状態にする。ただし、お知らせのカードが吸い込まれて着くまでは、出さない
+    window.pmSyncMypageTabDot = function () {
+        const bell = $('mypage-announcement-dot'), dot = $('tab-dot-mypage'); if (!dot) return;
+        const on = !!bell && !bell.classList.contains('hidden') && !window._pmHoldTabDot;
+        const was = !dot.classList.contains('hidden');
+        dot.classList.toggle('hidden', !on);
+        if (on && !was && !reduceMotion()) { dot.classList.remove('pm-pop'); void dot.offsetWidth; dot.classList.add('pm-pop'); setTimeout(() => dot.classList.remove('pm-pop'), 700); }
+    };
+
+    // ================= ③ お知らせが届いたとき：中身を少し見せて、マイページのアイコンに吸い込まれて、赤い点になる =================
+    const queue = []; let running = false;
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+    const okColor = (c) => (typeof c === 'string' && /^#[0-9a-fA-F]{3,8}$/.test(c)) ? c : '#64748b';
+    const preview = (s, n) => { s = String(s == null ? '' : s).replace(/\s+/g, ' ').trim(); return s.length > n ? s.slice(0, n) + '…' : s; };
+
+    window.pmNoticeFly = function (n) {
+        window._pmHoldTabDot = true;
+        queue.push(n);
+        if (!running) runQueue();
+        setTimeout(() => { if (!running) { window._pmHoldTabDot = false; window.pmSyncMypageTabDot(); } }, 15000);
+    };
+    async function runQueue() {
+        running = true;
+        try { while (queue.length) { try { await showOne(queue.shift()); } catch (e) { console.warn('notice', e); } if (queue.length) await sleep(250); } }
+        finally { running = false; window._pmHoldTabDot = false; window.pmSyncMypageTabDot(); }
+    }
+    function showOne(n) {
+        return new Promise((resolve) => {
+            const bar = $('bottom-tab-bar'), icon = $('bottom-tab-icon-mypage');
+            const barVisible = !!bar && getComputedStyle(bar).display !== 'none';
+            const reduce = reduceMotion();
+            const card = document.createElement('div');
+            card.id = 'pm-notice-card'; card.setAttribute('role', 'status'); card.setAttribute('aria-live', 'polite');
+            card.className = 'fixed left-1/2 z-[9996] w-[min(88vw,360px)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-xl px-4 py-3 cursor-pointer';
+            card.style.top = 'calc(env(safe-area-inset-top, 0px) + 14px)';
+            card.style.transform = 'translateX(-50%)';
+            card.innerHTML = '<div class="flex items-center gap-2 mb-1"><span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white" style="background:' + okColor(n.color) + '">' + esc(preview(n.badge || 'お知らせ', 12)) + '</span><span class="text-[10px] font-bold text-slate-400">新しいお知らせ</span></div>' +
+                '<p class="text-xs font-bold text-slate-900 dark:text-white truncate">' + esc(preview(n.title || 'お知らせがあります', 40)) + '</p>' +
+                (n.body ? '<p class="text-[11px] text-slate-600 dark:text-slate-300 leading-snug mt-0.5" style="display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">' + esc(preview(n.body, 42)) + '</p>' : '');
+            document.body.appendChild(card);
+            let done = false, timer = null;
+            const finish = () => { if (card.parentNode) card.remove(); if (icon && barVisible && !reduce) { icon.classList.remove('pm-icon-bump'); void icon.offsetWidth; icon.classList.add('pm-icon-bump'); setTimeout(() => icon.classList.remove('pm-icon-bump'), 600); } resolve(); };
+            const fly = () => {
+                if (done) return; done = true; clearTimeout(timer);
+                const ir = (icon && barVisible) ? icon.getBoundingClientRect() : null;
+                if (!ir || !ir.width || reduce || typeof card.animate !== 'function') {
+                    if (typeof card.animate === 'function') { const a = card.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, fill: 'forwards' }); a.onfinish = finish; } else { finish(); }
+                    return;
+                }
+                const r = card.getBoundingClientRect();
+                const dx = (ir.left + ir.width / 2) - (r.left + r.width / 2), dy = (ir.top + ir.height / 2) - (r.top + r.height / 2);
+                const a = card.animate([
+                    { transform: 'translate(-50%, 0) scale(1)', opacity: 1, borderRadius: '16px', offset: 0 },
+                    { transform: 'translate(calc(-50% + ' + (dx * 0.3) + 'px), ' + (dy * 0.2) + 'px) scale(.5)', opacity: .95, borderRadius: '40px', offset: .4 },
+                    { transform: 'translate(calc(-50% + ' + dx + 'px), ' + dy + 'px) scale(.04)', opacity: .15, borderRadius: '999px', offset: 1 }
+                ], { duration: 780, easing: 'cubic-bezier(.55,.05,.9,.4)', fill: 'forwards' });
+                a.onfinish = finish;
+            };
+            if (typeof card.animate === 'function' && !reduce) card.animate([{ opacity: 0, transform: 'translate(-50%, -18px) scale(.96)' }, { opacity: 1, transform: 'translate(-50%, 0) scale(1)' }], { duration: 320, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'forwards' });
+            card.addEventListener('click', fly);
+            timer = setTimeout(fly, reduce ? 2200 : 2800);
+        });
+    }
+    // 運営のお知らせ：いちばん新しい1件の中身を、少しだけ見せる
+    window.pmNoticeFromAnnouncement = function () {
+        let a = null; try { a = (getActiveAnnouncements() || [])[0]; } catch (e) {}
+        if (!a) { window._pmHoldTabDot = false; window.pmSyncMypageTabDot(); showToast('お知らせがあります'); return; }
+        window.pmNoticeFly({ badge: a.badge || 'お知らせ', color: a.badgeColor, title: a.title, body: a.body });
+    };
+    // 起動時に、いまの状態を反映
+    setTimeout(() => { window.pmSyncMypageTabDot(); evaluate(); }, 0);
+})();
     </script>
 
     <script>
