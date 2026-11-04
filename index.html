@@ -4543,24 +4543,24 @@ html.dark .dev-log-link { color: #e2e8f0; }
 
     <nav id="bottom-tab-bar" class="fixed bottom-0 left-0 right-0 z-[9980] bg-white/95 dark:bg-[#0c1220]/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 flex items-stretch justify-around px-1 pb-[env(safe-area-inset-bottom)]" style="display:none;">
         <button id="bottom-tab-mypage" onclick="showMyPageScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <span id="bottom-tab-icon-mypage" class="relative inline-flex"><i data-lucide="user-circle" class="w-5 h-5"></i><span id="tab-dot-mypage" class="pm-tab-dot hidden"></span></span>
-            <span class="text-[10px] font-bold">マイページ</span>
+            <span id="bottom-tab-icon-mypage" class="relative inline-flex"><span class="pm-tab-bubble"><i data-lucide="user-circle" class="w-5 h-5"></i><span id="tab-dot-mypage" class="pm-tab-dot hidden"></span></span></span>
+            <span class="pm-tab-label text-[10px] font-bold">マイページ</span>
         </button>
         <button id="bottom-tab-calendar" onclick="_navigateTo('calendar')" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <span id="bottom-tab-icon-calendar" class="relative inline-flex"><i data-lucide="calendar-days" class="w-5 h-5"></i><span id="tab-dot-calendar" class="pm-tab-dot hidden"></span></span>
-            <span class="text-[10px] font-bold">カレンダー</span>
+            <span id="bottom-tab-icon-calendar" class="relative inline-flex"><span class="pm-tab-bubble"><i data-lucide="calendar-days" class="w-5 h-5"></i><span id="tab-dot-calendar" class="pm-tab-dot hidden"></span></span></span>
+            <span class="pm-tab-label text-[10px] font-bold">カレンダー</span>
         </button>
         <button id="bottom-tab-grades" onclick="_navigateTo('grades')" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <i data-lucide="line-chart" class="w-5 h-5"></i>
-            <span class="text-[10px] font-bold">成績管理</span>
+            <span id="bottom-tab-icon-grades" class="relative inline-flex"><span class="pm-tab-bubble"><i data-lucide="line-chart" class="w-5 h-5"></i></span></span>
+            <span class="pm-tab-label text-[10px] font-bold">成績管理</span>
         </button>
         <button id="bottom-tab-study" onclick="_navigateTo('top')" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <span id="bottom-tab-icon-study" class="relative inline-flex"><i data-lucide="book-open" class="w-5 h-5"></i><span id="tab-dot-study" class="pm-tab-dot hidden"></span></span>
-            <span class="text-[10px] font-bold">学習コンテンツ</span>
+            <span id="bottom-tab-icon-study" class="relative inline-flex"><span class="pm-tab-bubble"><i data-lucide="book-open" class="w-5 h-5"></i><span id="tab-dot-study" class="pm-tab-dot hidden"></span></span></span>
+            <span class="pm-tab-label text-[10px] font-bold">学習コンテンツ</span>
         </button>
         <button data-pm-restricted id="bottom-tab-seasonal" onclick="showSeasonalCornerScreen()" class="flex-1 flex flex-col items-center justify-center gap-0.5 py-2.5 text-slate-400 dark:text-slate-500 transition-colors">
-            <span id="bottom-tab-icon-seasonal" class="relative inline-flex"><i data-lucide="calendar-clock" class="w-5 h-5"></i><span id="tab-dot-seasonal" class="pm-tab-dot hidden"></span></span>
-            <span class="text-[10px] font-bold">期間限定</span>
+            <span id="bottom-tab-icon-seasonal" class="relative inline-flex"><span class="pm-tab-bubble"><i data-lucide="calendar-clock" class="w-5 h-5"></i><span id="tab-dot-seasonal" class="pm-tab-dot hidden"></span></span></span>
+            <span class="pm-tab-label text-[10px] font-bold">期間限定</span>
         </button>
     </nav>
 
@@ -18803,6 +18803,8 @@ const KOBUN_TANGO = [
                 btn.classList.toggle('dark:text-cyan-400', active);
                 btn.classList.toggle('text-slate-400', !active);
                 btn.classList.toggle('dark:text-slate-500', !active);
+                btn.classList.toggle('pm-tab-on', active);   // 浮き出て、大きくなる
+                if (active) btn.setAttribute('aria-current', 'page'); else btn.removeAttribute('aria-current');
             });
         }
         function updateBottomTabActive(screen) {
@@ -25862,6 +25864,21 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         #cal-week-scroll::-webkit-scrollbar{height:6px;width:6px}
         #cal-week-scroll::-webkit-scrollbar-thumb{background:rgba(148,163,184,.4);border-radius:3px}
         @media (prefers-reduced-motion: reduce){#cal-view-pill{transition:none !important}}
+        /* 下のタブバー：選んでいるタブが、浮き出て大きくなる */
+        #bottom-tab-bar { --pm-bar-bg: #ffffff; --pm-tab-c: #06b6d4; --pm-tab-glow: rgba(6,182,212,.42); }
+        .dark #bottom-tab-bar { --pm-bar-bg: #0c1220; --pm-tab-c: #06b6d4; --pm-tab-glow: rgba(34,211,238,.38); }
+        #pm-tab-ind { display: none !important; }
+        #bottom-tab-bar > button { position: relative; -webkit-tap-highlight-color: transparent; }
+        .pm-tab-bubble { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 9999px;
+            transition: transform .55s cubic-bezier(.34,1.56,.64,1), background-color .3s ease, box-shadow .35s ease, color .25s ease; }
+        #bottom-tab-bar > button:not(.pm-tab-on):active .pm-tab-bubble { transform: scale(.86); }
+        #bottom-tab-bar > button.pm-tab-on .pm-tab-bubble { transform: translateY(-15px) scale(1.5); background: var(--pm-tab-c); color: #ffffff;
+            box-shadow: 0 0 0 3px var(--pm-bar-bg), 0 9px 18px var(--pm-tab-glow); }
+        #bottom-tab-bar > button.pm-tab-on:active .pm-tab-bubble { transform: translateY(-13px) scale(1.4); }
+        .pm-tab-label { transition: transform .45s cubic-bezier(.34,1.56,.64,1), color .25s ease; }
+        #bottom-tab-bar > button.pm-tab-on .pm-tab-label { font-weight: 900; transform: translateY(-1px) scale(1.06); }
+        html:not(.pm-fx) .pm-tab-bubble, html:not(.pm-fx) .pm-tab-label { transition: none; }
+        @media (prefers-reduced-motion: reduce) { .pm-tab-bubble, .pm-tab-label { transition: none; } }
     </style>
     <script>
 (function () {
