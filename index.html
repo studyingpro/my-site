@@ -2429,7 +2429,8 @@ html.dark .dev-log-link { color: #e2e8f0; }
                         </div>
                     </div>
                     <div class="flex items-center justify-between flex-wrap gap-x-2 gap-y-2 mb-4">
-                            <div class="flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5">
+                            <div class="relative flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5">
+<span id="cal-view-pill" class="absolute top-0.5 bottom-0.5 left-0 rounded-md bg-white dark:bg-slate-700 shadow-sm pointer-events-none" style="width:0;transition:transform .42s cubic-bezier(.34,1.35,.64,1),width .42s cubic-bezier(.34,1.35,.64,1);"></span>
 <button id="cal-view-day" onclick="calSetView('day')" class="px-2 py-1 rounded-md text-[11px] font-black">日</button>
 <button id="cal-view-week" onclick="calSetView('week')" class="px-2 py-1 rounded-md text-[11px] font-black">週</button>
 <button id="cal-view-month" onclick="calSetView('month')" class="px-2 py-1 rounded-md text-[11px] font-black">月</button>
@@ -2442,9 +2443,14 @@ html.dark .dev-log-link { color: #e2e8f0; }
                         </div>
                     </div>
 
-                    <div id="cal-weekday-header" class="grid grid-cols-7 gap-1 mb-1"></div>
-                    <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
-                    <div id="cal-day-timeline" class="hidden"></div>
+                    <div id="cal-stage" class="relative">
+                        <div id="cal-month-wrap">
+                            <div id="cal-weekday-header" class="grid grid-cols-7 gap-1 mb-1"></div>
+                            <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+                        </div>
+                        <div id="cal-week-timeline" class="hidden"></div>
+                        <div id="cal-day-timeline" class="hidden"></div>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-3">
@@ -10913,25 +10919,29 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             return `${md(st)}〜${md(_ymdAdd(st, 6))}`;
         }
         function calSetView(v) {
+            if (v === calView) { renderCalendarPanel(); return; }
+            const snap = calTransitionBegin(calView, v);   // 切り替える前の画面を、写しておく
             calView = v;
             const today = getJSTDateOnly().toISOString().slice(0, 10);
             if (v !== 'month' && !calSelectedDate) calSelectedDate = today;
             if (calSelectedDate) { calViewYear = Number(calSelectedDate.slice(0, 4)); calViewMonth = Number(calSelectedDate.slice(5, 7)) - 1; }
             renderCalendarPanel();
+            calTransitionRun(snap);
         }
         function calUpdateViewButtons() {
             ['day', 'week', 'month'].forEach(k => {
                 const b = document.getElementById('cal-view-' + k); if (!b) return;
-                b.className = 'px-2 py-1 rounded-md text-[11px] font-black ' + (k === calView ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white' : 'text-slate-500');
+                b.className = 'relative z-10 px-2.5 py-1 rounded-md text-[11px] font-black transition-colors duration-300 ' + (k === calView ? 'text-slate-900 dark:text-white' : 'text-slate-500');
+                b.setAttribute('aria-pressed', k === calView ? 'true' : 'false');
             });
+            calPlacePill();
         }
         const CAL_HOUR_H = 48;
         let _calDayLastDate = null;
         function renderCalDayTimeline() {
             const box = document.getElementById('cal-day-timeline'); if (!box) return;
-            const listCard = (document.getElementById('cal-day-title') || {}).closest ? document.getElementById('cal-day-title').closest('.rounded-2xl') : null;
-            if (calView !== 'day') { box.classList.add('hidden'); if (listCard) listCard.classList.remove('hidden'); return; }
-            box.classList.remove('hidden'); if (listCard) listCard.classList.add('hidden');
+            if (calView !== 'day') { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
             const H = CAL_HOUR_H;
             const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
             const date = calSelectedDate || todayStr;
@@ -10980,7 +10990,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     <span class="text-[10px] font-bold text-slate-400">空いている枠をタップして追加</span>
                 </div>
                 ${allDay ? `<div class="flex items-start gap-2 mb-2 pb-2 border-b border-slate-200 dark:border-slate-700"><span class="w-10 shrink-0 text-right text-[10px] font-bold text-slate-400 pt-1">終日</span><div class="flex-1 flex flex-wrap gap-1.5">${allDay}</div></div>` : ''}
-                <div id="cal-day-scroll" class="overflow-y-auto" style="max-height:65vh;">
+                <div id="cal-day-scroll" class="cal-scroll overflow-y-auto" style="max-height:65vh;">
                     <div id="cal-day-grid" class="relative" style="height:${24 * H}px;cursor:pointer;" onclick="calDayGridClick(event)">
                         ${lines}
                         <div class="absolute" style="left:46px;right:2px;top:0;bottom:0;">${blocks}</div>
@@ -11007,7 +11017,237 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const p = (n) => String(n).padStart(2, '0');
             openScheduleInputModal(null, calSelectedDate, `${p(Math.floor(mins / 60))}:${p(mins % 60)}`);
         }
+        // ================= 週の時間軸（日表示と同じ考え方で、7日ぶんを横に並べる） =================
+        function calWeekGridClick(e, date) {
+            const col = (e && e.currentTarget) || (e && e.target && e.target.closest ? e.target.closest('.cal-wk-col') : null);
+            if (!col) return;
+            const rect = col.getBoundingClientRect();
+            const mins = Math.max(0, Math.min(Math.floor((e.clientY - rect.top) / CAL_HOUR_H * 60 / 30) * 30, 23 * 60 + 30));
+            const p = (n) => String(n).padStart(2, '0');
+            calSelectedDate = date;
+            openScheduleInputModal(null, date, `${p(Math.floor(mins / 60))}:${p(mins % 60)}`);
+        }
+        function calWeekHeadClick(date) { calSelectedDate = date; calSetView('day'); }
+        let _calWeekLast = null;
+        function renderCalWeekTimeline() {
+            const box = document.getElementById('cal-week-timeline'); if (!box) return;
+            if (calView !== 'week') { box.classList.add('hidden'); return; }
+            box.classList.remove('hidden');
+            const H = CAL_HOUR_H, AX = 38, COLMIN = 54;
+            const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
+            const base = calSelectedDate || todayStr;
+            const start = _ymdAdd(base, -new Date(base + 'T00:00:00Z').getUTCDay());
+            const days = [0, 1, 2, 3, 4, 5, 6].map(i => _ymdAdd(start, i));
+            const wdNames = ['日', '月', '火', '水', '木', '金', '土'];
+            const all = getAllSchedules();
+            const toMin = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
+            const styleOf = (s) => { const ec = eventColor(s); return s.isRemote ? { bg: '#e2e8f0', tc: '#0f172a', edge: `border-left:3px solid ${ec};` } : { bg: ec, tc: '#ffffff', edge: '' }; };
+            const cols = days.map(d => {
+                const items = all.filter(s => s.date === d);
+                const ev = items.filter(s => s.time).map(s => {
+                    const st = toMin(s.time); let en = s.endTime ? toMin(s.endTime) : st + 60;
+                    if (en > 1440) en = 1440; if (en <= st) en = Math.min(st + 30, 1440);
+                    return { s, st, en };
+                }).sort((a, b) => a.st - b.st || a.en - b.en);
+                const clusters = []; let cur = [], curEnd = -1;
+                ev.forEach(e => { if (cur.length && e.st >= curEnd) { clusters.push(cur); cur = []; curEnd = -1; } cur.push(e); curEnd = Math.max(curEnd, e.en); });
+                if (cur.length) clusters.push(cur);
+                clusters.forEach(c => { const lanes = []; c.forEach(e => { let i = lanes.findIndex(end => end <= e.st); if (i < 0) { i = lanes.length; lanes.push(0); } lanes[i] = e.en; e.col = i; }); c.forEach(e => { e.n = lanes.length; }); });
+                return { d, allDay: items.filter(s => !s.time), ev };
+            });
+            const grid = `${AX}px repeat(7,minmax(${COLMIN}px,1fr))`;
+            const bgSolid = 'bg-white dark:bg-[#0c1220]';
+            const heads = cols.map(c => {
+                const isToday = c.d === todayStr, isSel = c.d === calSelectedDate;
+                const wi = new Date(c.d + 'T00:00:00Z').getUTCDay();
+                const wc = wi === 0 ? 'text-rose-400' : wi === 6 ? 'text-blue-400' : 'text-slate-400';
+                return `<button type="button" data-date="${c.d}" onclick="calWeekHeadClick('${c.d}')" class="cal-wk-head flex flex-col items-center py-1.5 min-w-0 border-l border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors" aria-label="${Number(c.d.slice(5, 7))}月${Number(c.d.slice(8))}日の日表示を開く">
+                    <span class="text-[10px] font-black ${wc}">${wdNames[wi]}</span>
+                    <span class="mt-0.5 inline-flex w-7 h-7 items-center justify-center rounded-full text-sm font-black ${isToday ? 'bg-rose-500 text-white' : (isSel ? 'ring-2 ring-rose-400 text-slate-800 dark:text-slate-100' : 'text-slate-700 dark:text-slate-200')}">${Number(c.d.slice(8))}</span>
+                </button>`;
+            }).join('');
+            const anyAllDay = cols.some(c => c.allDay.length);
+            const allDayRow = anyAllDay ? `<div class="grid border-t border-slate-100 dark:border-slate-800" style="grid-template-columns:${grid}">
+                    <div class="sticky left-0 z-40 ${bgSolid} text-[9px] font-bold text-slate-400 text-right pr-1 pt-1">終日</div>
+                    ${cols.map(c => `<div class="min-w-0 p-0.5 border-l border-slate-100 dark:border-slate-800">${c.allDay.slice(0, 2).map(s => { const st = styleOf(s); return `<button type="button" onclick="openScheduleViewModal(${schedIdArg(s.id)})" class="block w-full truncate text-left text-[9px] font-bold rounded px-1 py-0.5 mb-0.5" style="background:${st.bg};color:${st.tc};${st.edge}" title="${escapeHtml(s.title)}">${escapeHtml(s.title)}</button>`; }).join('')}${c.allDay.length > 2 ? `<span class="block text-[9px] font-bold text-slate-400 text-center">+${c.allDay.length - 2}</span>` : ''}</div>`).join('')}
+                </div>` : '';
+            let hourLabels = '', hourLines = '';
+            for (let h = 0; h < 24; h++) {
+                hourLines += `<div class="absolute border-t border-slate-200 dark:border-slate-700" style="left:${AX}px;right:0;top:${h * H}px"></div>`;
+                hourLabels += `<span class="absolute right-1 text-[9px] font-bold text-slate-400" style="top:${h * H}px;transform:translateY(${h === 0 ? '1px' : '-50%'})">${h}:00</span>`;
+            }
+            const nowMin = (() => { const j = new Date(Date.now() + 9 * 3600 * 1000); return j.getUTCHours() * 60 + j.getUTCMinutes(); })();
+            const colHtml = cols.map(c => {
+                const isToday = c.d === todayStr, isSel = c.d === calSelectedDate;
+                const blocks = c.ev.map(e => {
+                    const st = styleOf(e.s);
+                    const top = e.st / 60 * H, h = Math.max((e.en - e.st) / 60 * H - 2, 18);
+                    const l = e.col / e.n * 100, w = 100 / e.n;
+                    const range = e.s.time + (e.s.endTime ? '〜' + e.s.endTime : '');
+                    return `<button type="button" onclick="event.stopPropagation(); openScheduleViewModal(${schedIdArg(e.s.id)})" class="cal-ev absolute text-left overflow-hidden rounded-md px-1 py-0.5 text-[10px] font-bold leading-tight" style="top:${top}px;height:${h}px;left:calc(${l}% + 1px);width:calc(${w}% - 2px);background:${st.bg};color:${st.tc};${st.edge}" title="${escapeHtml(range + ' ' + e.s.title)}"><span class="block truncate">${escapeHtml(e.s.title)}</span>${h >= 34 ? `<span class="block truncate opacity-80 text-[9px]">${escapeHtml(e.s.time)}</span>` : ''}</button>`;
+                }).join('');
+                const nowMarker = isToday ? `<div class="absolute pointer-events-none z-10" style="left:0;right:0;top:${nowMin / 60 * H}px;border-top:2px solid #ef4444;"><span style="position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:#ef4444;"></span></div>` : '';
+                return `<div class="cal-wk-col relative border-l border-slate-100 dark:border-slate-800 ${isToday ? 'bg-rose-50/40 dark:bg-rose-950/10' : ''} ${isSel ? 'cal-wk-sel' : ''}" data-date="${c.d}" onclick="calWeekGridClick(event,'${c.d}')" style="cursor:pointer;height:${24 * H}px;">${blocks}${nowMarker}</div>`;
+            }).join('');
+            const key = start;
+            const prevSc = document.getElementById('cal-week-scroll');
+            const keep = (prevSc && _calWeekLast && _calWeekLast.key === key) ? { top: prevSc.scrollTop, left: prevSc.scrollLeft } : null;
+            box.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-xs font-black text-slate-700 dark:text-slate-200">${Number(start.slice(5, 7))}/${Number(start.slice(8))}〜${Number(days[6].slice(5, 7))}/${Number(days[6].slice(8))}の予定</p>
+                    <span class="text-[10px] font-bold text-slate-400">空いている枠をタップして追加／日付で日表示</span>
+                </div>
+                <div id="cal-week-scroll" class="cal-scroll overflow-auto" style="max-height:68vh;">
+                    <div style="min-width:${AX + 7 * COLMIN}px;">
+                        <div class="sticky top-0 z-30 ${bgSolid} border-b border-slate-200 dark:border-slate-700">
+                            <div class="grid" style="grid-template-columns:${grid}">
+                                <div class="sticky left-0 z-40 ${bgSolid}"></div>
+                                ${heads}
+                            </div>
+                            ${allDayRow}
+                        </div>
+                        <div id="cal-week-grid" class="relative grid" style="grid-template-columns:${grid};height:${24 * H}px;">
+                            <div class="absolute inset-0 pointer-events-none">${hourLines}</div>
+                            <div class="sticky left-0 z-20 ${bgSolid}" style="height:${24 * H}px;">${hourLabels}</div>
+                            ${colHtml}
+                        </div>
+                    </div>
+                </div>`;
+            const sc = document.getElementById('cal-week-scroll');
+            if (sc) {
+                if (keep) { sc.scrollTop = keep.top; sc.scrollLeft = keep.left; }
+                else {
+                    const timed = cols.flatMap(c => c.ev).sort((a, b) => a.st - b.st);
+                    let startMin = 7 * 60;
+                    if (timed.length) startMin = Math.max(timed[0].st - 60, 0);
+                    else if (days.includes(todayStr)) startMin = Math.max(nowMin - 60, 0);
+                    sc.scrollTop = startMin / 60 * H;
+                    const target = box.querySelector('.cal-wk-col[data-date="' + (days.includes(base) ? base : days[0]) + '"]');
+                    if (target && sc.clientWidth && sc.scrollWidth > sc.clientWidth) sc.scrollLeft = Math.max(0, target.offsetLeft - AX - (sc.clientWidth - AX - target.offsetWidth) / 2);
+                }
+            }
+            _calWeekLast = { key };
+        }
+
+        // ================= 表示の切り替え（月・週・日）のアニメーション =================
+        const CAL_LEVEL = { month: 0, week: 1, day: 2 };
+        const CAL_EASE_OUT = 'cubic-bezier(.22,1,.36,1)';
+        const CAL_EASE_IO = 'cubic-bezier(.65,0,.35,1)';
+        let _calAnim = null;
+        function calReduceMotion() { try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+        function calViewEl(v) { return document.getElementById(v === 'month' ? 'cal-month-wrap' : v === 'week' ? 'cal-week-timeline' : 'cal-day-timeline'); }
+        function calAnimDone(a) { return a && a.finished ? a.finished : new Promise(r => { a.onfinish = r; a.oncancel = r; }); }
+        // 動いている最中のものを止めて、写しの画面（ゴースト）を消す
+        function calTransitionCancel() {
+            if (!_calAnim) return;
+            const a = _calAnim; _calAnim = null;
+            try { a.list.forEach(x => { try { x.cancel(); } catch (e) {} }); } catch (e) {}
+            if (a.ghost && a.ghost.parentNode) a.ghost.remove();
+            if (a.stage) { a.stage.style.overflow = ''; a.stage.style.height = ''; }
+        }
+        // 「選んでいる日」が、その画面のどこにあるか（枠の外側の座標からの位置）
+        function calAnchorRect(root, view, date, stageRect) {
+            if (!root || !date) return null;
+            let el = null;
+            if (view === 'month') el = root.querySelector('[data-date="' + date + '"]');
+            else if (view === 'week') el = root.querySelector('.cal-wk-head[data-date="' + date + '"]');
+            if (!el) return null;
+            const r = el.getBoundingClientRect();
+            if (!r.width || !r.height) return null;
+            let top = r.top, height = r.height;
+            if (view === 'week') { const c = root.getBoundingClientRect(); top = c.top; height = c.height; }   // 週：その日の縦の列ぜんぶ
+            return { l: r.left - stageRect.left, t: top - stageRect.top, w: r.width, h: height };
+        }
+        // 切り替える「前」に呼ぶ：いまの画面の写し（ゴースト）と、選んでいる日の位置を控えておく
+        function calTransitionBegin(from, to) {
+            calTransitionCancel();
+            if (calReduceMotion() || typeof Element.prototype.animate !== 'function') return null;
+            try {
+                const stage = document.getElementById('cal-stage'), src = calViewEl(from);
+                if (!stage || !src || src.classList.contains('hidden') || !stage.getClientRects().length) return null;
+                const sr = stage.getBoundingClientRect(), er = src.getBoundingClientRect();
+                if (!sr.width || !er.width) return null;
+                const date = calSelectedDate || getJSTDateOnly().toISOString().slice(0, 10);
+                const snap = { from, to, date, shift: 0, stageH: sr.height, box: { l: er.left - sr.left, t: er.top - sr.top, w: er.width, h: er.height }, anchor: calAnchorRect(src, from, date, sr), ghost: null };
+                const g = document.createElement('div');
+                g.className = 'cal-ghost'; g.setAttribute('aria-hidden', 'true');
+                g.style.cssText = `position:absolute;left:${snap.box.l}px;top:${snap.box.t}px;width:${snap.box.w}px;height:${snap.box.h}px;overflow:hidden;pointer-events:none;z-index:50;`;
+                const copy = src.cloneNode(true);
+                copy.classList.remove('hidden'); copy.removeAttribute('id');
+                copy.querySelectorAll('[id]').forEach(n => n.removeAttribute('id'));
+                g.appendChild(copy); stage.appendChild(g);
+                const a = src.querySelectorAll('.cal-scroll'), b = copy.querySelectorAll('.cal-scroll');
+                a.forEach((n, i) => { if (b[i]) { b[i].scrollTop = n.scrollTop; b[i].scrollLeft = n.scrollLeft; } });
+                snap.ghost = g;
+                return snap;
+            } catch (e) { return null; }
+        }
+        // 切り替えた「後」に呼ぶ：ゴーストを消しながら、新しい画面を出す
+        function calTransitionRun(snap) {
+            if (!snap) return;
+            const stage = document.getElementById('cal-stage'), ne = calViewEl(snap.to);
+            if (!stage || !ne || !ne.getClientRects().length) { if (snap.ghost) snap.ghost.remove(); return; }
+            const list = [];
+            const track = (a) => { if (a) list.push(a); return a; };
+            _calAnim = { list, ghost: snap.ghost, stage };
+            try {
+                const sr = stage.getBoundingClientRect(), nr = ne.getBoundingClientRect();
+                const nb = { l: nr.left - sr.left, t: nr.top - sr.top, w: nr.width, h: nr.height };
+                const ncx = nb.l + nb.w / 2, ncy = nb.t + nb.h / 2;
+                // 高さ：カードが、なめらかに伸び縮みする
+                if (Math.abs(sr.height - snap.stageH) > 1) { stage.style.overflow = 'hidden'; track(stage.animate([{ height: snap.stageH + 'px' }, { height: sr.height + 'px' }], { duration: 480, easing: CAL_EASE_OUT })); }
+                const dir = CAL_LEVEL[snap.to] - CAL_LEVEL[snap.from];
+                const g = snap.ghost, ob = snap.box;
+                let stagger = true;
+                if (dir > 0) {
+                    // ズームイン：選んだ日のところから、新しい画面が広がる
+                    const a = snap.anchor;
+                    const s = a ? Math.max(0.08, Math.min(a.w / nb.w, a.h / nb.h, 0.6)) : 0.92;
+                    const cx = a ? a.l + a.w / 2 : ncx, cy = a ? a.t + a.h / 2 : ncy;
+                    track(ne.animate([{ transform: `translate(${cx - ncx}px,${cy - ncy}px) scale(${s})`, opacity: 0 }, { opacity: 1, offset: 0.45 }, { transform: 'none', opacity: 1 }], { duration: 540, easing: CAL_EASE_OUT }));
+                    if (g) { g.style.transformOrigin = `${cx - ob.l}px ${cy - ob.t}px`; track(g.animate([{ transform: 'scale(1)', opacity: 1 }, { transform: `scale(${a ? 1.7 : 1.04})`, opacity: 0 }], { duration: 360, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' })); }
+                } else if (dir < 0) {
+                    // ズームアウト：古い画面が、選んでいた日のマスに縮んでいく
+                    const a = calAnchorRect(ne, snap.to, snap.date, sr);
+                    const s = a ? Math.max(0.07, Math.min(a.w / ob.w, a.h / ob.h)) : 0.94;
+                    const cx = a ? a.l + a.w / 2 : ob.l + ob.w / 2, cy = a ? a.t + a.h / 2 : ob.t + ob.h / 2;
+                    if (g) track(g.animate([{ transform: 'none', opacity: 1 }, { opacity: 0.85, offset: 0.55 }, { transform: `translate(${cx - (ob.l + ob.w / 2)}px,${cy - (ob.t + ob.h / 2)}px) scale(${s})`, opacity: 0 }], { duration: 500, easing: CAL_EASE_IO, fill: 'forwards' }));
+                    track(ne.animate([{ transform: 'scale(1.07)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 480, delay: 70, easing: CAL_EASE_OUT, fill: 'backwards' }));
+                } else {
+                    // 同じ画面で前後へ：横にすべる
+                    const d = snap.shift || 1; stagger = false;
+                    if (g) track(g.animate([{ transform: 'none', opacity: 1 }, { transform: `translateX(${-d * 30}px)`, opacity: 0 }], { duration: 240, easing: 'cubic-bezier(.4,0,1,1)', fill: 'forwards' }));
+                    track(ne.animate([{ transform: `translateX(${d * 30}px)`, opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 340, delay: 60, easing: CAL_EASE_OUT, fill: 'backwards' }));
+                }
+                if (stagger) {
+                    const nodes = snap.to === 'month' ? [...ne.querySelectorAll('#cal-grid > div')] : [...ne.querySelectorAll('.cal-ev')];
+                    nodes.slice(0, snap.to === 'month' ? 42 : 14).forEach((n, i) => {
+                        const delay = snap.to === 'month' ? 180 + Math.floor(i / 7) * 32 : 240 + i * 24;
+                        track(n.animate([{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }], { duration: 320, delay, easing: CAL_EASE_OUT, fill: 'backwards' }));
+                    });
+                }
+            } catch (e) { calTransitionCancel(); return; }
+            Promise.all(list.map(x => calAnimDone(x).catch(() => {}))).then(() => { if (_calAnim && _calAnim.list === list) calTransitionCancel(); });
+        }
+        function calLabelSlide(dir) {
+            const el = document.getElementById('cal-month-label');
+            if (!el || calReduceMotion() || typeof el.animate !== 'function') return;
+            try { el.animate([{ opacity: 0, transform: `translateX(${dir > 0 ? 14 : -14}px)` }, { opacity: 1, transform: 'none' }], { duration: 300, easing: CAL_EASE_OUT }); } catch (e) {}
+        }
+        // 「日・週・月」の白い丸い印を、押したボタンの下へすべらせる
+        function calPlacePill() {
+            const pill = document.getElementById('cal-view-pill'), b = document.getElementById('cal-view-' + calView);
+            if (!pill || !b || !b.offsetWidth) return;
+            if (!pill.dataset.placed) { pill.style.transition = 'none'; }
+            pill.style.width = b.offsetWidth + 'px';
+            pill.style.transform = `translateX(${b.offsetLeft}px)`;
+            if (!pill.dataset.placed) { void pill.offsetWidth; pill.style.transition = ''; pill.dataset.placed = '1'; }
+        }
+        window.addEventListener('resize', () => { try { calPlacePill(); } catch (e) {} });
+
         function calShiftMonth(delta) {
+            const snap = calTransitionBegin(calView, calView);
+            if (snap) snap.shift = delta > 0 ? 1 : -1;
             if (calView === 'month') {
                 calViewMonth += delta;
                 if (calViewMonth < 0) { calViewMonth = 11; calViewYear--; }
@@ -11018,6 +11258,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 calViewYear = Number(calSelectedDate.slice(0, 4)); calViewMonth = Number(calSelectedDate.slice(5, 7)) - 1;
             }
             renderCalendarPanel();
+            calLabelSlide(delta);
+            calTransitionRun(snap);
         }
         const SCHEDULE_COLORS = ['#e11d48', '#ea580c', '#ca8a04', '#16a34a', '#0d9488', '#0284c7', '#4f46e5', '#9333ea', '#db2777', '#475569'];
         function eventColor(s) { return (s && s.color) || SCHEDULE_COLORS[6]; }
@@ -11095,10 +11337,18 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         }
         function calGoToday() {
             const today = getJSTDateOnly();
+            const todayStr = today.toISOString().slice(0, 10);
+            let dir = 0;   // 今日が、いま見ているところより「あと」なら +1、「まえ」なら -1
+            if (calView === 'month') dir = Math.sign((today.getUTCFullYear() * 12 + today.getUTCMonth()) - (calViewYear * 12 + calViewMonth));
+            else dir = Math.sign(Date.parse(todayStr) - Date.parse(calSelectedDate || todayStr));
+            const snap = dir ? calTransitionBegin(calView, calView) : null;
+            if (snap) snap.shift = dir;
             calViewYear = today.getUTCFullYear();
             calViewMonth = today.getUTCMonth();
-            calSelectedDate = today.toISOString().slice(0, 10);
+            calSelectedDate = todayStr;
             renderCalendarPanel();
+            if (dir) calLabelSlide(dir);
+            calTransitionRun(snap);
         }
         function calSelectDate(dateStr) {
             calSelectedDate = dateStr;
@@ -11107,6 +11357,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 el.classList.toggle('ring-2', el.getAttribute('data-date') === dateStr);
                 el.classList.toggle('ring-rose-400', el.getAttribute('data-date') === dateStr);
             });
+            document.querySelectorAll('#cal-week-timeline .cal-wk-col').forEach(el => el.classList.toggle('cal-wk-sel', el.getAttribute('data-date') === dateStr));
         }
 
         function calCellClick(dateStr) {
@@ -11158,17 +11409,15 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 cells.push({ day: nextDay++, inMonth: false, dateStr: null });
             }
 
-            if (calView !== 'month') {
-                cells.length = 0;
-                const base = calSelectedDate || todayStr;
-                const start = calView === 'week' ? _ymdAdd(base, -new Date(base + 'T00:00:00Z').getUTCDay()) : base;
-                for (let i = 0; i < (calView === 'week' ? 7 : 1); i++) { const ds = _ymdAdd(start, i); cells.push({ day: Number(ds.slice(8)), inMonth: true, dateStr: ds }); }
-            }
-            const wdh = document.getElementById('cal-weekday-header'); if (wdh) wdh.classList.toggle('hidden', calView === 'day');
+            const monthWrap = document.getElementById('cal-month-wrap');
+            if (monthWrap) monthWrap.classList.toggle('hidden', calView !== 'month');
             const grid = document.getElementById('cal-grid');
-            if (grid) grid.classList.toggle('hidden', calView === 'day');
+            renderCalWeekTimeline();
             renderCalDayTimeline();
-            if (grid) {
+            const dayListCard = (document.getElementById('cal-day-title') || {}).closest ? document.getElementById('cal-day-title').closest('.rounded-2xl') : null;
+            if (dayListCard) dayListCard.classList.toggle('hidden', calView !== 'month');
+            if (grid && calView !== 'month') grid.innerHTML = '';
+            if (grid && calView === 'month') {
                 grid.innerHTML = cells.map(c => {
                     if (!c.inMonth) {
                         return `<div class="rounded-lg p-1 text-[10px] text-slate-300 dark:text-slate-700" style="min-height:64px;">${c.day}</div>`;
@@ -25607,6 +25856,12 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         .pm-icon-bump{animation:pm-icon-bump .5s ease-out}
         @keyframes pm-icon-bump{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
         @media (prefers-reduced-motion: reduce){.pm-tab-dot.pm-pop,.pm-icon-bump{animation:none}}
+        .cal-wk-col.cal-wk-sel{background:rgba(148,163,184,.10)}
+        .cal-ev{transition:filter .15s ease,transform .15s ease}
+        .cal-ev:hover{filter:brightness(1.08);z-index:5}
+        #cal-week-scroll::-webkit-scrollbar{height:6px;width:6px}
+        #cal-week-scroll::-webkit-scrollbar-thumb{background:rgba(148,163,184,.4);border-radius:3px}
+        @media (prefers-reduced-motion: reduce){#cal-view-pill{transition:none !important}}
     </style>
     <script>
 (function () {
