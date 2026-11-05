@@ -4052,35 +4052,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <li>開発者モード中の操作は数えません。通信できなかった分は記録が欠けることがあるので、目安の数字として見てください。</li>
                     <li>記録は、この機能を入れたあとの利用から始まります。画面・機能の追加は、ファイル末尾の「pmUsageTracker」の表に1行足すだけです。</li>
                 </ul>
-                <details id="dev-usage-rules" class="dev-details">
-                    <summary>Firestoreルール（最初の1回だけ追加が必要・インストール者数の分も含みます）</summary>
-                    <p class="dev-card-desc">firestore.rules の <code>match /databases/{database}/documents { … }</code> の中（<code>security_events</code> の下あたり）に、次を追加して「公開」してください。公式マークの付いたアカウントで開発者モードに入っているときだけ、読めます。</p>
-                    <pre id="dev-usage-rules-text" class="dev-code">    // 利用状況の記録（開発者ページの「利用状況」用）
-    // 書けるのはログイン中の人（ゲスト含む）が決まった形でだけ。読めるのは公式アカウントだけ。削除は誰にもできない
-    match /usage_visits/{vid} {
-      allow create, update: if request.auth != null
-                            && vid.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}_[0-9a-f]{16}$')
-                            && request.resource.data.keys().hasOnly(['d', 'g', 'screens', 'features', 't'])
-                            && request.resource.data.d == vid.split('_')[0]
-                            && (!('screens' in request.resource.data) || request.resource.data.screens.size() <= 60)
-                            && (!('features' in request.resource.data) || request.resource.data.features.size() <= 60);
-      allow read: if isOfficial();
-      allow delete: if false;
-    }
-
-    // アプリのインストール者数（開発者ページの「利用状況」用）
-    // 作れるのはログイン中の人だけ（1人1件。あとから書き換え・削除はできない）。読めるのは公式アカウントだけ
-    match /app_installs/{iid} {
-      allow create: if request.auth != null
-                    && iid.matches('^[0-9a-f]{16}$')
-                    && request.resource.data.keys().hasOnly(['d', 'p', 'g', 't'])
-                    && request.resource.data.d.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
-                    && request.resource.data.p in ['ios', 'android', 'desktop'];
-      allow update, delete: if false;
-      allow read: if isOfficial();
-    }</pre>
-                    <button type="button" onclick="devUsageCopyRules()" class="dev-btn"><i data-lucide="copy" class="w-4 h-4"></i><span id="dev-usage-copy-label">ルールをコピー</span></button>
-                </details>
             </div>
         </section>
 
@@ -22687,14 +22658,6 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             devUsageLoad(next);
         }
         function devUsageToday() { devUsageLoad(devUsageJstToday()); }
-        function devUsageCopyRules() {
-            const t = (document.getElementById('dev-usage-rules-text') || {}).textContent || '';
-            const label = document.getElementById('dev-usage-copy-label');
-            const done = (msg) => { if (label) { label.textContent = msg; setTimeout(() => { label.textContent = 'ルールをコピー'; }, 1800); } };
-            if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(() => done('コピーしました'), () => done('コピーできませんでした'));
-            else done('長押しで選択してコピーしてください');
-        }
-
         function devUsageAggregate(docs) {
             const out = { users: docs.length, guests: 0, screens: {}, features: {}, totalViews: 0, totalUses: 0 };
             docs.forEach(d => {
@@ -22749,12 +22712,10 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 status.className = 'dev-card-desc';
                 status.style.color = '#e11d48';
                 status.textContent = denied
-                    ? '読み取りが許可されていません。下の「Firestoreルール」を firestore.rules に追加して「公開」してください（公式マークの付いたアカウントでログインしている必要があります）。'
+                    ? '読み取りが許可されていません。firestore.rules の usage_visits のルールを確認して「公開」してください（公式マークの付いたアカウントでログインしている必要があります）。'
                     : '取得に失敗しました（' + ((e && (e.code || e.message)) || '不明') + '）。';
             }
             ['dev-usage-sums', 'dev-usage-screens', 'dev-usage-features', 'dev-usage-trend'].forEach(id => { const el = document.getElementById(id); if (el) el.innerHTML = ''; });
-            const det = document.getElementById('dev-usage-rules');
-            if (denied && det) det.open = true;
         }
         async function devUsageLoad(day) {
             const inp = document.getElementById('dev-usage-date');
@@ -22803,9 +22764,8 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 ).join('') + '</div><p class="dev-card-desc" style="margin-top:.4rem">直近14日の、1日ごとの新規インストール者数です。</p>';
             } catch (e) {
                 const denied = !!(e && e.code === 'permission-denied');
-                if (status) { status.style.color = '#e11d48'; status.textContent = denied ? '読み取りが許可されていません。下の「Firestoreルール」に app_installs の分を追加して「公開」してください。' : '取得に失敗しました（' + ((e && (e.code || e.message)) || '不明') + '）。'; }
+                if (status) { status.style.color = '#e11d48'; status.textContent = denied ? '読み取りが許可されていません。firestore.rules に app_installs のルールを追加して「公開」してください。' : '取得に失敗しました（' + ((e && (e.code || e.message)) || '不明') + '）。'; }
                 sumsEl.innerHTML = ''; if (trendEl) trendEl.innerHTML = '';
-                if (denied) { const det = document.getElementById('dev-usage-rules'); if (det) det.open = true; }
             }
         }
         async function devUsageLoadTrend(selected) {
