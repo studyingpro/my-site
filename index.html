@@ -1970,31 +1970,31 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">勉強する教科を選んでください</p>
                 </div>
                 <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4">
-                    <button id="subject-card-jp" onclick="selectSubject('japanese')" class="pm-subj" style="--c:#b5645f">
+                    <button id="subject-card-jp" data-pm-dot="f:japanese" data-pm-seen="f:japanese" onclick="selectSubject('japanese')" class="pm-subj" style="--c:#b5645f">
                         <span class="pm-badge">国</span>
                         <span class="pm-name">国語</span>
                         <span class="pm-sub">論国・古典</span>
                         <span class="pm-go">開く →</span>
                     </button>
-                    <button id="subject-card-math" onclick="selectSubject('math')" class="pm-subj" style="--c:#5f7fa8">
+                    <button id="subject-card-math" data-pm-dot="f:math" data-pm-seen="f:math" onclick="selectSubject('math')" class="pm-subj" style="--c:#5f7fa8">
                         <span class="pm-badge">数</span>
                         <span class="pm-name">数学</span>
                         <span class="pm-sub">数Ⅰ・数Ⅱ・数Ⅲ・数A・数B・数C</span>
                         <span class="pm-go">開く →</span>
                     </button>
-                    <button id="subject-card-en" onclick="selectSubject('english')" class="pm-subj" style="--c:#b86f8f">
+                    <button id="subject-card-en" data-pm-dot="f:english f:scan f:ronri-hyogen f:essay f:target e:* r:*" data-pm-seen="f:english" onclick="selectSubject('english')" class="pm-subj" style="--c:#b86f8f">
                         <span class="pm-badge">英</span>
                         <span class="pm-name">英語</span>
                         <span class="pm-sub">英語コミュニケーション・論理表現・ターゲット</span>
                         <span class="pm-go">開く →</span>
                     </button>
-                    <button id="subject-card-sci" onclick="selectSubject('science')" class="pm-subj" style="--c:#6f9a80">
+                    <button id="subject-card-sci" data-pm-dot="f:science" data-pm-seen="f:science" onclick="selectSubject('science')" class="pm-subj" style="--c:#6f9a80">
                         <span class="pm-badge">理</span>
                         <span class="pm-name">理科</span>
                         <span class="pm-sub">物理・生物・化学・地学</span>
                         <span class="pm-go">開く →</span>
                     </button>
-                    <button id="subject-card-soc" onclick="selectSubject('social')" class="pm-subj" style="--c:#b99a55">
+                    <button id="subject-card-soc" data-pm-dot="f:social" data-pm-seen="f:social" onclick="selectSubject('social')" class="pm-subj" style="--c:#b99a55">
                         <span class="pm-badge">社</span>
                         <span class="pm-name">社会</span>
                         <span class="pm-sub">日本史・世界史・公共・倫理・政経</span>
@@ -2225,7 +2225,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">どちらで学習しますか？</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button data-pm-restricted onclick="showEnglishSectionMode()" class="pm-subj" style="--c:#b86f8f">
+                    <button data-pm-restricted data-pm-dot="e:*" onclick="showEnglishSectionMode()" class="pm-subj" style="--c:#b86f8f">
                         <span class="pm-badge"><i data-lucide="layers" class="w-5 h-5"></i></span>
                         <span class="pm-name">セクションで選ぶ</span>
                         <span class="pm-sub">解析済みのプリントからセクションを選んで予習を始めましょう</span>
@@ -2410,11 +2410,16 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 </div>
             </section>
 
-            <section id="calendar-panel" class="hidden w-full max-w-4xl mx-auto space-y-4 animate-fade-in">
-                <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5">
+            <section id="calendar-panel" class="hidden w-full max-w-none mx-auto space-y-4 animate-fade-in">
+                <div id="cal-main">
                     <div class="flex items-center justify-between gap-2 mb-3">
-                        <div class="flex items-center space-x-2">
-                                                        <h2 class="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
+                        <div class="flex items-center space-x-1.5">
+                            <button id="cal-drawer-handle" type="button" onclick="calDrawerToggle()" aria-label="表示の設定と直近の予定を開く" aria-expanded="false" class="relative -ml-1.5 p-1.5 rounded-lg text-slate-600 dark:text-slate-300 active:opacity-60 transition-opacity">
+                                <span id="cal-handle-menu" class="inline-flex"><i data-lucide="menu" class="w-5 h-5"></i></span>
+                                <span id="cal-handle-x" class="hidden inline-flex"><i data-lucide="x" class="w-5 h-5"></i></span>
+                                <span id="cal-filter-dot" class="hidden absolute top-0.5 right-0.5 w-2 h-2 rounded-full" style="background:var(--pm-accent);"></span>
+                            </button>
+                            <h2 class="text-sm font-black text-slate-800 dark:text-slate-100 flex items-center space-x-1.5">
                                 <i data-lucide="calendar-days" class="w-4 h-4 text-rose-500"></i>
                                 <span>カレンダー</span>
                             </h2>
@@ -2428,7 +2433,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             </button>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between flex-wrap gap-x-2 gap-y-2 mb-4">
+                    <div id="cal-controls" class="cal-bg sticky z-30 flex items-center justify-between flex-wrap gap-x-2 gap-y-2 mb-2 py-2" style="top:var(--sticky-top,0px);">
                             <div class="relative flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5">
 <span id="cal-view-pill" class="absolute top-0.5 bottom-0.5 left-0 rounded-md bg-white dark:bg-slate-700 shadow-sm pointer-events-none" style="width:0;transition:transform .42s cubic-bezier(.34,1.35,.64,1),width .42s cubic-bezier(.34,1.35,.64,1);"></span>
 <button id="cal-view-day" onclick="calSetView('day')" class="px-2 py-1 rounded-md text-[11px] font-black">日</button>
@@ -2445,53 +2450,15 @@ html.dark .dev-log-link { color: #e2e8f0; }
 
                     <div id="cal-stage" class="relative">
                         <div id="cal-month-wrap">
-                            <div id="cal-weekday-header" class="grid grid-cols-7 gap-1 mb-1"></div>
-                            <div id="cal-grid" class="grid grid-cols-7 gap-1"></div>
+                            <div id="cal-weekday-header" class="grid grid-cols-7"></div>
+                            <div id="cal-grid" class="grid grid-cols-7"></div>
                         </div>
                         <div id="cal-week-timeline" class="hidden"></div>
                         <div id="cal-day-timeline" class="hidden"></div>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-2 gap-3">
-                    <div id="home-next-submission" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-indigo-400 flex items-center justify-between gap-2">
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center space-x-1.5 mb-1.5">
-                                <i data-lucide="package-check" class="w-3.5 h-3.5 text-indigo-500"></i>
-                                <p class="text-[10px] font-black text-indigo-500 uppercase tracking-wider">直近の提出物</p>
-                            </div>
-                            <p class="text-xs font-black text-slate-800 dark:text-slate-100 truncate" id="home-next-submission-title">予定なし</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <p class="text-[10px] font-bold text-slate-400" id="home-next-submission-date"></p>
-                                <button id="home-next-submission-more" onclick="event.stopPropagation(); openUpcomingTypeListModal('submission')" class="hidden text-[10px] font-bold text-indigo-500 underline decoration-dotted"></button>
-                            </div>
-                        </div>
-                        <div id="home-next-submission-check" class="hidden shrink-0"></div>
-                        <div id="home-next-submission-count" class="hidden shrink-0 text-center leading-none">
-                            <p class="text-3xl font-black text-indigo-500 leading-none" id="home-next-submission-num"></p>
-                            <p class="text-[9px] font-bold text-indigo-400 mt-0.5" id="home-next-submission-unit"></p>
-                        </div>
-                    </div>
-                    <div id="home-next-test" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-rose-400 flex items-center justify-between gap-2">
-                        <div class="min-w-0 flex-1">
-                            <div class="flex items-center space-x-1.5 mb-1.5">
-                                <i data-lucide="file-edit" class="w-3.5 h-3.5 text-rose-500"></i>
-                                <p class="text-[10px] font-black text-rose-500 uppercase tracking-wider">直近のテスト</p>
-                            </div>
-                            <p class="text-xs font-black text-slate-800 dark:text-slate-100 truncate" id="home-next-test-title">予定なし</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <p class="text-[10px] font-bold text-slate-400" id="home-next-test-date"></p>
-                                <button id="home-next-test-more" onclick="event.stopPropagation(); openUpcomingTypeListModal('test')" class="hidden text-[10px] font-bold text-rose-500 underline decoration-dotted"></button>
-                            </div>
-                        </div>
-                        <div id="home-next-test-count" class="hidden shrink-0 text-center leading-none">
-                            <p class="text-3xl font-black text-rose-500 leading-none" id="home-next-test-num"></p>
-                            <p class="text-[9px] font-bold text-rose-400 mt-0.5" id="home-next-test-unit"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl p-4 sm:p-5">
+                <div id="cal-day-card" class="pt-4 border-t border-slate-200 dark:border-slate-800">
                     <div class="flex items-center justify-between mb-3">
                         <h3 class="text-xs font-black text-slate-700 dark:text-slate-300 flex items-center space-x-2">
                             <i data-lucide="list" class="w-4 h-4 text-slate-400"></i>
@@ -2564,25 +2531,25 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">学習する内容を選んでください</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button onclick="showEnglishComEntry()" class="pm-subj" style="--c:#b86f8f">
+                    <button data-pm-dot="f:scan e:*" data-pm-seen="f:scan" onclick="showEnglishComEntry()" class="pm-subj" style="--c:#b86f8f">
                         <span class="pm-badge"><i data-lucide="message-circle" class="w-5 h-5"></i></span>
                         <span class="pm-name">英語コミュニケーション</span>
                         <span class="pm-sub">プリントをスキャンして予習ノート作成</span>
                         <span class="pm-go">開く →</span>
                     </button>
-                    <button data-pm-restricted onclick="openRonriHyogen()" class="pm-subj" style="--c:#b86f8f">
+                    <button data-pm-restricted data-pm-dot="f:ronri-hyogen r:*" data-pm-seen="f:ronri-hyogen" onclick="openRonriHyogen()" class="pm-subj" style="--c:#b86f8f">
                         <span class="pm-badge"><i data-lucide="pen-line" class="w-5 h-5"></i></span>
                         <span class="pm-name">論理・表現</span>
                         <span class="pm-sub">文法問題をスキャンして解答・解説を作成</span>
                         <span class="pm-go">開く →</span>
                     </button>
-                    <button onclick="selectTab(2)" class="pm-subj" style="--c:#b86f8f">
+                    <button data-pm-dot="f:essay" data-pm-seen="f:essay" onclick="selectTab(2)" class="pm-subj" style="--c:#b86f8f">
                         <span class="pm-badge"><i data-lucide="check-circle" class="w-5 h-5"></i></span>
                         <span class="pm-name">英文添削</span>
                         <span class="pm-sub">チャットでAIが添削・質問にも回答</span>
                         <span class="pm-go">開く →</span>
                     </button>
-                    <button onclick="selectTab(3)" class="pm-subj" style="--c:#b86f8f">
+                    <button data-pm-dot="f:target" data-pm-seen="f:target" onclick="selectTab(3)" class="pm-subj" style="--c:#b86f8f">
                         <span class="pm-badge"><i data-lucide="book-marked" class="w-5 h-5"></i></span>
                         <span class="pm-name">単語帳（ターゲット）</span>
                         <span class="pm-sub">フラッシュカード・単語テスト・苦手復習</span>
@@ -2648,7 +2615,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <p class="text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1">どちらで学習しますか？</p>
                 </div>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <button onclick="openRonriSectionListPage()" class="pm-subj" style="--c:#b86f8f">
+                    <button data-pm-dot="r:*" onclick="openRonriSectionListPage()" class="pm-subj" style="--c:#b86f8f">
                         <span class="pm-badge"><i data-lucide="layers" class="w-6 h-6"></i></span>
                         <span class="pm-name">セクションで選ぶ</span>
                         <span class="pm-sub">解析済みのプリントからセクションを選んで予習を始めましょう</span>
@@ -3407,7 +3374,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
         </div>
 
         <footer class="border-t border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 py-5 px-6 text-center text-xs text-slate-500 font-medium relative z-10 w-full">
-            <p class="select-none" style="-webkit-tap-highlight-color:transparent;"><span id="footer-copyright" style="touch-action:manipulation;">&copy; 2026 学習ProMaster.</span> 全ての若い学習者に向けて健康的で安全な学習環境を提供します。<button type="button" onclick="openTermsModal()" class="ml-2 underline font-bold hover:text-slate-600 dark:hover:text-slate-300">利用規約</button></p>
+            <p class="select-none" style="-webkit-tap-highlight-color:transparent;">全ての若い学習者に向けて健康的で安全な学習環境を提供します。<button type="button" onclick="openTermsModal()" class="ml-2 underline font-bold hover:text-slate-600 dark:hover:text-slate-300">利用規約</button></p>
         </footer>
     </div>
 
@@ -4051,6 +4018,14 @@ html.dark .dev-log-link { color: #e2e8f0; }
             </div>
 
             <div class="dev-card">
+                <h3 class="dev-card-title"><i data-lucide="download" class="w-4 h-4"></i>アプリのインストール者数</h3>
+                <p class="dev-card-desc">ホーム画面に追加（インストール）して使い始めた人の数です。1人（1アカウント）につき1回だけ数えます。</p>
+                <p id="dev-install-status" class="dev-card-desc" style="margin-bottom:0"></p>
+                <div id="dev-install-sums" class="dev-usage-sums"></div>
+                <div id="dev-install-trend" style="margin-top:.9rem"></div>
+            </div>
+
+            <div class="dev-card">
                 <h3 class="dev-card-title"><i data-lucide="eye" class="w-4 h-4"></i>ページごとの閲覧</h3>
                 <p class="dev-card-desc">その日にそのページを開いた人数と、開いた回数の合計です。人数の多い順に並んでいます。</p>
                 <div id="dev-usage-screens"></div>
@@ -4078,7 +4053,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <li>記録は、この機能を入れたあとの利用から始まります。画面・機能の追加は、ファイル末尾の「pmUsageTracker」の表に1行足すだけです。</li>
                 </ul>
                 <details id="dev-usage-rules" class="dev-details">
-                    <summary>Firestoreルール（最初の1回だけ追加が必要）</summary>
+                    <summary>Firestoreルール（最初の1回だけ追加が必要・インストール者数の分も含みます）</summary>
                     <p class="dev-card-desc">firestore.rules の <code>match /databases/{database}/documents { … }</code> の中（<code>security_events</code> の下あたり）に、次を追加して「公開」してください。公式マークの付いたアカウントで開発者モードに入っているときだけ、読めます。</p>
                     <pre id="dev-usage-rules-text" class="dev-code">    // 利用状況の記録（開発者ページの「利用状況」用）
     // 書けるのはログイン中の人（ゲスト含む）が決まった形でだけ。読めるのは公式アカウントだけ。削除は誰にもできない
@@ -4091,6 +4066,18 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             && (!('features' in request.resource.data) || request.resource.data.features.size() <= 60);
       allow read: if isOfficial();
       allow delete: if false;
+    }
+
+    // アプリのインストール者数（開発者ページの「利用状況」用）
+    // 作れるのはログイン中の人だけ（1人1件。あとから書き換え・削除はできない）。読めるのは公式アカウントだけ
+    match /app_installs/{iid} {
+      allow create: if request.auth != null
+                    && iid.matches('^[0-9a-f]{16}$')
+                    && request.resource.data.keys().hasOnly(['d', 'p', 'g', 't'])
+                    && request.resource.data.d.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+                    && request.resource.data.p in ['ios', 'android', 'desktop'];
+      allow update, delete: if false;
+      allow read: if isOfficial();
     }</pre>
                     <button type="button" onclick="devUsageCopyRules()" class="dev-btn"><i data-lucide="copy" class="w-4 h-4"></i><span id="dev-usage-copy-label">ルールをコピー</span></button>
                 </details>
@@ -5016,6 +5003,79 @@ html.dark .dev-log-link { color: #e2e8f0; }
         </div>
     </div>
 
+
+    <!-- カレンダー画面だけで使う固定UI（画面のフェード演出の transform の影響を受けないよう body 直下に置く） -->
+    <div id="cal-fixed-ui">
+        <div id="cal-drawer-overlay" onclick="calDrawerClose()" class="fixed inset-0 z-[8990] bg-slate-900/40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+        <aside id="cal-drawer" role="dialog" aria-label="カレンダーの表示設定"
+            class="fixed top-0 bottom-0 left-0 z-[8991] w-72 max-w-[85vw] bg-white dark:bg-[#0f1522] border-r border-slate-200 dark:border-slate-800 shadow-2xl flex flex-col transition-transform duration-300"
+            style="transform:translateX(-102%);visibility:hidden;">
+            <div class="flex items-center justify-between px-4 pb-3 border-b border-slate-100 dark:border-slate-800 shrink-0" style="padding-top:.75rem;">
+                <h4 class="text-sm font-black text-slate-900 dark:text-white">表示と直近の予定</h4>
+            </div>
+            <div class="flex-1 overflow-y-auto scrollbar-none p-4 pb-24 space-y-5">
+                <section>
+                    <p class="text-[10px] font-black text-slate-400 mb-2">直近</p>
+                <div class="grid grid-cols-1 gap-3">
+                    <div id="home-next-submission" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-indigo-400 flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center space-x-1.5 mb-1.5">
+                                <i data-lucide="package-check" class="w-3.5 h-3.5 text-indigo-500"></i>
+                                <p class="text-[10px] font-black text-indigo-500 uppercase tracking-wider">直近の提出物</p>
+                            </div>
+                            <p class="text-xs font-black text-slate-800 dark:text-slate-100 truncate" id="home-next-submission-title">予定なし</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <p class="text-[10px] font-bold text-slate-400" id="home-next-submission-date"></p>
+                                <button id="home-next-submission-more" onclick="event.stopPropagation(); openUpcomingTypeListModal('submission')" class="hidden text-[10px] font-bold text-indigo-500 underline decoration-dotted"></button>
+                            </div>
+                        </div>
+                        <div id="home-next-submission-check" class="hidden shrink-0"></div>
+                        <div id="home-next-submission-count" class="hidden shrink-0 text-center leading-none">
+                            <p class="text-3xl font-black text-indigo-500 leading-none" id="home-next-submission-num"></p>
+                            <p class="text-[9px] font-bold text-indigo-400 mt-0.5" id="home-next-submission-unit"></p>
+                        </div>
+                    </div>
+                    <div id="home-next-test" class="p-3.5 rounded-2xl border cursor-pointer transition-all bg-slate-100 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:border-rose-400 flex items-center justify-between gap-2">
+                        <div class="min-w-0 flex-1">
+                            <div class="flex items-center space-x-1.5 mb-1.5">
+                                <i data-lucide="file-edit" class="w-3.5 h-3.5 text-rose-500"></i>
+                                <p class="text-[10px] font-black text-rose-500 uppercase tracking-wider">直近のテスト</p>
+                            </div>
+                            <p class="text-xs font-black text-slate-800 dark:text-slate-100 truncate" id="home-next-test-title">予定なし</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <p class="text-[10px] font-bold text-slate-400" id="home-next-test-date"></p>
+                                <button id="home-next-test-more" onclick="event.stopPropagation(); openUpcomingTypeListModal('test')" class="hidden text-[10px] font-bold text-rose-500 underline decoration-dotted"></button>
+                            </div>
+                        </div>
+                        <div id="home-next-test-count" class="hidden shrink-0 text-center leading-none">
+                            <p class="text-3xl font-black text-rose-500 leading-none" id="home-next-test-num"></p>
+                            <p class="text-[9px] font-bold text-rose-400 mt-0.5" id="home-next-test-unit"></p>
+                        </div>
+                    </div>
+                </div>
+                </section>
+                <section>
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="text-[10px] font-black text-slate-400">カレンダーに表示する種類</p>
+                        <div class="flex items-center gap-2">
+                            <button type="button" onclick="calSetTypes(CAL_TYPE_ORDER.slice())" class="text-[10px] font-black text-rose-500 underline decoration-dotted">すべて</button>
+                            <button type="button" onclick="calSetTypes([])" class="text-[10px] font-black text-slate-400 underline decoration-dotted">解除</button>
+                        </div>
+                    </div>
+                    <div id="cal-filter-list" class="space-y-1.5"></div>
+                    <p class="text-[10px] font-semibold text-slate-400 mt-2">選んだ種類の予定だけがカレンダーに表示されます。</p>
+                </section>
+            </div>
+        </aside>
+        <div id="cal-zoom-bar" class="hidden fixed right-2 z-[40] flex flex-col items-center gap-1 py-2 px-1 rounded-full bg-white/95 dark:bg-slate-800/95 border border-slate-200 dark:border-slate-700 shadow" style="top:50%;transform:translateY(-50%);">
+            <button type="button" onclick="calZoomStep(1)" aria-label="拡大" class="w-7 h-7 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 font-black text-base leading-none">＋</button>
+            <div class="relative" style="width:1.5rem;height:9rem;">
+                <input id="cal-zoom-range" type="range" min="24" max="160" step="1" value="48" oninput="calZoomTo(this.value)" aria-label="1時間の高さ" class="absolute" style="accent-color:var(--pm-accent);width:9rem;height:1.5rem;left:50%;top:50%;margin-left:-4.5rem;margin-top:-.75rem;transform:rotate(-90deg);">
+            </div>
+            <button type="button" onclick="calZoomStep(-1)" aria-label="縮小" class="w-7 h-7 flex items-center justify-center rounded-full text-slate-500 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 font-black text-base leading-none">−</button>
+        </div>
+    </div>
+
     <div id="schedule-input-modal" class="fixed inset-0 z-[10005] flex items-center justify-center p-4 bg-slate-900/70 opacity-0 pointer-events-none transition-all duration-300">
         <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-sm max-h-[90vh] overflow-y-auto scrollbar-none transform scale-95 transition-all duration-300" id="schedule-input-modal-card">
             <div id="schedule-input-color-bar" class="h-2 rounded-t-3xl transition-colors duration-300" style="background:#f43f5e;"></div>
@@ -5029,18 +5089,22 @@ html.dark .dev-log-link { color: #e2e8f0; }
             <input type="hidden" id="schedule-input-is-remote" value="">
             <div class="px-6 pb-5 space-y-3.5">
                 <div>
-                    <div class="flex items-center space-x-2.5">
+                    <div class="grid grid-cols-4 gap-1.5">
+                        <button type="button" onclick="selectScheduleType('event')" id="schedule-type-btn-event"
+                            class="py-2.5 rounded-xl text-[11px] font-black transition-all border-2 flex items-center justify-center gap-1">
+                            <i data-lucide="calendar" class="w-3.5 h-3.5"></i><span>予定</span>
+                        </button>
+                        <button type="button" onclick="selectScheduleType('task')" id="schedule-type-btn-task"
+                            class="py-2.5 rounded-xl text-[11px] font-black transition-all border-2 flex items-center justify-center gap-1">
+                            <i data-lucide="check-square" class="w-3.5 h-3.5"></i><span>タスク</span>
+                        </button>
                         <button type="button" onclick="selectScheduleType('test')" id="schedule-type-btn-test"
-                            class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all border-2 flex items-center justify-center space-x-1.5">
+                            class="py-2.5 rounded-xl text-[11px] font-black transition-all border-2 flex items-center justify-center gap-1">
                             <i data-lucide="file-edit" class="w-3.5 h-3.5"></i><span>テスト</span>
                         </button>
                         <button type="button" onclick="selectScheduleType('submission')" id="schedule-type-btn-submission"
-                            class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all border-2 flex items-center justify-center space-x-1.5">
+                            class="py-2.5 rounded-xl text-[11px] font-black transition-all border-2 flex items-center justify-center gap-1">
                             <i data-lucide="package-check" class="w-3.5 h-3.5"></i><span>提出物</span>
-                        </button>
-                        <button type="button" onclick="selectScheduleType('task')" id="schedule-type-btn-task"
-                            class="flex-1 py-2.5 rounded-xl text-xs font-black transition-all border-2 flex items-center justify-center space-x-1.5">
-                            <i data-lucide="check-square" class="w-3.5 h-3.5"></i><span>タスク</span>
                         </button>
                     </div>
                 </div>
@@ -5761,6 +5825,24 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 if (features && Object.keys(features).length) data.features = inc(features);
                 await setDoc(doc(db, 'usage_visits', day + '_' + anon), data, { merge: true });
                 return true;
+            },
+            // アプリのインストール者を1人1件だけ記録（IDは uid から作った匿名の値。名前やuidは保存しない）
+            async recordInstall(day, platform, isGuest) {
+                const u = auth.currentUser; if (!u) return false;
+                if (!(globalThis.crypto && crypto.subtle)) throw new Error('crypto-unavailable');
+                const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(u.uid + ':pm-install-v1'));
+                const id = Array.from(new Uint8Array(hash)).slice(0, 8).map(b => b.toString(16).padStart(2, '0')).join('');
+                await setDoc(doc(db, 'app_installs', id), { d: day, p: platform, g: !!isGuest, t: serverTimestamp() });
+                return true;
+            },
+            async loadInstallStats(days) {
+                const col = collection(db, 'app_installs');
+                const cnt = async (...w) => (await getCountFromServer(w.length ? query(col, ...w) : col)).data().count;
+                const [total, ios, android, desktop, guests, perDay] = await Promise.all([
+                    cnt(), cnt(where('p', '==', 'ios')), cnt(where('p', '==', 'android')), cnt(where('p', '==', 'desktop')),
+                    cnt(where('g', '==', true)), Promise.all(days.map(d => cnt(where('d', '==', d))))
+                ]);
+                return { total, ios, android, desktop, guests, perDay };
             },
             async loadUsageDay(day, max = 2000) {
                 const snap = await getDocs(query(collection(db, 'usage_visits'), where('d', '==', day), limit(max)));
@@ -7483,7 +7565,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                         ${lessons[lk].map(sec => {
                             const has = presetSectionHasData(sec);
                             return `
-                        <button onclick="loadPresetSection('${sec.id}')" class="pm-subj ${has ? '' : 'pm-off'}" ${has ? 'style="--c:#b86f8f"' : ''}>
+                        <button data-pm-dot="e:${escapeHtml(String(sec.id))}" data-pm-seen="e:${escapeHtml(String(sec.id))}" onclick="loadPresetSection('${sec.id}')" class="pm-subj ${has ? '' : 'pm-off'}" ${has ? 'style="--c:#b86f8f"' : ''}>
                             <span class="pm-badge"><i data-lucide="file-check" class="w-5 h-5"></i></span>
                             <span class="pm-name">${sec.sectionLabel}</span>
                             <span class="pm-sub">${has ? '解析済み' : '準備中（データなし）'}</span>
@@ -7498,6 +7580,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function loadPresetSection(sectionId) {
             const section = PRESET_SECTIONS.find(s => s.id === sectionId);
             if (!section) return;
+            if (typeof pmDotSeen === 'function') pmDotSeen(['e:' + sectionId]);
             if (!presetSectionHasData(section)) { showToast('このセクションにはまだ解析データがありません'); return; }
             activeTabIndex = 0;
             modeStates[0].analysisResult = section.data;
@@ -10436,6 +10519,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         }
 
         const SCHEDULE_TYPE_INFO = {
+            event:      { label: '予定', color: '#0ea5e9', icon: 'calendar' },
             test:       { label: 'テスト', color: '#f43f5e', icon: 'file-edit' },
             submission: { label: '提出物', color: '#6366f1', icon: 'package-check' },
             task:       { label: 'タスク', color: '#10b981', icon: 'check-square' },
@@ -10520,6 +10604,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function scheduleTypeLabelJa(type) {
             if (type === 'test') return 'テスト';
             if (type === 'submission') return '提出物';
+            if (type === 'event') return '予定';
             return 'タスク';
         }
         function dateStrToCompact(dateStr) {
@@ -10736,7 +10821,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const fk = String(s.id) + '|' + s.notifyAt;
             if (fired.includes(fk) || fired.includes(String(s.id))) return;
             if (now - t > 12 * 3600 * 1000) { fired.push(fk); changed = true; return; }
-                const typeLabel = s.type === 'submission' ? '提出物' : (s.type === 'task' ? 'タスク' : 'テスト');
+                const typeLabel = scheduleTypeLabelJa(s.type);
                 try {
                     new Notification('学習ProMaster：' + typeLabel + 'のお知らせ', {
                         body: `${s.title}${s.subject ? '（' + s.subject + '）' : ''} - ${s.date}${s.time ? ' ' + s.time : ''}`,
@@ -10936,16 +11021,161 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             });
             calPlacePill();
         }
-        const CAL_HOUR_H = 48;
+        // 固定ヘッダー＋カレンダーの操作列の下に、日付・曜日の行を張りつける位置
+        const CAL_STICKY_TOP = 'calc(var(--sticky-top, 0px) + var(--cal-ctl-h, 52px))';
+        // ===== 1時間の高さ（ピンチ・バー・Ctrl+ホイールで拡大縮小） =====
+        const CAL_H_MIN = 24, CAL_H_MAX = 160;
+        let _calH = 48, _calAutoMin = 7 * 60, _calScrollKey = null, _calPinch = null, _calReTimer = 0;
+        try { const v = Number(localStorage.getItem('pm_cal_hour_h')); if (v >= CAL_H_MIN && v <= CAL_H_MAX) _calH = v; } catch (e) {}
+        const calHh = (n) => `calc(var(--cal-h, 48px) * ${n})`;
+        function calFinePointer() { try { return window.matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) { return false; } }
+        function calSyncCtlH() {
+            const c = document.getElementById('cal-controls'), panel = document.getElementById('calendar-panel');
+            if (!panel) return;
+            if (c && c.offsetHeight) panel.style.setProperty('--cal-ctl-h', c.offsetHeight + 'px');
+            panel.style.setProperty('--cal-h', _calH + 'px');
+            const showBar = calView !== 'month' && calFinePointer();
+            const bar = document.getElementById('cal-zoom-bar');
+            if (bar) bar.classList.toggle('hidden', !showBar);
+            panel.classList.toggle('cal-has-zoombar', showBar);
+            const rng = document.getElementById('cal-zoom-range'); if (rng) rng.value = String(_calH);
+        }
+        window.addEventListener('resize', () => { try { calSyncCtlH(); } catch (e) {} });
+        function calGridEl() { return document.getElementById(calView === 'week' ? 'cal-week-grid' : 'cal-day-grid'); }
+        function calZoomTo(h, anchorY) {
+            h = Math.max(CAL_H_MIN, Math.min(CAL_H_MAX, Number(h) || _calH));
+            if (Math.abs(h - _calH) < 0.01) return;
+            const grid = calGridEl();
+            let t = null, gTop = 0;
+            if (grid) {
+                if (anchorY == null) anchorY = window.innerHeight / 2;
+                gTop = grid.getBoundingClientRect().top + window.scrollY;
+                t = (anchorY + window.scrollY - gTop) / _calH;   // 指（中心）の下にある時刻（時間単位）
+            }
+            _calH = h;
+            const panel = document.getElementById('calendar-panel'); if (panel) panel.style.setProperty('--cal-h', h + 'px');
+            if (t != null) window.scrollTo(0, Math.max(0, gTop + t * h - anchorY));   // 指の下の時刻が動かないように
+            const rng = document.getElementById('cal-zoom-range'); if (rng) rng.value = String(h);
+            try { localStorage.setItem('pm_cal_hour_h', String(Math.round(h))); } catch (e) {}
+            calScheduleRerender();
+        }
+        function calZoomStep(dir) { calZoomTo(_calH * (dir > 0 ? 1.25 : 0.8)); }
+        // ズームの最中は CSS 変数だけで動かし、止まってから中身（時刻の表示など）を描き直す
+        function calScheduleRerender() {
+            clearTimeout(_calReTimer);
+            _calReTimer = setTimeout(() => { if (_calPinch) return; renderCalWeekTimeline(); renderCalDayTimeline(); }, 220);
+        }
+        // 日・週表示に入ったとき、予定のある時間帯（なければ 7:00 か今の時刻）が見える位置までページをスクロール
+        function calAutoScroll(key, gridId) {
+            if (_calScrollKey === key) return;
+            _calScrollKey = key;
+            requestAnimationFrame(() => {
+                const grid = document.getElementById(gridId); if (!grid) return;
+                const head = grid.previousElementSibling;
+                const stickyTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--sticky-top')) || 0;
+                const panel = document.getElementById('calendar-panel');
+                const ctl = parseFloat(panel && panel.style.getPropertyValue('--cal-ctl-h')) || 0;
+                const y = grid.getBoundingClientRect().top + window.scrollY + Math.floor(_calAutoMin / 60) * _calH - (stickyTop + ctl + (head ? head.offsetHeight : 0));
+                window.scrollTo(0, Math.max(0, y));
+            });
+        }
+        (function calPinchInit() {
+            const inTl = (t) => !!(t && t.closest && t.closest('#cal-day-timeline, #cal-week-timeline'));
+            const dist = (a, b) => Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY);
+            document.addEventListener('touchstart', (e) => {
+                if (e.touches.length === 2 && calView !== 'month' && inTl(e.touches[0].target) && inTl(e.touches[1].target)) {
+                    _calPinch = { d: dist(e.touches[0], e.touches[1]), h: _calH };
+                }
+            }, { passive: true });
+            document.addEventListener('touchmove', (e) => {
+                if (!_calPinch || e.touches.length !== 2) return;
+                e.preventDefault();
+                const d = dist(e.touches[0], e.touches[1]);
+                if (d && _calPinch.d) calZoomTo(_calPinch.h * d / _calPinch.d, (e.touches[0].clientY + e.touches[1].clientY) / 2);
+            }, { passive: false });
+            const end = (e) => { if (_calPinch && e.touches.length < 2) { _calPinch = null; calScheduleRerender(); } };
+            document.addEventListener('touchend', end, { passive: true });
+            document.addEventListener('touchcancel', end, { passive: true });
+            ['gesturestart', 'gesturechange'].forEach(n => document.addEventListener(n, (e) => { if (calView !== 'month' && inTl(e.target)) e.preventDefault(); }, { passive: false }));
+            document.addEventListener('wheel', (e) => {
+                if (!e.ctrlKey || calView === 'month' || !inTl(e.target)) return;
+                e.preventDefault();
+                calZoomTo(_calH * Math.exp(-e.deltaY * 0.01), e.clientY);
+            }, { passive: false });
+        })();
+        // ===== 予定の種類で絞り込み（左のパネルで選んだ種類だけをカレンダーに表示） =====
+        const CAL_TYPE_ORDER = ['event', 'task', 'test', 'submission'];
+        let _calTypeFilter = (() => {
+            try { const v = JSON.parse(localStorage.getItem('pm_cal_types')); if (Array.isArray(v)) return v.filter(t => CAL_TYPE_ORDER.includes(t)); } catch (e) {}
+            return CAL_TYPE_ORDER.slice();
+        })();
+        function calVisibleSchedules() {
+            return getAllSchedules().filter(s => _calTypeFilter.includes(CAL_TYPE_ORDER.includes(s.type) ? s.type : 'test'));
+        }
+        function renderCalFilter() {
+            const dot = document.getElementById('cal-filter-dot');
+            if (dot) dot.classList.toggle('hidden', _calTypeFilter.length === CAL_TYPE_ORDER.length);
+            const host = document.getElementById('cal-filter-list'); if (!host) return;
+            host.innerHTML = CAL_TYPE_ORDER.map(t => {
+                const info = SCHEDULE_TYPE_INFO[t], on = _calTypeFilter.includes(t);
+                return `<button type="button" onclick="calToggleType('${t}')" role="checkbox" aria-checked="${on}" class="w-full flex items-center justify-between px-3 py-2.5 rounded-xl border text-left transition-colors ${on ? 'border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800' : 'border-slate-200 dark:border-slate-800 opacity-60'}">
+                    <span class="flex items-center gap-2 text-xs font-black text-slate-700 dark:text-slate-200"><span class="w-3 h-3 rounded-full" style="background:${info.color}"></span>${info.label}</span>
+                    <span class="w-5 h-5 rounded-md flex items-center justify-center text-[11px] font-black ${on ? 'text-white' : 'text-transparent border border-slate-300 dark:border-slate-600'}" ${on ? `style="background:${info.color}"` : ''}>✓</span>
+                </button>`;
+            }).join('');
+        }
+        function calSetTypes(list) {
+            _calTypeFilter = list;
+            try { localStorage.setItem('pm_cal_types', JSON.stringify(list)); } catch (e) {}
+            renderCalendarPanel();
+        }
+        function calToggleType(t) { calSetTypes(_calTypeFilter.includes(t) ? _calTypeFilter.filter(x => x !== t) : CAL_TYPE_ORDER.filter(x => x === t || _calTypeFilter.includes(x))); }
+        // ===== 左のパネル =====
+        let _calDrawerOpen = false, _calDrawerLocked = false;
+        function calDrawerSyncHandle() {
+            const h = document.getElementById('cal-drawer-handle'); if (!h) return;
+            h.setAttribute('aria-expanded', _calDrawerOpen ? 'true' : 'false');
+            h.setAttribute('aria-label', _calDrawerOpen ? '閉じる' : '表示の設定と直近の予定を開く');
+            const m = document.getElementById('cal-handle-menu'), x = document.getElementById('cal-handle-x');
+            if (m) m.classList.toggle('hidden', _calDrawerOpen);   // 三本線 ⇄ ×
+            if (x) x.classList.toggle('hidden', !_calDrawerOpen);
+        }
+        function calDrawerToggle() { if (_calDrawerOpen) calDrawerClose(); else calDrawerOpen(); }
+        function calDrawerOpen() {
+            const d = document.getElementById('cal-drawer'), o = document.getElementById('cal-drawer-overlay');
+            if (!d) return;
+            window.scrollTo(0, 0);
+            if (!_calDrawerLocked) { lockScroll(); _calDrawerLocked = true; }
+            // ボタン（タイトル行）が隠れないよう、その行の下から開く
+            const row = document.querySelector('#cal-main > div');
+            const top = Math.max(0, Math.round(row ? row.getBoundingClientRect().bottom + 6 : 0)) + 'px';
+            d.style.top = top; if (o) o.style.top = top;
+            _calDrawerOpen = true;
+            d.style.visibility = 'visible';
+            requestAnimationFrame(() => { d.style.transform = 'translateX(0)'; });
+            if (o) o.classList.remove('opacity-0', 'pointer-events-none');
+            calDrawerSyncHandle();
+        }
+        function calDrawerClose() {
+            const d = document.getElementById('cal-drawer'), o = document.getElementById('cal-drawer-overlay');
+            if (!d) return;
+            _calDrawerOpen = false;
+            if (_calDrawerLocked) { _calDrawerLocked = false; unlockScroll(); }
+            d.style.transform = 'translateX(-102%)';
+            if (o) o.classList.add('opacity-0', 'pointer-events-none');
+            calDrawerSyncHandle();
+            setTimeout(() => { if (!_calDrawerOpen) d.style.visibility = 'hidden'; }, 320);
+        }
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && _calDrawerOpen) calDrawerClose(); });
         let _calDayLastDate = null;
         function renderCalDayTimeline() {
             const box = document.getElementById('cal-day-timeline'); if (!box) return;
             if (calView !== 'day') { box.classList.add('hidden'); return; }
             box.classList.remove('hidden');
-            const H = CAL_HOUR_H;
+            const hh = calHh;
             const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
             const date = calSelectedDate || todayStr;
-            const items = getAllSchedules().filter(s => s.date === date);
+            const items = calVisibleSchedules().filter(s => s.date === date);
             const toMin = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
             const style = (s) => {
                 const ec = eventColor(s);
@@ -10964,56 +11194,50 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             ev.forEach(e => { if (cur.length && e.st >= curEnd) { clusters.push(cur); cur = []; curEnd = -1; } cur.push(e); curEnd = Math.max(curEnd, e.en); });
             if (cur.length) clusters.push(cur);
             clusters.forEach(c => { const cols = []; c.forEach(e => { let i = cols.findIndex(end => end <= e.st); if (i < 0) { i = cols.length; cols.push(0); } cols[i] = e.en; e.col = i; }); c.forEach(e => { e.n = cols.length; }); });
+            let _autoMin = 7 * 60;
+            if (ev.length) _autoMin = Math.max(ev[0].st - 60, 0);
+            else if (date === todayStr) { const j0 = new Date(Date.now() + 9 * 3600 * 1000); _autoMin = Math.max(j0.getUTCHours() * 60 - 60, 0); }
+            _calAutoMin = _autoMin;
             const blocks = ev.map(e => {
                 const st = style(e.s);
-                const top = e.st / 60 * H, h = Math.max((e.en - e.st) / 60 * H - 2, 20);
+                const top = hh(e.st / 60), h = Math.max((e.en - e.st) / 60 * _calH - 2, 20);
                 const l = e.col / e.n * 100, w = 100 / e.n;
                 const range = e.s.time + (e.s.endTime ? '〜' + e.s.endTime : '');
-                return `<button type="button" onclick="event.stopPropagation(); openScheduleViewModal(${schedIdArg(e.s.id)})" class="absolute text-left overflow-hidden rounded-md px-1.5 py-0.5 text-[11px] font-bold leading-tight" style="top:${top}px;height:${h}px;left:calc(${l}% + 1px);width:calc(${w}% - 3px);background:${st.bg};color:${st.tc};${st.edge}"><div class="truncate">${escapeHtml(e.s.title)}</div>${h >= 34 ? `<div class="text-[10px] font-semibold truncate">${range}</div>` : ''}</button>`;
+                return `<button type="button" onclick="event.stopPropagation(); openScheduleViewModal(${schedIdArg(e.s.id)})" class="absolute text-left overflow-hidden rounded-md px-1.5 py-0.5 text-[11px] font-bold leading-tight" style="top:${top};height:max(20px,calc(var(--cal-h, 48px) * ${(e.en - e.st) / 60} - 2px));left:calc(${l}% + 1px);width:calc(${w}% - 3px);background:${st.bg};color:${st.tc};${st.edge}"><div class="truncate">${escapeHtml(e.s.title)}</div>${h >= 34 ? `<div class="text-[10px] font-semibold truncate">${range}</div>` : ''}</button>`;
             }).join('');
             let lines = '';
             for (let h = 0; h < 24; h++) {
-                lines += `<div class="absolute left-0 right-0 border-t border-slate-200 dark:border-slate-700" style="top:${h * H}px"><span class="absolute left-0 w-10 text-right pr-1 text-[10px] font-bold text-slate-400 bg-white dark:bg-[#0c1220]" style="top:-8px;${h === 0 ? 'display:none;' : ''}">${h}:00</span></div>`;
+                lines += `<div class="absolute left-0 right-0 border-t border-slate-200 dark:border-slate-700" style="top:${hh(h)}"><span class="absolute left-0 w-10 text-right pr-1 text-[10px] font-bold text-slate-400 cal-bg" style="top:${h === 0 ? 1 : -8}px;">${h}:00</span></div>`;
             }
             let nowLine = '';
             if (date === todayStr) {
                 const j = new Date(Date.now() + 9 * 3600 * 1000);
                 const nm = j.getUTCHours() * 60 + j.getUTCMinutes();
-                nowLine = `<div class="absolute pointer-events-none" style="left:44px;right:0;top:${nm / 60 * H}px;border-top:2px solid #ef4444;"><span style="position:absolute;left:-5px;top:-6px;width:10px;height:10px;border-radius:50%;background:#ef4444;"></span></div>`;
+                nowLine = `<div class="absolute pointer-events-none" style="left:44px;right:0;top:${hh(nm / 60)};border-top:2px solid #ef4444;"><span style="position:absolute;left:-5px;top:-6px;width:10px;height:10px;border-radius:50%;background:#ef4444;"></span></div>`;
             }
             const wd = ['日', '月', '火', '水', '木', '金', '土'][new Date(date + 'T00:00:00Z').getUTCDay()];
-            const prev = document.getElementById('cal-day-scroll');
-            const keep = (prev && _calDayLastDate === date) ? prev.scrollTop : null;
             box.innerHTML = `
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-black ${date === todayStr ? 'text-rose-500' : 'text-slate-700 dark:text-slate-200'}">${Number(date.slice(5, 7))}月${Number(date.slice(8))}日（${wd}）${date === todayStr ? '・今日' : ''}</p>
-                    <span class="text-[10px] font-bold text-slate-400">空いている枠をタップして追加</span>
-                </div>
-                ${allDay ? `<div class="flex items-start gap-2 mb-2 pb-2 border-b border-slate-200 dark:border-slate-700"><span class="w-10 shrink-0 text-right text-[10px] font-bold text-slate-400 pt-1">終日</span><div class="flex-1 flex flex-wrap gap-1.5">${allDay}</div></div>` : ''}
-                <div id="cal-day-scroll" class="cal-scroll overflow-y-auto" style="max-height:65vh;">
-                    <div id="cal-day-grid" class="relative" style="height:${24 * H}px;cursor:pointer;" onclick="calDayGridClick(event)">
-                        ${lines}
-                        <div class="absolute" style="left:46px;right:2px;top:0;bottom:0;">${blocks}</div>
-                        ${nowLine}
+                <div class="cal-bg sticky z-20 pb-2" style="top:${CAL_STICKY_TOP};">
+                    <div class="flex items-center justify-between ${allDay ? 'mb-2' : ''}">
+                        <p class="text-xs font-black ${date === todayStr ? 'text-rose-500' : 'text-slate-700 dark:text-slate-200'}">${Number(date.slice(5, 7))}月${Number(date.slice(8))}日（${wd}）${date === todayStr ? '・今日' : ''}</p>
+                        <span class="text-[10px] font-bold text-slate-400">空いている枠をタップして追加</span>
                     </div>
+                    ${allDay ? `<div class="flex items-start gap-2 pb-2 border-b border-slate-200 dark:border-slate-700"><span class="w-10 shrink-0 text-right text-[10px] font-bold text-slate-400 pt-1">終日</span><div class="flex-1 flex flex-wrap gap-1.5">${allDay}</div></div>` : ''}
+                </div>
+                <div id="cal-day-grid" class="relative" style="height:${hh(24)};cursor:pointer;" onclick="calDayGridClick(event)">
+                    ${lines}
+                    <div class="absolute" style="left:46px;right:2px;top:0;bottom:0;">${blocks}</div>
+                    ${nowLine}
                 </div>`;
-            const sc = document.getElementById('cal-day-scroll');
-            if (sc) {
-                if (keep != null) sc.scrollTop = keep;
-                else {
-                    let startMin = 7 * 60;
-                    if (ev.length) startMin = Math.max(ev[0].st - 60, 0);
-                    else if (date === todayStr) { const j = new Date(Date.now() + 9 * 3600 * 1000); startMin = Math.max(j.getUTCHours() * 60 - 60, 0); }
-                    sc.scrollTop = startMin / 60 * H;
-                }
-            }
+            calSyncCtlH();
+            calAutoScroll('day', 'cal-day-grid');
             _calDayLastDate = date;
         }
         function calDayGridClick(e) {
             const grid = document.getElementById('cal-day-grid'); if (!grid) return;
             const rect = grid.getBoundingClientRect();
             if (e.clientX - rect.left < 44) return;
-            const mins = Math.min(Math.floor((e.clientY - rect.top) / CAL_HOUR_H * 60 / 30) * 30, 23 * 60 + 30);
+            const mins = Math.min(Math.floor((e.clientY - rect.top) / _calH * 60 / 30) * 30, 23 * 60 + 30);
             const p = (n) => String(n).padStart(2, '0');
             openScheduleInputModal(null, calSelectedDate, `${p(Math.floor(mins / 60))}:${p(mins % 60)}`);
         }
@@ -11022,7 +11246,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const col = (e && e.currentTarget) || (e && e.target && e.target.closest ? e.target.closest('.cal-wk-col') : null);
             if (!col) return;
             const rect = col.getBoundingClientRect();
-            const mins = Math.max(0, Math.min(Math.floor((e.clientY - rect.top) / CAL_HOUR_H * 60 / 30) * 30, 23 * 60 + 30));
+            const mins = Math.max(0, Math.min(Math.floor((e.clientY - rect.top) / _calH * 60 / 30) * 30, 23 * 60 + 30));
             const p = (n) => String(n).padStart(2, '0');
             calSelectedDate = date;
             openScheduleInputModal(null, date, `${p(Math.floor(mins / 60))}:${p(mins % 60)}`);
@@ -11033,13 +11257,13 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const box = document.getElementById('cal-week-timeline'); if (!box) return;
             if (calView !== 'week') { box.classList.add('hidden'); return; }
             box.classList.remove('hidden');
-            const H = CAL_HOUR_H, AX = 38, COLMIN = 54;
+            const hh = calHh, AX = 32;
             const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
             const base = calSelectedDate || todayStr;
             const start = _ymdAdd(base, -new Date(base + 'T00:00:00Z').getUTCDay());
             const days = [0, 1, 2, 3, 4, 5, 6].map(i => _ymdAdd(start, i));
             const wdNames = ['日', '月', '火', '水', '木', '金', '土'];
-            const all = getAllSchedules();
+            const all = calVisibleSchedules();
             const toMin = (t) => Number(t.slice(0, 2)) * 60 + Number(t.slice(3, 5));
             const styleOf = (s) => { const ec = eventColor(s); return s.isRemote ? { bg: '#e2e8f0', tc: '#0f172a', edge: `border-left:3px solid ${ec};` } : { bg: ec, tc: '#ffffff', edge: '' }; };
             const cols = days.map(d => {
@@ -11055,77 +11279,69 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 clusters.forEach(c => { const lanes = []; c.forEach(e => { let i = lanes.findIndex(end => end <= e.st); if (i < 0) { i = lanes.length; lanes.push(0); } lanes[i] = e.en; e.col = i; }); c.forEach(e => { e.n = lanes.length; }); });
                 return { d, allDay: items.filter(s => !s.time), ev };
             });
-            const grid = `${AX}px repeat(7,minmax(${COLMIN}px,1fr))`;
-            const bgSolid = 'bg-white dark:bg-[#0c1220]';
+            const grid = `${AX}px repeat(7,minmax(0,1fr))`;
+            const bgSolid = 'cal-bg';
             const heads = cols.map(c => {
                 const isToday = c.d === todayStr, isSel = c.d === calSelectedDate;
                 const wi = new Date(c.d + 'T00:00:00Z').getUTCDay();
-                const wc = wi === 0 ? 'text-rose-400' : wi === 6 ? 'text-blue-400' : 'text-slate-400';
+                const wc = wi === 0 ? 'cal-sun' : wi === 6 ? 'cal-sat' : 'text-slate-400';
+                const wn = wi === 0 ? 'cal-sun' : wi === 6 ? 'cal-sat' : 'text-slate-700 dark:text-slate-200';
                 return `<button type="button" data-date="${c.d}" onclick="calWeekHeadClick('${c.d}')" class="cal-wk-head flex flex-col items-center py-1.5 min-w-0 border-l border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors" aria-label="${Number(c.d.slice(5, 7))}月${Number(c.d.slice(8))}日の日表示を開く">
                     <span class="text-[10px] font-black ${wc}">${wdNames[wi]}</span>
-                    <span class="mt-0.5 inline-flex w-7 h-7 items-center justify-center rounded-full text-sm font-black ${isToday ? 'bg-rose-500 text-white' : (isSel ? 'ring-2 ring-rose-400 text-slate-800 dark:text-slate-100' : 'text-slate-700 dark:text-slate-200')}">${Number(c.d.slice(8))}</span>
+                    <span class="mt-0.5 inline-flex w-7 h-7 items-center justify-center rounded-full text-sm font-black ${isToday ? 'bg-rose-500 text-white' : (isSel ? 'ring-2 ring-rose-400 ' + wn : wn)}">${Number(c.d.slice(8))}</span>
                 </button>`;
             }).join('');
             const anyAllDay = cols.some(c => c.allDay.length);
             const allDayRow = anyAllDay ? `<div class="grid border-t border-slate-100 dark:border-slate-800" style="grid-template-columns:${grid}">
-                    <div class="sticky left-0 z-40 ${bgSolid} text-[9px] font-bold text-slate-400 text-right pr-1 pt-1">終日</div>
+                    <div class="${bgSolid} text-[9px] font-bold text-slate-400 text-right pr-1 pt-1">終日</div>
                     ${cols.map(c => `<div class="min-w-0 p-0.5 border-l border-slate-100 dark:border-slate-800">${c.allDay.slice(0, 2).map(s => { const st = styleOf(s); return `<button type="button" onclick="openScheduleViewModal(${schedIdArg(s.id)})" class="block w-full truncate text-left text-[9px] font-bold rounded px-1 py-0.5 mb-0.5" style="background:${st.bg};color:${st.tc};${st.edge}" title="${escapeHtml(s.title)}">${escapeHtml(s.title)}</button>`; }).join('')}${c.allDay.length > 2 ? `<span class="block text-[9px] font-bold text-slate-400 text-center">+${c.allDay.length - 2}</span>` : ''}</div>`).join('')}
                 </div>` : '';
+            const nowMin = (() => { const j = new Date(Date.now() + 9 * 3600 * 1000); return j.getUTCHours() * 60 + j.getUTCMinutes(); })();
+            const timedAll = cols.flatMap(c => c.ev).sort((a, b) => a.st - b.st);
+            let _autoMin = 7 * 60;
+            if (timedAll.length) _autoMin = Math.max(timedAll[0].st - 60, 0);
+            else if (days.includes(todayStr)) _autoMin = Math.max(nowMin - 60, 0);
+            _calAutoMin = _autoMin;
             let hourLabels = '', hourLines = '';
             for (let h = 0; h < 24; h++) {
-                hourLines += `<div class="absolute border-t border-slate-200 dark:border-slate-700" style="left:${AX}px;right:0;top:${h * H}px"></div>`;
-                hourLabels += `<span class="absolute right-1 text-[9px] font-bold text-slate-400" style="top:${h * H}px;transform:translateY(${h === 0 ? '1px' : '-50%'})">${h}:00</span>`;
+                const y = hh(h);
+                hourLines += `<div class="absolute border-t border-slate-200 dark:border-slate-700" style="left:${AX}px;right:0;top:${y}"></div>`;
+                hourLabels += `<span class="absolute right-1 text-[9px] font-bold text-slate-400" style="top:${y};transform:translateY(${h === 0 ? '1px' : '-50%'})">${h}:00</span>`;
             }
-            const nowMin = (() => { const j = new Date(Date.now() + 9 * 3600 * 1000); return j.getUTCHours() * 60 + j.getUTCMinutes(); })();
             const colHtml = cols.map(c => {
                 const isToday = c.d === todayStr, isSel = c.d === calSelectedDate;
                 const blocks = c.ev.map(e => {
                     const st = styleOf(e.s);
-                    const top = e.st / 60 * H, h = Math.max((e.en - e.st) / 60 * H - 2, 18);
+                    const top = hh(e.st / 60), h = Math.max((e.en - e.st) / 60 * _calH - 2, 18);
                     const l = e.col / e.n * 100, w = 100 / e.n;
                     const range = e.s.time + (e.s.endTime ? '〜' + e.s.endTime : '');
-                    return `<button type="button" onclick="event.stopPropagation(); openScheduleViewModal(${schedIdArg(e.s.id)})" class="cal-ev absolute text-left overflow-hidden rounded-md px-1 py-0.5 text-[10px] font-bold leading-tight" style="top:${top}px;height:${h}px;left:calc(${l}% + 1px);width:calc(${w}% - 2px);background:${st.bg};color:${st.tc};${st.edge}" title="${escapeHtml(range + ' ' + e.s.title)}"><span class="block truncate">${escapeHtml(e.s.title)}</span>${h >= 34 ? `<span class="block truncate opacity-80 text-[9px]">${escapeHtml(e.s.time)}</span>` : ''}</button>`;
+                    return `<button type="button" onclick="event.stopPropagation(); openScheduleViewModal(${schedIdArg(e.s.id)})" class="cal-ev absolute text-left overflow-hidden rounded-md px-1 py-0.5 text-[10px] font-bold leading-tight" style="top:${top};height:max(18px,calc(var(--cal-h, 48px) * ${(e.en - e.st) / 60} - 2px));left:calc(${l}% + 1px);width:calc(${w}% - 2px);background:${st.bg};color:${st.tc};${st.edge}" title="${escapeHtml(range + ' ' + e.s.title)}"><span class="block truncate">${escapeHtml(e.s.title)}</span>${h >= 34 ? `<span class="block truncate opacity-80 text-[9px]">${escapeHtml(e.s.time)}</span>` : ''}</button>`;
                 }).join('');
-                const nowMarker = isToday ? `<div class="absolute pointer-events-none z-10" style="left:0;right:0;top:${nowMin / 60 * H}px;border-top:2px solid #ef4444;"><span style="position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:#ef4444;"></span></div>` : '';
-                return `<div class="cal-wk-col relative border-l border-slate-100 dark:border-slate-800 ${isToday ? 'bg-rose-50/40 dark:bg-rose-950/10' : ''} ${isSel ? 'cal-wk-sel' : ''}" data-date="${c.d}" onclick="calWeekGridClick(event,'${c.d}')" style="cursor:pointer;height:${24 * H}px;">${blocks}${nowMarker}</div>`;
+                const nowMarker = isToday ? `<div class="absolute pointer-events-none z-10" style="left:0;right:0;top:${hh(nowMin / 60)};border-top:2px solid #ef4444;"><span style="position:absolute;left:-4px;top:-5px;width:8px;height:8px;border-radius:50%;background:#ef4444;"></span></div>` : '';
+                return `<div class="cal-wk-col relative border-l border-slate-100 dark:border-slate-800 ${isToday ? 'bg-rose-50/40 dark:bg-rose-950/10' : ''} ${isSel ? 'cal-wk-sel' : ''}" data-date="${c.d}" onclick="calWeekGridClick(event,'${c.d}')" style="cursor:pointer;height:${hh(24)};">${blocks}${nowMarker}</div>`;
             }).join('');
             const key = start;
-            const prevSc = document.getElementById('cal-week-scroll');
-            const keep = (prevSc && _calWeekLast && _calWeekLast.key === key) ? { top: prevSc.scrollTop, left: prevSc.scrollLeft } : null;
             box.innerHTML = `
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-xs font-black text-slate-700 dark:text-slate-200">${Number(start.slice(5, 7))}/${Number(start.slice(8))}〜${Number(days[6].slice(5, 7))}/${Number(days[6].slice(8))}の予定</p>
-                    <span class="text-[10px] font-bold text-slate-400">空いている枠をタップして追加／日付で日表示</span>
-                </div>
-                <div id="cal-week-scroll" class="cal-scroll overflow-auto" style="max-height:68vh;">
-                    <div style="min-width:${AX + 7 * COLMIN}px;">
-                        <div class="sticky top-0 z-30 ${bgSolid} border-b border-slate-200 dark:border-slate-700">
-                            <div class="grid" style="grid-template-columns:${grid}">
-                                <div class="sticky left-0 z-40 ${bgSolid}"></div>
-                                ${heads}
-                            </div>
-                            ${allDayRow}
-                        </div>
-                        <div id="cal-week-grid" class="relative grid" style="grid-template-columns:${grid};height:${24 * H}px;">
-                            <div class="absolute inset-0 pointer-events-none">${hourLines}</div>
-                            <div class="sticky left-0 z-20 ${bgSolid}" style="height:${24 * H}px;">${hourLabels}</div>
-                            ${colHtml}
-                        </div>
+                <div class="sticky z-20 ${bgSolid}" style="top:${CAL_STICKY_TOP};">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="text-xs font-black text-slate-700 dark:text-slate-200">${Number(start.slice(5, 7))}/${Number(start.slice(8))}〜${Number(days[6].slice(5, 7))}/${Number(days[6].slice(8))}の予定</p>
+                        <span class="text-[10px] font-bold text-slate-400">枠をタップで追加／日付で日表示</span>
                     </div>
+                    <div class="border-b border-slate-200 dark:border-slate-700">
+                        <div class="grid" style="grid-template-columns:${grid}">
+                            <div></div>
+                            ${heads}
+                        </div>
+                        ${allDayRow}
+                    </div>
+                </div>
+                <div id="cal-week-grid" class="relative grid" style="grid-template-columns:${grid};height:${hh(24)};">
+                    <div class="absolute inset-0 pointer-events-none">${hourLines}</div>
+                    <div class="relative" style="height:${hh(24)};">${hourLabels}</div>
+                    ${colHtml}
                 </div>`;
-            const sc = document.getElementById('cal-week-scroll');
-            if (sc) {
-                if (keep) { sc.scrollTop = keep.top; sc.scrollLeft = keep.left; }
-                else {
-                    const timed = cols.flatMap(c => c.ev).sort((a, b) => a.st - b.st);
-                    let startMin = 7 * 60;
-                    if (timed.length) startMin = Math.max(timed[0].st - 60, 0);
-                    else if (days.includes(todayStr)) startMin = Math.max(nowMin - 60, 0);
-                    sc.scrollTop = startMin / 60 * H;
-                    const target = box.querySelector('.cal-wk-col[data-date="' + (days.includes(base) ? base : days[0]) + '"]');
-                    if (target && sc.clientWidth && sc.scrollWidth > sc.clientWidth) sc.scrollLeft = Math.max(0, target.offsetLeft - AX - (sc.clientWidth - AX - target.offsetWidth) / 2);
-                }
-            }
+            calSyncCtlH();
+            calAutoScroll('week', 'cal-week-grid');
             _calWeekLast = { key };
         }
 
@@ -11354,8 +11570,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             calSelectedDate = dateStr;
             renderCalendarDayList();
             document.querySelectorAll('#cal-grid [data-date]').forEach(el => {
-                el.classList.toggle('ring-2', el.getAttribute('data-date') === dateStr);
-                el.classList.toggle('ring-rose-400', el.getAttribute('data-date') === dateStr);
+                el.classList.toggle('cal-cell-sel', el.getAttribute('data-date') === dateStr);
             });
             document.querySelectorAll('#cal-week-timeline .cal-wk-col').forEach(el => el.classList.toggle('cal-wk-sel', el.getAttribute('data-date') === dateStr));
         }
@@ -11377,16 +11592,17 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const label = document.getElementById('cal-month-label');
             if (label) label.textContent = calLabelText();
             calUpdateViewButtons();
+            renderCalFilter();
 
             const wdHeader = document.getElementById('cal-weekday-header');
             if (wdHeader) {
                 const wdNames = ['日','月','火','水','木','金','土'];
                 wdHeader.innerHTML = wdNames.map((w, i) =>
-                    `<div class="text-center text-[10px] font-black py-1 ${i===0?'text-rose-400':i===6?'text-blue-400':'text-slate-400'}">${w}</div>`
+                    `<div class="text-center text-[10px] font-black py-1 ${i===0?'cal-sun':i===6?'cal-sat':'text-slate-400'}">${w}</div>`
                 ).join('');
             }
 
-            const all = getAllSchedules();
+            const all = calVisibleSchedules();
             const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
 
             const firstDay = new Date(Date.UTC(calViewYear, calViewMonth, 1));
@@ -11411,16 +11627,19 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
 
             const monthWrap = document.getElementById('cal-month-wrap');
             if (monthWrap) monthWrap.classList.toggle('hidden', calView !== 'month');
+            if (calView === 'month') _calScrollKey = null;
             const grid = document.getElementById('cal-grid');
             renderCalWeekTimeline();
             renderCalDayTimeline();
-            const dayListCard = (document.getElementById('cal-day-title') || {}).closest ? document.getElementById('cal-day-title').closest('.rounded-2xl') : null;
+            calSyncCtlH();
+            const dayListCard = document.getElementById('cal-day-card');
             if (dayListCard) dayListCard.classList.toggle('hidden', calView !== 'month');
             if (grid && calView !== 'month') grid.innerHTML = '';
             if (grid && calView === 'month') {
-                grid.innerHTML = cells.map(c => {
+                grid.innerHTML = cells.map((c, ci) => {
+                    const lineCls = 'border-t ' + (ci % 7 ? 'border-l ' : '') + 'border-slate-200 dark:border-slate-800';
                     if (!c.inMonth) {
-                        return `<div class="rounded-lg p-1 text-[10px] text-slate-300 dark:text-slate-700" style="min-height:64px;">${c.day}</div>`;
+                        return `<div class="p-1 text-[10px] text-slate-300 dark:text-slate-600 ${lineCls}" style="min-height:64px;">${c.day}</div>`;
                     }
                     const dayItems = all.filter(s => s.date === c.dateStr);
                     const isToday = c.dateStr === todayStr;
@@ -11435,8 +11654,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                         return `<button type="button" onclick="event.stopPropagation(); calSelectDate('${c.dateStr}'); ${openAttr}" class="block w-full truncate text-left text-[8px] sm:text-[9px] font-bold rounded px-1 py-0.5 mt-0.5 transition-all duration-150 hover:brightness-110 hover:scale-[1.04] hover:z-10 relative cursor-pointer" style="background:${bg};color:${textColor};${edge}">${s.time ? escapeHtml(s.time) + ' ' : ''}${escapeHtml(s.title)}</button>`;
                     }).join('');
                     return `<div data-date="${c.dateStr}" onclick="calCellClick('${c.dateStr}')" style="min-height:${calView === 'month' ? 64 : 160}px;cursor:pointer;"
-                        class="rounded-lg p-1 flex flex-col items-center justify-start border transition-all hover:border-rose-300 dark:hover:border-rose-700 ${isSelected ? 'ring-2 ring-rose-400' : ''} ${isToday ? 'bg-slate-100 dark:bg-slate-800 border-rose-300 dark:border-slate-700' : 'bg-slate-50 dark:bg-slate-800 border-slate-100 dark:border-slate-800'}">
-                        <span class="text-[11px] font-black ${isToday ? 'text-rose-500' : 'text-slate-600 dark:text-slate-300'}">${c.day}</span>
+                        class="p-1 flex flex-col items-center justify-start transition-colors ${lineCls} ${isSelected ? 'cal-cell-sel' : ''}">
+                        <span class="text-[11px] font-black ${isToday ? 'inline-flex items-center justify-center w-5 h-5 rounded-full bg-rose-500 text-white' : (ci % 7 === 0 ? 'cal-sun' : ci % 7 === 6 ? 'cal-sat' : 'text-slate-600 dark:text-slate-300')}">${c.day}</span>
                         <div class="w-full">${chips}</div>
                         ${dayItems.length > maxChips ? `<button type="button" onclick="event.stopPropagation(); calSelectDateAndScroll('${c.dateStr}')" class="text-[8px] font-bold text-slate-400 hover:text-rose-500 mt-0.5 underline decoration-dotted transition-colors">+${dayItems.length - maxChips}件</button>` : ''}
                     </div>`;
@@ -11469,7 +11688,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const wdNames = ['日','月','火','水','木','金','土'];
             if (titleEl) titleEl.textContent = `${calSelectedDate.replace(/-/g,'/')}（${wdNames[d.getUTCDay()]}）の予定`;
 
-            const items = getAllSchedules().filter(s => s.date === calSelectedDate);
+            const items = calVisibleSchedules().filter(s => s.date === calSelectedDate);
             if (items.length === 0) {
                 listEl.innerHTML = '';
                 if (emptyEl) emptyEl.classList.remove('hidden');
@@ -11505,11 +11724,11 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         }
 
 
-        let scheduleSelectedType = 'test';
+        let scheduleSelectedType = 'event';
         let scheduleSelectedColor = SCHEDULE_COLORS[6];
         function selectScheduleType(type) {
             scheduleSelectedType = type;
-            ['test', 'submission', 'task'].forEach(t => {
+            ['event', 'task', 'test', 'submission'].forEach(t => {
                 const btn = document.getElementById('schedule-type-btn-' + t);
                 if (!btn) return;
                                 const active = t === type;
@@ -11692,7 +11911,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 }
                 document.getElementById('schedule-input-date').value = dateValue;
                 document.getElementById('schedule-input-memo').value = '';
-                scheduleSelectedType = 'test';
+                scheduleSelectedType = 'event';
                 if (deleteBtn) deleteBtn.classList.add('hidden');
                 setSchedulePublishToggle(false);
             }
@@ -18576,6 +18795,12 @@ const KOBUN_TANGO = [
         const ALL_PANELS = ['essay-panel','home-container','english-home','ronri-entry-selector','ronri-section-list-panel','ronri-hyogen-panel','japanese-home','kobun-home','kobun-reader-panel','kobun-vocab-panel','kobun-katsuyou-panel','math-home','science-home','social-home','social-qa-panel','geo-puzzle-panel','formula-panel','target1900-panel','scan-panel-wrapper','image-upload-panel','right-content-panel','notebook-interface','grades-panel','preset-section-selector','english-entry-selector','calendar-panel','mypage-panel','seasonal-corner-panel'];
 
         function hideAllPanels() {
+            if (document.documentElement.classList.contains('pm-cal-screen')) {
+                document.documentElement.classList.remove('pm-cal-screen');
+                if (typeof calDrawerClose === 'function') calDrawerClose();
+                const mc0 = document.getElementById('main-container');
+                if (mc0) mc0.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
+            }
             ALL_PANELS.forEach(id => {
                 const el = document.getElementById(id);
                 if (el) el.classList.add('hidden');
@@ -19143,7 +19368,7 @@ const KOBUN_TANGO = [
                 ${g.items.map(({ sec: s, idx }) => {
                     const has = ronriSectionHasData(s);
                     return `
-                <button onclick="selectRonriSectionFromList(${idx})" class="pm-subj ${has ? '' : 'pm-off'}" ${has ? 'style="--c:#b86f8f"' : ''}>
+                <button data-pm-dot="r:${escapeHtml(String(s.id == null ? '' : s.id))}" data-pm-seen="r:${escapeHtml(String(s.id == null ? '' : s.id))}" onclick="selectRonriSectionFromList(${idx})" class="pm-subj ${has ? '' : 'pm-off'}" ${has ? 'style="--c:#b86f8f"' : ''}>
                     <span class="pm-badge"><i data-lucide="file-text" class="w-6 h-6"></i></span>
                     <span class="pm-name">${escapeHtml(ronriSectionTitleOf(s, g.lesson))}</span>
                     <span class="pm-sub">${has ? '解析済み（' + s.problems.length + '問）' : '準備中（問題データなし）'}</span>
@@ -19342,7 +19567,7 @@ const KOBUN_TANGO = [
             picker.innerHTML = ronriGroupByLesson(sections).map(g => `
                 <p class="text-[10px] font-black text-violet-600 dark:text-violet-400 tracking-wider pt-1">● ${escapeHtml(g.lesson)}</p>
                 ${g.items.map(({ sec: s, idx }) => `
-                <button onclick="loadRonriSection(${idx})" class="w-full text-left px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-violet-300 dark:hover:border-violet-700 hover:bg-violet-50/50 dark:hover:bg-violet-950/20 transition-all">
+                <button data-pm-dot="r:${escapeHtml(String(s.id == null ? '' : s.id))}" data-pm-seen="r:${escapeHtml(String(s.id == null ? '' : s.id))}" onclick="loadRonriSection(${idx})" class="w-full text-left px-3.5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-violet-300 dark:hover:border-violet-700 hover:bg-violet-50/50 dark:hover:bg-violet-950/20 transition-all">
                     <p class="text-xs font-black text-slate-800 dark:text-slate-100">${escapeHtml(ronriSectionTitleOf(s, g.lesson))}</p>
                     <p class="text-[10px] text-slate-400 font-semibold mt-0.5">問題数：${(s.problems || []).length}問</p>
                 </button>`).join('')}
@@ -19351,6 +19576,7 @@ const KOBUN_TANGO = [
         function loadRonriSection(idx) {
             const sections = window._remoteRonriSections || [];
             const s = sections[idx];
+            if (s && s.id && typeof pmDotSeen === 'function') pmDotSeen(['r:' + s.id]);
             if (!s || !Array.isArray(s.problems) || s.problems.length === 0) {
                 showToast('このセクションにはまだ問題データがありません');
                 return;
@@ -21359,7 +21585,9 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             if (!isModeEnabled('calendar')) { showToast(modeDisabledMessage('calendar')); _showTopHome(); return; }
             hideAllPanels();
             const mc = document.getElementById('main-container');
-            if (mc) mc.className = 'flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 flex flex-col gap-6 items-center relative z-10 animate-fade-in';
+            if (mc) mc.className = 'flex-1 w-full max-w-none mx-auto px-2 py-2 md:px-4 md:py-3 flex flex-col gap-4 items-center relative z-10 animate-fade-in';
+            document.documentElement.classList.add('pm-cal-screen');
+            if (typeof calDrawerClose === 'function') calDrawerClose();
             const el = document.getElementById('calendar-panel');
             if (el) el.classList.remove('hidden');
             const today = getJSTDateOnly();
@@ -22111,6 +22339,38 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             document.getElementById('install-gate-done')?.classList.remove('hidden');
         });
         window.addEventListener('app-auth-changed', evaluateInstallGate);
+        (function pmInstallCounter() {
+            const KEY = 'pm_install_counted';
+            const isStandalone = () => { try { return ['standalone', 'fullscreen', 'minimal-ui'].some(m => matchMedia('(display-mode: ' + m + ')').matches) || navigator.standalone === true; } catch (e) { return false; } };
+            const platform = () => {
+                const ua = navigator.userAgent || '';
+                if (/iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) return 'ios';
+                return /Android/i.test(ua) ? 'android' : 'desktop';
+            };
+            const jstDay = () => new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10);
+            let busy = false;
+            async function tryRecord(force) {
+                if (busy) return;
+                const fb = window.AppFirebase, u = fb && fb.auth && fb.auth.currentUser;
+                if (!u || typeof fb.recordInstall !== 'function') return;
+                if (!force && !isStandalone()) return;
+                try { if (typeof devUnlocked !== 'undefined' && devUnlocked) return; } catch (e) {}
+                let st = {}; try { st = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
+                const today = jstDay();
+                if (st.uid === u.uid && (st.ok || st.day === today)) return;   // 記録済み／今日はもう試した
+                busy = true;
+                try {
+                    await fb.recordInstall(today, platform(), !!u.isAnonymous);
+                    try { localStorage.setItem(KEY, JSON.stringify({ uid: u.uid, ok: 1 })); } catch (e) {}
+                } catch (e) {
+                    // 記録済み（上書き不可）やルール未設定のときは、1日1回だけ再試行する
+                    try { localStorage.setItem(KEY, JSON.stringify({ uid: u.uid, day: today })); } catch (e2) {}
+                } finally { busy = false; }
+            }
+            window.addEventListener('appinstalled', () => setTimeout(() => tryRecord(true), 800));
+            window.addEventListener('app-auth-changed', () => setTimeout(() => tryRecord(false), 1500));
+            setTimeout(() => tryRecord(false), 3000);
+        })();
         window.addEventListener('app-official-resolved', evaluateInstallGate);
         setupInstallGate();
         evaluateInstallGate();
@@ -22138,17 +22398,23 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 openDevLoginByShortcut();
             }
         });
-        (function setupFooterTapDevShortcut() {
-            const el = document.getElementById('footer-copyright');
-            if (!el) return;
-            const NEED = 7, GAP_MS = 1500;
-            let count = 0, last = 0;
-            el.addEventListener('click', () => {
-                const now = Date.now();
-                count = (now - last <= GAP_MS) ? count + 1 : 1;
+        // 開発者モードの入口：下のタブバーを「カレンダー → 学習コンテンツ → カレンダー → 学習コンテンツ → 成績管理」の順に、
+        // 1.5秒以内の間隔でタップする（入れるのは公式アカウントだけ。Shift+Alt+K も従来どおり使える）
+        (function setupTabComboDevShortcut() {
+            const bar = document.getElementById('bottom-tab-bar');
+            if (!bar) return;
+            const COMBO = ['calendar', 'study', 'calendar', 'study', 'grades'], GAP_MS = 1500;
+            let seq = [], last = 0;
+            bar.addEventListener('click', (e) => {
+                const btn = e.target && e.target.closest ? e.target.closest('button[id^="bottom-tab-"]') : null;
+                if (!btn) return;
+                const key = btn.id.replace('bottom-tab-', ''), now = Date.now();
+                if (now - last > GAP_MS) seq = [];
                 last = now;
-                if (count >= NEED) { count = 0; openDevLoginByShortcut(); }
-            });
+                seq.push(key);
+                if (seq.length > COMBO.length) seq = seq.slice(-COMBO.length);
+                if (seq.length === COMBO.length && seq.every((k, i) => k === COMBO[i])) { seq = []; openDevLoginByShortcut(); }
+            }, true);
         })();
 
         function closeDevLogin() {
@@ -22505,10 +22771,41 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 if (seq !== devUsageSeq) return;
                 devUsageRender(day, res.docs, res.truncated);
                 devUsageLoadTrend(day);
+                devInstallLoad(false);
             } catch (e) {
                 if (seq !== devUsageSeq) return;
                 console.warn('usage load error', e);
                 devUsageError(e);
+            }
+        }
+        let devInstallCache = null;
+        async function devInstallLoad(force) {
+            const sumsEl = document.getElementById('dev-install-sums'); if (!sumsEl) return;
+            const status = document.getElementById('dev-install-status'), trendEl = document.getElementById('dev-install-trend');
+            const today = devUsageJstToday();
+            const days = []; for (let i = 13; i >= 0; i--) days.push(devUsageAddDays(today, -i));
+            try {
+                if (force || !devInstallCache || devInstallCache.day !== today || Date.now() - devInstallCache.at > 60000) {
+                    devInstallCache = { day: today, at: Date.now(), stats: await window.AppFirebase.loadInstallStats(days) };
+                }
+                const st = devInstallCache.stats;
+                const last14 = st.perDay.reduce((a, b) => a + b, 0), max = Math.max(1, ...st.perDay);
+                const sum = (label, value, sub) => `<div class="dev-usage-sum"><small>${label}</small><b>${value}</b><span>${sub || '&nbsp;'}</span></div>`;
+                const unit = '<small style="display:inline;font-size:.8rem"> 人</small>';
+                if (status) { status.style.color = ''; status.textContent = st.total === 0 ? 'まだ記録がありません（この機能を入れたあとに、アプリとして開いた人から数えます）。' : ''; }
+                sumsEl.innerHTML =
+                    sum('インストール者数', st.total.toLocaleString('ja-JP') + unit, '登録 ' + (st.total - st.guests) + ' 人 ／ ゲスト ' + st.guests + ' 人') +
+                    sum('今日の新規', st.perDay[st.perDay.length - 1] + unit, '') +
+                    sum('直近14日の新規', last14 + unit, '') +
+                    sum('端末の内訳', 'iOS ' + st.ios, 'Android ' + st.android + ' ／ PC ' + st.desktop);
+                if (trendEl) trendEl.innerHTML = '<div class="dev-trend">' + days.map((d, i) =>
+                    `<div class="dev-trend-col" title="${d}：${st.perDay[i]}人"><span class="dev-trend-n">${st.perDay[i]}</span><span class="dev-trend-bar"><i style="height:${Math.round(st.perDay[i] / max * 100)}%"></i></span><span class="dev-trend-d">${Number(d.slice(5, 7))}/${Number(d.slice(8))}</span></div>`
+                ).join('') + '</div><p class="dev-card-desc" style="margin-top:.4rem">直近14日の、1日ごとの新規インストール者数です。</p>';
+            } catch (e) {
+                const denied = !!(e && e.code === 'permission-denied');
+                if (status) { status.style.color = '#e11d48'; status.textContent = denied ? '読み取りが許可されていません。下の「Firestoreルール」に app_installs の分を追加して「公開」してください。' : '取得に失敗しました（' + ((e && (e.code || e.message)) || '不明') + '）。'; }
+                sumsEl.innerHTML = ''; if (trendEl) trendEl.innerHTML = '';
+                if (denied) { const det = document.getElementById('dev-usage-rules'); if (det) det.open = true; }
             }
         }
         async function devUsageLoadTrend(selected) {
@@ -25853,16 +26150,37 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         .pm-tab-dot{position:absolute;top:-2px;right:-6px;width:9px;height:9px;border-radius:9999px;background:#f43f5e;border:1.5px solid #fff}
         .dark .pm-tab-dot{border-color:#0c1220}
         .pm-tab-dot.hidden{display:none}
+        [data-pm-dot]{position:relative}
+        .pm-new-dot{position:absolute;top:.7rem;right:.7rem;width:10px;height:10px;border-radius:9999px;background:#f43f5e;box-shadow:0 0 0 2px #fff;pointer-events:none;z-index:2;animation:pm-dot-pop .55s cubic-bezier(.34,1.56,.64,1)}
+        .dark .pm-new-dot{box-shadow:0 0 0 2px #0c1220}
+        @media (prefers-reduced-motion: reduce){.pm-new-dot{animation:none}}
         .pm-tab-dot.pm-pop{animation:pm-dot-pop .55s cubic-bezier(.34,1.56,.64,1)}
         @keyframes pm-dot-pop{0%{transform:scale(0)}60%{transform:scale(1.7)}100%{transform:scale(1)}}
         .pm-icon-bump{animation:pm-icon-bump .5s ease-out}
         @keyframes pm-icon-bump{0%{transform:scale(1)}40%{transform:scale(1.3)}100%{transform:scale(1)}}
         @media (prefers-reduced-motion: reduce){.pm-tab-dot.pm-pop,.pm-icon-bump{animation:none}}
         .cal-wk-col.cal-wk-sel{background:rgba(148,163,184,.10)}
+        .cal-bg{background-color:var(--cal-bg,#fff)}
+        .cal-cell-sel{background-color:var(--pm-accent-soft)}
+        .cal-sun{color:#e11d48 !important} .dark .cal-sun{color:#fb7185 !important}
+        .cal-sat{color:#2563eb !important} .dark .cal-sat{color:#60a5fa !important}
+        /* カレンダーの色は、アプリ全体のテーマ色（--pm-accent）に合わせる（日曜の赤・現在時刻の線・予定の色は従来どおり） */
+        #calendar-panel,#cal-zoom-bar,#cal-drawer-handle{--cal-on-accent:#fff}
+        .dark #calendar-panel,.dark #cal-zoom-bar,.dark #cal-drawer-handle{--cal-on-accent:#0f1522}
+        :is(#calendar-panel,#cal-zoom-bar,#cal-drawer-handle) :is(.text-rose-500,.text-rose-600,.dark\:text-rose-400){color:var(--pm-accent) !important}
+        :is(#calendar-panel,#cal-zoom-bar,#cal-drawer-handle) :is(.bg-rose-500,.bg-rose-600,.hover\:bg-rose-600:hover){background-color:var(--pm-accent) !important;color:var(--cal-on-accent) !important}
+        :is(#calendar-panel,#cal-zoom-bar,#cal-drawer-handle) :is(.bg-rose-50\/40,.dark\:bg-rose-950\/10){background-color:var(--pm-accent-soft) !important}
+        :is(#calendar-panel,#cal-zoom-bar,#cal-drawer-handle) .ring-rose-400{--tw-ring-color:var(--pm-accent) !important}
+        #cal-day-timeline,#cal-week-timeline{touch-action:pan-x pan-y}
+        #calendar-panel.cal-has-zoombar #cal-day-timeline,#calendar-panel.cal-has-zoombar #cal-week-timeline{padding-right:2.75rem}
+        #cal-fixed-ui{display:none}
+        html.pm-cal-screen #cal-fixed-ui{display:block}
+        #calendar-panel{--cal-bg:#fff}
+        .dark #calendar-panel{--cal-bg:#0f1522}
+        html.pm-cal-screen:not(.dark) body{background-color:#fff !important}
+        #cal-grid > div{min-height:max(64px, calc((100dvh - var(--sticky-top, 0px) - 15rem) / 6)) !important}
         .cal-ev{transition:filter .15s ease,transform .15s ease}
         .cal-ev:hover{filter:brightness(1.08);z-index:5}
-        #cal-week-scroll::-webkit-scrollbar{height:6px;width:6px}
-        #cal-week-scroll::-webkit-scrollbar-thumb{background:rgba(148,163,184,.4);border-radius:3px}
         @media (prefers-reduced-motion: reduce){#cal-view-pill{transition:none !important}}
         /* 下のタブバー：選んでいるタブが、浮き出て大きくなる */
         #bottom-tab-bar { --pm-bar-bg: #ffffff; --pm-tab-c: #06b6d4; --pm-tab-glow: rgba(6,182,212,.42); }
@@ -25935,10 +26253,51 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         TABS.forEach(t => {
             if (!ready()) { setDot(t, false); return; }
             const ids = currentIds(t), seen = readSeen(t);
-            if (seen == null || dev || st.active === t) { writeSeen(t, ids.concat(seen ? [...seen] : [])); setDot(t, false); return; }
+            if (seen == null || dev || (st.active === t && t !== 'study')) { writeSeen(t, ids.concat(seen ? [...seen] : [])); setDot(t, false); return; }
             setDot(t, ids.some(id => !seen.has(id)));
         });
+        paintDots();
     }
+    // 学習コンテンツの下の階層（教科カード・英語・セクション選択・各セクション）にも、同じ赤い点を出す。
+    // data-pm-dot="id id e:* …"  … 未確認のIDが1つでもあれば点灯（末尾の * は前方一致）
+    // data-pm-seen="id …"        … そのボタンをタップしたとき「見た」にするID
+    function dotMatch(spec, ids, seen) {
+        return spec.split(/\s+/).filter(Boolean).some(tok => tok.endsWith('*')
+            ? ids.some(id => id.startsWith(tok.slice(0, -1)) && !seen.has(id))
+            : (ids.includes(tok) && !seen.has(tok)));
+    }
+    function paintDots() {
+        const els = document.querySelectorAll('[data-pm-dot]');
+        if (!els.length) return;
+        const seen = ready() ? readSeen('study') : null;
+        const ids = seen ? currentIds('study') : [];
+        if (dotObs) dotObs.disconnect();
+        els.forEach(el => {
+            const show = !!seen && dotMatch(el.getAttribute('data-pm-dot') || '', ids, seen);
+            let d = null;
+            for (const c of el.children) { if (c.classList && c.classList.contains('pm-new-dot')) { d = c; break; } }
+            if (show && !d) { d = document.createElement('span'); d.className = 'pm-new-dot'; d.setAttribute('aria-hidden', 'true'); el.appendChild(d); }
+            else if (!show && d) d.remove();
+        });
+        if (dotObs) dotObs.observe(document.body, { childList: true, subtree: true });
+    }
+    let dotObs = null, dotRaf = 0;
+    function schedulePaint() { if (dotRaf) return; dotRaf = requestAnimationFrame(() => { dotRaf = 0; paintDots(); }); }
+    // そのボタン（セクション・モード）を開いた＝「見た」。親のボタンは、中に未確認が残る限り点いたまま
+    window.pmDotSeen = function (list) {
+        try {
+            if (!ready()) return;
+            const seen = readSeen('study'); if (seen == null) return;
+            writeSeen('study', [...seen].concat(list));
+            evaluate();
+        } catch (e) {}
+    };
+    document.addEventListener('click', (e) => {
+        const el = e.target && e.target.closest ? e.target.closest('[data-pm-seen]') : null;
+        if (el) window.pmDotSeen((el.getAttribute('data-pm-seen') || '').split(/\s+/).filter(Boolean));
+    }, true);
+    dotObs = new MutationObserver(schedulePaint);
+    dotObs.observe(document.body, { childList: true, subtree: true });
     function markSeen(t) { const seen = readSeen(t); writeSeen(t, currentIds(t).concat(seen ? [...seen] : [])); setDot(t, false); }
     window.pmDotsEvaluate = evaluate;
 
@@ -25960,8 +26319,15 @@ ${pmReportButtonHtml('kobun', 'all', t)}
     if (typeof origActive === 'function') {
         window.setBottomTabActive = function (key) {
             const r = origActive.apply(this, arguments);
-            try { st.active = key; if (TABS.includes(key) && ready()) markSeen(key); } catch (e) {}
+            try { st.active = key; if (TABS.includes(key) && key !== 'study' && ready()) markSeen(key); } catch (e) {}
             return r;
+        };
+    }
+    const origNav = window._navigateTo;
+    if (typeof origNav === 'function') {
+        window._navigateTo = function (screen) {
+            try { if (STUDY_MODE_KEYS.includes(screen)) window.pmDotSeen(['f:' + screen]); } catch (e) {}
+            return origNav.apply(this, arguments);
         };
     }
     window.addEventListener('app-cloud-data-loaded', () => { st.cloudReady = true; evaluate(); });
