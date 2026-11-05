@@ -1,8 +1,8 @@
 name: security-digest
 
+# 定期実行は Cloudflare Worker（worker.js の scheduled）に移しました。
+# このファイルは、手動で試すとき（Actions の「Run workflow」）だけ動きます。
 on:
-  schedule:
-    - cron: '0 23 * * *'   # 毎日 08:00（日本時間）。GitHubの仕様で、数分〜数十分おくれることがあります
   workflow_dispatch:
     inputs:
       dry:
