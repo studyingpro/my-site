@@ -10735,6 +10735,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     await OneSignal.User.PushSubscription.optIn();
                     syncOneSignalClassTag();
                     pmPushSyncSoon(1500);
+                    setTimeout(pmRefreshOsSubState, 1500);
                 } catch (e) { console.warn('OneSignalの購読に失敗しました:', e); }
             });
         }
@@ -10776,6 +10777,17 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 });
             });
         }
+
+        // OneSignalに本当に登録できているかを調べて、設定の表示に反映する（null=未確認 / true=登録済み / false=未登録）
+        window._pmOsSubscribed = null;
+        function pmRefreshOsSubState() {
+            return pmOneSignalSub().then(sub => {
+                window._pmOsSubscribed = sub ? (!!sub.id && !!sub.optedIn) : false;
+                try { updateScheduleNotifyToggleUI(); } catch (e) {}
+                return window._pmOsSubscribed;
+            });
+        }
+        window.addEventListener('load', () => setTimeout(pmRefreshOsSubState, 5000));
 
         // ===== 予定の通知を、アプリを閉じていても届くようにする（Workerに予約を預け、時刻になったらOneSignalから送る） =====
         window._pmServerPushActive = false;
@@ -10858,14 +10870,15 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         window.addEventListener('onesignal-ready', () => {
             syncOneSignalIdentity(window.currentAppUser || null);
             window.OneSignalDeferred.push(async function (OneSignal) {
-                try { OneSignal.User.PushSubscription.addEventListener('change', () => pmPushSyncSoon(1000)); } catch (e) {}
+                try { OneSignal.User.PushSubscription.addEventListener('change', () => { pmPushSyncSoon(1000); pmRefreshOsSubState(); }); } catch (e) {}
             });
             pmPushSyncSoon(1500);
+            setTimeout(pmRefreshOsSubState, 1500);
         });
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) return;
             pmNotifyNudge(); pmPushSyncSoon(2000);
-            try { updateScheduleNotifyToggleUI(); } catch (e) {}
+            try { updateScheduleNotifyToggleUI(); pmRefreshOsSubState(); } catch (e) {}
         });
         setInterval(() => { if (!document.hidden) pmPushSyncSoon(0); }, 15 * 60000);
 
@@ -10890,8 +10903,13 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
             if (Notification.permission === 'default') { requestScheduleNotifyPermission(); return; }
             if (Notification.permission === 'denied') { showToast('通知がブロックされています。端末（ブラウザ）の設定で、このアプリの通知を許可してください'); return; }
-            showToast('予定の通知は常にオンです');
-            oneSignalOptIn();   // 購読が切れていた場合に備えて、登録し直す
+            showToast('通知の登録を確認しています…');
+            oneSignalOptIn();   // 許可済みでも、OneSignalへの登録が切れていれば登録し直す
+            setTimeout(() => {
+                pmRefreshOsSubState().then(ok => {
+                    showToast(ok ? '通知は登録済みです（常にオン）' : '通知をOneSignalに登録できませんでした。ページを再読み込みして、もう一度タップしてください');
+                });
+            }, 3500);
         }
 
         function setToggleSwitchUI(trackId, on) {
@@ -10915,7 +10933,9 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!('Notification' in window)) { set('予定のプッシュ通知（この端末は非対応）', false); return; }
             if (Notification.permission === 'denied') { set('予定のプッシュ通知（端末の設定で許可してください）', false); return; }
             if (Notification.permission === 'default') { set('予定のプッシュ通知（タップして許可）', false); return; }
-            set('予定のプッシュ通知（常にオン）', true);
+            if (window._pmOsSubscribed === true) { set('予定のプッシュ通知（常にオン）', true); return; }
+            if (window._pmOsSubscribed === false) { set('予定のプッシュ通知（未登録・タップで再登録）', false); return; }
+            set('予定のプッシュ通知（確認中…）', false);
         }
 
         function pmShowLocalNotification(title, opts) {
