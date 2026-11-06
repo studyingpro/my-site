@@ -2433,6 +2433,11 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             </button>
                         </div>
                     </div>
+                    <div id="cal-jst-clock" class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-3 text-xs font-bold text-slate-500 dark:text-slate-400">
+                        <i data-lucide="clock" class="w-5 h-5 text-rose-500 shrink-0"></i>
+                        <span>日本時間</span>
+                        <span id="cal-jst-clock-time" class="text-xl sm:text-2xl font-black tabular-nums leading-tight text-slate-800 dark:text-slate-100"></span>
+                    </div>
                     <div id="cal-controls" class="cal-bg sticky z-30 flex items-center justify-between flex-wrap gap-x-2 gap-y-2 mb-2 py-2" style="top:var(--sticky-top,0px);">
                             <div class="relative flex items-center rounded-lg bg-slate-100 dark:bg-slate-800 p-0.5">
 <span id="cal-view-pill" class="absolute top-0.5 bottom-0.5 left-0 rounded-md bg-white dark:bg-slate-700 shadow-sm pointer-events-none" style="width:0;transition:transform .42s cubic-bezier(.34,1.35,.64,1),width .42s cubic-bezier(.34,1.35,.64,1);"></span>
@@ -3373,9 +3378,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
             <i data-lucide="chevron-right" class="w-3 h-3 text-white"></i>
         </div>
 
-        <footer class="border-t border-slate-200 dark:border-slate-800 bg-slate-100/50 dark:bg-slate-900/50 py-5 px-6 text-center text-xs text-slate-500 font-medium relative z-10 w-full">
-            <p class="select-none" style="-webkit-tap-highlight-color:transparent;">全ての若い学習者に向けて健康的で安全な学習環境を提供します。<button type="button" onclick="openTermsModal()" class="ml-2 underline font-bold hover:text-slate-600 dark:hover:text-slate-300">利用規約</button></p>
-        </footer>
     </div>
 
     <div id="announcement-modal" class="fixed inset-0 z-[9996] flex items-center justify-center p-4 bg-slate-900/60 dark:bg-slate-900/80 backdrop-blur-sm opacity-0 pointer-events-none transition-all duration-300">
@@ -4534,7 +4536,10 @@ html.dark .dev-log-link { color: #e2e8f0; }
     <div id="timer-panel" class="hidden fixed bottom-24 right-5 z-[9990] w-72 max-w-[calc(100vw-2.5rem)] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl p-4">
         <div class="flex items-center justify-between mb-3">
             <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5"><i data-lucide="timer" class="w-4 h-4"></i><span>タイマー</span></h3>
-            <button onclick="toggleTimerPanel()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+            <div class="flex items-center gap-0.5">
+                <button onclick="openTimerFullscreen()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" aria-label="全画面で表示" title="全画面で表示"><i data-lucide="maximize-2" class="w-4 h-4"></i></button>
+                <button onclick="toggleTimerPanel()" class="p-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
         </div>
         <div class="flex gap-2 mb-3">
             <button id="timer-mode-stopwatch-btn" onclick="setTimerMode('stopwatch')" class="flex-1 py-1.5 rounded-lg text-[11px] font-black transition-all">ストップウォッチ</button>
@@ -4577,6 +4582,18 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <label class="flex items-center gap-2 text-[11px] font-bold text-slate-500 dark:text-slate-400 cursor-pointer"><input type="checkbox" id="timer-sound-toggle" class="accent-blue-500" onchange="setTimerSoundOn(this.checked)" checked>終了時に音を鳴らす</label>
                     <button onclick="pmTestTimerSound()" class="text-[11px] font-black text-blue-600 dark:text-cyan-400">音を試す</button>
                 </div>
+    </div>
+
+    <div id="timer-fs" class="hidden fixed inset-0 z-[10030] flex-col items-center justify-center bg-white dark:bg-[#0b1120] text-slate-900 dark:text-white select-none" role="dialog" aria-modal="true" aria-label="タイマー（全画面）">
+        <button type="button" onclick="closeTimerFullscreen()" class="absolute right-4 p-3 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:opacity-80 transition-opacity" style="top:max(1rem,env(safe-area-inset-top));" aria-label="全画面を閉じる" title="全画面を閉じる"><i data-lucide="minimize-2" class="w-5 h-5"></i></button>
+        <p id="timer-fs-sub" class="text-sm sm:text-base font-black text-slate-400 mb-3"></p>
+        <p id="timer-fs-display" class="font-black tabular-nums leading-none text-center" style="font-size:min(26vw,30vh);">00:00</p>
+        <p id="timer-fs-hint" class="text-xs sm:text-sm font-bold text-slate-400 mt-5 min-h-[1.25rem] text-center px-6"></p>
+        <div class="mt-8 grid grid-cols-2 gap-3 w-full max-w-md px-6">
+            <button type="button" id="timer-fs-start" onclick="timerFsAction('start')" class="py-4 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-2xl text-base font-black hover:opacity-90 transition-all">開始</button>
+            <button type="button" onclick="timerFsAction('finish')" class="py-4 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-2xl text-base font-black hover:opacity-90 transition-all">終了して記録</button>
+        </div>
+        <p id="timer-fs-today" class="text-center text-xs sm:text-sm font-black text-blue-600 dark:text-cyan-400 mt-6"></p>
     </div>
 
     <div id="timer-recover-modal" class="fixed inset-0 z-[10020] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-5">
@@ -10999,6 +11016,9 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         let _calH = 48, _calAutoMin = 7 * 60, _calScrollKey = null, _calPinch = null, _calReTimer = 0;
         try { const v = Number(localStorage.getItem('pm_cal_hour_h')); if (v >= CAL_H_MIN && v <= CAL_H_MAX) _calH = v; } catch (e) {}
         const calHh = (n) => `calc(var(--cal-h, 48px) * ${n})`;
+        // 拡大するほど目盛りを細かく：〜69px=1時間 / 70〜109px=30分 / 110〜144px=15分 / 145px〜=10分
+        function calStepMin() { return _calH >= 145 ? 10 : _calH >= 110 ? 15 : _calH >= 70 ? 30 : 60; }
+        function calSnapMin() { return Math.min(30, calStepMin()); }
         function calFinePointer() { try { return window.matchMedia('(hover: hover) and (pointer: fine)').matches; } catch (e) { return false; } }
         function calSyncCtlH() {
             const c = document.getElementById('cal-controls'), panel = document.getElementById('calendar-panel');
@@ -11073,6 +11093,20 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 e.preventDefault();
                 calZoomTo(_calH * Math.exp(-e.deltaY * 0.01), e.clientY);
             }, { passive: false });
+        })();
+        // ===== 日本時間の時計（カレンダー上部。1秒ごとに更新） =====
+        (function calJstClockInit() {
+            let fmt;
+            try { fmt = new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: 'numeric', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23' }); } catch (e) { return; }
+            function tick() {
+                const el = document.getElementById('cal-jst-clock-time');
+                if (!el || !el.offsetParent) return;
+                const o = {}; fmt.formatToParts(new Date()).forEach(p => { o[p.type] = p.value; });
+                el.textContent = `${o.year}年${o.month}月${o.day}日(${o.weekday}) ${o.hour}:${o.minute}:${o.second}`;
+            }
+            tick(); setInterval(tick, 1000);
+            document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
+            window.calJstClockTick = tick;
         })();
         // ===== 予定の種類で絞り込み（左のパネルで選んだ種類だけをカレンダーに表示） =====
         const CAL_TYPE_ORDER = ['event', 'task', 'test', 'submission'];
@@ -11177,8 +11211,11 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 return `<button type="button" onclick="event.stopPropagation(); openScheduleViewModal(${schedIdArg(e.s.id)})" class="absolute text-left overflow-hidden rounded-md px-1.5 py-0.5 text-[11px] font-bold leading-tight" style="top:${top};height:max(20px,calc(var(--cal-h, 48px) * ${(e.en - e.st) / 60} - 2px));left:calc(${l}% + 1px);width:calc(${w}% - 3px);background:${st.bg};color:${st.tc};${st.edge}"><div class="truncate">${escapeHtml(e.s.title)}</div>${h >= 34 ? `<div class="text-[10px] font-semibold truncate">${range}</div>` : ''}</button>`;
             }).join('');
             let lines = '';
-            for (let h = 0; h < 24; h++) {
-                lines += `<div class="absolute left-0 right-0 border-t border-slate-200 dark:border-slate-700" style="top:${hh(h)}"><span class="absolute left-0 w-10 text-right pr-1 text-[10px] font-bold text-slate-400 cal-bg" style="top:${h === 0 ? 1 : -8}px;">${h}:00</span></div>`;
+            const stepM = calStepMin();
+            for (let m = 0; m < 1440; m += stepM) {
+                const h = Math.floor(m / 60), mm = m % 60, isHr = mm === 0;
+                const lab = h + ':' + String(mm).padStart(2, '0');
+                lines += `<div class="absolute left-0 right-0 border-t ${isHr ? 'border-slate-200 dark:border-slate-700' : 'border-slate-100 dark:border-slate-800'}" style="top:${hh(m / 60)}"><span class="absolute left-0 w-10 text-right pr-1 ${isHr ? 'text-[10px] font-bold text-slate-400' : 'text-[9px] font-semibold text-slate-300 dark:text-slate-500'} cal-bg" style="top:${m === 0 ? 1 : -8}px;">${lab}</span></div>`;
             }
             let nowLine = '';
             if (date === todayStr) {
@@ -11208,7 +11245,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const grid = document.getElementById('cal-day-grid'); if (!grid) return;
             const rect = grid.getBoundingClientRect();
             if (e.clientX - rect.left < 44) return;
-            const mins = Math.min(Math.floor((e.clientY - rect.top) / _calH * 60 / 30) * 30, 23 * 60 + 30);
+            const _sn = calSnapMin(); const mins = Math.min(Math.floor((e.clientY - rect.top) / _calH * 60 / _sn) * _sn, 24 * 60 - _sn);
             const p = (n) => String(n).padStart(2, '0');
             openScheduleInputModal(null, calSelectedDate, `${p(Math.floor(mins / 60))}:${p(mins % 60)}`);
         }
@@ -11217,7 +11254,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const col = (e && e.currentTarget) || (e && e.target && e.target.closest ? e.target.closest('.cal-wk-col') : null);
             if (!col) return;
             const rect = col.getBoundingClientRect();
-            const mins = Math.max(0, Math.min(Math.floor((e.clientY - rect.top) / _calH * 60 / 30) * 30, 23 * 60 + 30));
+            const _sn = calSnapMin(); const mins = Math.max(0, Math.min(Math.floor((e.clientY - rect.top) / _calH * 60 / _sn) * _sn, 24 * 60 - _sn));
             const p = (n) => String(n).padStart(2, '0');
             calSelectedDate = date;
             openScheduleInputModal(null, date, `${p(Math.floor(mins / 60))}:${p(mins % 60)}`);
@@ -11274,10 +11311,13 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             else if (days.includes(todayStr)) _autoMin = Math.max(nowMin - 60, 0);
             _calAutoMin = _autoMin;
             let hourLabels = '', hourLines = '';
-            for (let h = 0; h < 24; h++) {
-                const y = hh(h);
-                hourLines += `<div class="absolute border-t border-slate-200 dark:border-slate-700" style="left:${AX}px;right:0;top:${y}"></div>`;
-                hourLabels += `<span class="absolute right-1 text-[9px] font-bold text-slate-400" style="top:${y};transform:translateY(${h === 0 ? '1px' : '-50%'})">${h}:00</span>`;
+            const stepM = calStepMin();
+            for (let m = 0; m < 1440; m += stepM) {
+                const h = Math.floor(m / 60), mm = m % 60, isHr = mm === 0;
+                const y = hh(m / 60);
+                const lab = h + ':' + String(mm).padStart(2, '0');
+                hourLines += `<div class="absolute border-t ${isHr ? 'border-slate-200 dark:border-slate-700' : 'border-slate-100 dark:border-slate-800'}" style="left:${AX}px;right:0;top:${y}"></div>`;
+                hourLabels += `<span class="absolute right-1 ${isHr ? 'text-[9px] font-bold text-slate-400' : 'text-[8px] font-semibold text-slate-300 dark:text-slate-500'}" style="top:${y};transform:translateY(${m === 0 ? '1px' : '-50%'})">${lab}</span>`;
             }
             const colHtml = cols.map(c => {
                 const isToday = c.d === todayStr, isSel = c.d === calSelectedDate;
@@ -11560,6 +11600,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         }
 
         function renderCalendarPanel() {
+            if (window.calJstClockTick) { try { window.calJstClockTick(); } catch (e) {} }
             const label = document.getElementById('cal-month-label');
             if (label) label.textContent = calLabelText();
             calUpdateViewButtons();
@@ -12603,6 +12644,58 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const ms = getStudyMsOnDate(getJSTDateOnly().toISOString().slice(0, 10));
             el.textContent = ms > 0 ? `今日の勉強時間：${formatStudyHoursLabel(ms)}` : '今日はまだ記録がありません';
         }
+
+        // ===== タイマーの全画面表示（パネルの表示を写して大きく見せ、ボタンは本体の関数をそのまま呼ぶ） =====
+        let _timerFsOpen = false, _timerFsNative = false, _timerFsSyncId = 0;
+        function timerFsSync() {
+            const g = (id) => document.getElementById(id);
+            const set = (id, v) => { const e = g(id); if (e && e.textContent !== v) e.textContent = v; };
+            const t = (g('timer-display') || {}).textContent || '00:00';
+            set('timer-fs-display', t);
+            const d = g('timer-fs-display'); if (d) d.style.fontSize = t.length > 5 ? 'min(15vw,22vh)' : 'min(26vw,30vh)';
+            set('timer-fs-start', (g('timer-start-btn') || {}).textContent || '開始');
+            set('timer-fs-hint', (g('timer-hint') || {}).textContent || '');
+            set('timer-fs-today', (g('timer-today') || {}).textContent || '');
+            let subj = ''; try { subj = getTimerSelectedSubject(); } catch (e) {}
+            set('timer-fs-sub', (timerMode === 'stopwatch' ? 'ストップウォッチ' : 'カウントダウン') + (subj ? '・' + subj : ''));
+        }
+        function openTimerFullscreen() {
+            const el = document.getElementById('timer-fs'); if (!el || _timerFsOpen) return;
+            _timerFsOpen = true;
+            try { updateTimerTodayLabel(); updateTimerHint(); } catch (e) {}
+            timerFsSync();
+            el.classList.remove('hidden'); el.classList.add('flex');
+            clearInterval(_timerFsSyncId); _timerFsSyncId = setInterval(timerFsSync, 250);
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+            try { if (timerRunning) pmWakeLockAcquire(); } catch (e) {}
+            // 対応している端末では、ブラウザ自体も全画面にする（iPhoneなど非対応の端末は、アプリ内で画面いっぱいに表示）
+            try {
+                const de = document.documentElement;   // ページ全体を全画面にする（終了時のバナーやトーストも見えるように）
+                const rf = de.requestFullscreen || de.webkitRequestFullscreen;
+                if (rf) { const r = rf.call(de); _timerFsNative = true; if (r && r.catch) r.catch(() => { _timerFsNative = false; }); }
+            } catch (e) { _timerFsNative = false; }
+        }
+        function closeTimerFullscreen() {
+            const el = document.getElementById('timer-fs'); if (!el || !_timerFsOpen) return;
+            _timerFsOpen = false;
+            clearInterval(_timerFsSyncId);
+            el.classList.add('hidden'); el.classList.remove('flex');
+            if (_timerFsNative) {
+                _timerFsNative = false;
+                try { if (document.fullscreenElement || document.webkitFullscreenElement) { (document.exitFullscreen || document.webkitExitFullscreen).call(document); } } catch (e) {}
+            }
+            try { renderTimerDisplay(); } catch (e) {}
+        }
+        function timerFsAction(kind) {
+            if (kind === 'start') { startPauseTimer(); try { if (timerRunning) pmWakeLockAcquire(); } catch (e) {} }
+            else if (kind === 'finish') resetTimer();
+            timerFsSync();
+        }
+        ['fullscreenchange', 'webkitfullscreenchange'].forEach(n => document.addEventListener(n, () => {
+            // Escキーなどでブラウザの全画面が解除されたら、タイマーの全画面も閉じる
+            if (_timerFsOpen && _timerFsNative && !(document.fullscreenElement || document.webkitFullscreenElement)) { _timerFsNative = false; closeTimerFullscreen(); }
+        }));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && _timerFsOpen) closeTimerFullscreen(); });
 
         function toggleTimerPanel() {
             if (!isModeEnabled('timer')) { showToast(modeDisabledMessage('timer')); return; }
@@ -22326,6 +22419,8 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 if (!u || typeof fb.recordInstall !== 'function') return;
                 if (!force && !isStandalone()) return;
                 try { if (typeof devUnlocked !== 'undefined' && devUnlocked) return; } catch (e) {}
+                if (window.pmDevExcluded && window.pmDevExcluded()) return;
+                if (window.pmDevPending && window.pmDevPending()) { setTimeout(() => tryRecord(force), 2000); return; }
                 let st = {}; try { st = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
                 const today = jstDay();
                 if (st.uid === u.uid && (st.ok || st.day === today)) return;   // 記録済み／今日はもう試した
@@ -27290,6 +27385,38 @@ ${pmReportButtonHtml('kobun', 'all', t)}
     })();
     </script>
     <script>
+    // ===== 開発者（管理者・公式アカウント）の利用は、利用者数・アクセスログ・インストール数に数えない =====
+    (function pmDevExclude() {
+        'use strict';
+        var KEY = 'pm_dev_excluded', excluded = false, checkedUid = null, pendingUid = null;
+        try { excluded = localStorage.getItem(KEY) === '1'; } catch (e) {}   // 一度でも開発者と分かった端末は、ゲストで使っても数えない
+        function mark() { excluded = true; try { localStorage.setItem(KEY, '1'); } catch (e) {} }
+        window.pmDevExcluded = function () {
+            if (excluded) return true;
+            try { if (typeof devUnlocked !== 'undefined' && devUnlocked) { mark(); return true; } } catch (e) {}
+            return false;
+        };
+        // ログイン直後で、まだ開発者かどうか確かめている間は、記録を送らずに待つ
+        window.pmDevPending = function () { return !excluded && !!pendingUid; };
+        function check(u) {
+            var fb = window.AppFirebase;
+            if (!u || u.isAnonymous || excluded || !fb || checkedUid === u.uid || pendingUid === u.uid) return;
+            pendingUid = u.uid;
+            var safe = function (f) { try { return Promise.resolve(f()).catch(function () { return false; }); } catch (e) { return Promise.resolve(false); } };
+            safe(function () { return fb.isAdmin(); })
+                .then(function (ok) { return ok ? true : safe(function () { return fb.verifyOfficial(); }); })
+                .then(function (ok) { if (ok) mark(); checkedUid = u.uid; })
+                .then(function () { if (pendingUid === u.uid) pendingUid = null; });
+        }
+        var tries = 0;
+        (function waitAuth() {
+            var fb = window.AppFirebase;
+            if (fb && fb.auth && typeof fb.auth.onAuthStateChanged === 'function') { fb.auth.onAuthStateChanged(check); return; }
+            if (++tries < 40) setTimeout(waitAuth, 500);
+        })();
+    })();
+    </script>
+    <script>
     (function pmAccessLogger() {
         'use strict';
         var queue = [], timer = null, sending = false, stopped = false, fails = 0, lastKey = '', lastAt = 0, lastUid = '';
@@ -27304,7 +27431,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
             return { vw: window.innerWidth | 0, vh: window.innerHeight | 0, tp: navigator.maxTouchPoints | 0, sa: standalone ? 1 : 0, lang: String(navigator.language || '').slice(0, 12), tz: tz.slice(0, 40), ref: ref.slice(0, 80) };
         }
-        function devMode() { try { return typeof devUnlocked !== 'undefined' && devUnlocked; } catch (e) { return false; } }
+        function devMode() { try { if (window.pmDevExcluded && window.pmDevExcluded()) return true; return typeof devUnlocked !== 'undefined' && devUnlocked; } catch (e) { return false; } }
 
         function add(type, key) {
             if (stopped || devMode()) return;
@@ -27324,6 +27451,8 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         function schedule() { if (!timer && !stopped) timer = setTimeout(function () { timer = null; flush(); }, 5000); }
         function flush() {
             if (stopped || sending || !queue.length) return;
+            if (devMode()) { queue = []; return; }
+            if (window.pmDevPending && window.pmDevPending()) { schedule(); return; }
             var b = base(), fb = window.AppFirebase;
             if (!b || !fb || typeof fb.getIdToken !== 'function' || !fb.auth || !fb.auth.currentUser) { schedule(); return; }
             var batch = queue.splice(0, MAX_BATCH);
@@ -27437,6 +27566,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             try { if (window.pmAccessLog) window.pmAccessLog(kind, key); } catch (e) {}
             if (stopped) return;
             try { if (typeof devUnlocked !== 'undefined' && devUnlocked) return; } catch (e) {}
+            if (window.pmDevExcluded && window.pmDevExcluded()) return;
             var now = Date.now();
             if (kind === 'screens') {
                 if (lastId === key && now - lastAt < 1500) return;
@@ -27450,6 +27580,8 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         function jstDay() { return new Date(Date.now() + 9 * 3600 * 1000).toISOString().slice(0, 10); }
         function flush() {
             if (!pending || flushing || stopped) return;
+            if (window.pmDevExcluded && window.pmDevExcluded()) { buf = { screens: {}, features: {} }; pending = false; return; }
+            if (window.pmDevPending && window.pmDevPending()) return;
             var fb = window.AppFirebase;
             if (!fb || typeof fb.recordUsage !== 'function' || !fb.auth || !fb.auth.currentUser) return;
             flushing = true;
