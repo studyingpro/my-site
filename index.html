@@ -83,13 +83,28 @@
                 console.warn('OneSignalのApp IDが未設定のため、プッシュ通知は無効です。');
                 return;
             }
-            await OneSignal.init({
-                appId: window.ONESIGNAL_APP_ID,
-                notifyButton: { enable: false },
-                promptOptions: { slidedown: { prompts: [] } },
-                serviceWorkerParam: { scope: '/' },
-                serviceWorkerPath: 'service-worker.js',
-            });
+            var host = location.hostname;
+            if (!(location.protocol === 'https:' || host === 'localhost' || host === '127.0.0.1')) {
+                console.warn('HTTPSで開かれていないため、プッシュ通知は無効です。');
+                return;
+            }
+            // このページが置かれているフォルダ（ルートに置いていれば「/」）。サブフォルダ公開でも動くようにする
+            var dir = location.pathname.replace(/[^/]*$/, '') || '/';
+            try {
+                await OneSignal.init({
+                    appId: window.ONESIGNAL_APP_ID,
+                    notifyButton: { enable: false },
+                    promptOptions: { slidedown: { prompts: [] } },
+                    allowLocalhostAsSecureOrigin: true,
+                    serviceWorkerParam: { scope: dir },
+                    serviceWorkerPath: dir.replace(/^\//, '') + 'service-worker.js',
+                    notificationClickHandlerMatch: 'origin',   // 通知をタップしたとき、開いているアプリがあればそこへ移動する
+                    notificationClickHandlerAction: 'focus',
+                });
+            } catch (e) {
+                console.warn('OneSignalの初期化に失敗しました:', e);
+                return;
+            }
             window._oneSignalReady = true;
             window.dispatchEvent(new CustomEvent('onesignal-ready'));
         });
@@ -7956,6 +7971,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function applyProtectedKeys(cfg) {
                 if (Array.isArray(cfg.globalSchedules)) {
                     window._remoteGlobalSchedules = cfg.globalSchedules;
+                    if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon(5000);
                 }
                 if (Array.isArray(cfg.extraSections)) {
                     cfg.extraSections.forEach(sec => {
@@ -10500,6 +10516,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
 
         function persistScheduleItems() {
             safeStorage.set('pm_schedule_items', scheduleItems);
+            if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon();
         }
         function loadScheduleItems() {
             const s = safeStorage.get('pm_schedule_items');
@@ -10696,7 +10713,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         }
 
         function isScheduleNotifyEnabled() {
-            return safeStorage.get('pm_notify_enabled') !== false;
+            return true;   // 予定の通知は常にオン
         }
 
         function setScheduleNotifyEnabled(on) {
@@ -10717,29 +10734,140 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     await OneSignal.Notifications.requestPermission();
                     await OneSignal.User.PushSubscription.optIn();
                     syncOneSignalClassTag();
+                    pmPushSyncSoon(1500);
                 } catch (e) { console.warn('OneSignalの購読に失敗しました:', e); }
-            });
-        }
-        function oneSignalOptOut() {
-            if (!window.OneSignalDeferred) return;
-            window.OneSignalDeferred.push(async function (OneSignal) {
-                try { await OneSignal.User.PushSubscription.optOut(); }
-                catch (e) { console.warn('OneSignalの購読解除に失敗しました:', e); }
             });
         }
         function syncOneSignalClassTag() {
             if (!window.OneSignalDeferred) return;
             window.OneSignalDeferred.push(async function (OneSignal) {
-                try { await OneSignal.User.addTag('classId', window.currentUserClassId || ''); }
-                catch (e) { console.warn('classIdタグの同期に失敗しました:', e); }
+                try {
+                    const c = window.currentUserClassId;
+                    if (c) await OneSignal.User.addTag('classId', c); else await OneSignal.User.removeTag('classId');
+                } catch (e) { console.warn('classIdタグの同期に失敗しました:', e); }
             });
         }
-        window.addEventListener('app-class-changed', syncOneSignalClassTag);
-        window.addEventListener('onesignal-ready', () => {
-            if (isScheduleNotifyEnabled() && 'Notification' in window && Notification.permission === 'granted') {
-                syncOneSignalClassTag();
+        // ログイン中のユーザーIDをOneSignalに渡す（ユーザーごとに送り分けるため）。ログアウトしたら外す
+        function syncOneSignalIdentity(user) {
+            if (!window.OneSignalDeferred) return;
+            window.OneSignalDeferred.push(async function (OneSignal) {
+                try {
+                    if (user && user.uid) {
+                        if (window._osLoggedUid !== user.uid) { await OneSignal.login(user.uid); window._osLoggedUid = user.uid; }
+                        await OneSignal.User.addTag('guest', user.isAnonymous ? '1' : '0');
+                        const c = window.currentUserClassId;
+                        if (c) await OneSignal.User.addTag('classId', c); else await OneSignal.User.removeTag('classId');
+                    } else if (window._osLoggedUid) {
+                        await OneSignal.logout();
+                        window._osLoggedUid = null;
+                    }
+                } catch (e) { console.warn('OneSignalのユーザー紐づけに失敗しました:', e); }
+            });
+        }
+        function pmOneSignalSub() {
+            return new Promise(resolve => {
+                if (!window.OneSignalDeferred) return resolve(null);
+                let done = false;
+                const t = setTimeout(() => { if (!done) { done = true; resolve(null); } }, 4000);
+                window.OneSignalDeferred.push(async function (OneSignal) {
+                    let r = null;
+                    try { r = { id: OneSignal.User.PushSubscription.id || null, optedIn: !!OneSignal.User.PushSubscription.optedIn }; } catch (e) {}
+                    if (!done) { done = true; clearTimeout(t); resolve(r); }
+                });
+            });
+        }
+
+        // ===== 予定の通知を、アプリを閉じていても届くようにする（Workerに予約を預け、時刻になったらOneSignalから送る） =====
+        window._pmServerPushActive = false;
+        let _pmPushSyncTimer = 0, _pmPushBlockedUntil = 0, _pmPushLastSig = '';
+        function pmCollectPushItems() {
+            const now = Date.now(), maxT = now + 60 * 86400000, out = [];
+            getAllSchedules().forEach(sc => {
+                if (!sc.notifyAt) return;
+                const t = new Date(sc.notifyAt).getTime();
+                if (isNaN(t) || t < now - 60000 || t > maxT) return;
+                out.push({
+                    key: String(sc.id) + '|' + sc.notifyAt,
+                    at: new Date(t).toISOString(),
+                    title: '学習ProMaster：' + scheduleTypeLabelJa(sc.type) + 'のお知らせ',
+                    body: `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
+                });
+            });
+            out.sort((a, b) => a.at.localeCompare(b.at));
+            return out.slice(0, 200);
+        }
+        function pmPushSyncSoon(delay) {
+            clearTimeout(_pmPushSyncTimer);
+            _pmPushSyncTimer = setTimeout(pmPushSyncNow, delay == null ? 3000 : delay);
+        }
+        async function pmPushSyncNow() {
+            try {
+                if (Date.now() < _pmPushBlockedUntil) return;
+                const fb = window.AppFirebase, user = window.currentAppUser;
+                if (!fb || !user || typeof fb.getIdToken !== 'function') return;
+                if (!('Notification' in window) || Notification.permission !== 'granted') { window._pmServerPushActive = false; return; }
+                const sub = await pmOneSignalSub();
+                if (!sub || !sub.id || !sub.optedIn) { window._pmServerPushActive = false; return; }
+                const base = (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, '');
+                if (!base) return;
+                const items = pmCollectPushItems();
+                const sig = user.uid + '|' + JSON.stringify(items);
+                if (sig === _pmPushLastSig && window._pmServerPushActive) return;
+                const token = await fb.getIdToken();
+                if (!token) return;
+                const res = await fetch(base + '/push/sync', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+                    body: JSON.stringify({ items }),
+                });
+                if (res.ok) { _pmPushLastSig = sig; window._pmServerPushActive = true; }
+                else {
+                    window._pmServerPushActive = false;   // サーバー側が未設定のときは、この端末だけで出す方式に戻す
+                    _pmPushBlockedUntil = Date.now() + ((res.status === 404 || res.status === 405) ? 30 : 2) * 60000;
+                }
+            } catch (e) {
+                window._pmServerPushActive = false;
+                _pmPushBlockedUntil = Date.now() + 2 * 60000;
             }
+        }
+        window.pmPushSyncSoon = pmPushSyncSoon;
+
+        // 通知が「許可」になるまで、画面の下に許可ボタンを出し続ける（ブラウザの仕様上、許可の操作は本人のタップが必要）
+        function pmNotifyNudge() {
+            try {
+                const id = 'pm-notify-nudge';
+                const need = ('Notification' in window) && Notification.permission === 'default' && !!window.currentAppUser;
+                let el = document.getElementById(id);
+                if (!need) { if (el) el.remove(); return; }
+                if (el) return;
+                el = document.createElement('div');
+                el.id = id;
+                el.className = 'fixed left-3 right-3 z-[9000] max-w-md mx-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl bg-slate-900 text-white text-xs font-bold';
+                el.style.bottom = 'calc(env(safe-area-inset-bottom, 0px) + 84px)';
+                el.innerHTML = '<span class="flex-1">予定のお知らせを受け取るため、通知を許可してください</span><button type="button" class="shrink-0 px-3 py-1.5 rounded-full bg-cyan-500 text-white font-black">許可する</button>';
+                el.querySelector('button').onclick = () => requestScheduleNotifyPermission();
+                document.body.appendChild(el);
+            } catch (e) {}
+        }
+        window.addEventListener('app-class-changed', () => { syncOneSignalClassTag(); pmPushSyncSoon(); });
+        window.addEventListener('app-auth-changed', (e) => {
+            syncOneSignalIdentity(e && e.detail ? e.detail.user : null);
+            setTimeout(pmNotifyNudge, 1500);
+            pmPushSyncSoon(4000);
         });
+        window.addEventListener('onesignal-ready', () => {
+            syncOneSignalIdentity(window.currentAppUser || null);
+            window.OneSignalDeferred.push(async function (OneSignal) {
+                try { OneSignal.User.PushSubscription.addEventListener('change', () => pmPushSyncSoon(1000)); } catch (e) {}
+            });
+            pmPushSyncSoon(1500);
+        });
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) return;
+            pmNotifyNudge(); pmPushSyncSoon(2000);
+            try { updateScheduleNotifyToggleUI(); } catch (e) {}
+        });
+        setInterval(() => { if (!document.hidden) pmPushSyncSoon(0); }, 15 * 60000);
 
         function requestScheduleNotifyPermission() {
             if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
@@ -10753,25 +10881,17 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     showToast('通知が許可されませんでした');
                 }
                 updateScheduleNotifyToggleUI();
+                pmNotifyNudge();
             });
         }
 
+        // 予定の通知は常にオン。アプリの中ではオフにできない（許可されていないときは、タップで許可を求める）
         function toggleScheduleNotify() {
             if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
-            if (Notification.permission !== 'granted') {
-                requestScheduleNotifyPermission();
-                return;
-            }
-            const next = !isScheduleNotifyEnabled();
-            setScheduleNotifyEnabled(next);
-            showToast(next ? '予定の通知をオンにしました' : '予定の通知をオフにしました');
-            updateScheduleNotifyToggleUI();
-            if (next) {
-                checkScheduleNotifications();
-                oneSignalOptIn();
-            } else {
-                oneSignalOptOut();
-            }
+            if (Notification.permission === 'default') { requestScheduleNotifyPermission(); return; }
+            if (Notification.permission === 'denied') { showToast('通知がブロックされています。端末（ブラウザ）の設定で、このアプリの通知を許可してください'); return; }
+            showToast('予定の通知は常にオンです');
+            oneSignalOptIn();   // 購読が切れていた場合に備えて、登録し直す
         }
 
         function setToggleSwitchUI(trackId, on) {
@@ -10790,32 +10910,45 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function updateScheduleNotifyToggleUI() {
             const label = document.getElementById('schedule-notify-toggle-label');
             if (!label) return;
-            if (!('Notification' in window)) { label.textContent = '予定のプッシュ通知（非対応）'; setToggleSwitchUI('schedule-notify-toggle-switch', false); return; }
-            if (Notification.permission === 'denied') { label.textContent = '予定のプッシュ通知（ブラウザ設定でブロック中）'; setToggleSwitchUI('schedule-notify-toggle-switch', false); return; }
-            const on = isScheduleNotifyEnabled() && Notification.permission === 'granted';
-            label.textContent = '予定のプッシュ通知';
-            setToggleSwitchUI('schedule-notify-toggle-switch', on);
+            const sw = document.getElementById('schedule-notify-toggle-switch');
+            const set = (text, on) => { label.textContent = text; setToggleSwitchUI('schedule-notify-toggle-switch', on); if (sw) sw.style.opacity = on ? '0.65' : ''; };
+            if (!('Notification' in window)) { set('予定のプッシュ通知（この端末は非対応）', false); return; }
+            if (Notification.permission === 'denied') { set('予定のプッシュ通知（端末の設定で許可してください）', false); return; }
+            if (Notification.permission === 'default') { set('予定のプッシュ通知（タップして許可）', false); return; }
+            set('予定のプッシュ通知（常にオン）', true);
+        }
+
+        function pmShowLocalNotification(title, opts) {
+            const fallback = () => { try { new Notification(title, opts); } catch (e) { console.warn('通知表示に失敗:', e); } };
+            try {
+                if ('serviceWorker' in navigator && navigator.serviceWorker.getRegistration) {
+                    navigator.serviceWorker.getRegistration().then(reg => { if (reg && reg.showNotification) return reg.showNotification(title, opts); fallback(); }).catch(fallback);
+                    return;
+                }
+            } catch (e) {}
+            fallback();
         }
 
         function checkScheduleNotifications() {
-            if (!('Notification' in window) || Notification.permission !== 'granted' || !isScheduleNotifyEnabled()) return;
+            if (!('Notification' in window) || Notification.permission !== 'granted') return;
+            const serverActive = !!window._pmServerPushActive;   // サーバーから届く設定が有効な間は、この端末では重ねて出さない
             const now = Date.now();
             const fired = safeStorage.get('pm_notify_fired') || [];
-            const items = getAllSchedules().filter(s => s.notifyAt);
+            const items = getAllSchedules().filter(sc => sc.notifyAt);
             let changed = false;
-            items.forEach(s => {
-                const t = new Date(s.notifyAt).getTime();
+            items.forEach(sc => {
+                const t = new Date(sc.notifyAt).getTime();
                 if (isNaN(t) || t > now) return;
-            const fk = String(s.id) + '|' + s.notifyAt;
-            if (fired.includes(fk) || fired.includes(String(s.id))) return;
-            if (now - t > 12 * 3600 * 1000) { fired.push(fk); changed = true; return; }
-                const typeLabel = scheduleTypeLabelJa(s.type);
-                try {
-                    new Notification('学習ProMaster：' + typeLabel + 'のお知らせ', {
-                        body: `${s.title}${s.subject ? '（' + s.subject + '）' : ''} - ${s.date}${s.time ? ' ' + s.time : ''}`,
-                        tag: 'pm-schedule-' + s.id,
+                const fk = String(sc.id) + '|' + sc.notifyAt;
+                if (fired.includes(fk) || fired.includes(String(sc.id))) return;
+                if (now - t > 12 * 3600 * 1000) { fired.push(fk); changed = true; return; }
+                if (!serverActive) {
+                    const typeLabel = scheduleTypeLabelJa(sc.type);
+                    pmShowLocalNotification('学習ProMaster：' + typeLabel + 'のお知らせ', {
+                        body: `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
+                        tag: 'pm-schedule-' + sc.id,
                     });
-                } catch (e) { console.warn('通知表示に失敗:', e); }
+                }
                 fired.push(fk);
                 changed = true;
             });
