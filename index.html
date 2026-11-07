@@ -1474,15 +1474,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                                 <i data-lucide="trophy" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
                                 <span class="text-xs font-bold text-slate-700 dark:text-slate-200">単語ランキング</span>
                             </button>
-                            <button onclick="toggleScheduleNotify()" id="schedule-notify-toggle-btn" data-keep-open class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
-                                <span class="flex items-center space-x-3 min-w-0">
-                                    <i data-lucide="bell" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
-                                    <span id="schedule-notify-toggle-label" class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">予定のプッシュ通知</span>
-                                </span>
-                                <span id="schedule-notify-toggle-switch" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 bg-slate-300 dark:bg-slate-600 shrink-0">
-                                    <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-1"></span>
-                                </span>
-                            </button>
                             <button onclick="pmToggleMotion()" id="pm-motion-toggle-btn" data-keep-open class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <span class="flex items-center space-x-3 min-w-0">
                                     <i data-lucide="sparkles" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
@@ -7954,7 +7945,6 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             await loadRemoteConfig();
             checkAndShowAnnouncement();
             initScheduleNotifications();
-            updateScheduleNotifyToggleUI();
             applyFabVisibility();
             updateSummerTaskEntryBadge();
             updateExamBoardEntry();
@@ -10719,14 +10709,6 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             </label>`;
         }
 
-        function isScheduleNotifyEnabled() {
-            return true;   // 予定の通知は常にオン
-        }
-
-        function setScheduleNotifyEnabled(on) {
-            safeStorage.set('pm_notify_enabled', !!on);
-        }
-
         function initScheduleNotifications() {
             if (!('Notification' in window)) return;
             checkScheduleNotifications();
@@ -10785,12 +10767,15 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             });
         }
 
-        // OneSignalに本当に登録できているかを調べて、設定の表示に反映する（null=未確認 / true=登録済み / false=未登録）
+        // OneSignalに登録できているかを調べる（null=未確認 / true=登録済み / false=未登録）。
+        // 端末で通知が許可されているのに登録が切れていたときは、自動で登録し直す（設定画面の操作は要らない）
         window._pmOsSubscribed = null;
         function pmRefreshOsSubState() {
             return pmOneSignalSub().then(sub => {
                 window._pmOsSubscribed = sub ? (!!sub.id && !!sub.optedIn) : false;
-                try { updateScheduleNotifyToggleUI(); } catch (e) {}
+                if (!window._pmOsSubscribed && window._oneSignalReady && !window._pmOsRepaired && 'Notification' in window && Notification.permission === 'granted') {
+                    window._pmOsRepaired = true; oneSignalOptIn();
+                }
                 return window._pmOsSubscribed;
             });
         }
@@ -10813,6 +10798,16 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     body: `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
                 });
             });
+            // 動いているカウントダウンタイマー：終わる時刻に、閉じていても届くように預ける（アプリが動いていて終われば、すぐ取り消される）
+            try {
+                if (timerRunning && timerMode === 'countdown') {
+                    const endAt = timerStartTimestamp + timerCountdownRemainMs;
+                    if (endAt > now + 5000 && endAt < now + 24 * 3600000) {
+                        out.push({ key: 'timer|' + endAt, sid: 'timer', at: new Date(endAt + 3000).toISOString(),
+                            title: 'タイマーが終了しました', body: (getTimerSelectedSubject() || '学習') + '：設定した時間が経過しました' });
+                    }
+                }
+            } catch (e) {}
             out.sort((a, b) => a.at.localeCompare(b.at));
             return out.slice(0, 200);
         }
@@ -10852,6 +10847,39 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         }
         window.pmPushSyncSoon = pmPushSyncSoon;
 
+        // 開発者が送る個別のお知らせ（フィードバックへの返信）を、相手の端末にプッシュで届ける（Workerが、公式アカウントか確かめて送る）
+        async function pmPushNotifyUser(toUid, title, body) {
+            try {
+                const fb = window.AppFirebase;
+                if (!fb || !toUid || typeof fb.getIdToken !== 'function') return;
+                const base = (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, '');
+                if (!base) return;
+                const token = await fb.getIdToken();
+                if (!token) return;
+                await fetch(base + '/push/notify', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }, body: JSON.stringify({ toUid, title, body, sid: 'announce' }) });
+            } catch (e) {}
+        }
+        (function wrapSendInbox() {
+            let tries = 0;
+            (function wait() {
+                try {
+                    const fb = window.AppFirebase;
+                    if (fb && typeof fb.sendInbox === 'function') {
+                        if (fb.__pushWrapped) return;
+                        const orig = fb.sendInbox.bind(fb);
+                        fb.sendInbox = async function (d) {
+                            const r = await orig(d);
+                            pmPushNotifyUser(d && d.toUid, '学習ProMaster：開発者からの返信', String((d && d.body) || '').slice(0, 80));
+                            return r;
+                        };
+                        fb.__pushWrapped = true;
+                        return;
+                    }
+                } catch (e) { return; }
+                if (++tries < 60) setTimeout(wait, 500);
+            })();
+        })();
+
         // ===== 通知をタップして開いたとき、その予定の詳細を表示する =====
         let _pmDeepRunning = false;
         function pmOpenNotifiedSchedule(id) {
@@ -10860,6 +10888,19 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             let tries = 0;
             const clearHash = () => { try { if (/^#n=/.test(location.hash)) history.replaceState(history.state, '', location.pathname + location.search); } catch (e) {} };
             const attempt = () => {
+                // お知らせ・タイマーの通知：ログインできたら、その画面を開く
+                if (id === 'announce' || id === 'timer') {
+                    if (window.currentAppUser) {
+                        clearHash(); _pmDeepRunning = false;
+                        try {
+                            if (id === 'announce') toggleAnnouncementModal(true);
+                            else { const tp = document.getElementById('timer-panel'); if (tp && tp.classList.contains('hidden')) toggleTimerPanel(); }
+                        } catch (e) {}
+                        return;
+                    }
+                    if (++tries < 40) { setTimeout(attempt, 500); return; }
+                    clearHash(); _pmDeepRunning = false; return;
+                }
                 // ログインと、予定の読み込み（学校の予定を含む）が終わるまで待つ（最大20秒）
                 const ready = !!window.currentAppUser && typeof getAllSchedules === 'function' && typeof openScheduleViewModal === 'function';
                 const sc = ready ? getAllSchedules().find(x => String(x.id) === id) : null;
@@ -10912,7 +10953,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) return;
             pmNotifyNudge(); pmPushSyncSoon(2000);
-            try { updateScheduleNotifyToggleUI(); pmRefreshOsSubState(); } catch (e) {}
+            try { pmRefreshOsSubState(); } catch (e) {}
         });
         setInterval(() => { if (!document.hidden) pmPushSyncSoon(0); }, 15 * 60000);
 
@@ -10920,30 +10961,14 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
             Notification.requestPermission().then(perm => {
                 if (perm === 'granted') {
-                    setScheduleNotifyEnabled(true);
-                    showToast('予定の通知をオンにしました');
+                    showToast('通知をオンにしました');
                     checkScheduleNotifications();
                     oneSignalOptIn();
                 } else {
                     showToast('通知が許可されませんでした');
                 }
-                updateScheduleNotifyToggleUI();
                 pmNotifyNudge();
             });
-        }
-
-        // 予定の通知は常にオン。アプリの中ではオフにできない（許可されていないときは、タップで許可を求める）
-        function toggleScheduleNotify() {
-            if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
-            if (Notification.permission === 'default') { requestScheduleNotifyPermission(); return; }
-            if (Notification.permission === 'denied') { showToast('通知がブロックされています。端末（ブラウザ）の設定で、このアプリの通知を許可してください'); return; }
-            showToast('通知の登録を確認しています…');
-            oneSignalOptIn();   // 許可済みでも、OneSignalへの登録が切れていれば登録し直す
-            setTimeout(() => {
-                pmRefreshOsSubState().then(ok => {
-                    showToast(ok ? '通知は登録済みです（常にオン）' : '通知をOneSignalに登録できませんでした。ページを再読み込みして、もう一度タップしてください');
-                });
-            }, 3500);
         }
 
         function setToggleSwitchUI(trackId, on) {
@@ -10957,19 +10982,6 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 knob.classList.toggle('translate-x-5', on);
                 knob.classList.toggle('translate-x-1', !on);
             }
-        }
-
-        function updateScheduleNotifyToggleUI() {
-            const label = document.getElementById('schedule-notify-toggle-label');
-            if (!label) return;
-            const sw = document.getElementById('schedule-notify-toggle-switch');
-            const set = (text, on) => { label.textContent = text; setToggleSwitchUI('schedule-notify-toggle-switch', on); if (sw) sw.style.opacity = on ? '0.65' : ''; };
-            if (!('Notification' in window)) { set('予定のプッシュ通知（この端末は非対応）', false); return; }
-            if (Notification.permission === 'denied') { set('予定のプッシュ通知（端末の設定で許可してください）', false); return; }
-            if (Notification.permission === 'default') { set('予定のプッシュ通知（タップして許可）', false); return; }
-            if (window._pmOsSubscribed === true) { set('予定のプッシュ通知（常にオン）', true); return; }
-            if (window._pmOsSubscribed === false) { set('予定のプッシュ通知（未登録・タップで再登録）', false); return; }
-            set('予定のプッシュ通知（確認中…）', false);
         }
 
         function pmShowLocalNotification(title, opts) {
@@ -10995,7 +11007,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 if (isNaN(t) || t > now) return;
                 const fk = String(sc.id) + '|' + sc.notifyAt;
                 if (fired.includes(fk) || fired.includes(String(sc.id))) return;
-                if (now - t > 12 * 3600 * 1000) { fired.push(fk); changed = true; return; }
+                // アプリが動いていなかった間の分は、サーバーからの通知ですでに届いている。開いたときに、もう一度は出さない
+                if (now - t > 90 * 1000) { fired.push(fk); changed = true; return; }
                 if (!serverActive) {
                     const typeLabel = scheduleTypeLabelJa(sc.type);
                     pmShowLocalNotification('学習ProMaster：' + typeLabel + 'のお知らせ', {
@@ -11737,7 +11750,6 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
             if (Notification.permission === 'default') requestScheduleNotifyPermission();
             else if (Notification.permission === 'denied') showToast('通知がブロックされています。ブラウザの設定で許可してください');
-            else if (!isScheduleNotifyEnabled()) showToast('予定の通知がオフです。設定からオンにしてください');
         }
         function duplicateScheduleEntry() {
             const raw = document.getElementById('schedule-edit-id').value;
@@ -12971,7 +12983,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                         timerRunning = false;
                         timerCountdownRemainMs = 0;
                         renderTimerDisplay();
-                        onTimerCountdownFinished();
+                        onTimerCountdownFinished(-remain);
                         return;
                     }
                     const el = document.getElementById('timer-display');
@@ -12991,6 +13003,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 if (btn) btn.textContent = '再開';
                 saveTimerState();
                 updateTimerHint();
+                if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon(400);
                 return;
             }
             if (timerMode === 'countdown' && timerCountdownRemainMs <= 0) updateCountdownPreview();
@@ -13003,6 +13016,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             startTimerTick();
             saveTimerState();
             updateTimerHint();
+            if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon(400);
         }
         const TIMER_SOUND_KEY = 'pm_timer_sound';
         let _timerAudioCtx = null, _timerWakeLock = null;
@@ -13060,7 +13074,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function pmWakeLockRelease() { try { if (_timerWakeLock) _timerWakeLock.release(); } catch (_) {} _timerWakeLock = null; }
         document.addEventListener('visibilitychange', () => { if (!document.hidden && timerRunning && timerMode === 'countdown') pmWakeLockAcquire(); });
 
-        function onTimerCountdownFinished() {
+        function onTimerCountdownFinished(lateMs) {
             showToast('タイマーが終了しました');
             const btn = document.getElementById('timer-start-btn');
             if (btn) btn.textContent = '開始';
@@ -13070,18 +13084,19 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             clearTimerState();
             updateTimerHint();
             pmWakeLockRelease();
-        if (isTimerSoundOn()) {
-            const stop = pmPlayTimerAlarm();
-            try { if (navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 400]); } catch (e) {}
-            pmShowTimerAlarmBanner(stop);
-        }
-            if ('Notification' in window && Notification.permission === 'granted' && document.hidden) {
-                try { new Notification('タイマー終了', { body: '設定した時間が経過しました' }); } catch (e) {}
+            // 終わってから10秒以上たって気づいたとき（閉じていた・裏に回っていた）は、プッシュ通知でもう知らせてあるので、音は鳴らさない
+            if ((Number(lateMs) || 0) < 10000 && isTimerSoundOn()) {
+                const stop = pmPlayTimerAlarm();
+                try { if (navigator.vibrate) navigator.vibrate([400, 200, 400, 200, 400]); } catch (e) {}
+                pmShowTimerAlarmBanner(stop);
             }
+            // サーバーに預けてあった「終了の通知」を取り消す（アプリが動いていて、すでに知らせたため）
+            if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon(0);
         }
         function resetTimer() {
             clearInterval(timerInterval);
             pmWakeLockRelease();
+            if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon(600);
             let elapsed = 0;
             if (timerMode === 'stopwatch') {
                 elapsed = timerElapsedMs;
@@ -13156,6 +13171,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (el) el.textContent = formatTimerMs(timerMode === 'stopwatch' ? timerElapsedMs + (Date.now() - startTs) : timerCountdownRemainMs - (Date.now() - startTs));
             startTimerTick();
             updateTimerHint();
+            if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon(1500);
         }
         function closeTimerRecoverModal() {
             const m = document.getElementById('timer-recover-modal'); if (m) { m.classList.add('hidden'); m.classList.remove('flex'); }
