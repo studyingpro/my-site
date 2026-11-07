@@ -76,6 +76,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
     <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
     <script>
+        // 通知をタップして開いたとき、URLの末尾が「#n=予定ID」になっている。アプリは起動時にURLを書き換えるので、先に控えておく
+        (function () {
+            var m = /^#n=(.+)$/.exec(location.hash || '');
+            if (m) { try { window.__pmNotifyId = decodeURIComponent(m[1]); } catch (e) {} }
+        })();
+    </script>
+    <script>
         window.ONESIGNAL_APP_ID = '049db9fc-ec5f-4ec2-9cac-d7b264e6564a';
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function (OneSignal) {
@@ -98,8 +105,8 @@
                     allowLocalhostAsSecureOrigin: true,
                     serviceWorkerParam: { scope: dir },
                     serviceWorkerPath: dir.replace(/^\//, '') + 'service-worker.js',
-                    notificationClickHandlerMatch: 'origin',   // 通知をタップしたとき、開いているアプリがあればそこへ移動する
-                    notificationClickHandlerAction: 'focus',
+                    notificationClickHandlerMatch: 'origin',   // 通知をタップしたとき、同じサイトのタブ（開いているアプリ）があればそれを使う
+                    notificationClickHandlerAction: 'navigate',   // そのタブを通知のURL（#n=予定ID）へ移動し、予定の詳細を開く
                 });
             } catch (e) {
                 console.warn('OneSignalの初期化に失敗しました:', e);
@@ -10800,6 +10807,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 if (isNaN(t) || t < now - 60000 || t > maxT) return;
                 out.push({
                     key: String(sc.id) + '|' + sc.notifyAt,
+                    sid: String(sc.id),
                     at: new Date(t).toISOString(),
                     title: '学習ProMaster：' + scheduleTypeLabelJa(sc.type) + 'のお知らせ',
                     body: `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
@@ -10843,6 +10851,32 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             }
         }
         window.pmPushSyncSoon = pmPushSyncSoon;
+
+        // ===== 通知をタップして開いたとき、その予定の詳細を表示する =====
+        let _pmDeepRunning = false;
+        function pmOpenNotifiedSchedule(id) {
+            if (!id || _pmDeepRunning) return;
+            _pmDeepRunning = true;
+            let tries = 0;
+            const clearHash = () => { try { if (/^#n=/.test(location.hash)) history.replaceState(history.state, '', location.pathname + location.search); } catch (e) {} };
+            const attempt = () => {
+                // ログインと、予定の読み込み（学校の予定を含む）が終わるまで待つ（最大20秒）
+                const ready = !!window.currentAppUser && typeof getAllSchedules === 'function' && typeof openScheduleViewModal === 'function';
+                const sc = ready ? getAllSchedules().find(x => String(x.id) === id) : null;
+                if (sc) { clearHash(); _pmDeepRunning = false; openScheduleViewModal(sc.id); return; }
+                if (++tries < 40) { setTimeout(attempt, 500); return; }
+                clearHash(); _pmDeepRunning = false;
+                if (ready) { try { showToast('通知の予定が見つかりませんでした（変更・削除された可能性があります）'); } catch (e) {} }
+            };
+            attempt();
+        }
+        (function () {
+            const fromHash = () => { const m = /^#n=(.+)$/.exec(location.hash || ''); if (!m) return null; try { return decodeURIComponent(m[1]); } catch (e) { return null; } };
+            // アプリが閉じていたとき：起動のはじめに控えておいたIDを使う
+            window.addEventListener('load', () => setTimeout(() => { const id = window.__pmNotifyId || fromHash(); window.__pmNotifyId = null; pmOpenNotifiedSchedule(id); }, 600));
+            // アプリが開いたままだったとき：URLが変わったことで知る
+            window.addEventListener('hashchange', () => { const id = fromHash(); if (id) pmOpenNotifiedSchedule(id); });
+        })();
 
         // 通知が「許可」になるまで、画面の下に許可ボタンを出し続ける（ブラウザの仕様上、許可の操作は本人のタップが必要）
         function pmNotifyNudge() {
