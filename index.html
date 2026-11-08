@@ -5568,7 +5568,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
             window.__pmSyncStatus = d;
             try { window.dispatchEvent(new CustomEvent('app-sync-status', { detail: d })); } catch (e) {}
         }
-        const _syncState = { running: false, last: 0, newer: new Set(), internal: 0 };
+        const _syncState = { running: false, last: 0, newer: new Set(), internal: 0, live: false };
         let _syncTimers = {};
 
         // --- 1つのデータを、クラウドとそろえる ---
@@ -5616,7 +5616,23 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     _syncState.newer.add(key);
                 }
             }
+            if (localChanged && _syncState.live) pmEmitKeyUpdated(key);
             return { cloudChanged, localChanged };
+        }
+
+        // 1つのデータが、クラウド・この端末・最後に同期した状態のあいだで、すでにそろっているか
+        function pmCheckKey(uid, key, cd) {
+            const cloud = pmDecodeCloud(cd), loc = pmReadLocal(key), base = pmReadBase(uid, key);
+            const merged = pmMergeValue(key, base, loc.val, cloud ? cloud.val : null);
+            let inSync;
+            if (merged === PM_DEL) inSync = !cd && loc.raw == null;
+            else if (merged == null) inSync = true;
+            else inSync = pmSame(merged, cloud ? cloud.val : null) && (pmSame(merged, loc.val) || (pmEmpty(merged) && pmEmpty(loc.val)));
+            if (inSync) {   // そろっているときは、「最後に同期した状態」だけ最新にしておく
+                const want = merged === PM_DEL ? pmSnapshot(key, null) : (merged == null ? null : pmSnapshot(key, merged));
+                if (want && !pmSame(want, base)) pmWriteBase(uid, key, merged);
+            }
+            return inSync;
         }
 
         // --- すべてのデータをそろえる ---
@@ -5633,19 +5649,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
             for (const key of keys) {
                 total++;
                 try {
-                    if (cloudMap) {   // すでにそろっているものは、通信しない
-                        const cd = cloudMap.get(key) || null, cloud = pmDecodeCloud(cd), loc = pmReadLocal(key), base = pmReadBase(uid, key);
-                        const merged = pmMergeValue(key, base, loc.val, cloud ? cloud.val : null);
-                        let inSync;
-                        if (merged === PM_DEL) inSync = !cd && loc.raw == null;
-                        else if (merged == null) inSync = true;
-                        else inSync = pmSame(merged, cloud ? cloud.val : null) && (pmSame(merged, loc.val) || (pmEmpty(merged) && pmEmpty(loc.val)));
-                        if (inSync) {
-                            const want = merged === PM_DEL ? pmSnapshot(key, null) : (merged == null ? null : pmSnapshot(key, merged));
-                            if (want && !pmSame(want, base)) pmWriteBase(uid, key, merged);
-                            continue;
-                        }
-                    }
+                    if (cloudMap && pmCheckKey(uid, key, cloudMap.get(key) || null)) continue;   // すでにそろっているものは、通信しない
                     const r = await pmSyncKey(uid, key, apply); if (r.localChanged) { anyLocalChanged = true; if (!isSoftKey(key)) hardChanged = true; }
                 } catch (e) { errors++; console.warn('クラウド同期に失敗しました:', key, e); }
             }
@@ -5671,10 +5675,47 @@ html.dark .dev-log-link { color: #e2e8f0; }
             finally { _syncState.running = false; }
         }
 
+        // ===== リアルタイム同期：他の端末の変更が、画面の読み込み直しなしで、すぐに届く =====
+        //   users/{uid}/appData を購読しておき、変更が来たら、この端末のデータとそろえて、アプリに「このデータが変わった」と知らせる
+        let _liveUnsub = null, _liveUid = null, _liveChain = Promise.resolve();
+        function pmEmitKeyUpdated(key) {
+            try { window.dispatchEvent(new CustomEvent('app-cloud-key-updated', { detail: { key } })); } catch (e) {}
+        }
+        async function pmRemoteChanged(uid, key, data) {   // data：クラウドのデータ（削除されたときは null）
+            if (pmCheckKey(uid, key, data)) return;         // すでにそろっている（自分の書き込みの「こだま」など）
+            await pmSyncKey(uid, key, true);                // 違っていれば、この端末にも取り込む（この端末の未送信の変更とは、合わせて残す）
+        }
+        function pmStartLive(uid) {
+            if (_liveUid === uid && _liveUnsub) return;
+            pmStopLive();
+            _liveUid = uid;
+            try {
+                _liveUnsub = onSnapshot(collection(db, 'users', uid, 'appData'), (snap) => {
+                    snap.docChanges().forEach((ch) => {
+                        if (ch.doc.metadata && ch.doc.metadata.hasPendingWrites) return;   // この端末の、送信待ちの書き込みは見ない
+                        const key = ch.doc.id;
+                        if (!isSyncKey(key)) return;
+                        const data = ch.type === 'removed' ? null : ch.doc.data();
+                        _liveChain = _liveChain
+                            .then(() => { if (auth.currentUser && auth.currentUser.uid === uid) return pmRemoteChanged(uid, key, data); })
+                            .catch((e) => console.warn('リアルタイム同期で失敗しました:', key, e));
+                    });
+                    _syncState.live = true;
+                }, (err) => {
+                    console.warn('リアルタイム同期を始められませんでした（アプリに戻ったときの同期に切り替えます）:', err && (err.code || err.message));
+                    _syncState.live = false; _liveUnsub = null; _liveUid = null;
+                });
+            } catch (e) { _syncState.live = false; _liveUnsub = null; _liveUid = null; }
+        }
+        function pmStopLive() {
+            try { if (_liveUnsub) _liveUnsub(); } catch (e) {}
+            _liveUnsub = null; _liveUid = null; _syncState.live = false;
+        }
+
         // この端末の変更を、少し待ってからクラウドへ
         async function pmPushKey(uid, key) {
             try {
-                await pmSyncKey(uid, key, false);
+                await pmSyncKey(uid, key, _syncState.live);   // リアルタイム中は、他の端末の変更もその場で取り込める（画面を描き直せるため）
                 _syncState.last = Date.now();
                 pmEmit('ok');
             } catch (e) { console.warn('クラウド同期に失敗しました:', key, e); pmEmit('error'); }
@@ -5696,8 +5737,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
             if (!u || u.isAnonymous || _syncState.running) return false;
             const r = await pmRunSyncApplyForLogin(u.uid);
             _syncState.newer.clear();
-            const changed = !!(r && r.hardChanged);   // 予定・成績などが変わったときだけ、読み込み直す（設定の変更は、その場で取り込むだけ）
-            if (changed) { try { window.dispatchEvent(new CustomEvent('app-cloud-data-loaded')); } catch (e) {} }
+            const changed = !!(r && r.hardChanged);
+            // リアルタイム中は、画面をその場で描き直すので、読み込み直さない。リアルタイムが使えないときだけ、読み込み直す
+            if (changed && !_syncState.live) { try { window.dispatchEvent(new CustomEvent('app-cloud-data-loaded')); } catch (e) {} }
             return changed;
         }
         let _syncSoonTimer = 0;
@@ -6590,6 +6632,8 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 else { location.reload(); return; }
             }
             window.dispatchEvent(new CustomEvent('app-auth-changed', { detail: { user } }));
+            if (!user || user.isAnonymous) { try { pmStopLive(); } catch (e) {} }   // ログアウト・ゲストでは、リアルタイム同期を止める
+            else { setTimeout(() => { try { if (auth.currentUser && !auth.currentUser.isAnonymous) pmStartLive(auth.currentUser.uid); } catch (e) {} }, 6000); }   // 念のための保険（下の本線が失敗しても、始める）
             if (user) {
                 try {
                     const snap = await getDoc(doc(db, 'users', user.uid));
@@ -6623,6 +6667,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             window.dispatchEvent(new CustomEvent('app-cloud-data-loaded'));
                         }
                     }
+                    try { if (!user.isAnonymous) pmStartLive(user.uid); } catch (e) {}   // 最初の同期のあと、リアルタイム同期を始める
 
                     const PLACEHOLDER_NAMES = ['名無しさん', '名無し', 'ゲスト'];
                     const nameMissing = !data.profileName || PLACEHOLDER_NAMES.includes(String(data.profileName).trim());
@@ -11140,6 +11185,45 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             }
         }
         window.pmPushSyncSoon = pmPushSyncSoon;
+
+        // ===== リアルタイム同期：他の端末の変更が届いたとき、画面を読み込み直さずに、アプリの記憶と表示を最新にする =====
+        // ① 記憶の入れ替えは、届いた瞬間に行う（古い記憶のまま編集して、届いた変更を上書きして消してしまわないため）
+        function pmLiveLoad(key) {
+            const arr = (k) => { const v = safeStorage.get(k); return Array.isArray(v) ? v : []; };
+            if (key === 'pm_schedule_items') scheduleItems = arr(key);
+            else if (key === 'pm_grade_records') gradeRecords = arr(key);
+            else if (key === 'pm_scan_history' || key === 'pm_trash_history') { scanHistory = arr('pm_scan_history'); trashedHistory = arr('pm_trash_history'); }
+            else if ((key.startsWith('t19_mastered_') || key.startsWith('t19_weak_')) && key.endsWith('_' + t19_currentBook)) { try { t19LoadData(); } catch (e) {} }
+        }
+        // ② 画面の描き直し（続けて届いたときは、まとめて1回）
+        function pmLiveRender(key) {
+            const run = (name) => { try { if (typeof window[name] === 'function') window[name](); } catch (e) { console.warn('画面の更新に失敗しました:', name, e); } };
+            if (key === 'pm_schedule_items') {
+                run('renderScheduleSection'); run('refreshCalendarIfVisible'); run('renderCalendarDayList'); run('renderHomeNextCard'); run('renderUpcomingScheduleOnMyPage');
+                if (typeof pmPushSyncSoon === 'function') pmPushSyncSoon(2000);   // 予定が変わったので、通知の予約も更新する
+            } else if (key === 'pm_grade_records') {
+                run('renderGradesPanel'); run('updateProgressTracker');
+            } else if (key === 'pm_study_logs') {
+                run('refreshStudyProfile'); run('updateTimerTodayLabel');
+            } else if (key === 'pm_done_submissions') {
+                run('refreshSubmissionDoneViews');
+            } else if (key === 'pm_scan_history' || key === 'pm_trash_history') {
+                run('renderHistoryList'); run('renderTrashList'); run('renderEnglishHistory');
+            } else if ((key.startsWith('t19_mastered_') || key.startsWith('t19_weak_')) && key.endsWith('_' + t19_currentBook)) {
+                run('renderT19Sections'); run('updateT19Stats');
+            } else if (key === 'pm_announcement_seen') {
+                run('updateAnnouncementBellBadge');
+            }
+        }
+        function pmLiveRefresh(key) { pmLiveLoad(key); pmLiveRender(key); }
+        const _pmLiveTimers = {};
+        window.addEventListener('app-cloud-key-updated', (e) => {
+            const key = e && e.detail && e.detail.key;
+            if (!key) return;
+            pmLiveLoad(key);                                           // 記憶は、すぐに最新にする
+            clearTimeout(_pmLiveTimers[key]);
+            _pmLiveTimers[key] = setTimeout(() => pmLiveRender(key), 120);   // 描き直しは、続けて届いても1回にまとめる
+        });
 
         // 開発者が送る個別のお知らせ（フィードバックへの返信）を、相手の端末にプッシュで届ける（Workerが、公式アカウントか確かめて送る）
         async function pmPushNotifyUser(toUid, title, body) {
