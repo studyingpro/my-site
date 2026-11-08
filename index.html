@@ -5290,7 +5290,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
         import {
             getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, serverTimestamp,
             collection, getDocs, increment, addDoc, query, where, orderBy, limit, writeBatch,
-            getCountFromServer, onSnapshot, deleteField
+            getCountFromServer, onSnapshot, deleteField, runTransaction
         } from "https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore.js";
 
         const firebaseConfig = {
@@ -5364,18 +5364,177 @@ html.dark .dev-log-link { color: #e2e8f0; }
             }
         }
 
+        // ===== クラウド同期エンジン =====
+        // 予定・勉強記録・成績・単語の習得状況などを、アカウントごとに端末どうしでそろえる。
+        //   ・保存先：users/{uid}/appData/{キー}（本人だけが読み書きできる）
+        //   ・この端末の変更と他の端末の変更は、上書きではなく「合わせて」残す（最後に同期したときとの差分で判断する3方向マージ）
+        //   ・ゲスト（匿名）は同期しない。アカウントを作ると、ゲストのデータが引き継がれる
+        //   同期しないもの（意図的）：端末ごとのID(pm_device_id)／この端末で通知済みの印(pm_notify_fired, *_notified)／
+        //     動いているタイマー(pm_timer_state_v1。2台で動くと二重に記録される)／開発者用のパスワード・セッション(dev_*, pm_cms_session_v1, sec_*)／
+        //     画面サイズに合わせたカレンダーの拡大率(pm_cal_hour_h)／AIの1日の利用回数(pm_daily_limit)／利用規約の同意の記録／同期の内部データ
         const CLOUD_SYNC_KEYS = [
-            'pm_schedule_items',
-            'pm_grade_records',
-            'pm_done_submissions',
+            // 学習の記録
+            'pm_schedule_items',            // カレンダーの予定
+            'pm_study_logs',                // 勉強時間の記録
+            'pm_grade_records',             // 成績
+            'pm_done_submissions',          // 提出済みの印
+            'pm_scan_history',              // スキャン履歴
+            'pm_trash_history',             // ゴミ箱
+            'pm_essay_chat_v2',             // 英作文のAIチャット
+            'pm_geo_puzzle_best_mistakes',  // 地理パズルの記録
+            'pm_geo_puzzle_plays',
+            // 最後に開いていた場所
             'pm_last_history_id',
             'pm_last_section_id',
-            'pm_scan_history',
-            'pm_study_logs',
-            'pm_trash_history',
-            'pm_geo_puzzle_best_mistakes',
-            'pm_geo_puzzle_plays',
+            'pm_t19_book',                  // 単語帳：最後に開いた本
+            'pm_t19_book_en',
+            // 設定・既読
+            'pm_announcement_seen',         // 読んだお知らせ
+            'pm_cal_types',                 // カレンダーに表示する予定の種類
+            'pm_motion',                    // アニメーションの設定
+            'pm_show_aichat_fab',           // AIチャットのボタンの表示
+            'pm_show_timer_fab',            // タイマーのボタンの表示
+            'pm_timer_sound',               // タイマーの音
+            'pm_essay_expanded',
         ];
+        const CLOUD_SYNC_PREFIXES = ['t19_mastered_', 't19_weak_', 't19_lastSession_'];   // 単語の「覚えた」「苦手」と、途中経過（本ごと）
+        // 設定のように、画面が古いまま保存して上書きしてしまう心配がないものは、他の端末の変更をその場で取り込む（それ以外は「更新あり」と知らせてから）
+        const PM_SOFT_KEYS = new Set(['pm_last_history_id', 'pm_last_section_id', 'pm_t19_book', 'pm_t19_book_en', 'pm_announcement_seen', 'pm_cal_types', 'pm_motion',
+            'pm_show_aichat_fab', 'pm_show_timer_fab', 'pm_timer_sound', 'pm_essay_expanded', 'pm_geo_puzzle_best_mistakes', 'pm_geo_puzzle_plays', 'pm_essay_chat_v2']);
+        const isSoftKey = (k) => PM_SOFT_KEYS.has(k) || k.startsWith('t19_lastSession_');
+        const isSyncKey = (k) => typeof k === 'string' && (CLOUD_SYNC_KEYS.includes(k) || (k.length < 80 && CLOUD_SYNC_PREFIXES.some(p => k.startsWith(p))));
+        function pmSyncKind(key) {
+            if (['pm_schedule_items', 'pm_grade_records', 'pm_scan_history', 'pm_trash_history', 'pm_study_logs'].includes(key)) return 'list';   // idで見分ける配列
+            if (key === 'pm_done_submissions') return 'set';
+            if (key.startsWith('t19_mastered_') || key.startsWith('t19_weak_')) return 'map';   // 単語ごとの「覚えた」「苦手」（途中経過 t19_lastSession_ は、ひとまとまりの値）
+            if (key === 'pm_geo_puzzle_plays') return 'max';
+            if (key === 'pm_geo_puzzle_best_mistakes') return 'min';
+            return 'scalar';
+        }
+
+        // --- 比べるための道具 ---
+        function pmStable(v) {
+            if (Array.isArray(v)) return '[' + v.map(pmStable).join(',') + ']';
+            if (v && typeof v === 'object') return '{' + Object.keys(v).sort().map(k => JSON.stringify(k) + ':' + pmStable(v[k])).join(',') + '}';
+            return JSON.stringify(v === undefined ? null : v);
+        }
+        const pmSame = (a, b) => pmStable(a) === pmStable(b);
+        function pmFp(v) {   // 内容の短い指紋（最後に同期したときの状態を小さく覚えておくため）
+            const s = pmStable(v);
+            let h = 2166136261;
+            for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+            return (h >>> 0).toString(36) + ':' + s.length;
+        }
+        const pmItemId = (x) => (x && typeof x === 'object' && x.id != null) ? 'i:' + String(x.id) : 'j:' + pmStable(x);
+        const pmIsObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+        const pmEmpty = (v) => v == null || (Array.isArray(v) && !v.length) || (pmIsObj(v) && !Object.keys(v).length);   // 「無い」と「空」は、同じものとして扱う
+        const PM_DEL = { deleted: true };   // 「削除する」という結果の印（設定などの単独の値用）
+
+        // 最後に同期できたときの状態（スナップショット）
+        function pmSnapshot(key, value) {
+            const kind = pmSyncKind(key);
+            if (kind === 'list') { const o = {}; (Array.isArray(value) ? value : []).forEach(x => { o[pmItemId(x)] = pmFp(x); }); return { v: o }; }
+            if (kind === 'set') return { v: (Array.isArray(value) ? value : []).map(String) };
+            if (kind === 'map') { const src = pmIsObj(value) ? value : {}; const o = {}; Object.keys(src).forEach(k => { o[k] = pmFp(src[k]); }); return { v: o }; }
+            return { v: value == null ? null : pmFp(value) };
+        }
+
+        // --- 3方向マージ：base（最後に同期したとき）／local（この端末）／cloud（クラウド） ---
+        function pmMergeList(snap, local, cloud, key) {
+            const arr = (v) => Array.isArray(v) ? v : [];
+            const toMap = (a) => { const m = new Map(); a.forEach(x => { const id = pmItemId(x); if (!m.has(id)) m.set(id, x); }); return m; };
+            const L = toMap(arr(local)), C = toMap(arr(cloud));
+            const B = snap && pmIsObj(snap.v) ? snap.v : null;
+            const stamp = (x) => String((x && (x.updatedAt || x.endedAt)) || '');
+            const decide = (id) => {
+                const l = L.get(id), c = C.get(id), inB = !!B && (id in B);
+                if (l !== undefined && c !== undefined) {
+                    if (pmSame(l, c)) return l;
+                    if (inB && pmFp(l) === B[id]) return c;      // 変えたのはクラウドだけ
+                    if (inB && pmFp(c) === B[id]) return l;      // 変えたのはこの端末だけ
+                    return stamp(c) > stamp(l) ? c : l;          // 両方変えた：新しいほう（同じなら、この端末）
+                }
+                if (l !== undefined) return (inB && pmFp(l) === B[id]) ? undefined : l;   // 他の端末で削除された（こちらは未変更）→消す／それ以外は残す
+                if (c !== undefined) return (inB && pmFp(c) === B[id]) ? undefined : c;   // この端末で削除した（クラウドは未変更）→消す／それ以外は残す
+                return undefined;
+            };
+            const out = [];
+            for (const id of L.keys()) { const v = decide(id); if (v !== undefined) out.push(v); }
+            for (const id of C.keys()) { if (!L.has(id)) { const v = decide(id); if (v !== undefined) out.push(v); } }
+            if (key === 'pm_study_logs') out.sort((x, y) => String((x && x.endedAt) || '').localeCompare(String((y && y.endedAt) || '')));
+            return out;
+        }
+        function pmMergeSet(snap, local, cloud) {
+            const arr = (v) => Array.isArray(v) ? v.map(String) : [];
+            const L = new Set(arr(local)), C = new Set(arr(cloud));
+            const B = snap && Array.isArray(snap.v) ? new Set(snap.v) : null;
+            const out = [];
+            new Set([...L, ...C]).forEach(x => {
+                if (B && B.has(x) && (!L.has(x) || !C.has(x))) return;   // どちらかが外した
+                out.push(x);
+            });
+            return out;
+        }
+        function pmMergeMap(snap, local, cloud) {
+            const L = pmIsObj(local) ? local : {}, C = pmIsObj(cloud) ? cloud : {};
+            const B = snap && pmIsObj(snap.v) ? snap.v : null;
+            const out = {};
+            new Set([...Object.keys(L), ...Object.keys(C)]).forEach(k => {
+                const inL = k in L, inC = k in C, inB = !!B && (k in B);
+                let v;
+                if (inL && inC) {
+                    if (pmSame(L[k], C[k])) v = L[k];
+                    else if (inB && pmFp(L[k]) === B[k]) v = C[k];
+                    else if (inB && pmFp(C[k]) === B[k]) v = L[k];
+                    else v = L[k];
+                } else if (inL) v = (inB && pmFp(L[k]) === B[k]) ? undefined : L[k];
+                else v = (inB && pmFp(C[k]) === B[k]) ? undefined : C[k];
+                if (v !== undefined) out[k] = v;
+            });
+            return out;
+        }
+        function pmMergeValue(key, snap, local, cloud) {
+            const kind = pmSyncKind(key);
+            if (pmEmpty(local) && pmEmpty(cloud)) return null;   // どちらにも無い（空）ときは、何も作らない
+            if (kind === 'list') return pmMergeList(snap, local, cloud, key);
+            if (kind === 'set') return pmMergeSet(snap, local, cloud);
+            if (kind === 'map') return pmMergeMap(snap, local, cloud);
+            const num = (v) => (typeof v === 'number' && isFinite(v)) ? v : null;
+            if (kind === 'max' || kind === 'min') {
+                const a = num(local), b = num(cloud);
+                if (a == null) return b; if (b == null) return a;
+                return kind === 'max' ? Math.max(a, b) : Math.min(a, b);
+            }
+            // 単独の値（設定・最後に開いた場所など）
+            const was = snap && snap.v != null ? snap.v : null;   // 最後に同期したときの値の指紋（なければ null）
+            if (pmSame(local, cloud)) return local;
+            if (local == null) return (was != null && cloud != null && pmFp(cloud) === was) ? PM_DEL : cloud;   // この端末で消した（クラウドは未変更）→ 消す／それ以外は取り込む
+            if (cloud == null) return (was != null && pmFp(local) === was) ? PM_DEL : local;                    // 他の端末で消された（こちらは未変更）→ 消す／それ以外は残す
+            if (was != null && pmFp(local) === was) return cloud;   // この端末は変えていない → クラウドに合わせる
+            return local;
+        }
+
+        // --- この端末の保存・最後に同期した状態の保存 ---
+        const PM_BASE_PREFIX = 'pm_sync_base:';
+        // 保存の形：多くは JSON。「on」のように JSON ではない文字列そのままのものもある（rawStr=true）
+        function pmReadLocal(key) {
+            let raw = null; try { raw = localStorage.getItem(key); } catch (e) { return { raw: null, val: null, rawStr: false }; }
+            if (raw == null) return { raw: null, val: null, rawStr: false };
+            try { return { raw, val: JSON.parse(raw), rawStr: false }; } catch (e) { return { raw, val: raw, rawStr: true }; }
+        }
+        const pmEncode = (val, rawStr) => rawStr ? String(val) : JSON.stringify(val);
+        function pmDecodeCloud(d) {
+            if (!d || d.value == null) return null;
+            if (d.raw === true) return { val: String(d.value), rawStr: true };
+            try { return { val: JSON.parse(d.value), rawStr: false }; } catch (e) { return null; }
+        }
+        // この同期エンジン自身の書き込みは、「利用者の操作」として数えない（無限に同期し直さないため）
+        function pmStoreSet(k, v) { _syncState.internal++; try { localStorage.setItem(k, v); } finally { _syncState.internal--; } }
+        function pmStoreRemove(k) { _syncState.internal++; try { localStorage.removeItem(k); } finally { _syncState.internal--; } }
+        function pmReadBase(uid, key) { try { const raw = localStorage.getItem(PM_BASE_PREFIX + uid + ':' + key); return raw ? JSON.parse(raw) : null; } catch (e) { return null; } }
+        function pmWriteBase(uid, key, value) { try { localStorage.setItem(PM_BASE_PREFIX + uid + ':' + key, JSON.stringify(pmSnapshot(key, value === PM_DEL ? null : value))); } catch (e) {} }
+        function pmClearBases() { try { Object.keys(localStorage).filter(k => k.startsWith(PM_BASE_PREFIX)).forEach(k => localStorage.removeItem(k)); } catch (e) {} }
+
         function pmSwitchLocalOwner(user) {
             try {
                 const OWNER_KEY = 'pm_local_owner', STASH = 'pm_guest_stash_';
@@ -5385,60 +5544,192 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 if (prev === now) return false;
                 if (prev === null && !brandNew) { localStorage.setItem(OWNER_KEY, now); return false; }
                 const from = prev === null ? 'guest' : prev;
-                if (from === 'guest') CLOUD_SYNC_KEYS.forEach(k => { const v = localStorage.getItem(k); if (v !== null) localStorage.setItem(STASH + k, v); });
-                CLOUD_SYNC_KEYS.forEach(k => localStorage.removeItem(k));
-                if (now === 'guest') CLOUD_SYNC_KEYS.forEach(k => { const v = localStorage.getItem(STASH + k); if (v !== null) { localStorage.setItem(k, v); localStorage.removeItem(STASH + k); } });
+                const allKeys = () => { const s = new Set(CLOUD_SYNC_KEYS); try { Object.keys(localStorage).forEach(k => { if (CLOUD_SYNC_PREFIXES.some(p => k.startsWith(p))) s.add(k); }); } catch (e) {} return [...s]; };
+                _syncState.internal++;
+                try {
+                pmClearBases();   // 持ち主が変わるので、「最後に同期した状態」は使わない（空の端末を、削除と見間違えないため）
+                if (from === 'guest') allKeys().forEach(k => { const v = localStorage.getItem(k); if (v !== null) localStorage.setItem(STASH + k, v); });
+                if (from === 'guest' && brandNew) {
+                    // 新しく作ったアカウント：ゲストで記録したデータを、そのまま引き継ぐ（このあとクラウドに上がり、他の端末と連携される）
+                    localStorage.setItem(OWNER_KEY, now);
+                    return false;
+                }
+                allKeys().forEach(k => localStorage.removeItem(k));
+                if (now === 'guest') allKeys().forEach(k => { const v = localStorage.getItem(STASH + k); if (v !== null) { localStorage.setItem(k, v); localStorage.removeItem(STASH + k); } });
                 localStorage.setItem(OWNER_KEY, now);
                 return true;
+                } finally { _syncState.internal--; }
             } catch (e) { return false; }
         }
-        let _syncTimers = {};
-        function queueSync(key, value) {
-            const user = auth.currentUser;
-            if (!user || !CLOUD_SYNC_KEYS.includes(key)) return;
-            clearTimeout(_syncTimers[key]);
-            _syncTimers[key] = setTimeout(async () => {
-                try {
-                    await setDoc(doc(db, 'users', user.uid, 'appData', key), {
-                        value: JSON.stringify(value),
-                        updatedAt: serverTimestamp(),
-                    });
-                } catch (e) {
-                    console.warn('クラウド同期に失敗しました:', key, e);
-                }
-            }, 1500);
+
+        // --- 状態の通知（設定画面の表示用） ---
+        function pmEmit(state, extra) {
+            const d = Object.assign({ state, at: Date.now() }, extra || {});
+            window.__pmSyncStatus = d;
+            try { window.dispatchEvent(new CustomEvent('app-sync-status', { detail: d })); } catch (e) {}
         }
-        async function pullCloudData(uid) {
-            let didLoadAny = false;
-            for (const key of CLOUD_SYNC_KEYS) {
-                try {
-                    const snap = await getDoc(doc(db, 'users', uid, 'appData', key));
-                    if (snap.exists() && snap.data().value != null) {
-                        if (key === 'pm_study_logs') {
-                            const merge = (a, b) => {
-                                const map = new Map();
-                                [].concat(Array.isArray(a) ? a : [], Array.isArray(b) ? b : []).forEach(l => { if (l && l.id && !map.has(l.id)) map.set(l.id, l); });
-                                return Array.from(map.values()).sort((x, y) => String(x.endedAt || '').localeCompare(String(y.endedAt || '')));
-                            };
-                            let local = [], cloud = [];
-                            try { local = JSON.parse(localStorage.getItem(key) || '[]'); } catch (_) {}
-                            try { cloud = JSON.parse(snap.data().value || '[]'); } catch (_) {}
-                            const merged = merge(local, cloud);
-                            localStorage.setItem(key, JSON.stringify(merged));
-                            if (merged.length > (Array.isArray(cloud) ? cloud.length : 0)) queueSync(key, merged);
-                        } else {
-                            localStorage.setItem(key, snap.data().value);
-                        }
-                        didLoadAny = true;
-                    } else if (key === 'pm_study_logs') {
-                        try { const local = JSON.parse(localStorage.getItem(key) || '[]'); if (Array.isArray(local) && local.length) queueSync(key, local); } catch (_) {}
-                    }
-                } catch (e) {
-                    console.warn('クラウドデータの取得に失敗しました:', key, e);
+        const _syncState = { running: false, last: 0, newer: new Set(), internal: 0 };
+        let _syncTimers = {};
+
+        // --- 1つのデータを、クラウドとそろえる ---
+        //   apply=true：クラウドからの変更を、この端末にも書き込む（ログイン直後など。このあと画面を読み込み直す）
+        //   apply=false：この端末の変更をクラウドへ。クラウド側の変更は、画面が古いまま書き込むと上書きして消してしまうので、
+        //                「更新あり」と知らせるだけにして、反映は読み込み直しのときに行う
+        async function pmSyncKey(uid, key, apply) {
+            if (!isSyncKey(key)) return { cloudChanged: false, localChanged: false };
+            const ref = doc(db, 'users', uid, 'appData', key);
+            const mustApply = apply || isSoftKey(key);
+            let merged = null, localRaw = null, localVal = null, rawStr = false, cloudChanged = false;
+            await runTransaction(db, async (tx) => {
+                const snap = await tx.get(ref);
+                const cd = snap.exists() ? snap.data() : null;
+                const cloud = pmDecodeCloud(cd);
+                const loc = pmReadLocal(key);
+                localRaw = loc.raw; localVal = loc.val;
+                rawStr = loc.raw != null ? loc.rawStr : !!(cloud && cloud.rawStr);
+                merged = pmMergeValue(key, pmReadBase(uid, key), loc.val, cloud ? cloud.val : null);
+                cloudChanged = false;
+                if (merged === PM_DEL) {
+                    if (cd) { cloudChanged = true; tx.delete(ref); }
+                } else if (merged != null && !pmSame(merged, cloud ? cloud.val : null)) {
+                    const text = pmEncode(merged, rawStr);
+                    if (text.length > 900000) throw Object.assign(new Error('データが大きすぎて同期できません: ' + key), { code: 'too-large' });
+                    cloudChanged = true;
+                    tx.set(ref, { value: text, raw: rawStr, updatedAt: serverTimestamp() });
+                }
+            });
+            let localChanged = false;
+            const localNow = pmReadLocal(key);
+            const untouched = localNow.raw === localRaw;   // 通信している間に、この端末で別の変更がなかった
+            if (merged === PM_DEL) {
+                if (untouched) {
+                    if (localRaw == null) pmWriteBase(uid, key, null);
+                    else if (mustApply) { pmStoreRemove(key); localChanged = true; pmWriteBase(uid, key, null); }
+                    else _syncState.newer.add(key);
+                }
+            } else if (merged != null) {
+                if (pmSame(merged, localVal) || (pmEmpty(merged) && pmEmpty(localVal))) {   // この端末と同じ（「無い」と「空」も同じ）
+                    if (untouched) pmWriteBase(uid, key, merged);
+                } else if (mustApply && untouched) {
+                    try { pmStoreSet(key, pmEncode(merged, rawStr)); localChanged = true; pmWriteBase(uid, key, merged); } catch (e) {}
+                } else {
+                    _syncState.newer.add(key);
                 }
             }
-            return didLoadAny;
+            return { cloudChanged, localChanged };
         }
+
+        // --- すべてのデータをそろえる ---
+        async function pmSyncAll(uid, apply) {
+            const keys = new Set(CLOUD_SYNC_KEYS);
+            try { Object.keys(localStorage).forEach(k => { if (isSyncKey(k)) keys.add(k); }); } catch (e) {}
+            let cloudMap = null;
+            try {   // クラウドにあるデータを一覧で1回読む（別の端末で覚えた単語帳なども見つけられる）
+                const qs = await getDocs(collection(db, 'users', uid, 'appData'));
+                cloudMap = new Map();
+                qs.forEach(d => { if (isSyncKey(d.id)) { cloudMap.set(d.id, d.data()); keys.add(d.id); } });
+            } catch (e) { cloudMap = null; /* 一覧が読めなくても、分かっているデータだけで続ける */ }
+            let anyLocalChanged = false, hardChanged = false, errors = 0, total = 0;
+            for (const key of keys) {
+                total++;
+                try {
+                    if (cloudMap) {   // すでにそろっているものは、通信しない
+                        const cd = cloudMap.get(key) || null, cloud = pmDecodeCloud(cd), loc = pmReadLocal(key), base = pmReadBase(uid, key);
+                        const merged = pmMergeValue(key, base, loc.val, cloud ? cloud.val : null);
+                        let inSync;
+                        if (merged === PM_DEL) inSync = !cd && loc.raw == null;
+                        else if (merged == null) inSync = true;
+                        else inSync = pmSame(merged, cloud ? cloud.val : null) && (pmSame(merged, loc.val) || (pmEmpty(merged) && pmEmpty(loc.val)));
+                        if (inSync) {
+                            const want = merged === PM_DEL ? pmSnapshot(key, null) : (merged == null ? null : pmSnapshot(key, merged));
+                            if (want && !pmSame(want, base)) pmWriteBase(uid, key, merged);
+                            continue;
+                        }
+                    }
+                    const r = await pmSyncKey(uid, key, apply); if (r.localChanged) { anyLocalChanged = true; if (!isSoftKey(key)) hardChanged = true; }
+                } catch (e) { errors++; console.warn('クラウド同期に失敗しました:', key, e); }
+            }
+            return { anyLocalChanged, hardChanged, errors, total };
+        }
+
+        // ログイン直後：クラウドの内容を、この端末にそろえる（変わったら true → 画面を読み込み直す）
+        async function pullCloudData(uid) {
+            const u = auth.currentUser;
+            if (!u || u.isAnonymous || u.uid !== uid) { pmEmit('guest'); return false; }
+            const r = await pmRunSyncApplyForLogin(uid);
+            return !!(r && r.anyLocalChanged);
+        }
+        async function pmRunSyncApplyForLogin(uid) {
+            if (_syncState.running) return null;
+            _syncState.running = true; pmEmit('syncing');
+            try {
+                const r = await pmSyncAll(uid, true);
+                _syncState.last = Date.now();
+                pmEmit(r.total && r.errors >= r.total ? 'error' : 'ok', { errors: r.errors });
+                return r;
+            } catch (e) { pmEmit('error'); return null; }
+            finally { _syncState.running = false; }
+        }
+
+        // この端末の変更を、少し待ってからクラウドへ
+        async function pmPushKey(uid, key) {
+            try {
+                await pmSyncKey(uid, key, false);
+                _syncState.last = Date.now();
+                pmEmit('ok');
+            } catch (e) { console.warn('クラウド同期に失敗しました:', key, e); pmEmit('error'); }
+        }
+        function queueSync(key, _value) {
+            const user = auth.currentUser;
+            if (!user || user.isAnonymous || !isSyncKey(key)) return;
+            clearTimeout(_syncTimers[key]);
+            const uid = user.uid;
+            _syncTimers[key] = setTimeout(() => { delete _syncTimers[key]; if (auth.currentUser && auth.currentUser.uid === uid) pmPushKey(uid, key); }, 1500);
+        }
+        function pmFlushPending() {   // アプリを閉じる・裏に回るときは、待たずにすぐ送る
+            const u = auth.currentUser; if (!u || u.isAnonymous) return;
+            Object.keys(_syncTimers).forEach(k => { clearTimeout(_syncTimers[k]); delete _syncTimers[k]; pmPushKey(u.uid, k); });
+        }
+        // アプリに戻ったとき：他の端末の変更があれば、自動で取り込んで読み込み直す（ログイン時と同じ動き）。何もなければ何も起きない
+        async function pmResumeSync() {
+            const u = auth.currentUser;
+            if (!u || u.isAnonymous || _syncState.running) return false;
+            const r = await pmRunSyncApplyForLogin(u.uid);
+            _syncState.newer.clear();
+            const changed = !!(r && r.hardChanged);   // 予定・成績などが変わったときだけ、読み込み直す（設定の変更は、その場で取り込むだけ）
+            if (changed) { try { window.dispatchEvent(new CustomEvent('app-cloud-data-loaded')); } catch (e) {} }
+            return changed;
+        }
+        let _syncSoonTimer = 0;
+        function pmSyncSoon(delay, force) {
+            clearTimeout(_syncSoonTimer);
+            _syncSoonTimer = setTimeout(() => { if (!force && Date.now() - _syncState.last < 60000) return; pmResumeSync(); }, delay);
+        }
+
+        // この端末へのすべての書き込み・削除を見張り、同期の対象のデータなら、自動でクラウドへ送る
+        (function pmHookStorage() {
+            try {
+                if (Storage.prototype.__pmSyncHooked) return;
+                const origSet = Storage.prototype.setItem, origRemove = Storage.prototype.removeItem;
+                Storage.prototype.setItem = function (k, v) {
+                    const r = origSet.apply(this, arguments);
+                    try { if (this === localStorage && !_syncState.internal && isSyncKey(String(k))) queueSync(String(k), null); } catch (e) {}
+                    return r;
+                };
+                Storage.prototype.removeItem = function (k) {
+                    const r = origRemove.apply(this, arguments);
+                    try { if (this === localStorage && !_syncState.internal && isSyncKey(String(k))) queueSync(String(k), null); } catch (e) {}
+                    return r;
+                };
+                Storage.prototype.__pmSyncHooked = true;
+            } catch (e) {}
+        })();
+        document.addEventListener('visibilitychange', () => { if (document.hidden) pmFlushPending(); else pmSyncSoon(800); });   // 画面に戻ったとき（前回から60秒以上たっていれば）
+        window.addEventListener('pagehide', pmFlushPending);
+        window.addEventListener('focus', () => pmSyncSoon(800));
+        window.addEventListener('online', () => pmSyncSoon(500, true));
+
+        // ===== /クラウド同期エンジン =====
 
         window.AppFirebase = {
             auth, db,
@@ -7368,6 +7659,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
             },
             remove(key) {
                 try { localStorage.removeItem(key); } catch(e) {}
+                if (window.AppFirebase && typeof window.AppFirebase.queueSync === 'function') {
+                    window.AppFirebase.queueSync(key, null);   // リセットなどで消したことを、クラウドにも反映する
+                }
             }
         };
 
@@ -18245,6 +18539,10 @@ const KOBUN_TANGO = [
             try {
                 localStorage.setItem('t19_mastered_' + t19_currentBook, JSON.stringify(t19_masteredSet));
                 localStorage.setItem('t19_weak_' + t19_currentBook, JSON.stringify(t19_weakSet));
+                if (window.AppFirebase && typeof window.AppFirebase.queueSync === 'function') {
+                    window.AppFirebase.queueSync('t19_mastered_' + t19_currentBook, null);
+                    window.AppFirebase.queueSync('t19_weak_' + t19_currentBook, null);
+                }
             } catch(e) {}
         }
         function t19LoadData() {
