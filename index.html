@@ -3,7 +3,7 @@
 <head>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
@@ -346,91 +346,139 @@
         .dev-menu-wrap { display: flex; flex-direction: column; gap: 1.4rem; }
         .dev-menu-group-title { font-size: .8125rem; font-weight: 900; color: #475569; margin: 0 0 .55rem; padding-left: .6rem; border-left: 3px solid #f59e0b; line-height: 1.3; }
         html.dark .dev-menu-group-title { color: #cbd5e1; }
-        /* 開発者ページ：墨と紙、細い罫線と金茶だけの、静かな見た目 */
-        #dev-settings-modal { --ink:#1b2430; --paper:#f7f7f6; --panel:#fff; --rule:#d8d6d0; --sub:#5c6570; --gold:#8c6d2c; --serif:'Noto Serif JP','Hiragino Mincho ProN','Yu Mincho',serif; }
-        html.dark #dev-settings-modal { --ink:#e8e6e1; --paper:#0e131a; --panel:#141b24; --rule:#2a3340; --sub:#9aa3ae; --gold:#bfa56a; }
+        /* 開発者ページ：明るく読みやすい管理画面（青を1色だけ使う） */
+        #dev-settings-modal { --ink:#e6edf7; --sub:#8fa3bd; --paper:#070b14; --panel:#0e1627; --rule:#1b2740; --acc:#38bdf8; --acc-d:#7dd3fc; --acc-bg:#0f2238; --ok:#34d399; --warn:#fbbf24; --bad:#f87171; }
         #dev-settings-modal { background: var(--paper); color: var(--ink); }
         #dev-settings-modal *, #dev-settings-modal *::before, #dev-settings-modal *::after { animation: none !important; box-shadow: none; }
         #dev-settings-modal .font-black { font-weight: 700; }
-        #dev-settings-modal .rounded-xl, #dev-settings-modal .rounded-2xl, #dev-settings-modal .rounded-lg { border-radius: 3px; }
-        #dev-page-header, #dev-page-chips { background: #1b2430; border-top: 0; }
-        html.dark #dev-page-header, html.dark #dev-page-chips { background: #0a0e14; }
-        .dev-stripe-bar { height: 1px; background: #8c6d2c; }
-        .dev-badge { display: none; }
-        .dev-page-title { font-family: var(--serif); font-size: 1.05rem; font-weight: 600; letter-spacing: .12em; }
-        .dev-hbtn { border-radius: 2px; background: transparent; border: 1px solid rgba(255,255,255,.28); font-weight: 600; letter-spacing: .04em; }
+        #dev-settings-modal .rounded-xl, #dev-settings-modal .rounded-2xl, #dev-settings-modal .rounded-lg { border-radius: 8px; }
+        #dev-page-header, #dev-page-chips { background: #111827; border-top: 0; }
+        html.dark #dev-page-header, html.dark #dev-page-chips { background: #070a0e; }
+        .dev-stripe-bar, .dev-badge { display: none; }
+        .dev-page-title { font-size: 1rem; font-weight: 700; letter-spacing: .02em; }
+        .dev-hbtn { border-radius: 8px; background: transparent; border: 1px solid rgba(255,255,255,.25); font-weight: 600; }
         .dev-hbtn:hover { background: rgba(255,255,255,.1); }
-        .dev-hbtn.is-primary { background: #ecebe7; color: #1b2430; border-color: #ecebe7; }
-        .dev-hbtn.is-primary:hover { background: #fff; }
-        .dev-hbtn.is-danger { background: transparent; color: #e3b8b8; border-color: rgba(227,184,184,.4); }
-        .dev-save-chip { border-radius: 2px; background: transparent; border: 1px solid #c9b27a; color: #e5d6ad; font-weight: 600; }
-        .dev-chip { border-radius: 0; background: transparent; border-bottom: 2px solid transparent; font-weight: 600; padding: .5rem .6rem; }
-        .dev-chip.is-active { background: transparent; color: #fff; border-bottom-color: #c9b27a; }
-        #dev-page-sidebar { background: var(--panel); border-right: 1px solid var(--rule); padding: .5rem .5rem 2rem; }
-        .dev-side-group { font-family: var(--serif); font-size: 11.5px; font-weight: 600; letter-spacing: .14em; color: var(--gold); padding: 1.3rem .75rem .45rem; margin-top: .4rem; border-top: 1px solid var(--rule); }
-        .dev-side-btn { border-radius: 0; font-weight: 600; color: var(--sub); }
-        .dev-side-btn:hover, html.dark .dev-side-btn:hover { background: transparent; color: var(--ink); }
-        .dev-side-btn.is-active, html.dark .dev-side-btn.is-active { background: transparent; color: var(--ink); box-shadow: inset 2px 0 0 var(--gold); font-weight: 700; }
-        .dev-page-inner { max-width: 46rem; }
-        .dev-hero { background: #1b2430; border: 0; border-top: 1px solid #8c6d2c; border-radius: 2px; padding: 1.6rem 1.4rem; margin-bottom: 1.4rem; }
-        html.dark .dev-hero { background: #141b24; }
-        .dev-hero-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; letter-spacing: .1em; color: #f1efe9; }
-        .dev-hero-text { color: #b9bfc7; line-height: 1.9; }
-        .dev-hero-text b { color: #e5d6ad; font-weight: 600; }
-        .dev-stat, .dev-card, html.dark .dev-stat, html.dark .dev-card { background: var(--panel); border: 1px solid var(--rule); border-radius: 2px; }
-        .dev-card { padding: 1.3rem; margin-bottom: 1.3rem; }
-        .dev-stat-label { font-weight: 600; color: var(--sub); }
-        .dev-stat-value, html.dark .dev-stat-value { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--ink); }
-        .dev-stat-sub, .dev-card-desc, .dev-panel-head p, .dev-note-list { color: var(--sub); }
-        .dev-card-title, html.dark .dev-card-title { font-family: var(--serif); font-size: 1.02rem; font-weight: 600; letter-spacing: .06em; color: var(--ink); padding-bottom: .6rem; margin-bottom: .6rem; border-bottom: 1px solid var(--rule); }
-        .dev-btn { border-radius: 2px; background: transparent; border: 1px solid var(--rule); color: var(--ink); font-weight: 600; }
-        html.dark .dev-btn { background: transparent; color: var(--ink); }
-        .dev-btn:hover { opacity: 1; border-color: var(--gold); }
-        .dev-btn.is-primary { background: #1b2430; border-color: #1b2430; color: #f1efe9; }
-        html.dark .dev-btn.is-primary { background: #e8e6e1; border-color: #e8e6e1; color: #0e131a; }
-        .dev-dot { width: .5rem; height: .5rem; }
-        .dev-dot.is-ok { background: #4f7d63; } .dev-dot.is-warn { background: #a8863a; } .dev-dot.is-err { background: #a0463f; }
-        .dev-menu-wrap { gap: 1.8rem; }
-        .dev-menu-group-title { font-family: var(--serif); font-weight: 600; letter-spacing: .1em; color: var(--ink); border-left: 0; padding: 0 0 .4rem; margin-bottom: .7rem; border-bottom: 1px solid var(--gold); }
-        .dev-menu { gap: 0; border-top: 1px solid var(--rule); border-left: 1px solid var(--rule); }
-        .dev-menu-card, html.dark .dev-menu-card { background: var(--panel); border: 0; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); border-radius: 0; padding: 1rem .9rem; }
-        .dev-menu-card:hover { background: var(--paper); }
-        .dev-menu-card svg, .dev-menu-card > i { color: var(--gold); }
-        .dev-menu-title, html.dark .dev-menu-title { font-weight: 600; color: var(--ink); }
-        .dev-menu-desc { color: var(--sub); }
-        .dev-panel-icon { background: transparent; border: 1px solid var(--rule); border-radius: 2px; color: var(--gold); }
-        html.dark .dev-panel-icon { background: transparent; color: var(--gold); }
-        .dev-panel-head h2, html.dark .dev-panel-head h2 { font-family: var(--serif); font-weight: 600; letter-spacing: .08em; color: var(--ink); }
-        #dev-section-content-nav button { background: transparent !important; border: 1px solid var(--rule); }
-        #dev-section-content-nav button:hover { border-color: var(--gold); }
-        #dev-section-content-nav i, #dev-section-content-nav svg { color: var(--gold) !important; }
-        #dev-section-content-nav p { color: var(--ink) !important; font-weight: 600 !important; }
-        .dev-date-input, html.dark .dev-date-input { border-radius: 2px; background: var(--panel); border-color: var(--rule); color: var(--ink); font-weight: 600; }
-        .dev-usage-sum, html.dark .dev-usage-sum, .dev-details { background: var(--panel); border: 1px solid var(--rule); border-radius: 2px; }
-        .dev-usage-sum b, html.dark .dev-usage-sum b { font-family: var(--serif); font-weight: 600; color: var(--ink); }
-        .dev-usage-bar { border-radius: 1px; background: var(--rule); height: .35rem; }
-        .dev-usage-bar i { background: var(--gold); border-radius: 1px; }
-        .dev-trend-bar i { background: var(--rule); border-radius: 1px 1px 0 0; }
-        .dev-trend-col.is-active .dev-trend-bar i { background: var(--gold); }
-        .dev-trend-col.is-active .dev-trend-d { color: var(--gold); }
-        .dev-log-badge, .dev-log-official { border-radius: 2px; background: transparent; border: 1px solid var(--rule); color: var(--sub); }
-        .dev-code { border-radius: 2px; }
+        .dev-hbtn.is-primary { background: #2563eb; color: #fff; border-color: #2563eb; }
+        .dev-hbtn.is-primary:hover { background: #1d4ed8; }
+        .dev-hbtn.is-danger { background: transparent; color: #fca5a5; border-color: rgba(252,165,165,.4); }
+        .dev-save-chip { border-radius: 999px; background: rgba(255,255,255,.1); border: 0; color: #e5e7eb; font-weight: 600; }
         #dev-page-sidebar, #dev-page-chips { display: none !important; }
-        .dev-back { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: .9rem; }
-        .dev-back:hover { color: var(--gold); }
-        .dev-menu { grid-template-columns: 1fr !important; border-left: 0; }
-        .dev-menu-card, html.dark .dev-menu-card { flex-direction: row; align-items: center; gap: .9rem; border-right: 0; padding: .85rem .2rem; }
-        .dev-menu-card::after { content: '›'; margin-left: auto; color: var(--sub); font-size: 1.2rem; }
-        .dev-menu-title { min-width: 9.5rem; }
-        .dev-menu-desc { flex: 1; }
-        .dev-kv > div { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .9rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); }
-        .dev-kv > div:last-child { border-bottom: 0; }
-        .dev-kv dt { width: 7.5rem; font-size: 12px; font-weight: 600; color: var(--sub); }
-        .dev-kv dd { flex: 1; min-width: 8rem; font-family: var(--serif); font-weight: 600; color: var(--ink); }
+        .dev-page-inner { max-width: 44rem; }
+        .dev-back { font-size: 13px; font-weight: 600; color: var(--acc); margin-bottom: .9rem; }
+        .dev-back:hover { color: var(--acc-d); }
+        .dev-hero, html.dark .dev-hero { background: transparent; border: 0; padding: .2rem 0 1.1rem; margin-bottom: .2rem; }
+        .dev-hero-title { font-size: 1.4rem; font-weight: 700; color: var(--ink); letter-spacing: 0; }
+        .dev-hero-text { color: var(--sub); line-height: 1.8; font-size: 13.5px; }
+        .dev-hero-text b { color: var(--ink); font-weight: 700; }
+        .dev-card, .dev-stat, html.dark .dev-card, html.dark .dev-stat { background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; }
+        .dev-card { padding: 1.25rem 1.3rem; margin-bottom: 1rem; }
+        .dev-card-title, html.dark .dev-card-title { font-size: 1rem; font-weight: 700; color: var(--ink); letter-spacing: 0; border: 0; padding: 0; margin: 0 0 .55rem; }
+        .dev-card-desc, .dev-stat-sub, .dev-note-list, .dev-stat-label, .dev-panel-head p { color: var(--sub); }
+        .dev-stat-value, html.dark .dev-stat-value { font-size: 1rem; font-weight: 700; color: var(--ink); }
+        .dev-btn, html.dark .dev-btn { border-radius: 8px; background: var(--panel); border: 1px solid var(--rule); color: var(--ink); font-weight: 600; }
+        .dev-btn:hover { opacity: 1; background: var(--paper); }
+        .dev-btn.is-primary, html.dark .dev-btn.is-primary { background: var(--acc); border-color: var(--acc); color: #fff; }
+        html.dark .dev-btn.is-primary { color: #0b0f14; }
+        .dev-btn.is-primary:hover { background: var(--acc-d); border-color: var(--acc-d); }
         .dev-row-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
-        .dev-seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 2px; margin-bottom: .8rem; }
-        .dev-seg button { padding: .35rem .9rem; font-size: 12px; font-weight: 600; color: var(--sub); }
-        .dev-seg button.is-on { background: #1b2430; color: #f1efe9; }
+        .dev-dot.is-ok { background: #16a34a; } .dev-dot.is-warn { background: #d97706; } .dev-dot.is-err { background: #dc2626; }
+        .dev-kv > div { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .9rem; padding: .85rem 0; border-bottom: 1px solid var(--rule); }
+        .dev-kv > div:last-child { border-bottom: 0; padding-bottom: 0; }
+        .dev-kv dt { width: 7.5rem; font-size: 13px; color: var(--sub); }
+        .dev-kv dd { flex: 1; min-width: 8rem; font-weight: 700; color: var(--ink); }
+        .dev-menu-wrap { gap: 1.2rem; }
+        .dev-menu-group-title { font-size: 12.5px; font-weight: 700; color: var(--sub); border: 0; padding: 0; margin: 0 0 .4rem; }
+        .dev-menu { display: block !important; border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; background: var(--panel); }
+        .dev-menu-card, html.dark .dev-menu-card { display: flex; width: 100%; flex-direction: row; align-items: center; gap: .85rem; background: var(--panel); border: 0; border-bottom: 1px solid var(--rule); border-radius: 0; padding: .85rem 1rem; text-align: left; }
+        .dev-menu > :last-child { border-bottom: 0; }
+        .dev-menu-card:hover { background: var(--paper); }
+        .dev-menu-card::after { content: '›'; margin-left: auto; color: var(--sub); font-size: 1.2rem; }
+        .dev-menu-card svg, .dev-menu-card > i { color: var(--acc); flex: none; }
+        .dev-menu-title, html.dark .dev-menu-title { min-width: 9rem; font-weight: 600; color: var(--ink); }
+        .dev-menu-desc { flex: 1; color: var(--sub); }
+        .dev-panel-icon, html.dark .dev-panel-icon { background: var(--acc-bg); border: 0; border-radius: 10px; color: var(--acc); }
+        .dev-panel-head h2, html.dark .dev-panel-head h2 { font-weight: 700; letter-spacing: 0; color: var(--ink); }
+        #dev-section-content-nav button { background: var(--panel) !important; border: 1px solid var(--rule); }
+        #dev-section-content-nav button:hover { background: var(--paper) !important; }
+        #dev-section-content-nav i, #dev-section-content-nav svg { color: var(--acc) !important; }
+        #dev-section-content-nav p { color: var(--ink) !important; font-weight: 600 !important; }
+        .dev-date-input, html.dark .dev-date-input { border-radius: 8px; background: var(--panel); border-color: var(--rule); color: var(--ink); font-weight: 600; }
+        .dev-usage-sum, html.dark .dev-usage-sum, .dev-details { background: var(--panel); border: 1px solid var(--rule); border-radius: 10px; }
+        .dev-usage-sum b, html.dark .dev-usage-sum b { font-weight: 700; color: var(--ink); }
+        .dev-usage-bar { border-radius: 4px; background: var(--rule); }
+        .dev-usage-bar i { background: var(--acc); border-radius: 4px; }
+        .dev-trend-bar i { background: #93c5fd; border-radius: 3px 3px 0 0; }
+        html.dark .dev-trend-bar i { background: #3b5a8a; }
+        .dev-trend-col.is-active .dev-trend-bar i { background: var(--acc); }
+        .dev-trend-col.is-active .dev-trend-d { color: var(--acc); }
+        .dev-log-badge, .dev-log-official { border-radius: 6px; }
+        .dev-code { border-radius: 8px; }
+        .dev-seg { display: inline-flex; background: var(--paper); border-radius: 8px; padding: 3px; margin-bottom: .8rem; }
+        .dev-seg button { padding: .35rem 1rem; font-size: 12.5px; font-weight: 600; color: var(--sub); border-radius: 6px; }
+        .dev-seg button.is-on { background: var(--panel); color: var(--ink); }
+        #dev-drawer { position: absolute; top: 0; bottom: 0; left: 0; z-index: 30; width: 19rem; max-width: 85vw; background: var(--panel); border-right: 1px solid var(--rule); overflow-y: auto; padding: 1.1rem .9rem 2rem; transform: translateX(-102%); visibility: hidden; transition: transform .25s ease, visibility 0s linear .25s; }
+        #dev-drawer.is-open { transform: none; visibility: visible; transition: transform .25s ease; }
+        #dev-drawer-overlay { position: absolute; inset: 0; z-index: 29; background: rgba(17,24,39,.4); opacity: 0; pointer-events: none; transition: opacity .25s ease; }
+        #dev-drawer-overlay.is-open { opacity: 1; pointer-events: auto; }
+        #dev-drawer .dev-menu-desc, #dev-drawer .dev-menu-card::after { display: none; }
+        #dev-drawer .dev-menu-title { min-width: 0; }
+        .dev-menu-card.is-current, html.dark .dev-menu-card.is-current { background: var(--acc-bg); }
+        .dev-menu-card.is-current .dev-menu-title { color: var(--acc); }
+        #cms-save-btn { display: none; }
+        /* 枠線は使わない：色の違いと余白だけで区切る */
+        #dev-settings-modal :is(.dev-card, .dev-stat, .dev-btn, .dev-menu, .dev-menu-card, .dev-hbtn, .dev-save-chip, .dev-seg, .dev-details, .dev-usage-sum, .dev-date-input, .dev-panel-icon, .dev-log-badge, .dev-log-official, .dev-code, #dev-section-content-nav button, #dev-drawer, #dev-page-sidebar, #dev-page-header) { border: 0 !important; }
+        #dev-settings-modal [class*="border"] { border-color: transparent !important; }
+        #dev-settings-modal .dev-kv > div { border-bottom: 0 !important; }
+        #dev-settings-modal :is(input, select, textarea) { border-color: transparent !important; background: var(--paper) !important; color: var(--ink); }
+        #dev-settings-modal :is(input, select, textarea):focus { outline: 2px solid var(--acc); outline-offset: 0; }
+        .dev-btn, html.dark .dev-btn { background: var(--paper); }
+        .dev-btn:hover { background: var(--rule); }
+        .dev-btn.is-primary, html.dark .dev-btn.is-primary { background: var(--acc); }
+        .dev-hbtn { background: rgba(255,255,255,.1); }
+        .dev-hbtn:hover { background: rgba(255,255,255,.18); }
+        .dev-hbtn.is-primary { background: #2563eb; }
+        .dev-save-chip { background: rgba(255,255,255,.12); }
+        #dev-drawer .dev-menu-card { padding: .7rem .6rem; border-radius: 8px; }
+        .dev-menu-card:hover, #dev-drawer .dev-menu-card:hover { background: var(--paper); }
+        #dev-drawer .dev-menu { background: transparent; border-radius: 0; overflow: visible; }
+        /* 司令室のような、情報の多い全画面ダッシュボード（光る装飾はなし） */
+        #dev-page-header { background: #05080f !important; }
+        .dev-page-inner { max-width: none; }
+        .dev-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: .75rem; }
+        .dev-grid > * { grid-column: span 12; margin: 0 !important; min-width: 0; }
+        @media (min-width: 900px) { .dev-grid > .dev-span-4 { grid-column: span 4; } .dev-grid > .dev-span-6 { grid-column: span 6; } .dev-grid > .dev-span-8 { grid-column: span 8; } }
+        .dev-tile, .dev-card { background: var(--panel); border-radius: 10px; padding: 1rem 1.1rem; }
+        .dev-tag { font: 600 11px/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--sub); letter-spacing: .05em; margin: 0 0 .75rem; }
+        .dev-tag b { color: var(--acc); margin-right: .55rem; }
+        #dev-statusbar { display: flex; flex-wrap: wrap; gap: .6rem 1rem; align-items: center; justify-content: space-between; }
+        .dev-lamps { display: flex; flex-wrap: wrap; gap: .4rem; }
+        .dev-lamp { display: flex; align-items: center; gap: .5rem; padding: .5rem .75rem; border-radius: 8px; background: var(--paper); font-size: 12px; color: var(--sub); }
+        .dev-lamp i { width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+        .dev-lamp.is-warn i { background: var(--warn); } .dev-lamp.is-bad i { background: var(--bad); }
+        .dev-lamp b { color: var(--ink); font-weight: 700; }
+        .dev-clock { text-align: right; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; line-height: 1.15; }
+        .dev-clock b { display: block; font-size: 1.55rem; font-weight: 600; color: var(--ink); letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+        .dev-clock span { font-size: 11px; color: var(--sub); }
+        .dev-verdict { display: flex; flex-direction: column; gap: .2rem; padding: .85rem 1rem; border-radius: 8px; }
+        .dev-verdict b { font-size: 1.4rem; font-weight: 800; } .dev-verdict span { font-size: 12px; color: var(--sub); }
+        .dev-verdict.is-ok { background: rgba(52,211,153,.12); } .dev-verdict.is-ok b { color: var(--ok); }
+        .dev-verdict.is-warn, .dev-verdict.is-run { background: rgba(251,191,36,.12); } .dev-verdict.is-warn b, .dev-verdict.is-run b { color: var(--warn); }
+        .dev-verdict.is-bad { background: rgba(248,113,113,.14); } .dev-verdict.is-bad b { color: var(--bad); }
+        .dev-issues { list-style: none; margin: .8rem 0 0; padding: 0; display: grid; gap: .55rem; }
+        .dev-issues li { display: flex; gap: .65rem; align-items: flex-start; font-size: 13px; color: var(--ink); }
+        .dev-issues li i { width: 8px; height: 8px; margin-top: .45rem; border-radius: 2px; background: var(--warn); flex: none; }
+        .dev-issues li.is-bad i { background: var(--bad); }
+        .dev-issues li span { display: block; color: var(--sub); font-size: 12px; }
+        .dev-gauge { width: 100%; max-width: 15rem; margin: 0 auto; display: block; color: var(--sub); }
+        .dev-gauge-big { font: 700 30px ui-monospace, Menlo, monospace; fill: var(--ink); } .dev-gauge-sm { font-size: 10px; fill: var(--sub); }
+        .dev-gauge-note { text-align: center; font-size: 12px; color: var(--sub); margin: .3rem 0 0; }
+        .dev-spark { width: 100%; height: 4.5rem; color: var(--sub); display: block; }
+        .dev-spark-top { display: flex; align-items: baseline; gap: .45rem; margin-bottom: .5rem; }
+        .dev-spark-top b { font: 700 1.7rem ui-monospace, Menlo, monospace; color: var(--ink); } .dev-spark-top span { color: var(--sub); font-size: 12px; }
+        .dev-spark-top i { margin-left: auto; font-style: normal; color: var(--sub); font-size: 11px; }
+        .dev-spark-axis { display: flex; justify-content: space-between; font-size: 10px; color: var(--sub); margin-top: .2rem; }
+        .dev-btn.is-primary, html.dark .dev-btn.is-primary { color: #04101c; }
+        .dev-hbtn.is-primary { color: #04101c; background: var(--acc); }
 
 
         .dev-panel-head { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
@@ -3636,10 +3684,16 @@ html.dark .dev-log-link { color: #e2e8f0; }
 
     
 
-    <div id="dev-settings-modal" inert class="fixed inset-0 z-[9999] flex flex-col opacity-0 pointer-events-none transition-opacity duration-200" role="dialog" aria-modal="true" aria-label="開発者ページ">
+    <div id="dev-settings-modal" inert class="dark fixed inset-0 z-[9999] flex flex-col opacity-0 pointer-events-none transition-opacity duration-200" role="dialog" aria-modal="true" aria-label="開発者ページ">
+<div id="dev-drawer-overlay" onclick="devDrawerClose()"></div>
+<aside id="dev-drawer" aria-label="目次">
+<div class="dev-menu" style="margin-bottom:1.2rem"><button type="button" onclick="devPageShow('home')" class="dev-menu-card"><i data-lucide="layout-dashboard" class="w-4 h-4"></i><span class="dev-menu-title">ホーム</span></button></div>
+<div id="dev-drawer-menu" class="dev-menu-wrap"></div>
+</aside>
         <header id="dev-page-header" class="shrink-0">
             <div class="dev-stripe-bar"></div>
             <div class="dev-page-bar">
+<button type="button" id="dev-drawer-handle" onclick="devDrawerToggle()" aria-expanded="false" aria-label="目次を開く" class="dev-hbtn"><i data-lucide="menu" class="w-5 h-5"></i></button>
                 <button type="button" onclick="closeDevDashboard()" class="dev-hbtn" title="アプリの画面に戻る（開発者モードは続きます）">
                     <i data-lucide="chevron-left" class="w-4 h-4"></i><span class="hidden sm:inline">アプリに戻る</span>
                 </button>
@@ -3652,10 +3706,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <button type="button" id="dev-page-publish-btn" onclick="cmsSaveToGitHub()" class="dev-hbtn is-primary" title="GitHubに保存して公開">
                     <i data-lucide="upload-cloud" class="w-4 h-4"></i><span>公開</span>
                 </button>
-                <button type="button" onclick="devExitEditMode()" class="dev-hbtn is-danger" title="開発者モードを終了する">
-                    <i data-lucide="log-out" class="w-4 h-4"></i><span class="hidden sm:inline">終了</span>
-                </button>
-            </div>
+                </div>
             <nav id="dev-page-chips" class="dev-chips md:hidden" aria-label="開発者ページのメニュー"></nav>
         </header>
         <div class="flex-1 min-h-0 flex">
@@ -3664,8 +3715,11 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <div class="dev-page-inner">
 
         <section data-dev-panel="home" class="dev-panel">
-<div class="dev-hero"><h2 class="dev-hero-title">開発者ページ</h2><p class="dev-hero-text">内容を編集して<b>「確認して公開」</b>を押すと、全ユーザーに反映されます。</p></div>
-<div class="dev-card">
+<div class="dev-grid">
+<div class="dev-tile dev-span-12" id="dev-statusbar"><div class="dev-lamps" id="dev-lamps"></div><div class="dev-clock"><b id="dev-clock-time">--:--:--</b><span id="dev-clock-date">日本標準時</span></div></div>
+<div class="dev-tile dev-span-8" id="dev-sec-tile"><p class="dev-tag"><b>01</b>セキュリティ</p><div id="dev-sec-body" class="dev-sec-body">診断の結果を待っています…</div><div class="dev-row-btns"><button type="button" class="dev-btn is-primary" onclick="secmonRun()"><span>いま診断する</span></button><button type="button" class="dev-btn" onclick="devPageShow('secmon')"><span>詳しく見る</span></button></div></div>
+<div class="dev-tile dev-span-4"><p class="dev-tag"><b>02</b>AI利用（今日）</p><div id="dev-ai-gauge"></div><p id="dev-hub-ai" class="dev-gauge-note">-</p><div class="dev-row-btns" style="justify-content:center"><button type="button" class="dev-btn" onclick="devPageShow('limit')"><span>回数制限を設定</span></button></div></div>
+<div class="dev-card dev-span-6"><p class="dev-tag"><b>03</b>公開</p>
 <h3 class="dev-card-title">公開待ちの変更</h3>
 <p class="dev-stat-label"><span class="dev-dot is-warn" id="dev-hub-save-dot"></span><span id="dev-hub-save-title" class="dev-stat-value">未保存の変更なし</span></p>
 <p id="dev-hub-save-msg" class="dev-stat-sub"></p>
@@ -3675,15 +3729,51 @@ html.dark .dev-log-link { color: #e2e8f0; }
 <button type="button" onclick="devPendingDiscard()" class="dev-btn"><span>未公開の変更を破棄</span></button>
 <button type="button" id="dev-prev-btn" onclick="devRestorePrev()" class="dev-btn hidden"><span>ひとつ前の公開内容に戻す</span></button>
 </div></div>
-<div class="dev-card">
+<div class="dev-card dev-span-6" id="dev-github-card"><p class="dev-tag"><b>04</b>接続</p><h3 class="dev-card-title">GitHub接続</h3>
+                    <div id="dev-section-content-github" class="space-y-3">
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">GitHub Personal Access Token（Fine-grained, Contents: Read &amp; write）でこのリポジトリの config.json を直接編集・公開できます。Tokenはこの端末のブラウザ内にのみ保存されます。</p>
+
+                        <div id="cms-gh-connected-view" class="hidden bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 rounded-xl p-3 flex items-center justify-between gap-2">
+                            <div class="min-w-0">
+                                <p class="text-xs font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i><span>接続済み</span></p>
+                                <p id="cms-gh-connected-repo" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 truncate"></p>
+                            </div>
+                            <div class="flex gap-1 shrink-0">
+                                <button onclick="cmsReloadFromGitHub()" class="p-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40" title="最新の内容を再読込"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i></button>
+                                <button onclick="cmsGhShowForm()" class="p-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40" title="接続先を変更する"><i data-lucide="settings" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i></button>
+                                <button onclick="cmsDisconnectGitHub()" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40" title="接続を解除する"><i data-lucide="log-out" class="w-3.5 h-3.5 text-rose-500"></i></button>
+                            </div>
+                        </div>
+
+                        <div id="cms-gh-connect-form" class="space-y-3">
+                            <input type="password" id="cms-gh-token" placeholder="GitHub Personal Access Token"
+                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="text" id="cms-gh-repo" placeholder="owner/repo"
+                                    class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                                <input type="text" id="cms-gh-branch" placeholder="ブランチ" value="main"
+                                    class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="cmsConnect()" id="cms-connect-btn" class="py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">接続して読み込み</button>
+                                <button onclick="cmsReloadFromGitHub()" class="py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black hover:opacity-90 transition-all">再読込</button>
+                            </div>
+                            <p id="cms-gh-status" class="text-[10px] font-bold text-slate-500 dark:text-slate-400"></p>
+                        </div>
+
+                        <button onclick="cmsSaveToGitHub()" id="cms-save-btn" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">GitHubに保存して公開</button>
+                        <p id="cms-save-status" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 text-center"></p>
+                    </div>
+            </div>
+<div class="dev-tile dev-span-8"><p class="dev-tag"><b>05</b>利用状況（14日）</p><div id="dev-spark">読み込み中…</div><div class="dev-row-btns"><button type="button" class="dev-btn" onclick="devPageShow('usage')"><span>日・週・月で見る</span></button></div></div>
+<div class="dev-card dev-span-4"><p class="dev-tag"><b>06</b>状況</p>
 <h3 class="dev-card-title">いまの状況</h3>
 <dl class="dev-kv">
 <div><dt>GitHub連携</dt><dd><span class="dev-dot is-warn" id="dev-hub-gh-dot"></span> <span id="dev-hub-gh-title">未接続</span><span id="dev-hub-gh-repo" class="dev-stat-sub"></span></dd><button type="button" onclick="devPageShow('github')" class="dev-btn"><span>設定</span></button></div>
 <div><dt>今日の利用者</dt><dd id="dev-hub-today-users">-</dd><button type="button" onclick="devPageShow('usage')" class="dev-btn"><span>推移を見る</span></button></div>
 <div><dt>アカウント数</dt><dd id="dev-hub-user-count">-</dd><button type="button" onclick="devPageShow('users')" class="dev-btn"><span>公式マーク</span></button></div>
-<div><dt>今日のAI利用</dt><dd id="dev-hub-ai">-</dd><button type="button" onclick="devPageShow('limit')" class="dev-btn"><span>回数制限</span></button></div>
 </dl></div>
-<div class="dev-card"><h3 class="dev-card-title">アプリの画面を編集</h3><p class="dev-card-desc">押すとアプリ本体に移ります。画面の＋や鉛筆のアイコンから編集します。</p><div id="dev-section-content-nav" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+<div class="dev-card dev-span-12"><p class="dev-tag"><b>07</b>編集</p><h3 class="dev-card-title">アプリの画面を編集</h3><p class="dev-card-desc">押すとアプリ本体に移ります。画面の＋や鉛筆のアイコンから編集します。</p><div id="dev-section-content-nav" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                         <button onclick="closeDevSettingsModal(); cmsManageAnnouncements();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
                             <i data-lucide="megaphone" class="w-4 h-4 text-cyan-500 mb-1"></i>
                             <p class="text-[11px] font-black text-slate-800 dark:text-white">お知らせ</p>
@@ -3708,9 +3798,8 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             <i data-lucide="file-text" class="w-4 h-4 text-purple-500 mb-1"></i>
                             <p class="text-[11px] font-black text-slate-800 dark:text-white">論理表現</p>
                         </button>
-                    </div>
-            </div></div>
-<div class="dev-card"><h3 class="dev-card-title">目次</h3><div id="dev-hub-menu" class="dev-menu-wrap"></div></div>
+                    </div></div>
+</div>
 </section>
 
         <section data-dev-panel="accesslog" class="dev-panel hidden">
@@ -3773,46 +3862,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     </div>
                     <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">使えるのは、管理者（admins）のアカウントだけです。GitHub連携が必要です。設定の変更は、開発者モードの「保存」と同じ処理で config.json に保存されます。アプリのコードの変更は、GitHubの本番ファイルに保存され、1〜2分後に全員のアプリが変わります。AIの案は間違うことがあるので、中身を見てから「反映する」を押してください。フィードバックへの返信は、取り消せません。</p>
                 </div>
-            </div>
-        </section>
-
-        <section data-dev-panel="github" class="dev-panel hidden">
-            <div data-dev-panel-head></div>
-            <div class="dev-card">
-                    <div id="dev-section-content-github" class="space-y-3">
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">GitHub Personal Access Token（Fine-grained, Contents: Read &amp; write）でこのリポジトリの config.json を直接編集・公開できます。Tokenはこの端末のブラウザ内にのみ保存されます。</p>
-
-                        <div id="cms-gh-connected-view" class="hidden bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800/40 rounded-xl p-3 flex items-center justify-between gap-2">
-                            <div class="min-w-0">
-                                <p class="text-xs font-black text-emerald-600 dark:text-emerald-400 flex items-center gap-1"><i data-lucide="check-circle" class="w-3.5 h-3.5"></i><span>接続済み</span></p>
-                                <p id="cms-gh-connected-repo" class="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 truncate"></p>
-                            </div>
-                            <div class="flex gap-1 shrink-0">
-                                <button onclick="cmsReloadFromGitHub()" class="p-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40" title="最新の内容を再読込"><i data-lucide="refresh-cw" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i></button>
-                                <button onclick="cmsGhShowForm()" class="p-1.5 rounded-lg hover:bg-emerald-100 dark:hover:bg-emerald-900/40" title="接続先を変更する"><i data-lucide="settings" class="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400"></i></button>
-                                <button onclick="cmsDisconnectGitHub()" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40" title="接続を解除する"><i data-lucide="log-out" class="w-3.5 h-3.5 text-rose-500"></i></button>
-                            </div>
-                        </div>
-
-                        <div id="cms-gh-connect-form" class="space-y-3">
-                            <input type="password" id="cms-gh-token" placeholder="GitHub Personal Access Token"
-                                class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                            <div class="grid grid-cols-2 gap-2">
-                                <input type="text" id="cms-gh-repo" placeholder="owner/repo"
-                                    class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                                <input type="text" id="cms-gh-branch" placeholder="ブランチ" value="main"
-                                    class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="cmsConnect()" id="cms-connect-btn" class="py-2 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">接続して読み込み</button>
-                                <button onclick="cmsReloadFromGitHub()" class="py-2 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black hover:opacity-90 transition-all">再読込</button>
-                            </div>
-                            <p id="cms-gh-status" class="text-[10px] font-bold text-slate-500 dark:text-slate-400"></p>
-                        </div>
-
-                        <button onclick="cmsSaveToGitHub()" id="cms-save-btn" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">GitHubに保存して公開</button>
-                        <p id="cms-save-status" class="text-[10px] font-bold text-slate-500 dark:text-slate-400 text-center"></p>
-                    </div>
             </div>
         </section>
 
@@ -4419,13 +4468,12 @@ html.dark .dev-log-link { color: #e2e8f0; }
         </div>
     </div>
 
-    <div id="dev-floating-indicator" class="hidden fixed bottom-6 left-0 z-[9999] flex flex-col items-start gap-1.5" style="touch-action:none">
+    <div id="dev-floating-indicator" class="hidden fixed bottom-6 left-0 z-[9979] flex flex-col items-start gap-1.5" style="touch-action:none">
 <div id="dev-floating-status" class="hidden max-w-[80vw] px-3 py-1.5 rounded-full text-[10px] font-black text-white"></div>
-<div class="flex items-center gap-0.5 bg-slate-900/95 text-white pl-1.5 py-1 rounded-r-full border border-l-0 border-slate-700 shadow-lg select-none">
+<div class="flex items-center gap-0.5 bg-slate-900/95 text-white pl-1.5 py-1 rounded-r-full select-none">
 <button onclick="cmsSaveToGitHub()" id="dev-floating-publish-btn" class="flex items-center gap-1 pl-2 pr-2.5 py-1.5 rounded-full hover:bg-white/15 transition-colors" title="GitHubに保存して公開"><i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i><span class="text-[11px] font-black">公開</span></button>
 <button onclick="openDevDashboard('home')" class="p-1.5 rounded-full hover:bg-white/15 transition-colors" title="開発者ページを開く"><i data-lucide="settings-2" class="w-3.5 h-3.5"></i></button>
-<button onclick="devExitEditMode()" class="p-1.5 rounded-full hover:bg-white/15 transition-colors" title="編集を終了"><i data-lucide="x" class="w-3.5 h-3.5"></i></button>
-<button type="button" id="dev-floating-tab" class="flex items-center justify-center w-8 h-8" style="color:#c9b27a" aria-label="編集の帯を隠す・出す" title="タップで隠す"><i data-lucide="pencil-ruler" class="w-4 h-4"></i></button>
+<button type="button" id="dev-floating-tab" class="flex items-center justify-center w-8 h-8" style="color:#93c5fd" aria-label="編集の帯を隠す・出す" title="タップで隠す"><i data-lucide="pencil-ruler" class="w-4 h-4"></i></button>
 </div>
 </div>
 
@@ -7403,7 +7451,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
         window.addEventListener('app-auth-changed', (e) => {
             hideAuthLoadingScreenOnce();
             const user = e.detail.user;
-            window.currentAppUser = user; if (typeof devAutoEnter === 'function') devAutoEnter();
+            window.currentAppUser = user; if (typeof devAuthSync === 'function') devAuthSync();
             if (typeof updateAccountMenuDisplay === 'function') { updateAccountMenuDisplay(user); }
             const tabBar = document.getElementById('bottom-tab-bar');
             if (!user) {
@@ -12413,7 +12461,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             closeScheduleDetailModal();
             if (s && s.isExam) { showToast('テストの変更・削除は「期間限定の設定」から行ってください'); return; }
             if (s && s.isRemote && devUnlocked) {
-                cmsDeleteGlobalScheduleById(cmsStripRemoteIdPrefix(id));
+                if (confirm('この予定を削除します。全ユーザーの予定から消えます。よろしいですか？')) cmsDeleteGlobalScheduleById(cmsStripRemoteIdPrefix(id));
                 return;
             }
             quickDeleteSchedule(id);
@@ -22999,6 +23047,27 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         // パスワードは使わない（ブラウザの中だけの確認は、突破できてしまうため）。
         let _devEntering = false;
 // 公式アカウント（admins登録または公式マーク）でログインしていれば、操作なしで編集モードに入る。入口の操作（ショートカット・タップ・パスワード）はありません。
+function refreshAllDevEditableViews() {
+    if (typeof renderPresetSectionGrid === 'function') renderPresetSectionGrid();
+    if (typeof renderRonriSectionListPage === 'function') renderRonriSectionListPage();
+    if (typeof renderClassPickerList === 'function') renderClassPickerList();
+    if (typeof renderAnnouncementContent === 'function') renderAnnouncementContent();
+    if (typeof refreshCalendarIfVisible === 'function') refreshCalendarIfVisible();
+    if (typeof refreshSeasonalCornerDevManage === 'function') refreshSeasonalCornerDevManage();
+}
+function devLeave() { devUnlocked = false; closeDevDashboard(); updateDevFloatingIndicator(); refreshAllDevEditableViews(); }
+async function devIsStaff() {
+    let ok = false;
+    try { ok = await window.AppFirebase.isAdmin(); } catch (e) {}
+    if (!ok) { try { ok = await window.AppFirebase.verifyOfficial(); } catch (e) {} }
+    return !!ok;
+}
+async function devAuthSync() {
+    const u = window.currentAppUser;
+    if (!u || u.isAnonymous || !window.AppFirebase) { if (devUnlocked) devLeave(); return; }
+    if (devUnlocked) { if (!(await devIsStaff())) devLeave(); return; }
+    return devAutoEnter();
+}
 async function devAutoEnter() {
     if (devUnlocked || _devEntering) return;
     const u = window.currentAppUser;
@@ -23122,8 +23191,7 @@ async function devAutoEnter() {
         const DEV_PANELS = [
             { key: 'home',        icon: 'layout-dashboard', label: 'ホーム',              group: null,               desc: '', short: '' },
             { key: 'aiedit',      icon: 'message-square',   label: 'チャットで操作（AI）', group: '公開・コンテンツ', desc: 'お知らせ・予定・クラス・課題・モードの設定や、フィードバックへの返信を、チャットで頼めます。アプリのデザインや動きの変更もできます。AIが変更案を作り、確認してから反映します。', short: 'チャットで操作' },
-            { key: 'github',      icon: 'github',           label: 'GitHub連携・公開',    group: '公開・コンテンツ', desc: '編集した内容を GitHub の config.json に保存して、全ユーザーへ公開するための接続です。', short: '公開の接続・保存' },
-            { key: 'mode',        icon: 'toggle-left',      label: 'モード管理',          group: '公開・コンテンツ', desc: '機能ごとの点検・停止の切り替えと、点検のための移動ができます。', short: '点検・機能の停止' },
+                        { key: 'mode',        icon: 'toggle-left',      label: 'モード管理',          group: '公開・コンテンツ', desc: '機能ごとの点検・停止の切り替えと、点検のための移動ができます。', short: '点検・機能の停止' },
             { key: 'summertitle', icon: 'sun',              label: '長期休暇課題',        group: '公開・コンテンツ', desc: '夏休み・冬休みなどの課題コーナーの表示と名称を設定します。', short: '表示ON/OFF・名称' },
             { key: 'terms',       icon: 'scroll-text',      label: '利用規約',            group: '公開・コンテンツ', desc: '利用規約の本文を編集し、必要なら全員に再同意を求めます。', short: '本文の編集・再同意' },
             { key: 'reports',     icon: 'flag',             label: '報告・訂正',          group: '公開・コンテンツ', desc: '「解答がおかしい」の報告と、AIによる自動訂正の記録です。', short: '報告の確認・元に戻す' },
@@ -23156,7 +23224,7 @@ async function devAutoEnter() {
             if (menuGroup !== null) menu += '</div></div>';
     set('dev-page-sidebar', side);
             set('dev-page-chips', chips);
-            set('dev-hub-menu', menu);
+            set('dev-drawer-menu', menu);
             document.querySelectorAll('#dev-settings-modal [data-dev-panel-head]').forEach(h => {
                 const sec = h.closest('[data-dev-panel]');
                 const p = sec && DEV_PANELS.find(x => x.key === sec.dataset.devPanel);
@@ -23545,7 +23613,10 @@ async function devAutoEnter() {
     const PEEK = 36, OPEN = 0;
     let hidden = true, drag = null; // 起動したときは、いつも隠れた状態から始める
     const hideX = () => -(el.offsetWidth - PEEK);
+    function fit() { const tb = document.getElementById('bottom-tab-bar'); const h = tb && tb.offsetHeight ? tb.offsetHeight : 0; el.style.bottom = (h + 12) + 'px'; }
+    setInterval(fit, 800);
     function apply(anim) {
+        fit();
         el.style.transition = anim ? 'transform .22s ease' : 'none';
         el.style.transform = 'translateX(' + (hidden ? hideX() : OPEN) + 'px)';
     }
@@ -24005,9 +24076,81 @@ function devRestorePrev() {
         if (cmsCurrentSha !== before) { _devPrev = _devPub; _devPub = JSON.stringify(cmsConfigData); devPendingRender(); }
     };
     const _show = devPageShow;
-    devPageShow = function (k) { _show.apply(this, arguments); if (!k || k === 'home') { devPendingRender(); devHomeAi(); } };
-    setInterval(() => { if (devPageOpen && devPageCurrent === 'home') devPendingRender(); }, 2000);
+    devPageShow = function (k) {
+        const gh = k === 'github';
+        _show.call(this, gh ? 'home' : k);
+        devDrawerClose();
+        const cur = devPageCurrent;
+        document.querySelectorAll('#dev-drawer .dev-menu-card').forEach(b => b.classList.toggle('is-current', b.getAttribute('onclick') === "devPageShow('" + cur + "')"));
+        if (cur === 'home') { devPendingRender(); devHomeAi(); devHomeSpark(); devHomeTick(true); if (!window._devSecAuto && devUnlocked) { window._devSecAuto = 1; setTimeout(() => { try { secmonRun(); } catch (e) {} }, 900); } }
+        if (gh) setTimeout(() => { const c = document.getElementById('dev-github-card'); if (c) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 60);
+    };
+    setInterval(() => { if (devPageOpen) devHomeTick(); }, 1000);
 })();
+function devDrawerToggle(force) {
+    const d = document.getElementById('dev-drawer'), o = document.getElementById('dev-drawer-overlay'), h = document.getElementById('dev-drawer-handle');
+    if (!d) return;
+    const open = typeof force === 'boolean' ? force : !d.classList.contains('is-open');
+    d.classList.toggle('is-open', open); if (o) o.classList.toggle('is-open', open);
+    if (h) h.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function devDrawerClose() { devDrawerToggle(false); }
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') devDrawerClose(); });
+// ---- 司令室ダッシュボード：時計・ランプ・セキュリティ・AIゲージ・利用の棒グラフ
+function devSetIf(el, html) { if (el && el.dataset.h !== html) { el.innerHTML = html; el.dataset.h = html; } }
+function devGaugeSvg(r, col, big, small) {
+    r = Math.max(0, Math.min(1, r));
+    const cx = 100, cy = 100, R = 78, pt = (u, rad) => [cx + rad * Math.cos(Math.PI * (1 - u)), cy - rad * Math.sin(Math.PI * (1 - u))];
+    let ticks = '';
+    for (let i = 0; i <= 10; i++) { const a = pt(i / 10, R + 8), b = pt(i / 10, R + (i % 5 ? 12 : 16)); ticks += `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="currentColor" stroke-opacity=".4"/>`; }
+    const s = pt(0, R), f = pt(1, R), e = pt(r, R);
+    return `<svg viewBox="0 0 200 122" class="dev-gauge" role="img"><path d="M${s[0]} ${s[1]} A${R} ${R} 0 0 1 ${f[0]} ${f[1]}" fill="none" stroke="currentColor" stroke-opacity=".16" stroke-width="10"/>${r > 0.01 ? `<path d="M${s[0]} ${s[1]} A${R} ${R} 0 0 1 ${e[0].toFixed(1)} ${e[1].toFixed(1)}" fill="none" stroke="${col}" stroke-width="10"/>` : ''}${ticks}<text x="100" y="94" text-anchor="middle" class="dev-gauge-big">${big}</text><text x="100" y="114" text-anchor="middle" class="dev-gauge-sm">${small}</text></svg>`;
+}
+function devSecRender() {
+    const el = document.getElementById('dev-sec-body'); if (!el) return;
+    const run = document.getElementById('secmon-run-btn');
+    const st = (typeof _secmonState !== 'undefined') ? _secmonState : null;
+    const local = [];
+    if (typeof cmsSession !== 'undefined' && cmsSession) local.push({ level: 'warn', title: 'GitHubのトークンが、この端末のブラウザに保存されています', fix: '共用の端末では、使い終わったら接続を解除してください' });
+    const items = st ? [...(st.risks || []), ...(st.signals || [])].filter(x => x && x.level !== 'ok').sort((a, b) => (a.level === 'bad' ? 0 : 1) - (b.level === 'bad' ? 0 : 1)) : [];
+    const all = [...items, ...local];
+    const nb = all.filter(x => x.level === 'bad').length, nw = all.length - nb;
+    const state = run && run.disabled ? 'run' : !st ? 'none' : nb ? 'bad' : nw ? 'warn' : 'ok';
+    const H = { run: ['診断中', 'いま調べています（30秒ほどかかります）', 'run'], none: ['未診断', 'まだ診断していません。「いま診断する」を押してください', 'warn'], bad: ['危険 ' + nb + '件', 'すぐに対応してください', 'bad'], warn: ['注意 ' + nw + '件', '確認をおすすめします', 'warn'], ok: ['異常なし', '見つかった問題はありません', 'ok'] }[state];
+    window._devSecState = { state, nb, nw };
+    devSetIf(el, '<div class="dev-verdict is-' + H[2] + '"><b>' + H[0] + '</b><span>' + H[1] + (st && st.at ? '　最終診断 ' + st.at.toLocaleTimeString('ja-JP') : '') + '</span></div>'
+        + (all.length ? '<ul class="dev-issues">' + all.slice(0, 5).map(x => '<li class="is-' + x.level + '"><i></i><div><b>' + escapeHtml(String(x.title)) + '</b>' + (x.fix ? '<span>' + escapeHtml(String(x.fix)) + '</span>' : '') + '</div></li>').join('') + '</ul>' + (all.length > 5 ? '<p class="dev-card-desc">ほか ' + (all.length - 5) + ' 件は「詳しく見る」から確認できます</p>' : '') : ''));
+}
+function devLampsRender() {
+    const gh = typeof cmsSession !== 'undefined' && !!cmsSession, d = devDiff(), s = (window._devSecState || {}).state || 'none', a = window._devAi;
+    const SEC = { run: ['診断中', 'warn'], none: ['未診断', 'warn'], bad: ['危険', 'bad'], warn: ['注意', 'warn'], ok: ['異常なし', 'ok'] }[s];
+    const L = [
+        ['認証', devUnlocked ? '管理者' : '未確認', devUnlocked ? 'ok' : 'bad', "devPageShow('home')"],
+        ['GitHub', gh ? '接続中' : '未接続', gh ? 'ok' : 'warn', "devPageShow('github')"],
+        ['公開', d == null ? '未取得' : d.length ? '未公開 ' + d.length + '件' : '最新', d && !d.length ? 'ok' : 'warn', "devPageShow('home')"],
+        ['セキュリティ', SEC[0], SEC[1], "devPageShow('secmon')"],
+        ['AI利用', a ? (a.max > a.lim * 2 ? '過剰' : a.max > a.lim ? '上限超え' : '正常') : '-', a ? (a.max > a.lim * 2 ? 'bad' : a.max > a.lim ? 'warn' : 'ok') : 'warn', "devPageShow('limit')"]
+    ];
+    devSetIf(document.getElementById('dev-lamps'), L.map(x => '<button type="button" class="dev-lamp is-' + x[2] + '" onclick="' + x[3] + '"><i></i><span>' + x[0] + '</span><b>' + x[1] + '</b></button>').join(''));
+}
+function devHomeTick(force) {
+    if (!devPageOpen) return;
+    const now = new Date(), ct = document.getElementById('dev-clock-time');
+    if (ct) { ct.textContent = now.toLocaleTimeString('ja-JP', { timeZone: 'Asia/Tokyo', hour12: false }); document.getElementById('dev-clock-date').textContent = now.toLocaleDateString('ja-JP', { timeZone: 'Asia/Tokyo', month: 'long', day: 'numeric', weekday: 'short' }) + '　日本標準時'; }
+    if (devPageCurrent !== 'home') return;
+    devPendingRender(); devSecRender(); devLampsRender();
+}
+let _devSparkAt = 0;
+async function devHomeSpark() {
+    const el = document.getElementById('dev-spark');
+    if (!el || !window.AppFirebase || !window.AppFirebase.loadUsageCounts || Date.now() - _devSparkAt < 60000) return;
+    const today = devUsageJstToday(), days = []; for (let i = 13; i >= 0; i--) days.push(devUsageAddDays(today, -i));
+    try {
+        const c = await window.AppFirebase.loadUsageCounts(days); _devSparkAt = Date.now();
+        const max = Math.max(1, ...c), W = 14, G = 6;
+        el.innerHTML = '<div class="dev-spark-top"><b>' + c[13] + '</b><span>人（今日）</span><i>14日の最大 ' + Math.max(...c) + '人／延べ ' + c.reduce((a, b) => a + b, 0) + '人</i></div><svg viewBox="0 0 ' + (14 * (W + G) - G) + ' 64" class="dev-spark" preserveAspectRatio="none">' + c.map((n, i) => { const h = Math.max(2, Math.round(n / max * 58)); return '<rect x="' + i * (W + G) + '" y="' + (62 - h) + '" width="' + W + '" height="' + h + '" rx="2" fill="' + (i === 13 ? 'var(--acc)' : 'currentColor') + '" fill-opacity="' + (i === 13 ? 1 : .3) + '"><title>' + days[i] + '：' + n + '人</title></rect>'; }).join('') + '</svg><div class="dev-spark-axis"><span>' + days[0].slice(5).replace('-', '/') + '</span><span>' + days[13].slice(5).replace('-', '/') + '</span></div>';
+    } catch (e) { el.textContent = '取得できませんでした'; }
+}
 async function devHomeAi() {
     const el = document.getElementById('dev-hub-ai');
     if (!el || !window.AppFirebase || !window.AppFirebase.loadUsageDay) return;
@@ -24022,6 +24165,9 @@ async function devHomeAi() {
             if (n > 0) { users++; total += n; if (n > max) max = n; }
         });
         const lim = safeStorage.get('dev_daily_limit') || DAILY_LIMIT;
+        window._devAi = { total, max, users, lim };
+        const gcol = max > lim * 2 ? 'var(--bad)' : max > lim ? 'var(--warn)' : 'var(--ok)';
+        devSetIf(document.getElementById('dev-ai-gauge'), devGaugeSvg(max / (lim * 2), gcol, String(max), '最多の人の回数　上限 ' + lim + '／警告 ' + lim * 2));
         el.textContent = users ? '今日 ' + total + '回（' + users + '人・最多 ' + max + '回／人）' + (max > lim * 2 ? '　※1日の上限' + lim + '回を大きく超えた人がいます' : '') : '今日はまだありません';
     } catch (e) { el.textContent = '取得できませんでした'; }
 }
