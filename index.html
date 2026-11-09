@@ -415,6 +415,22 @@
         .dev-trend-col.is-active .dev-trend-d { color: var(--gold); }
         .dev-log-badge, .dev-log-official { border-radius: 2px; background: transparent; border: 1px solid var(--rule); color: var(--sub); }
         .dev-code { border-radius: 2px; }
+        #dev-page-sidebar, #dev-page-chips { display: none !important; }
+        .dev-back { font-size: 12px; font-weight: 600; color: var(--sub); margin-bottom: .9rem; }
+        .dev-back:hover { color: var(--gold); }
+        .dev-menu { grid-template-columns: 1fr !important; border-left: 0; }
+        .dev-menu-card, html.dark .dev-menu-card { flex-direction: row; align-items: center; gap: .9rem; border-right: 0; padding: .85rem .2rem; }
+        .dev-menu-card::after { content: '›'; margin-left: auto; color: var(--sub); font-size: 1.2rem; }
+        .dev-menu-title { min-width: 9.5rem; }
+        .dev-menu-desc { flex: 1; }
+        .dev-kv > div { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .9rem; padding: .8rem 0; border-bottom: 1px solid var(--rule); }
+        .dev-kv > div:last-child { border-bottom: 0; }
+        .dev-kv dt { width: 7.5rem; font-size: 12px; font-weight: 600; color: var(--sub); }
+        .dev-kv dd { flex: 1; min-width: 8rem; font-family: var(--serif); font-weight: 600; color: var(--ink); }
+        .dev-row-btns { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .9rem; }
+        .dev-seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 2px; margin-bottom: .8rem; }
+        .dev-seg button { padding: .35rem .9rem; font-size: 12px; font-weight: 600; color: var(--sub); }
+        .dev-seg button.is-on { background: #1b2430; color: #f1efe9; }
 
 
         .dev-panel-head { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
@@ -3648,42 +3664,26 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <div class="dev-page-inner">
 
         <section data-dev-panel="home" class="dev-panel">
-            <div class="dev-hero">
-                <h2 class="dev-hero-title">開発者モードで操作中です</h2>
-                <p class="dev-hero-text">ここは管理者専用の「開発者ページ」です。アプリの内容（お知らせ・予定・クラスなど）を編集したあと、<b>「公開」</b>を押すと全ユーザーに反映されます。</p>
-            </div>
-
-            <div class="dev-stats">
-                <div class="dev-stat">
-                    <p class="dev-stat-label"><span class="dev-dot is-warn" id="dev-hub-save-dot"></span>公開の状態</p>
-                    <p id="dev-hub-save-title" class="dev-stat-value">未保存の変更なし</p>
-                    <p id="dev-hub-save-msg" class="dev-stat-sub">編集したあとは「公開」を押してください</p>
-                    <button type="button" id="dev-hub-publish-btn" onclick="cmsSaveToGitHub()" class="dev-btn is-primary"><i data-lucide="upload-cloud" class="w-4 h-4"></i><span>GitHubに保存して公開</span></button>
-                </div>
-                <div class="dev-stat">
-                    <p class="dev-stat-label"><span class="dev-dot is-warn" id="dev-hub-gh-dot"></span>GitHub連携</p>
-                    <p id="dev-hub-gh-title" class="dev-stat-value">未接続</p>
-                    <p id="dev-hub-gh-repo" class="dev-stat-sub">公開するにはGitHubへの接続が必要です</p>
-                    <button type="button" onclick="devPageShow('github')" class="dev-btn"><i data-lucide="github" class="w-4 h-4"></i><span>接続の設定</span></button>
-                </div>
-                <div class="dev-stat">
-                    <p class="dev-stat-label"><i data-lucide="activity" class="w-3.5 h-3.5"></i>今日の利用者</p>
-                    <p id="dev-hub-today-users" class="dev-stat-value">-</p>
-                    <p class="dev-stat-sub">今日アプリを使った人数（匿名・開発者モード中の操作は除く）</p>
-                    <button type="button" onclick="devPageShow('usage')" class="dev-btn"><i data-lucide="bar-chart-2" class="w-4 h-4"></i><span>利用状況を見る</span></button>
-                </div>
-                <div class="dev-stat">
-                    <p class="dev-stat-label"><i data-lucide="users-round" class="w-3.5 h-3.5"></i>アカウント数</p>
-                    <p id="dev-hub-user-count" class="dev-stat-value">-</p>
-                    <p class="dev-stat-sub">学習ProMasterのアカウントを作った人数</p>
-                    <button type="button" onclick="devPageShow('users')" class="dev-btn"><i data-lucide="badge-check" class="w-4 h-4"></i><span>公式マークの管理</span></button>
-                </div>
-            </div>
-
-            <div class="dev-card">
-                <h3 class="dev-card-title">アプリの画面を編集する</h3>
-                <p class="dev-card-desc">押すとアプリ本体の画面に移動します。その画面に出ている「＋」や「鉛筆」のアイコンから、見た目のまま編集できます。画面上部のオレンジのバーにある「開発者ページを開く」で、ここへ戻れます。</p>
-                    <div id="dev-section-content-nav" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+<div class="dev-hero"><h2 class="dev-hero-title">開発者ページ</h2><p class="dev-hero-text">内容を編集して<b>「確認して公開」</b>を押すと、全ユーザーに反映されます。</p></div>
+<div class="dev-card">
+<h3 class="dev-card-title">公開待ちの変更</h3>
+<p class="dev-stat-label"><span class="dev-dot is-warn" id="dev-hub-save-dot"></span><span id="dev-hub-save-title" class="dev-stat-value">未保存の変更なし</span></p>
+<p id="dev-hub-save-msg" class="dev-stat-sub"></p>
+<div id="dev-pending-list" class="dev-card-desc"></div>
+<div class="dev-row-btns">
+<button type="button" id="dev-hub-publish-btn" onclick="cmsSaveToGitHub()" class="dev-btn is-primary"><span>確認して公開</span></button>
+<button type="button" onclick="devPendingDiscard()" class="dev-btn"><span>未公開の変更を破棄</span></button>
+<button type="button" id="dev-prev-btn" onclick="devRestorePrev()" class="dev-btn hidden"><span>ひとつ前の公開内容に戻す</span></button>
+</div></div>
+<div class="dev-card">
+<h3 class="dev-card-title">いまの状況</h3>
+<dl class="dev-kv">
+<div><dt>GitHub連携</dt><dd><span class="dev-dot is-warn" id="dev-hub-gh-dot"></span> <span id="dev-hub-gh-title">未接続</span><span id="dev-hub-gh-repo" class="dev-stat-sub"></span></dd><button type="button" onclick="devPageShow('github')" class="dev-btn"><span>設定</span></button></div>
+<div><dt>今日の利用者</dt><dd id="dev-hub-today-users">-</dd><button type="button" onclick="devPageShow('usage')" class="dev-btn"><span>推移を見る</span></button></div>
+<div><dt>アカウント数</dt><dd id="dev-hub-user-count">-</dd><button type="button" onclick="devPageShow('users')" class="dev-btn"><span>公式マーク</span></button></div>
+<div><dt>今日のAI利用</dt><dd id="dev-hub-ai">-</dd><button type="button" onclick="devPageShow('limit')" class="dev-btn"><span>回数制限</span></button></div>
+</dl></div>
+<div class="dev-card"><h3 class="dev-card-title">アプリの画面を編集</h3><p class="dev-card-desc">押すとアプリ本体に移ります。画面の＋や鉛筆のアイコンから編集します。</p><div id="dev-section-content-nav" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                         <button onclick="closeDevSettingsModal(); cmsManageAnnouncements();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
                             <i data-lucide="megaphone" class="w-4 h-4 text-cyan-500 mb-1"></i>
                             <p class="text-[11px] font-black text-slate-800 dark:text-white">お知らせ</p>
@@ -3709,14 +3709,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
                             <p class="text-[11px] font-black text-slate-800 dark:text-white">論理表現</p>
                         </button>
                     </div>
-            </div>
-
-            <div class="dev-card">
-                <h3 class="dev-card-title">管理メニュー</h3>
-                <p class="dev-card-desc">使いたい項目を選んでください。よく使う順に並んでいます。</p>
-                <div id="dev-hub-menu" class="dev-menu-wrap"></div>
-            </div>
-        </section>
+            </div></div>
+<div class="dev-card"><h3 class="dev-card-title">目次</h3><div id="dev-hub-menu" class="dev-menu-wrap"></div></div>
+</section>
 
         <section data-dev-panel="accesslog" class="dev-panel hidden">
             <div data-dev-panel-head></div>
@@ -23166,7 +23161,7 @@ async function devAutoEnter() {
                 const sec = h.closest('[data-dev-panel]');
                 const p = sec && DEV_PANELS.find(x => x.key === sec.dataset.devPanel);
                 if (!p) return;
-                h.innerHTML = `<div class="dev-panel-head"><span class="dev-panel-icon"><i data-lucide="${p.icon}" class="w-5 h-5"></i></span><div class="min-w-0"><h2>${p.label}</h2><p>${p.desc}</p></div></div>`;
+                h.innerHTML = (p.key === 'home' ? '' : `<button type="button" class="dev-back" onclick="devPageShow('home')">‹ 目次へ戻る</button>`) + `<div class="dev-panel-head"><span class="dev-panel-icon"><i data-lucide="${p.icon}" class="w-5 h-5"></i></span><div class="min-w-0"><h2>${p.label}</h2><p>${p.desc}</p></div></div>`;
             });
         }
 
@@ -23366,22 +23361,7 @@ async function devAutoEnter() {
                 sumsEl.innerHTML = ''; if (trendEl) trendEl.innerHTML = '';
             }
         }
-        async function devUsageLoadTrend(selected) {
-            const el = document.getElementById('dev-usage-trend');
-            if (!el) return;
-            const today = devUsageJstToday();
-            const days = []; for (let i = 13; i >= 0; i--) days.push(devUsageAddDays(today, -i));
-            try {
-                if (!devUsageTrendCache || devUsageTrendCache.day !== today || Date.now() - devUsageTrendCache.at > 60000) {
-                    devUsageTrendCache = { day: today, at: Date.now(), counts: await window.AppFirebase.loadUsageCounts(days) };
-                }
-                const counts = devUsageTrendCache.counts;
-                const max = Math.max(1, ...counts);
-                el.innerHTML = '<div class="dev-trend">' + days.map((d, i) =>
-                    `<button type="button" class="dev-trend-col${d === selected ? ' is-active' : ''}" onclick="devUsageLoad('${d}')" title="${d}：${counts[i]}人"><span class="dev-trend-n">${counts[i]}</span><span class="dev-trend-bar"><i style="height:${Math.round(counts[i] / max * 100)}%"></i></span><span class="dev-trend-d">${Number(d.slice(5, 7))}/${Number(d.slice(8))}</span></button>`
-                ).join('') + '</div>';
-            } catch (e) { el.innerHTML = '<p class="dev-card-desc">取得できませんでした</p>'; }
-        }
+        
         let devLogDay = '', devLogNext = null, devLogSeq = 0, devLogShown = 0, devLogAllRows = [], _devLogProfErr = false;
         const _devLogProfiles = new Map(), _devLogPending = new Set();
         function devLogBase() { try { return (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, ''); } catch (e) { return ''; } }
@@ -23966,6 +23946,103 @@ async function devAutoEnter() {
                 pubLabels.forEach(l => { if (l.sp && l.text != null) l.sp.textContent = l.text; });
             }
         }
+
+// ---- 公開待ちの変更・確認・元に戻す／AI利用／利用推移の切り替え
+const DEV_KEY_LABEL = { announcements: 'お知らせ', globalSchedules: '予定', extraSections: 'コーナー', classes: 'クラス', ronriSections: '論理表現', featureFlags: 'モード', exams: '試験', summerTasks: '長期休暇課題', summerTaskEnabled: '長期休暇課題の表示', summerTaskTitle: '長期休暇課題の名称', examRangeTitle: '試験範囲の名称', examRangeEnabled: '試験範囲の表示' };
+let _devPub = null, _devPrev = null;
+function devDiff() {
+    if (_devPub == null) return null;
+    let a; try { a = JSON.parse(_devPub); } catch (e) { return null; }
+    const b = cmsConfigData || {}, out = [];
+    new Set([...Object.keys(a), ...Object.keys(b)]).forEach(key => {
+        const x = a[key], y = b[key];
+        if (JSON.stringify(x) === JSON.stringify(y)) return;
+        const label = DEV_KEY_LABEL[key] || key;
+        if (Array.isArray(x) && Array.isArray(y)) {
+            const idOf = o => (o && (o.id || o.uid)) || JSON.stringify(o);
+            const xs = new Map(x.map(o => [idOf(o), JSON.stringify(o)])), ys = new Map(y.map(o => [idOf(o), JSON.stringify(o)]));
+            let add = 0, del = 0, chg = 0;
+            ys.forEach((v, id) => { if (!xs.has(id)) add++; else if (xs.get(id) !== v) chg++; });
+            xs.forEach((v, id) => { if (!ys.has(id)) del++; });
+            const p = []; if (add) p.push('追加' + add); if (chg) p.push('変更' + chg); if (del) p.push('削除' + del);
+            out.push(label + '：' + (p.join('・') || '並び順の変更'));
+        } else out.push(label + '：変更');
+    });
+    return out;
+}
+function devPendingRender() {
+    const el = document.getElementById('dev-pending-list'); if (!el) return;
+    const d = devDiff();
+    el.innerHTML = d == null ? '公開中の内容を読み込むと、ここに変更点が出ます（GitHubへの接続が必要です）。' : d.length ? '<ul class="dev-note-list">' + d.map(x => '<li>' + escapeHtml(x) + '</li>').join('') + '</ul>' : '未公開の変更はありません。';
+    const pb = document.getElementById('dev-prev-btn'); if (pb) pb.classList.toggle('hidden', !_devPrev);
+}
+function devApplyConfig(json) {
+    cmsConfigData = JSON.parse(json); cmsDirty = true;
+    cmsSyncAllRealDisplays(); refreshAllDevEditableViews(); devPendingRender();
+}
+function devPendingDiscard() {
+    const d = devDiff();
+    if (!d || !d.length) { showToast('破棄する変更はありません'); return; }
+    if (!confirm('まだ公開していない変更をすべて破棄して、公開中の状態に戻します。')) return;
+    devApplyConfig(_devPub); showToast('公開中の状態に戻しました');
+}
+function devRestorePrev() {
+    if (!_devPrev) return;
+    if (!confirm('ひとつ前に公開した内容に戻します。まだ公開はされません。内容を確かめてから「確認して公開」を押してください。')) return;
+    devApplyConfig(_devPrev);
+}
+(function () {
+    const _reload = cmsReloadFromGitHub;
+    cmsReloadFromGitHub = async function () { const r = await _reload.apply(this, arguments); try { _devPub = JSON.stringify(cmsConfigData); } catch (e) {} devPendingRender(); return r; };
+    const _save = cmsSaveToGitHub;
+    cmsSaveToGitHub = async function () {
+        if (!cmsSession) return _save.apply(this, arguments);
+        const d = devDiff();
+        if (d && d.length && !confirm('次の内容を公開します。\n\n' + d.join('\n') + '\n\nよろしいですか？')) return;
+        if (d && !d.length && !confirm('未公開の変更はありません。このまま保存しますか？')) return;
+        const before = cmsCurrentSha;
+        await _save.apply(this, arguments);
+        if (cmsCurrentSha !== before) { _devPrev = _devPub; _devPub = JSON.stringify(cmsConfigData); devPendingRender(); }
+    };
+    const _show = devPageShow;
+    devPageShow = function (k) { _show.apply(this, arguments); if (!k || k === 'home') { devPendingRender(); devHomeAi(); } };
+    setInterval(() => { if (devPageOpen && devPageCurrent === 'home') devPendingRender(); }, 2000);
+})();
+async function devHomeAi() {
+    const el = document.getElementById('dev-hub-ai');
+    if (!el || !window.AppFirebase || !window.AppFirebase.loadUsageDay) return;
+    try {
+        const res = await window.AppFirebase.loadUsageDay(devUsageJstToday());
+        const L = (window.PM_USAGE_LABELS && window.PM_USAGE_LABELS.features) || {};
+        const isAi = k => /AI|ＡＩ|解析|添削|チャット|スキャン|scan|essay|chat/i.test(k + ' ' + (L[k] || ''));
+        let total = 0, max = 0, users = 0;
+        res.docs.forEach(d => {
+            let n = 0; const f = (d && d.features) || {};
+            Object.keys(f).forEach(k => { if (isAi(k)) n += Number(f[k]) || 0; });
+            if (n > 0) { users++; total += n; if (n > max) max = n; }
+        });
+        const lim = safeStorage.get('dev_daily_limit') || DAILY_LIMIT;
+        el.textContent = users ? '今日 ' + total + '回（' + users + '人・最多 ' + max + '回／人）' + (max > lim * 2 ? '　※1日の上限' + lim + '回を大きく超えた人がいます' : '') : '今日はまだありません';
+    } catch (e) { el.textContent = '取得できませんでした'; }
+}
+let devTrendMode = 'day';
+function devTrendSet(m) { devTrendMode = m; devUsageTrendCache = null; devUsageLoadTrend(devUsageDay); }
+async function devUsageLoadTrend(selected) {
+    const el = document.getElementById('dev-usage-trend'); if (!el) return;
+    const today = devUsageJstToday(), mode = devTrendMode, n = mode === 'day' ? 14 : mode === 'week' ? 56 : 180;
+    const days = []; for (let i = n - 1; i >= 0; i--) days.push(devUsageAddDays(today, -i));
+    const seg = '<div class="dev-seg">' + [['day', '日'], ['week', '週'], ['month', '月']].map(([k, l]) => `<button type="button" class="${k === mode ? 'is-on' : ''}" onclick="devTrendSet('${k}')">${l}</button>`).join('') + '</div>';
+    try {
+        const c = devUsageTrendCache;
+        if (!c || c.day !== today || c.mode !== mode || Date.now() - c.at > 60000) devUsageTrendCache = { day: today, mode, at: Date.now(), counts: await window.AppFirebase.loadUsageCounts(days) };
+        const counts = devUsageTrendCache.counts, size = mode === 'day' ? 1 : mode === 'week' ? 7 : 30, bars = [];
+        for (let s = 0; s < n; s += size) { const d0 = days[s]; bars.push({ d: d0, n: counts.slice(s, s + size).reduce((a, b) => a + b, 0), lab: Number(d0.slice(5, 7)) + '/' + Number(d0.slice(8)) }); }
+        const max = Math.max(1, ...bars.map(b => b.n));
+        const note = mode === 'day' ? '' : '<p class="dev-card-desc">' + (mode === 'week' ? '7日ごと' : '30日ごと') + 'の、毎日の利用人数の合計（延べ人数）です。日付は期間の最初の日です。</p>';
+        el.innerHTML = seg + '<div class="dev-trend">' + bars.map(b => `<button type="button" class="dev-trend-col${mode === 'day' && b.d === selected ? ' is-active' : ''}" ${mode === 'day' ? `onclick="devUsageLoad('${b.d}')"` : ''} title="${b.d}〜：${b.n}人"><span class="dev-trend-n">${b.n}</span><span class="dev-trend-bar"><i style="height:${Math.round(b.n / max * 100)}%"></i></span><span class="dev-trend-d">${b.lab}</span></button>`).join('') + '</div>' + note;
+    } catch (e) { el.innerHTML = seg + '<p class="dev-card-desc">取得できませんでした</p>'; }
+}
+
         let cmsPendingImages = {};
         let cmsPendingImageDeletes = [];
         async function cmsUploadPendingImages() {
