@@ -479,6 +479,34 @@
         .dev-spark-axis { display: flex; justify-content: space-between; font-size: 10px; color: var(--sub); margin-top: .2rem; }
         .dev-btn.is-primary, html.dark .dev-btn.is-primary { color: #04101c; }
         .dev-hbtn.is-primary { color: #04101c; background: var(--acc); }
+        /* ログイン画面：学習時間が日ごとに積み上がっていく「積み上げ」のモチーフ */
+        .pm-hero { padding: 1.1rem 1rem .8rem; border-radius: 18px; background: #f1f5f9; }
+        .dark .pm-hero { background: #131c2e; }
+        .pm-rule { display: block; width: 2rem; height: 4px; border-radius: 2px; background: #f97316; margin-bottom: .9rem; }
+        @keyframes pmRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+        .pm-screens { display: flex; gap: .4rem; align-items: flex-start; }
+        .pm-sc { flex: 1; min-width: 0; animation: pmUp .6s cubic-bezier(.2,.8,.2,1) both; animation-delay: var(--d); }
+        .pm-sc:nth-child(even) { margin-top: .9rem; }
+        .pm-face { aspect-ratio: 3 / 5; border-radius: 10px; background: #fff; padding: .45rem; display: flex; flex-direction: column; gap: .32rem; overflow: hidden; }
+        .dark .pm-face { background: #1c2940; }
+        .pm-face u { display: block; height: 4px; border-radius: 2px; background: #e2e8f0; text-decoration: none; } .dark .pm-face u { background: #334155; }
+        .pm-face u.s { width: 60%; }
+        .pm-av { width: 1.35rem; height: 1.35rem; border-radius: 50%; background: #3b82f6; margin: .1rem auto .2rem; }
+        .pm-meter { display: block; height: 5px; border-radius: 3px; background: #e2e8f0; margin-top: auto; overflow: hidden; } .dark .pm-meter { background: #334155; }
+        .pm-meter i { display: block; width: 65%; height: 100%; background: #f97316; }
+        .pm-cal { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; margin-top: .2rem; }
+        .pm-cal i { aspect-ratio: 1; border-radius: 3px; background: #e2e8f0; } .dark .pm-cal i { background: #334155; } .pm-cal i.on { background: #f97316; }
+        .pm-line { width: 100%; margin: .2rem 0 .1rem; }
+        .pm-tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-top: .2rem; }
+        .pm-tiles i { height: 1.25rem; border-radius: 4px; background: #93c5fd; } .pm-tiles i:nth-child(2) { background: #3b82f6; } .pm-tiles i:nth-child(3) { background: #bfdbfe; } .pm-tiles i:nth-child(4) { background: #2563eb; }
+        .pm-ring { display: block; width: 1.7rem; height: 1.7rem; margin: .15rem auto .2rem; border-radius: 50%; background: conic-gradient(#f97316 0 70%, #e2e8f0 0); -webkit-mask: radial-gradient(circle, transparent 38%, #000 40%); mask: radial-gradient(circle, transparent 38%, #000 40%); }
+        .dark .pm-ring { background: conic-gradient(#fb923c 0 70%, #334155 0); }
+        .pm-features b { font-weight: 900; }
+        .pm-gate-sub { font-style: normal; font-weight: 700; font-size: 11px; opacity: .7; margin-left: .4rem; }
+        @keyframes pmUp { from { transform: translateY(10px); opacity: 0; } to { transform: none; opacity: 1; } }
+        .pm-features { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .55rem; margin-top: 1rem; font-size: 11px; font-weight: 800; color: #334155; } .dark .pm-features { color: #cbd5e1; }
+        .pm-features i { width: 3px; height: 3px; border-radius: 50%; background: #94a3b8; }
+        @media (prefers-reduced-motion: reduce) { .pm-sc { animation: none; } }
 
 
         .dev-panel-head { display: flex; align-items: center; gap: .75rem; margin-bottom: 1rem; }
@@ -1174,7 +1202,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
         :root { --pm-ease: cubic-bezier(.22, 1, .36, 1); --pm-spring: cubic-bezier(.34, 1.56, .64, 1); }
 
         @keyframes pmFade { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes pmRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
         @keyframes pmScreenIn { from { opacity: 0; transform: translateY(18px) scale(.985); } to { opacity: 1; transform: none; } }
         @keyframes pmPageIn { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
         @keyframes pmModalIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -1405,51 +1432,29 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <span class="text-lg font-black text-slate-800 dark:text-white tracking-tight">学習ProMaster</span>
             </div>
 
-            <div class="rounded-2xl bg-slate-50 dark:bg-slate-800/40 p-6 mb-6 flex justify-center">
-                <div class="w-40 rounded-2xl border-4 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 shadow-sm overflow-hidden">
-                    <div class="h-3 bg-slate-100 dark:bg-slate-800 flex items-center justify-end px-2 gap-0.5">
-                        <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                        <span class="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                    </div>
-                    <div class="p-3 space-y-2.5">
-                        <div class="h-2.5 w-2/3 rounded-full bg-gradient-to-r from-cyan-400 to-blue-400"></div>
-                        <div class="h-2 w-1/2 rounded-full bg-slate-200 dark:bg-slate-700"></div>
-                        <div class="rounded-xl bg-gradient-to-br from-cyan-500 via-blue-500 to-violet-500 p-3">
-                            <div class="h-2 w-3/4 rounded-full bg-white/70 mb-1.5"></div>
-                            <div class="h-2 w-1/2 rounded-full bg-white/50"></div>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <div class="flex-1 h-1.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                                <div class="h-full w-2/3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"></div>
-                            </div>
-                            <span class="text-[8px] font-black text-slate-400">67%</span>
-                        </div>
-                        <div class="grid grid-cols-3 gap-1.5">
-                            <div class="h-8 rounded-lg bg-slate-100 dark:bg-slate-800"></div>
-                            <div class="h-8 rounded-lg bg-slate-100 dark:bg-slate-800"></div>
-                            <div class="h-8 rounded-lg bg-slate-100 dark:bg-slate-800"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="pm-hero mb-7" aria-hidden="true">
+<div class="pm-screens">
+<div class="pm-sc" style="--d:0ms"><div class="pm-face"><b class="pm-av"></b><u></u><u class="s"></u><span class="pm-meter"><i></i></span></div></div>
+<div class="pm-sc" style="--d:70ms"><div class="pm-face"><u class="s"></u><div class="pm-cal"><i></i><i></i><i></i><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div></div></div>
+<div class="pm-sc" style="--d:140ms"><div class="pm-face"><svg viewBox="0 0 40 34" class="pm-line"><polyline points="2,28 12,20 20,23 30,10 38,4" fill="none" stroke="#3b82f6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="38" cy="4" r="3" fill="#f97316"/></svg><u></u><u class="s"></u></div></div>
+<div class="pm-sc" style="--d:210ms"><div class="pm-face"><u class="s"></u><div class="pm-tiles"><i></i><i></i><i></i><i></i></div></div></div>
+<div class="pm-sc" style="--d:280ms"><div class="pm-face"><span class="pm-ring"></span><u></u><u class="s"></u></div></div>
+</div>
+</div>
+<div class="mb-7">
+<span class="pm-rule"></span>
+<h1 class="text-[1.65rem] font-black leading-[1.35] tracking-tight text-slate-900 dark:text-white">勉強を変える便利さ、<br>授業を彩る楽しさ。</h1>
+<p class="text-sm font-bold text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">毎日の学習を記録して、<br>学習時間をコツコツ積み上げよう。</p>
+<p class="pm-features"><b>マイページ</b><i></i><b>カレンダー</b><i></i><b>成績管理</b><i></i><b>学習コンテンツ</b><i></i><b>期間限定</b></p>
+<p class="text-xs font-bold text-slate-400 dark:text-slate-500 mt-2">ほかにも、学習タイマー、AI添削、予定の通知など。</p>
+</div>
 
-            <div class="text-center mb-6">
-                <h1 class="text-xl font-black text-blue-600 dark:text-cyan-400 leading-snug">
-                    勉強を変える便利さ、<br>授業を彩る楽しさ。
-                </h1>
-                <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mt-3 leading-relaxed">
-                    毎日の学習を記録して、<br>学習時間をコツコツ積み上げよう。
-                </p>
-            </div>
-
-            <div class="mt-auto space-y-3">
-                <button id="auth-btn-signup" onclick="requireTermsConsent(() => openSignupWizard())" class="w-full flex items-center justify-center gap-2 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white font-black text-sm hover:opacity-90 transition-all shadow-lg shadow-blue-500/20">
-                    <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                    <span>学習をはじめる</span>
+<div class="mt-auto space-y-3">
+                <button id="auth-btn-signup" onclick="requireTermsConsent(() => openSignupWizard())" class="w-full flex items-center justify-between px-5 py-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-sm hover:opacity-90 transition-all">
+<span>学習をはじめる<em class="pm-gate-sub">（新規登録）</em></span>
+<i data-lucide="arrow-right" class="w-4 h-4"></i>
                 </button>
-                <button id="auth-btn-login" onclick="requireTermsConsent(() => openEmailAuthModal('login'))" class="w-full py-3 text-sm font-black text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-cyan-400 transition-colors">
-                    ログイン
-                </button>
+                <button id="auth-btn-login" onclick="requireTermsConsent(() => openEmailAuthModal('login'))" class="w-full py-3.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-sm font-black text-slate-900 dark:text-white hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">ログイン<em class="pm-gate-sub">（登録済みの方）</em></button>
                 <button id="auth-btn-guest" onclick="requireTermsConsent(() => AppAuthUI.loginWith('guest'))" class="w-full py-2 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors">
                     ゲストとして入る
                 </button>
@@ -1487,7 +1492,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <input type="password" id="email-auth-password" placeholder="パスワード" autocomplete="current-password"
                     class="w-full px-4 py-3.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
             </div>
-            <button id="email-auth-submit-btn" onclick="submitEmailAuth()" class="w-full mt-4 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white font-black text-sm hover:opacity-90 transition-all shadow-lg shadow-blue-500/20">ログインする</button>
+            <button id="email-auth-submit-btn" onclick="submitEmailAuth()" class="w-full mt-4 py-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black text-sm hover:opacity-90 transition-all">ログインする</button>
             <button onclick="openPasswordResetModal()" class="w-full text-xs font-bold text-blue-500 dark:text-cyan-400 hover:opacity-70 transition-opacity mt-3">パスワードを忘れた場合はこちら</button>
             <p id="email-auth-error" class="hidden text-[11px] font-bold text-rose-500 text-center mt-3"></p>
             <div class="mt-auto pt-6 text-center">
@@ -3773,32 +3778,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
 <div><dt>今日の利用者</dt><dd id="dev-hub-today-users">-</dd><button type="button" onclick="devPageShow('usage')" class="dev-btn"><span>推移を見る</span></button></div>
 <div><dt>アカウント数</dt><dd id="dev-hub-user-count">-</dd><button type="button" onclick="devPageShow('users')" class="dev-btn"><span>公式マーク</span></button></div>
 </dl></div>
-<div class="dev-card dev-span-12"><p class="dev-tag"><b>07</b>編集</p><h3 class="dev-card-title">アプリの画面を編集</h3><p class="dev-card-desc">押すとアプリ本体に移ります。画面の＋や鉛筆のアイコンから編集します。</p><div id="dev-section-content-nav" class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
-                        <button onclick="closeDevSettingsModal(); cmsManageAnnouncements();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
-                            <i data-lucide="megaphone" class="w-4 h-4 text-cyan-500 mb-1"></i>
-                            <p class="text-[11px] font-black text-slate-800 dark:text-white">お知らせ</p>
-                        </button>
-                        <button onclick="closeDevSettingsModal(); _navigateTo('calendar');" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
-                            <i data-lucide="calendar-days" class="w-4 h-4 text-rose-500 mb-1"></i>
-                            <p class="text-[11px] font-black text-slate-800 dark:text-white">予定・通知</p>
-                        </button>
-                        <button onclick="closeDevSettingsModal(); showTopHome();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
-                            <i data-lucide="folder" class="w-4 h-4 text-violet-500 mb-1"></i>
-                            <p class="text-[11px] font-black text-slate-800 dark:text-white">コーナー</p>
-                        </button>
-                        <button onclick="closeDevSettingsModal(); openClassPickerModal();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
-                            <i data-lucide="users" class="w-4 h-4 text-emerald-500 mb-1"></i>
-                            <p class="text-[11px] font-black text-slate-800 dark:text-white">クラス</p>
-                        </button>
-                        <button onclick="closeDevSettingsModal(); showEnglishSectionMode();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
-                            <i data-lucide="book-open" class="w-4 h-4 text-blue-500 mb-1"></i>
-                            <p class="text-[11px] font-black text-slate-800 dark:text-white">英コミュ</p>
-                        </button>
-                        <button onclick="closeDevSettingsModal(); openRonriSectionListPage();" class="p-3 bg-slate-50 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-left transition-all">
-                            <i data-lucide="file-text" class="w-4 h-4 text-purple-500 mb-1"></i>
-                            <p class="text-[11px] font-black text-slate-800 dark:text-white">論理表現</p>
-                        </button>
-                    </div></div>
 </div>
 </section>
 
@@ -6976,6 +6955,12 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 console.error('google login error', e);
                 let msg = 'Googleログインに失敗しました。時間をおいて再度お試しください';
                 if (e && e.code === 'auth/popup-closed-by-user') msg = 'ログインがキャンセルされました';
+            else if (e && e.code === 'auth/popup-blocked') msg = 'ポップアップがブロックされました。ブラウザの設定で、このサイトのポップアップを許可してください';
+            else if (e && e.code === 'auth/unauthorized-domain') msg = 'このサイトのアドレスが、Firebaseの「承認済みドメイン」に登録されていません（運営者の設定が必要です）';
+            else if (e && e.code === 'auth/operation-not-allowed') msg = 'Googleログインが無効になっています（運営者の設定が必要です）';
+            else if (e && e.code === 'auth/network-request-failed') msg = '通信に失敗しました。電波の状態を確認して、もう一度お試しください';
+            else if (e && /disallowed_useragent|403/.test(String(e.message || ''))) msg = 'このアプリ内のブラウザでは、Googleログインが使えません。SafariやChromeで開いてください';
+            else if (e && e.code && !/^auth\/(popup-closed-by-user|account-exists-with-different-credential)$/.test(e.code)) msg += '（エラーコード：' + e.code + '）';
                 if (e && e.code === 'auth/account-exists-with-different-credential') msg = 'このメールアドレスはすでに別の方法（メール／パスワードなど）で登録されています。そちらでログインしてください。';
                 if (errEl) { errEl.textContent = msg; errEl.classList.remove('hidden'); }
             }
