@@ -2517,6 +2517,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                         <i data-lucide="timer" class="w-4 h-4"></i>
                         <span>タイマーで勉強を記録する</span>
                     </button>
+<button type="button" onclick="slogOpen()" class="w-full py-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white font-black text-sm flex items-center justify-center gap-2 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors"><i data-lucide="bar-chart-3" class="w-4 h-4"></i><span>勉強時間の記録を見る・編集する</span></button>
 
 
                     <div>
@@ -4583,7 +4584,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
         </div>
         <div class="mb-3">
             <label class="text-[10px] font-black text-slate-400 mb-1 block">教科</label>
-            <select id="timer-subject-select" onchange="saveTimerState()" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
+            <select id="timer-subject-select" onchange="slogTimerChanged(this)" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
                 <option value="国語">国語</option>
                 <option value="数学">数学</option>
                 <option value="英語" selected>英語</option>
@@ -4632,7 +4633,26 @@ html.dark .dev-log-link { color: #e2e8f0; }
         <p id="timer-fs-today" class="text-center text-xs sm:text-sm font-black text-blue-600 dark:text-cyan-400 mt-6"></p>
     </div>
 
-    <div id="timer-recover-modal" class="fixed inset-0 z-[10020] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-5">
+    <div id="slog-page" class="hidden fixed inset-0 z-[1000] bg-slate-50 dark:bg-[#0b1120] overflow-y-auto">
+<div class="max-w-xl mx-auto px-4 pb-24">
+<div class="sticky top-0 z-10 flex items-center gap-2 py-3 bg-slate-50 dark:bg-[#0b1120]">
+<button type="button" onclick="slogClose()" class="p-2 -ml-2 rounded-xl text-slate-600 dark:text-slate-300" aria-label="戻る"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
+<h2 class="flex-1 font-black text-base text-slate-900 dark:text-white">勉強時間の記録</h2>
+<button type="button" onclick="slogManage()" class="px-3 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-black">教科</button>
+<button type="button" onclick="slogEdit()" class="px-3 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black">＋ 追加</button>
+</div>
+<div id="slog-summary" class="grid grid-cols-3 gap-2 mb-3"></div>
+<div class="p-4 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 mb-3">
+<div id="slog-seg" class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-800 mb-3"></div>
+<div id="slog-chart" class="text-slate-500 dark:text-slate-400"></div>
+<div id="slog-legend" class="mt-3 grid grid-cols-2 gap-x-4 gap-y-2"></div>
+</div>
+<p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 ml-1">記録（新しい順）</p>
+<div id="slog-list" class="rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden"></div>
+</div>
+<div id="slog-sheet" class="hidden fixed inset-0 z-[1001] bg-black/40 flex items-end sm:items-center justify-center" onclick="if(event.target===this)slogSheet(false)"><div id="slog-sheet-body" class="w-full max-w-md max-h-[88vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl p-5"></div></div>
+</div>
+<div id="timer-recover-modal" class="fixed inset-0 z-[10020] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-5">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 w-full max-w-sm border border-slate-200 dark:border-slate-700 space-y-3">
             <div class="text-center space-y-1">
                 <div class="w-11 h-11 mx-auto rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center text-white"><i data-lucide="timer" class="w-5 h-5"></i></div>
@@ -11233,7 +11253,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             } else if (key === 'pm_grade_records') {
                 run('renderGradesPanel'); run('updateProgressTracker');
             } else if (key === 'pm_study_logs') {
-                run('refreshStudyProfile'); run('updateTimerTodayLabel');
+                run('refreshStudyProfile'); run('updateTimerTodayLabel'); run('slogRender');
             } else if (key === 'pm_done_submissions') {
                 run('refreshSubmissionDoneViews');
             } else if (key === 'pm_scan_history' || key === 'pm_trash_history') {
@@ -13675,6 +13695,119 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             safeStorage.set('pm_study_logs', logs);
             refreshStudyProfile();
         }
+
+// ================= 勉強時間の記録ページ・教科の追加・色分けグラフ =================
+const SLOG_DEF = [['国語', '#ef4444'], ['数学', '#3b82f6'], ['英語', '#10b981'], ['理科', '#a855f7'], ['社会', '#f97316'], ['その他', '#64748b']];
+const SLOG_PAL = ['#3b82f6', '#ef4444', '#10b981', '#f97316', '#a855f7', '#eab308', '#06b6d4', '#ec4899', '#64748b', '#84cc16'];
+const SLOG_WD = ['日', '月', '火', '水', '木', '金', '土'];
+let slogMode = 'day';
+function slogSubjects() { const s = safeStorage.get('pm_study_subjects'); return Array.isArray(s) && s.length ? s : SLOG_DEF.map(([name, color]) => ({ name, color })); }
+function slogSaveSubjects(a) { safeStorage.set('pm_study_subjects', a); slogFillTimer(); refreshStudyProfile(); }
+function slogColor(name) { const f = slogSubjects().find(s => s.name === name); if (f) return f.color; let h = 0; for (const c of String(name)) h = (h * 31 + c.charCodeAt(0)) >>> 0; const used = new Set(slogSubjects().map(s => s.color)), pool = SLOG_PAL.filter(c => !used.has(c)), P = pool.length ? pool : SLOG_PAL; return P[h % P.length]; }
+function slogToday() { return new Date(Date.now() + 32400000).toISOString().slice(0, 10); }
+function slogAddDays(s, n) { const [y, m, d] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, d + n)).toISOString().slice(0, 10); }
+function slogFmt(ms) { const h = Math.floor(ms / 3600000), m = Math.round((ms % 3600000) / 60000); return (h ? h + '時間' : '') + (m || !h ? m + '分' : ''); }
+function slogShort(ms) { const m = Math.round(ms / 60000); return m < 60 ? m + '分' : (m / 60).toFixed(1).replace('.0', '') + 'h'; }
+function slogBuckets(mode) {
+    const logs = getStudyLogs(), today = slogToday(), out = [];
+    const mk = (label, cur, pred) => { const b = { label, cur, parts: {}, total: 0 }; logs.forEach(l => { if (pred(l.date || '')) { const k = l.subject || 'その他', v = Number(l.durationMs) || 0; b.parts[k] = (b.parts[k] || 0) + v; b.total += v; } }); out.push(b); };
+    if (mode === 'month') { const [y, m] = today.split('-').map(Number); for (let i = 5; i >= 0; i--) { const d = new Date(Date.UTC(y, m - 1 - i, 1)), p = d.toISOString().slice(0, 7); mk((d.getUTCMonth() + 1) + '月', i === 0, s => s.slice(0, 7) === p); } }
+    else if (mode === 'week') { for (let i = 7; i >= 0; i--) { const e = slogAddDays(today, -7 * i), s0 = slogAddDays(e, -6); mk(s0.slice(5).replace('-', '/'), i === 0, s => s >= s0 && s <= e); } }
+    else { for (let i = 6; i >= 0; i--) { const s0 = slogAddDays(today, -i); mk(SLOG_WD[new Date(s0 + 'T00:00:00Z').getUTCDay()], i === 0, s => s === s0); } }
+    return out;
+}
+function slogChartSvg(mode, compact) {
+    const B = slogBuckets(mode), maxH = Math.max(Math.max(...B.map(b => b.total)) / 3600000, 0.25);
+    const steps = [.25, .5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 30, 40, 50, 60, 80, 100], st = steps.find(s => maxH / s <= 4) || 200, top = Math.ceil(maxH / st - 1e-9) * st;
+    const W = 320, H = compact ? 140 : 190, ml = 42, mr = 6, mt = 12, mb = 20, ph = H - mt - mb, bw = (W - ml - mr) / B.length;
+    const names = slogSubjects().map(s => s.name); B.forEach(b => Object.keys(b.parts).forEach(k => { if (!names.includes(k)) names.push(k); }));
+    const lab = h => h === 0 ? '0' : h < 1 ? Math.round(h * 60) + '分' : (Number.isInteger(h) ? h : h.toFixed(1)) + '時間';
+    let g = '';
+    for (let v = 0; v <= top + 1e-9; v += st) { const y = mt + ph - v / top * ph; g += `<line x1="${ml}" x2="${W - mr}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" stroke="currentColor" stroke-opacity="${v === 0 ? .35 : .14}"/><text x="${ml - 5}" y="${(y + 3).toFixed(1)}" text-anchor="end" font-size="9" fill="currentColor">${lab(Math.round(v * 100) / 100)}</text>`; }
+    B.forEach((b, i) => {
+        const x = ml + i * bw + bw * .17, w = bw * .66; let y = mt + ph;
+        names.forEach(n => { const ms = b.parts[n] || 0; if (ms > 0) { const h = ms / 3600000 / top * ph; y -= h; g += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(h, 1).toFixed(1)}" fill="${slogColor(n)}"><title>${escapeHtml(n)}：${slogFmt(ms)}</title></rect>`; } });
+        if (b.total > 0) g += `<text x="${(x + w / 2).toFixed(1)}" y="${(y - 3).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor">${slogShort(b.total)}</text>`;
+        g += `<text x="${(x + w / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="9" font-weight="${b.cur ? 800 : 500}" fill="${b.cur ? '#2563eb' : 'currentColor'}">${b.label}</text>`;
+    });
+    return `<svg viewBox="0 0 ${W} ${H}" class="w-full" role="img" aria-label="勉強時間のグラフ">${g}</svg>`;
+}
+function slogLegendHtml(mode, compact) {
+    const sum = {}; let all = 0; slogBuckets(mode).forEach(b => Object.keys(b.parts).forEach(k => { sum[k] = (sum[k] || 0) + b.parts[k]; all += b.parts[k]; }));
+    const rows = Object.keys(sum).sort((a, b) => sum[b] - sum[a]);
+    if (!rows.length) return '<p class="text-xs font-bold text-slate-400 text-center py-2">この期間の記録はありません</p>';
+    if (compact) return '<div class="flex flex-wrap gap-x-3 gap-y-1 mt-3">' + rows.map(k => `<span class="inline-flex items-center gap-1 text-[10px] font-bold text-slate-500 dark:text-slate-400"><i class="w-2 h-2 rounded-sm" style="background:${slogColor(k)}"></i>${escapeHtml(k)} ${slogFmt(sum[k])}</span>`).join('') + '</div>';
+    return rows.map(k => `<div class="flex items-center gap-2 text-xs"><i class="w-3 h-3 rounded-sm flex-none" style="background:${slogColor(k)}"></i><span class="font-black text-slate-800 dark:text-slate-100 truncate">${escapeHtml(k)}</span><span class="ml-auto font-bold text-slate-500 dark:text-slate-400 tabular-nums">${slogFmt(sum[k])}<span class="text-slate-400"> ${Math.round(sum[k] / all * 100)}%</span></span></div>`).join('');
+}
+function slogRender() {
+    const pg = document.getElementById('slog-page'); if (!pg || pg.classList.contains('hidden')) return;
+    const logs = getStudyLogs(), today = slogToday(), wk = slogAddDays(today, -6);
+    const sumMs = f => logs.reduce((a, l) => a + (f(l.date || '') ? (Number(l.durationMs) || 0) : 0), 0);
+    const card = (t, v) => `<div class="p-3 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800"><p class="text-[10px] font-black text-slate-400">${t}</p><p class="text-sm font-black text-slate-900 dark:text-white mt-1">${v}</p></div>`;
+    document.getElementById('slog-summary').innerHTML = card('今日', slogFmt(sumMs(s => s === today))) + card('直近7日', slogFmt(sumMs(s => s >= wk && s <= today))) + card('合計', slogFmt(sumMs(() => true)));
+    document.getElementById('slog-seg').innerHTML = [['day', '7日'], ['week', '週ごと'], ['month', '月ごと']].map(([k, l]) => `<button type="button" onclick="slogSetMode('${k}')" class="px-4 py-1.5 rounded-lg text-xs font-black ${k === slogMode ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}">${l}</button>`).join('');
+    document.getElementById('slog-chart').innerHTML = slogChartSvg(slogMode, false);
+    document.getElementById('slog-legend').innerHTML = slogLegendHtml(slogMode, false);
+    const list = logs.slice().sort((a, b) => String(b.endedAt || '').localeCompare(String(a.endedAt || ''))).slice(0, 100);
+    document.getElementById('slog-list').innerHTML = list.length ? list.map(l => `<div class="flex items-center gap-3 px-4 py-3"><i class="w-1.5 h-9 rounded-full flex-none" style="background:${slogColor(l.subject)}"></i><div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-900 dark:text-white truncate">${escapeHtml(l.subject || 'その他')}</p><p class="text-[11px] font-bold text-slate-400">${escapeHtml(formatStudyLogWhen(l))}</p></div><p class="text-sm font-black text-slate-800 dark:text-slate-100 tabular-nums">${slogFmt(Number(l.durationMs) || 0)}</p><button type="button" onclick="slogEdit('${String(l.id).replace(/'/g, '')}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-black text-slate-600 dark:text-slate-300">編集</button></div>`).join('') : '<p class="text-xs font-bold text-slate-400 text-center py-8">まだ記録がありません。「＋ 追加」から入れられます。</p>';
+    if (typeof lucide !== 'undefined') lucide.createIcons();
+}
+function slogSetMode(m) { slogMode = m; slogRender(); }
+function slogOpen() { const pg = document.getElementById('slog-page'); if (!pg) return; pg.classList.remove('hidden'); pg.scrollTop = 0; slogRender(); }
+function slogClose() { const pg = document.getElementById('slog-page'); if (pg) pg.classList.add('hidden'); slogSheet(false); }
+function slogSheet(on, html) { const s = document.getElementById('slog-sheet'); if (!s) return; if (html != null) document.getElementById('slog-sheet-body').innerHTML = html; s.classList.toggle('hidden', !on); if (on && typeof lucide !== 'undefined') lucide.createIcons(); }
+function slogEdit(id) {
+    const l = id ? getStudyLogs().find(x => String(x.id) === String(id)) : null, today = slogToday();
+    const names = slogSubjects().map(s => s.name); if (l && !names.includes(l.subject)) names.push(l.subject);
+    const ms = l ? Number(l.durationMs) || 0 : 0, inp = 'w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white';
+    slogSheet(true, `<h3 class="font-black text-base text-slate-900 dark:text-white mb-4">${l ? '記録を修正する' : '記録を追加する'}</h3>
+<label class="block text-[11px] font-black text-slate-400 mb-1">教科</label><select id="slog-f-subj" class="${inp} mb-3">${names.map(n => `<option value="${escapeHtml(n)}" ${l && l.subject === n ? 'selected' : ''}>${escapeHtml(n)}</option>`).join('')}</select>
+<label class="block text-[11px] font-black text-slate-400 mb-1">日付</label><input id="slog-f-date" type="date" max="${today}" value="${l ? (l.date || today) : today}" class="${inp} mb-3">
+<label class="block text-[11px] font-black text-slate-400 mb-1">勉強した時間</label><div class="flex items-center gap-2 mb-1"><input id="slog-f-h" type="number" min="0" max="24" inputmode="numeric" value="${Math.floor(ms / 3600000)}" class="${inp}"><span class="text-sm font-black text-slate-500">時間</span><input id="slog-f-m" type="number" min="0" max="59" inputmode="numeric" value="${Math.round((ms % 3600000) / 60000)}" class="${inp}"><span class="text-sm font-black text-slate-500">分</span></div>
+<p id="slog-f-err" class="hidden text-xs font-bold text-rose-500 mb-2"></p>
+<div class="flex gap-2 mt-4">${l ? `<button type="button" onclick="slogDelete('${String(l.id).replace(/'/g, '')}')" class="px-4 py-3 rounded-xl bg-rose-50 dark:bg-rose-900/30 text-rose-600 text-sm font-black">削除</button>` : ''}<button type="button" onclick="slogSheet(false)" class="flex-1 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-black">キャンセル</button><button type="button" onclick="slogSave('${l ? String(l.id).replace(/'/g, '') : ''}')" class="flex-1 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-black">保存</button></div>`);
+}
+function slogSave(id) {
+    const g = i => document.getElementById(i), err = g('slog-f-err'), today = slogToday();
+    const subj = g('slog-f-subj').value, date = g('slog-f-date').value, ms = ((parseInt(g('slog-f-h').value) || 0) * 60 + (parseInt(g('slog-f-m').value) || 0)) * 60000;
+    const bad = !date || date > today ? '日付を、今日以前で選んでください' : ms < 60000 ? '1分以上の時間を入れてください' : ms > 86400000 ? '24時間以内にしてください' : '';
+    if (bad) { err.textContent = bad; err.classList.remove('hidden'); return; }
+    const logs = getStudyLogs(), endOf = d => d === today ? new Date().toISOString() : new Date(d + 'T12:00:00+09:00').toISOString();
+    if (id) { const l = logs.find(x => String(x.id) === String(id)); if (!l) return; const moved = l.date !== date; Object.assign(l, { subject: subj, durationMs: ms, date, updatedAt: new Date().toISOString() }); if (moved) l.endedAt = endOf(date); }
+    else logs.push({ id: Date.now() + '-' + Math.random().toString(36).slice(2, 6), subject: subj, durationMs: ms, date, endedAt: endOf(date) });
+    safeStorage.set('pm_study_logs', logs); refreshStudyProfile(); if (typeof updateTimerTodayLabel === 'function') updateTimerTodayLabel();
+    slogSheet(false); slogRender(); showToast(id ? '記録を修正しました' : '記録を追加しました');
+}
+function slogDelete(id) { if (!confirm('この記録を削除しますか？')) return; safeStorage.set('pm_study_logs', getStudyLogs().filter(l => String(l.id) !== String(id))); refreshStudyProfile(); if (typeof updateTimerTodayLabel === 'function') updateTimerTodayLabel(); slogSheet(false); slogRender(); }
+function slogManage() {
+    const s = slogSubjects(), inp = 'flex-1 min-w-0 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white';
+    slogSheet(true, `<h3 class="font-black text-base text-slate-900 dark:text-white mb-1">教科の管理</h3><p class="text-[11px] font-bold text-slate-400 mb-4">色の四角を押すと色が変わります。教科は、勉強以外（読書・部活など）の記録にも使えます。</p>
+<div class="space-y-2 mb-4">${s.map((x, i) => `<div class="flex items-center gap-2"><button type="button" onclick="slogCycle(${i})" class="w-9 h-9 rounded-lg flex-none" style="background:${x.color}" aria-label="色を変える"></button><input value="${escapeHtml(x.name)}" maxlength="12" onchange="slogRename(${i},this.value)" class="${inp}"><button type="button" onclick="slogDelSubject(${i})" class="p-2 rounded-lg text-slate-400 hover:text-rose-500" aria-label="削除"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>`).join('')}</div>
+<div class="flex gap-2"><input id="slog-new-name" maxlength="12" placeholder="新しい教科（例：情報、読書）" class="${inp}"><button type="button" onclick="slogAddSubject()" class="px-4 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-black">追加</button></div>
+<button type="button" onclick="slogSheet(false)" class="w-full mt-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-black">閉じる</button>`);
+}
+function slogCycle(i) { const s = slogSubjects(), k = SLOG_PAL.indexOf(s[i].color); s[i].color = SLOG_PAL[(k + 1) % SLOG_PAL.length]; slogSaveSubjects(s); slogManage(); slogRender(); }
+function slogAddSubject() { const el = document.getElementById('slog-new-name'), n = ((el && el.value) || '').trim(); if (!n) return; const s = slogSubjects(); if (s.some(x => x.name === n)) { showToast('同じ名前の教科があります'); return; } s.push({ name: n, color: SLOG_PAL[s.length % SLOG_PAL.length] }); slogSaveSubjects(s); slogManage(); slogRender(); }
+function slogRename(i, v) {
+    const n = (v || '').trim(), s = slogSubjects(); if (!n || s.some((x, k) => k !== i && x.name === n)) { showToast('その名前は使えません'); slogManage(); return; }
+    const old = s[i].name; if (old === n) return; s[i].name = n;
+    const logs = getStudyLogs(), now = new Date().toISOString(); logs.forEach(l => { if (l.subject === old) { l.subject = n; l.updatedAt = now; } });
+    safeStorage.set('pm_study_logs', logs); slogSaveSubjects(s); slogManage(); slogRender();
+}
+function slogDelSubject(i) { const s = slogSubjects(); if (s.length <= 1) { showToast('教科は1つ以上必要です'); return; } if (!confirm('「' + s[i].name + '」を一覧から外します。この教科の記録は残ります。')) return; s.splice(i, 1); slogSaveSubjects(s); slogManage(); slogRender(); }
+function slogFillTimer() {
+    const sel = document.getElementById('timer-subject-select'); if (!sel) return;
+    const subs = slogSubjects(), cur = sel.value && sel.value !== '__add__' ? sel.value : ''; let last = ''; try { last = localStorage.getItem('pm_timer_last_subject') || ''; } catch (e) {}
+    sel.innerHTML = subs.map(s => `<option value="${escapeHtml(s.name)}">${escapeHtml(s.name)}</option>`).join('') + '<option value="__add__">＋ 教科を追加・編集…</option>';
+    sel.value = subs.some(s => s.name === cur) ? cur : subs.some(s => s.name === last) ? last : subs[0].name; sel.dataset.prev = sel.value;
+}
+function slogTimerChanged(sel) {
+    if (sel.value === '__add__') { sel.value = sel.dataset.prev || slogSubjects()[0].name; slogOpen(); slogManage(); return; }
+    sel.dataset.prev = sel.value; try { localStorage.setItem('pm_timer_last_subject', sel.value); } catch (e) {}
+    saveTimerState();
+}
+slogFillTimer();
+
         function getTotalStudyMs() {
             return getStudyLogs().reduce((sum, l) => sum + (l.durationMs || 0), 0);
         }
@@ -13913,30 +14046,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const statWeek = document.getElementById('study-stat-week');
             if (statWeek) statWeek.textContent = formatStudyHoursLabel(weekMs);
 
-            const graphWrap = document.getElementById('study-week-graph');
-            if (graphWrap) {
-                const today = getJSTDateOnly();
-                const days = [];
-                for (let i = 6; i >= 0; i--) {
-                    const d = new Date(today);
-                    d.setDate(d.getDate() - i);
-                    const ds = d.toISOString().slice(0, 10);
-                    days.push({ label: ['日', '月', '火', '水', '木', '金', '土'][d.getDay()], ms: getStudyMsOnDate(ds), isToday: i === 0 });
-                }
-                const maxMs = Math.max(1, ...days.map(d => d.ms));
-                graphWrap.innerHTML = days.map(d => {
-                    const heightPct = Math.max(4, Math.round((d.ms / maxMs) * 100));
-                    return `
-                    <div class="flex-1 flex flex-col items-center justify-end h-full gap-1">
-                        <div class="w-full flex-1 flex items-end">
-                            <div class="w-full rounded-t-md ${d.isToday ? 'bg-gradient-to-t from-cyan-500 to-blue-500' : 'bg-slate-200 dark:bg-slate-700'}" style="height:${heightPct}%"></div>
-                        </div>
-                        <span class="text-[9px] font-bold ${d.isToday ? 'text-cyan-500' : 'text-slate-400'}">${d.label}</span>
-                    </div>`;
-                }).join('');
-            }
-
-            const badgeGrid = document.getElementById('study-badge-grid');
+            const graphWrap = document.getElementById('study-week-graph'); if (graphWrap) { graphWrap.className = 'w-full'; graphWrap.innerHTML = slogChartSvg('day', true) + slogLegendHtml('day', true); } if (typeof slogRender === 'function') slogRender();
+        const badgeGrid = document.getElementById('study-badge-grid');
             if (badgeGrid) {
                 badgeGrid.innerHTML = STUDY_BADGES.map(b => {
                     const earned = b.check(logs, streak);
