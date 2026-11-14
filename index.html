@@ -132,7 +132,7 @@
             scrollbar-width: none;
         }
         #sticky-header, #header-container, #logo-badge, #logo-icon, #logo-text, #logo-subtext, #header-actions button {
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: color 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         :root {
@@ -143,8 +143,8 @@
             --color-border:       #e2e8f0;
             --color-text:         #1e293b;
             --color-text-sub:     #64748b;
-            --color-accent:       #06b6d4;
-            --color-accent2:      #3b82f6;
+            --color-accent:       #34436b;
+            --color-accent2:      #34436b;
             --color-accent-bg:    #eff6ff;
             --color-header-bg:    rgba(255,255,255,0.85);
         }
@@ -155,8 +155,8 @@
             --color-border:       #1e293b;
             --color-text:         #e2e8f0;
             --color-text-sub:     #94a3b8;
-            --color-accent:       #22d3ee;
-            --color-accent2:      #818cf8;
+            --color-accent:       #a9b8dc;
+            --color-accent2:      #a9b8dc;
             --color-accent-bg:    #0f172a;
             --color-header-bg:    rgba(12,18,32,0.85);
         }
@@ -479,6 +479,10 @@
         .dev-spark-axis { display: flex; justify-content: space-between; font-size: 10px; color: var(--sub); margin-top: .2rem; }
         .dev-btn.is-primary, html.dark .dev-btn.is-primary { color: #04101c; }
         .dev-hbtn.is-primary { color: #04101c; background: var(--acc); }
+        /* ボタンの上から始めても、縦にスクロールできるようにする */
+        button, [role="button"], summary, select { touch-action: manipulation; }
+        /* 勉強時間の記録ページを開いている間は、前面に浮かぶ部品（通知のお願い、編集の帯）を隠して、スクロールを邪魔しない */
+        body.slog-open #pm-notify-nudge, body.slog-open #dev-floating-indicator { display: none !important; }
         /* ログイン画面：学習時間が日ごとに積み上がっていく「積み上げ」のモチーフ */
         .pm-hero { padding: 1.1rem 1rem .8rem; border-radius: 18px; background: #f1f5f9; }
         .dark .pm-hero { background: #131c2e; }
@@ -769,10 +773,17 @@ html.dark .dev-log-link { color: #e2e8f0; }
         html.pm-modal-open, html.pm-modal-open body { overflow: hidden !important; }
         html.pm-modal-open { overscroll-behavior: none; }
         html.pm-modal-open.pm-modal-gutter { scrollbar-gutter: stable; }
-        html.pm-modal-open * { overscroll-behavior: contain; }
+        /* スクロールを外に伝えない設定は、実際にスクロールする部品だけに付ける。
+           全部品に付けると、グラフ・角丸の枠・ボタンなど「はみ出しを隠す」部品の上で始めたスクロールが止まってしまう */
+        html.pm-modal-open .overflow-y-auto, html.pm-modal-open .overflow-auto, html.pm-modal-open .overflow-y-scroll,
+        html.pm-modal-open [style*="overflow-y:auto"], html.pm-modal-open [style*="overflow-y: auto"],
+        html.pm-modal-open [style*="overflow:auto"], html.pm-modal-open [style*="overflow: auto"] { overscroll-behavior: contain; }
     
         :root { --pm-accent:#34436b; --pm-accent-soft:rgba(52,67,107,.07); --pm-accent-line:rgba(52,67,107,.22); }
         .dark { --pm-accent:#a9b8dc; --pm-accent-soft:rgba(169,184,220,.12); --pm-accent-line:rgba(169,184,220,.28); }
+        /* 動き：transition-all は「すべての性質」を動かすので、色・不透明度・transformだけに絞る。幅を動かす進捗バーだけ width を許可する */
+        .transition-all { transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform !important; }
+        .transition-all[style*="width"], .transition-all.w-0 { transition-property:color, background-color, border-color, opacity, box-shadow, transform, width !important; }
         [class*=" from-cyan-400 "]:not(.text-transparent),[class$=" from-cyan-400"]:not(.text-transparent),[class^="from-cyan-400 "]:not(.text-transparent),
         [class*=" from-cyan-500 "]:not(.text-transparent),[class$=" from-cyan-500"]:not(.text-transparent),[class^="from-cyan-500 "]:not(.text-transparent),
         [class*=" from-cyan-600 "]:not(.text-transparent),[class$=" from-cyan-600"]:not(.text-transparent),[class^="from-cyan-600 "]:not(.text-transparent),
@@ -1022,9 +1033,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
         .dark #sticky-header, .dark #bottom-tab-bar { background-color:#0c1220 !important; }
         .pm-subj { --c:#64748b; position:relative; display:flex; flex-direction:column; align-items:flex-start; text-align:left;
                    padding:1.5rem 1.4rem 1.3rem; min-height:9rem; background:#fff; border:1px solid #e2e8f0; border-top:2px solid var(--c);
-                   border-radius:.75rem; box-shadow:0 1px 2px rgba(15,23,42,.05); transition:transform .15s, box-shadow .15s, border-color .15s; }
+                   border-radius:.75rem; box-shadow:0 1px 2px rgba(15,23,42,.05); transition:border-color .15s; }
         .dark .pm-subj { background:#0f172a; border-color:#1e293b; border-top-color:var(--c); }
-        .pm-subj:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(15,23,42,.07); border-color:var(--c); }
+        .pm-subj:hover { border-color:var(--c); }
         .pm-subj .pm-badge { width:3rem; height:3rem; border-radius:.75rem; display:flex; align-items:center; justify-content:center;
                    font-weight:700; font-size:1.15rem; color:var(--c); background:color-mix(in srgb, var(--c) 11%, transparent); }
         .pm-subj .pm-name { margin-top:.9rem; font-size:1.05rem; font-weight:700; color:#0f172a; }
@@ -1149,9 +1160,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
         .rounded-2xl, .rounded-3xl { border-radius:.5rem !important; }
         .pm-subj { border:none !important; box-shadow:none !important; border-radius:.5rem !important;
                    background:color-mix(in srgb, var(--c) 8%, #fffefc) !important; padding:1.75rem 1.6rem 1.5rem !important;
-                   transition:transform .22s ease, background-color .22s ease !important; }
+                   transition:background-color .22s ease !important; }
         .dark .pm-subj { background:color-mix(in srgb, var(--c) 16%, #141c2e) !important; }
-        .pm-subj:hover { transform:translateY(-2px) !important; background:color-mix(in srgb, var(--c) 13%, #fffefc) !important; box-shadow:none !important; border:none !important; }
+        .pm-subj:hover { background:color-mix(in srgb, var(--c) 13%, #fffefc) !important; box-shadow:none !important; border:none !important; }
         .dark .pm-subj:hover { background:color-mix(in srgb, var(--c) 22%, #141c2e) !important; }
         .pm-subj .pm-badge { background:color-mix(in srgb, var(--c) 16%, transparent) !important; border-radius:.5rem !important; }
         .pm-subj .pm-name { font-size:1.125rem !important; font-weight:600 !important; letter-spacing:-.005em; }
@@ -1232,11 +1243,13 @@ html.dark .dev-log-link { color: #e2e8f0; }
             background: radial-gradient(circle, var(--pm-ripple-c, rgba(37,99,235,.26)) 0%, transparent 70%); animation: pmRipple .6s ease-out forwards; }
         html.dark .pm-ripple { --pm-ripple-c: rgba(103,232,249,.28); }
 
-        #pm-tab-ind { position: absolute; top: 0; left: 0; height: 3px; width: 28px; border-radius: 0 0 4px 4px; pointer-events: none; opacity: 0;
-            background: var(--pm-accent, #2563eb); box-shadow: 0 3px 12px rgba(37,99,235,.45);
-            transform: translateX(var(--x, 0px)); transition: transform .5s var(--pm-spring), opacity .2s ease; }
+        /* 下のタブバー：画面との境目の線が、選んだタブの上でなだらかにふくらむ（波うつ）。色は付けず、線と同じ色で輪郭を描く */
+        #pm-tab-ind { position: absolute; left: 0; top: -22px; height: 22px; width: 100px; pointer-events: none; opacity: 0; filter: drop-shadow(0 -2px 3px var(--pm-wave-shade, rgba(15,23,42,.07)));
+            transform: translateX(var(--x, 0px)); transition: transform .55s var(--pm-spring), opacity .2s ease; }
         #pm-tab-ind.on { opacity: 1; }
-        html.dark #pm-tab-ind { background: #22d3ee; box-shadow: 0 3px 12px rgba(34,211,238,.5); }
+        #pm-tab-ind svg { display: block; width: 100%; height: 100%; overflow: visible; }
+        #pm-tab-ind .fill { fill: var(--pm-bar-bg, #ffffff); }
+        #pm-tab-ind .line { fill: none; stroke: var(--pm-bar-line, #e8e4dd); stroke-width: 1; vector-effect: non-scaling-stroke; }
         html:not(.pm-fx) #pm-tab-ind { transition: none; }
         .pm-fx #bottom-tab-bar > button.pm-tab-pop svg { animation: pmTabPop .5s var(--pm-spring); }
 
@@ -1380,7 +1393,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <button id="install-gate-btn" onclick="installApp()" class="hidden w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 hover:opacity-90 text-white text-sm font-black transition-all flex items-center justify-center gap-2">
                     <i data-lucide="download" class="w-4 h-4"></i><span>アプリをインストールする</span>
                 </button>
-                <p id="install-gate-done" class="hidden text-center text-xs font-black text-emerald-600 dark:text-emerald-400 leading-relaxed">インストールできました！<br>ホーム画面（またはアプリ一覧）の「学習ProMaster」のアイコンから開いてください。</p>
+                <p id="install-gate-done" class="hidden text-center text-xs font-black text-emerald-600 dark:text-emerald-400 leading-relaxed">インストールできました<br>ホーム画面（またはアプリ一覧）の「学習ProMaster」のアイコンから開いてください。</p>
 
                 <div id="install-gate-ios" class="hidden space-y-2.5">
                     <p class="text-[11px] font-black text-slate-400 uppercase tracking-wider">iPhone・iPadの場合</p>
@@ -2079,7 +2092,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     </button>
                     <button id="analysis-status-done" onclick="jumpToCompletedAnalysis()" class="hidden w-full items-center justify-center space-x-2 py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-90 text-white transition-all animate-fade-in">
                         <i data-lucide="check-circle-2" class="w-4 h-4"></i>
-                        <span class="text-xs font-black">解析完了！タップして結果を見る</span>
+                        <span class="text-xs font-black">解析が完了しました。タップして結果を見る</span>
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
                     </button>
                 </div>
@@ -2199,7 +2212,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     </div>
 
                     <p id="scan-remaining" class="text-[11px] text-center font-bold text-slate-400 dark:text-slate-500 mb-1"></p>
-                    <button id="scan-start-btn" onclick="processGeminiRequest()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 hover:opacity-90 disabled:opacity-50 disabled:grayscale text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center space-x-2 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99]">
+                    <button id="scan-start-btn" onclick="processGeminiRequest()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 hover:opacity-90 disabled:opacity-50 disabled:grayscale text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center space-x-2 disabled:cursor-not-allowed active:scale-[0.99]">
                         <i data-lucide="scan-line" class="w-4 h-4 animate-fade-in"></i>
                         <span>このプリントを読み取る</span>
                     </button>
@@ -2211,7 +2224,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
 
                     <div class="bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed flex items-start space-x-2 animate-fade-in">
                         <i data-lucide="info" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0 mt-0.5"></i>
-                        <span id="info-text" class="font-medium">プリントをセットしてね！</span>
+                        <span id="info-text" class="font-medium">プリントをセットしてください</span>
                     </div>
                 </div>
                 </div>
@@ -2802,14 +2815,14 @@ html.dark .dev-log-link { color: #e2e8f0; }
                         </div>
 
                         <p id="rh-photo-remaining" class="text-[11px] text-center font-bold text-slate-400 dark:text-slate-500"></p>
-                        <button id="rh-analyze-btn" onclick="analyzeRonriPhoto()" class="w-full py-3 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 hover:opacity-90 disabled:opacity-50 disabled:grayscale text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center space-x-2 disabled:cursor-not-allowed hover:scale-[1.01] active:scale-[0.99]">
+                        <button id="rh-analyze-btn" onclick="analyzeRonriPhoto()" class="w-full py-3 bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 hover:opacity-90 disabled:opacity-50 disabled:grayscale text-white rounded-xl text-sm font-bold transition-all flex items-center justify-center space-x-2 disabled:cursor-not-allowed active:scale-[0.99]">
                             <i data-lucide="scan-line" class="w-4 h-4" id="rh-analyze-btn-icon"></i>
                             <span id="rh-analyze-btn-label">この写真を読み取る</span>
                         </button>
 
                         <div class="bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed flex items-start space-x-2">
                             <i data-lucide="info" class="w-4 h-4 text-violet-500 shrink-0 mt-0.5"></i>
-                            <span id="rh-info-text" class="font-medium">プリントをセットしてね！</span>
+                            <span id="rh-info-text" class="font-medium">プリントをセットしてください</span>
                         </div>
                         </div>
                     </section>
@@ -3288,7 +3301,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     </div>
                     <div id="t19f-complete2" class="hidden bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-center space-y-4">
                         <div class="flex justify-center"><i data-lucide="check-circle-2" class="w-10 h-10" style="color:var(--pm-accent)"></i></div>
-                        <p class="text-lg font-black text-slate-900 dark:text-white">完了！</p>
+                        <p class="text-lg font-black text-slate-900 dark:text-white">完了</p>
                         <p class="text-sm font-bold text-slate-500 dark:text-slate-400" id="t19f-final2"></p>
                         <div class="grid grid-cols-2 gap-3">
                             <button onclick="t19fRestart2(false)" class="py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-black">もう一度</button>
@@ -3332,7 +3345,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     <div id="t19q-content2" class="hidden"></div>
                     <div id="t19q-complete2" class="hidden bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 text-center space-y-4">
                         <div class="flex justify-center"><i data-lucide="check-circle-2" class="w-10 h-10" style="color:var(--pm-accent)"></i></div>
-                        <p class="text-lg font-black text-slate-900 dark:text-white">テスト完了！</p>
+                        <p class="text-lg font-black text-slate-900 dark:text-white">テスト完了</p>
                         <p class="text-sm font-bold text-slate-500 dark:text-slate-400" id="t19q-final2"></p>
                         <button onclick="t19GoHome()" class="t19-accent-bg w-full py-2.5 hover:opacity-90 text-white rounded-xl text-xs font-black">セクション選択へ</button>
                     </div>
@@ -3413,7 +3426,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <i data-lucide="earth" class="w-8 h-8 text-white"></i>
             </div>
             <h2 class="text-sm font-black text-slate-900 dark:text-white mb-1">あそんでまなべる<br>世界地図パズル</h2>
-            <p class="text-[10px] font-bold text-slate-400 mb-4">ジグソーパズル感覚で、世界の国の位置を覚えよう！</p>
+            <p class="text-[10px] font-bold text-slate-400 mb-4">ジグソーパズル感覚で、世界の国の位置を覚えよう</p>
 
             <div class="flex items-center justify-center gap-4 mb-5 text-[10px] font-bold text-slate-400">
                 <span>プレイ回数 <b class="text-slate-700 dark:text-slate-200" id="geo-splash-plays">0</b></span>
@@ -4448,7 +4461,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
         </div>
     </div>
 
-    <div id="dev-floating-indicator" class="hidden fixed bottom-6 left-0 z-[9979] flex flex-col items-start gap-1.5" style="touch-action:none">
+    <div id="dev-floating-indicator" class="hidden fixed bottom-6 left-0 z-[9979] flex flex-col items-start gap-1.5" style="touch-action:pan-y">
 <div id="dev-floating-status" class="hidden max-w-[80vw] px-3 py-1.5 rounded-full text-[10px] font-black text-white"></div>
 <div class="flex items-center gap-0.5 bg-slate-900/95 text-white pl-1.5 py-1 rounded-r-full select-none">
 <button onclick="cmsSaveToGitHub()" id="dev-floating-publish-btn" class="flex items-center gap-1 pl-2 pr-2.5 py-1.5 rounded-full hover:bg-white/15 transition-colors" title="GitHubに保存して公開"><i data-lucide="upload-cloud" class="w-3.5 h-3.5"></i><span class="text-[11px] font-black">公開</span></button>
@@ -4562,10 +4575,10 @@ html.dark .dev-log-link { color: #e2e8f0; }
     </nav>
 
     <div id="floating-tools">
-        <button id="floating-timer-btn" onclick="toggleTimerPanel()" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="タイマー">
+        <button id="floating-timer-btn" onclick="toggleTimerPanel()" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 transition-all" title="タイマー">
             <i data-lucide="timer" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i>
         </button>
-        <button id="floating-aichat-btn" onclick="openGeneralAiChat()" class="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center hover:scale-105 active:scale-95 transition-all" title="何でも聞けるAIチャット">
+        <button id="floating-aichat-btn" onclick="openGeneralAiChat()" class="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center active:scale-95 transition-all" title="何でも聞けるAIチャット">
             <i data-lucide="message-circle" class="w-5 h-5 text-white"></i>
         </button>
     </div>
@@ -4633,8 +4646,8 @@ html.dark .dev-log-link { color: #e2e8f0; }
         <p id="timer-fs-today" class="text-center text-xs sm:text-sm font-black text-blue-600 dark:text-cyan-400 mt-6"></p>
     </div>
 
-    <div id="slog-page" class="hidden fixed inset-0 z-[1000] bg-slate-50 dark:bg-[#0b1120] overflow-y-auto">
-<div class="max-w-xl mx-auto px-4 pb-24">
+    <div id="slog-page" data-allow-touch class="hidden fixed inset-0 z-[1000] bg-slate-50 dark:bg-[#0b1120] overflow-y-auto" style="overscroll-behavior:contain">
+<div class="max-w-xl mx-auto px-4 pb-40" style="max-height:none;overflow:visible">
 <div class="sticky top-0 z-10 flex items-center gap-2 py-3 bg-slate-50 dark:bg-[#0b1120]">
 <button type="button" onclick="slogClose()" class="p-2 -ml-2 rounded-xl text-slate-600 dark:text-slate-300" aria-label="戻る"><i data-lucide="arrow-left" class="w-5 h-5"></i></button>
 <h2 class="flex-1 font-black text-base text-slate-900 dark:text-white">勉強時間の記録</h2>
@@ -4642,6 +4655,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
 <button type="button" onclick="slogEdit()" class="px-3 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black">＋ 追加</button>
 </div>
 <div id="slog-summary" class="grid grid-cols-3 gap-2 mb-3"></div>
+<div id="slog-goal" class="mb-3"></div>
 <div class="p-4 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 mb-3">
 <div id="slog-seg" class="inline-flex p-1 rounded-xl bg-slate-100 dark:bg-slate-800 mb-3"></div>
 <div id="slog-chart" class="text-slate-500 dark:text-slate-400"></div>
@@ -4650,8 +4664,8 @@ html.dark .dev-log-link { color: #e2e8f0; }
 <p class="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 ml-1">記録（新しい順）</p>
 <div id="slog-list" class="rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 divide-y divide-slate-100 dark:divide-slate-800 overflow-hidden"></div>
 </div>
-<div id="slog-sheet" class="hidden fixed inset-0 z-[1001] bg-black/40 flex items-end sm:items-center justify-center" onclick="if(event.target===this)slogSheet(false)"><div id="slog-sheet-body" class="w-full max-w-md max-h-[88vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl p-5"></div></div>
 </div>
+<div id="slog-sheet" class="hidden fixed inset-0 z-[1001] bg-black/40 flex items-end sm:items-center justify-center" onclick="if(event.target===this)slogSheet(false)"><div id="slog-sheet-body" data-allow-touch class="w-full max-w-md max-h-[88vh] overflow-y-auto bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl p-5" style="overscroll-behavior:contain"></div></div>
 <div id="timer-recover-modal" class="fixed inset-0 z-[10020] bg-slate-900/80 backdrop-blur-sm hidden items-center justify-center p-5">
         <div class="bg-white dark:bg-slate-900 rounded-3xl p-5 w-full max-w-sm border border-slate-200 dark:border-slate-700 space-y-3">
             <div class="text-center space-y-1">
@@ -4847,7 +4861,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
             </div>
             <div id="fc-complete" class="hidden mt-4 text-center space-y-3">
                 <div class="flex justify-center"><i data-lucide="check-circle-2" class="w-10 h-10" style="color:var(--pm-accent)"></i></div>
-                <p class="text-sm font-black text-slate-900 dark:text-white">完了！</p>
+                <p class="text-sm font-black text-slate-900 dark:text-white">完了</p>
                 <p class="text-xs font-bold text-slate-500 dark:text-slate-400" id="fc-final-score"></p>
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="fcRestart(false)" class="py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-xl text-xs font-black">もう一度</button>
@@ -4872,7 +4886,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
             </div>
 
             <div id="vq-mode-screen" class="space-y-3">
-                <p class="text-sm font-bold text-slate-600 dark:text-slate-300 text-center">出題モードを選んでスタート！</p>
+                <p class="text-sm font-bold text-slate-600 dark:text-slate-300 text-center">出題モードを選んでスタート</p>
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="initVocabularyQuiz('en2ja')" class="py-3.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-2xl text-xs font-black transition-all hover:opacity-90 flex flex-col items-center justify-center space-y-1">
                         <i data-lucide="arrow-right" class="w-4 h-4"></i>
@@ -7417,7 +7431,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
             if (window._pmReloadAfterWizard) { window._pmReloadAfterWizard = false; location.reload(); return; }
             const modal = document.getElementById('signup-wizard-modal');
             if (modal) modal.classList.add('hidden');
-            showToast('アカウントの登録が完了しました！');
+            showToast('アカウントの登録が完了しました');
             if (typeof updateAccountMenuDisplay === 'function') updateAccountMenuDisplay(window.currentAppUser);
             if (typeof refreshStudyProfile === 'function') refreshStudyProfile();
             if (typeof enforceProfileSetup === 'function') enforceProfileSetup();
@@ -8569,17 +8583,21 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 const el = document.getElementById(d.id);
                 if (!el) return;
                 state[d.id] = load(d);
-                Object.assign(el.style, { position: 'fixed', zIndex: '40', touchAction: 'none', userSelect: 'none', webkitUserSelect: 'none' });
-                let sx = 0, sy = 0, ox = 0, oy = 0, pid = null, down = false, dragging = false;
+                Object.assign(el.style, { position: 'fixed', zIndex: '40', touchAction: 'manipulation', userSelect: 'none', webkitUserSelect: 'none' });
+                let sx = 0, sy = 0, ox = 0, oy = 0, pid = null, down = false, dragging = false, armed = true, lp = 0;
                 el.addEventListener('pointerdown', (e) => {
                     if (e.button !== undefined && e.button !== 0) return;
                     down = true; dragging = false; pid = e.pointerId;
                     sx = e.clientX; sy = e.clientY; ox = state[d.id].x; oy = state[d.id].y;
-                    try { el.setPointerCapture(pid); } catch (_) {}
+                    armed = e.pointerType === 'mouse';
+                    if (armed) { try { el.setPointerCapture(pid); } catch (_) {} }
+                    else { clearTimeout(lp); lp = setTimeout(() => { armed = true; try { el.setPointerCapture(pid); } catch (_) {} el.style.transition = 'transform .15s'; el.style.transform = 'scale(1.1)'; try { if (navigator.vibrate) navigator.vibrate(8); } catch (_) {} }, 350); }
                 });
+                el.addEventListener('touchmove', (e) => { if (armed && down) e.preventDefault(); }, { passive: false });
                 el.addEventListener('pointermove', (e) => {
                     if (!down || e.pointerId !== pid) return;
                     const mx = e.clientX - sx, my = e.clientY - sy;
+                    if (!armed) { if (Math.hypot(mx, my) > 8) { clearTimeout(lp); down = false; } return; }
                     if (!dragging) {
                         if (Math.hypot(mx, my) < DRAG_PX) return;
                         dragging = true;
@@ -8594,6 +8612,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     positionTimerPanel();
                 });
                 const end = (e) => {
+                    clearTimeout(lp);
                     if (!down || (e && e.pointerId !== pid)) return;
                     down = false;
                     try { el.releasePointerCapture(pid); } catch (_) {}
@@ -11729,7 +11748,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 const el = document.getElementById('cal-jst-clock-time');
                 if (!el || !el.offsetParent) return;
                 const o = {}; fmt.formatToParts(new Date()).forEach(p => { o[p.type] = p.value; });
-                el.textContent = `${o.year}年${o.month}月${o.day}日(${o.weekday}) ${o.hour}:${o.minute}:${o.second}`;
+                el.textContent = `${o.year}年${o.month}月${o.day}日(${o.weekday}) ${o.hour}:${o.minute}:${o.second}`; el.classList.toggle('cal-sun', o.weekday === '日'); el.classList.toggle('cal-sat', o.weekday === '土');
             }
             tick(); setInterval(tick, 1000);
             document.addEventListener('visibilitychange', () => { if (!document.hidden) tick(); });
@@ -11854,7 +11873,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             box.innerHTML = `
                 <div class="cal-bg sticky z-20 pb-2" style="top:${CAL_STICKY_TOP};">
                     <div class="flex items-center justify-between ${allDay ? 'mb-2' : ''}">
-                        <p class="text-xs font-black ${date === todayStr ? 'text-rose-500' : 'text-slate-700 dark:text-slate-200'}">${Number(date.slice(5, 7))}月${Number(date.slice(8))}日（${wd}）${date === todayStr ? '・今日' : ''}</p>
+                        <p class="text-xs font-black ${date === todayStr ? 'text-rose-500' : 'text-slate-700 dark:text-slate-200'}">${Number(date.slice(5, 7))}月${Number(date.slice(8))}日（<span class="${wd === '日' ? 'cal-sun' : wd === '土' ? 'cal-sat' : ''}">${wd}</span>）${date === todayStr ? '・今日' : ''}</p>
                         <span class="text-[10px] font-bold text-slate-400">空いている枠をタップして追加</span>
                     </div>
                     ${allDay ? `<div class="flex items-start gap-2 pb-2 border-b border-slate-200 dark:border-slate-700"><span class="w-10 shrink-0 text-right text-[10px] font-bold text-slate-400 pt-1">終日</span><div class="flex-1 flex flex-wrap gap-1.5">${allDay}</div></div>` : ''}
@@ -12289,7 +12308,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                         const textColor = s.isRemote ? '#0f172a' : '#ffffff';
                         const edge = s.isRemote ? `border-left:3px solid ${ec};` : '';
                         const openAttr = `openScheduleViewModal(${schedIdArg(s.id)})`;
-                        return `<button type="button" onclick="event.stopPropagation(); calSelectDate('${c.dateStr}'); ${openAttr}" class="block w-full truncate text-left text-[8px] sm:text-[9px] font-bold rounded px-1 py-0.5 mt-0.5 transition-all duration-150 hover:brightness-110 hover:scale-[1.04] hover:z-10 relative cursor-pointer" style="background:${bg};color:${textColor};${edge}">${s.time ? escapeHtml(s.time) + ' ' : ''}${escapeHtml(s.title)}</button>`;
+                        return `<button type="button" onclick="event.stopPropagation(); calSelectDate('${c.dateStr}'); ${openAttr}" class="block w-full truncate text-left text-[8px] sm:text-[9px] font-bold rounded px-1 py-0.5 mt-0.5 transition-all duration-150 hover:brightness-110 hover:z-10 relative cursor-pointer" style="background:${bg};color:${textColor};${edge}">${s.time ? escapeHtml(s.time) + ' ' : ''}${escapeHtml(s.title)}</button>`;
                     }).join('');
                     return `<div data-date="${c.dateStr}" onclick="calCellClick('${c.dateStr}')" style="min-height:${calView === 'month' ? 64 : 160}px;cursor:pointer;"
                         class="p-1 flex flex-col items-center justify-start transition-colors ${lineCls} ${isSelected ? 'cal-cell-sel' : ''}">
@@ -12324,7 +12343,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (addBtn) addBtn.classList.remove('hidden');
             const d = new Date(calSelectedDate + 'T00:00:00Z');
             const wdNames = ['日','月','火','水','木','金','土'];
-            if (titleEl) titleEl.textContent = `${calSelectedDate.replace(/-/g,'/')}（${wdNames[d.getUTCDay()]}）の予定`;
+            if (titleEl) titleEl.innerHTML = `${calSelectedDate.replace(/-/g,'/')}（<span class="${d.getUTCDay() === 0 ? 'cal-sun' : d.getUTCDay() === 6 ? 'cal-sat' : ''}">${wdNames[d.getUTCDay()]}</span>）の予定`;
 
             const items = calVisibleSchedules().filter(s => s.date === calSelectedDate);
             if (items.length === 0) {
@@ -12803,11 +12822,11 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             scanHistory.forEach(item => {
                 const preview = item.data.transcription ? item.data.transcription.substring(0, 32) + '…' : 'プレビューなし';
                 const card = document.createElement('div');
-                card.className = 'flex items-center justify-between p-3.5 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-cyan-400 rounded-xl transition-all cursor-pointer group hover:-translate-y-0.5';
+                card.className = 'flex items-center justify-between p-3.5 bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800 hover:border-blue-400 dark:hover:border-cyan-400 rounded-xl transition-all cursor-pointer group';
                 card.onclick = () => loadHistoryItem(item.id);
                 card.innerHTML = `
                     <div class="flex items-start space-x-3 truncate">
-                        <div class="p-2 bg-blue-100 dark:bg-slate-800 text-blue-500 dark:text-cyan-400 rounded-lg group-hover:scale-105 transition-all shrink-0">
+                        <div class="p-2 bg-blue-100 dark:bg-slate-800 text-blue-500 dark:text-cyan-400 rounded-lg transition-all shrink-0">
                             <i data-lucide="file-check" class="w-4 h-4"></i>
                         </div>
                         <div class="truncate text-left min-w-0">
@@ -13712,12 +13731,12 @@ function slogBuckets(mode) {
     const logs = getStudyLogs(), today = slogToday(), out = [];
     const mk = (label, cur, pred) => { const b = { label, cur, parts: {}, total: 0 }; logs.forEach(l => { if (pred(l.date || '')) { const k = l.subject || 'その他', v = Number(l.durationMs) || 0; b.parts[k] = (b.parts[k] || 0) + v; b.total += v; } }); out.push(b); };
     if (mode === 'month') { const [y, m] = today.split('-').map(Number); for (let i = 5; i >= 0; i--) { const d = new Date(Date.UTC(y, m - 1 - i, 1)), p = d.toISOString().slice(0, 7); mk((d.getUTCMonth() + 1) + '月', i === 0, s => s.slice(0, 7) === p); } }
-    else if (mode === 'week') { for (let i = 7; i >= 0; i--) { const e = slogAddDays(today, -7 * i), s0 = slogAddDays(e, -6); mk(s0.slice(5).replace('-', '/'), i === 0, s => s >= s0 && s <= e); } }
+    else if (mode === 'week') { const ws = slogWeekStart(today); for (let i = 7; i >= 0; i--) { const s0 = slogAddDays(ws, -7 * i), e = slogAddDays(s0, 6); mk(s0.slice(5).replace('-', '/').replace(/^0/, ''), i === 0, s => s >= s0 && s <= e); } }
     else { for (let i = 6; i >= 0; i--) { const s0 = slogAddDays(today, -i); mk(SLOG_WD[new Date(s0 + 'T00:00:00Z').getUTCDay()], i === 0, s => s === s0); } }
     return out;
 }
 function slogChartSvg(mode, compact) {
-    const B = slogBuckets(mode), maxH = Math.max(Math.max(...B.map(b => b.total)) / 3600000, 0.25);
+    const B = slogBuckets(mode), goalH = mode === 'week' ? slogGoal() / 60 : 0, maxH = Math.max(Math.max(...B.map(b => b.total)) / 3600000, goalH, 0.25);
     const steps = [.25, .5, 1, 2, 3, 4, 5, 6, 8, 10, 12, 16, 20, 24, 30, 40, 50, 60, 80, 100], st = steps.find(s => maxH / s <= 4) || 200, top = Math.ceil(maxH / st - 1e-9) * st;
     const W = 320, H = compact ? 140 : 190, ml = 42, mr = 6, mt = 12, mb = 20, ph = H - mt - mb, bw = (W - ml - mr) / B.length;
     const names = slogSubjects().map(s => s.name); B.forEach(b => Object.keys(b.parts).forEach(k => { if (!names.includes(k)) names.push(k); }));
@@ -13728,8 +13747,9 @@ function slogChartSvg(mode, compact) {
         const x = ml + i * bw + bw * .17, w = bw * .66; let y = mt + ph;
         names.forEach(n => { const ms = b.parts[n] || 0; if (ms > 0) { const h = ms / 3600000 / top * ph; y -= h; g += `<rect x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${w.toFixed(1)}" height="${Math.max(h, 1).toFixed(1)}" fill="${slogColor(n)}"><title>${escapeHtml(n)}：${slogFmt(ms)}</title></rect>`; } });
         if (b.total > 0) g += `<text x="${(x + w / 2).toFixed(1)}" y="${(y - 3).toFixed(1)}" text-anchor="middle" font-size="8" font-weight="700" fill="currentColor">${slogShort(b.total)}</text>`;
-        g += `<text x="${(x + w / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="9" font-weight="${b.cur ? 800 : 500}" fill="${b.cur ? '#2563eb' : 'currentColor'}">${b.label}</text>`;
+        g += `<text x="${(x + w / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle" font-size="9" font-weight="${b.cur ? 800 : 500}" fill="${mode === 'day' && b.label === '日' ? '#e11d48' : mode === 'day' && b.label === '土' ? '#3b82f6' : b.cur ? '#2563eb' : 'currentColor'}">${b.label}</text>`;
     });
+    if (goalH > 0) { const gy = (mt + ph - goalH / top * ph).toFixed(1); g += `<line x1="${ml}" x2="${W - mr}" y1="${gy}" y2="${gy}" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4 3"/><text x="${W - mr}" y="${(gy - 3)}" text-anchor="end" font-size="8" font-weight="800" fill="#d97706">週の目標 ${slogFmt(slogGoal() * 60000)}</text>`; }
     return `<svg viewBox="0 0 ${W} ${H}" class="w-full" role="img" aria-label="勉強時間のグラフ">${g}</svg>`;
 }
 function slogLegendHtml(mode, compact) {
@@ -13745,16 +13765,17 @@ function slogRender() {
     const sumMs = f => logs.reduce((a, l) => a + (f(l.date || '') ? (Number(l.durationMs) || 0) : 0), 0);
     const card = (t, v) => `<div class="p-3 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800"><p class="text-[10px] font-black text-slate-400">${t}</p><p class="text-sm font-black text-slate-900 dark:text-white mt-1">${v}</p></div>`;
     document.getElementById('slog-summary').innerHTML = card('今日', slogFmt(sumMs(s => s === today))) + card('直近7日', slogFmt(sumMs(s => s >= wk && s <= today))) + card('合計', slogFmt(sumMs(() => true)));
-    document.getElementById('slog-seg').innerHTML = [['day', '7日'], ['week', '週ごと'], ['month', '月ごと']].map(([k, l]) => `<button type="button" onclick="slogSetMode('${k}')" class="px-4 py-1.5 rounded-lg text-xs font-black ${k === slogMode ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}">${l}</button>`).join('');
+    document.getElementById('slog-goal').innerHTML = slogGoalHtml(false);
+    document.getElementById('slog-seg').innerHTML = [['day', '7日'], ['week', '週ごと（月〜日）'], ['month', '月ごと']].map(([k, l]) => `<button type="button" onclick="slogSetMode('${k}')" class="px-4 py-1.5 rounded-lg text-xs font-black ${k === slogMode ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400'}">${l}</button>`).join('');
     document.getElementById('slog-chart').innerHTML = slogChartSvg(slogMode, false);
     document.getElementById('slog-legend').innerHTML = slogLegendHtml(slogMode, false);
     const list = logs.slice().sort((a, b) => String(b.endedAt || '').localeCompare(String(a.endedAt || ''))).slice(0, 100);
-    document.getElementById('slog-list').innerHTML = list.length ? list.map(l => `<div class="flex items-center gap-3 px-4 py-3"><i class="w-1.5 h-9 rounded-full flex-none" style="background:${slogColor(l.subject)}"></i><div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-900 dark:text-white truncate">${escapeHtml(l.subject || 'その他')}</p><p class="text-[11px] font-bold text-slate-400">${escapeHtml(formatStudyLogWhen(l))}</p></div><p class="text-sm font-black text-slate-800 dark:text-slate-100 tabular-nums">${slogFmt(Number(l.durationMs) || 0)}</p><button type="button" onclick="slogEdit('${String(l.id).replace(/'/g, '')}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-black text-slate-600 dark:text-slate-300">編集</button></div>`).join('') : '<p class="text-xs font-bold text-slate-400 text-center py-8">まだ記録がありません。「＋ 追加」から入れられます。</p>';
+    document.getElementById('slog-list').innerHTML = list.length ? list.map(l => `<div class="flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors" onclick="slogEdit('${String(l.id).replace(/'/g, '')}')"><i class="w-1.5 h-9 rounded-full flex-none" style="background:${slogColor(l.subject)}"></i><div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-900 dark:text-white truncate">${escapeHtml(l.subject || 'その他')}</p><p class="text-[11px] font-bold text-slate-400">${slogWhen(l)}</p></div><p class="text-sm font-black text-slate-800 dark:text-slate-100 tabular-nums">${slogFmt(Number(l.durationMs) || 0)}</p><button type="button" onclick="event.stopPropagation();slogEdit('${String(l.id).replace(/'/g, '')}')" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-black text-slate-600 dark:text-slate-300">編集</button></div>`).join('') : '<p class="text-xs font-bold text-slate-400 text-center py-8">まだ記録がありません。「＋ 追加」から入れられます。</p>';
     if (typeof lucide !== 'undefined') lucide.createIcons();
 }
 function slogSetMode(m) { slogMode = m; slogRender(); }
-function slogOpen() { const pg = document.getElementById('slog-page'); if (!pg) return; pg.classList.remove('hidden'); pg.scrollTop = 0; slogRender(); }
-function slogClose() { const pg = document.getElementById('slog-page'); if (pg) pg.classList.add('hidden'); slogSheet(false); }
+function slogOpen() { const pg = document.getElementById('slog-page'); if (!pg) return; pg.classList.remove('hidden'); document.body.classList.add('slog-open'); pg.scrollTop = 0; slogRender(); }
+function slogClose() { const pg = document.getElementById('slog-page'); if (pg) pg.classList.add('hidden'); document.body.classList.remove('slog-open'); slogSheet(false); }
 function slogSheet(on, html) { const s = document.getElementById('slog-sheet'); if (!s) return; if (html != null) document.getElementById('slog-sheet-body').innerHTML = html; s.classList.toggle('hidden', !on); if (on && typeof lucide !== 'undefined') lucide.createIcons(); }
 function slogEdit(id) {
     const l = id ? getStudyLogs().find(x => String(x.id) === String(id)) : null, today = slogToday();
@@ -13795,6 +13816,32 @@ function slogRename(i, v) {
     safeStorage.set('pm_study_logs', logs); slogSaveSubjects(s); slogManage(); slogRender();
 }
 function slogDelSubject(i) { const s = slogSubjects(); if (s.length <= 1) { showToast('教科は1つ以上必要です'); return; } if (!confirm('「' + s[i].name + '」を一覧から外します。この教科の記録は残ります。')) return; s.splice(i, 1); slogSaveSubjects(s); slogManage(); slogRender(); }
+function slogWhen(l) { return escapeHtml(formatStudyLogWhen(l) || l.date || '').replace('(日)', '<span class="cal-sun">(日)</span>').replace('(土)', '<span class="cal-sat">(土)</span>'); }
+function slogWeekStart(s) { return slogAddDays(s, -((new Date(s + 'T00:00:00Z').getUTCDay() + 6) % 7)); }
+function slogGoal() { const v = Number(safeStorage.get('pm_study_week_goal')); return v > 0 ? v : 0; }
+function slogWeekProgress() { const today = slogToday(), ws = slogWeekStart(today), ms = getStudyLogs().reduce((a, l) => { const d = l.date || ''; return a + (d >= ws && d <= today ? (Number(l.durationMs) || 0) : 0); }, 0); return { ms, left: 6 - ((new Date(today + 'T00:00:00Z').getUTCDay() + 6) % 7) }; }
+function slogGoalHtml(mini) {
+    const g = slogGoal(), p = slogWeekProgress(), gm = g * 60000, box = 'p-4 rounded-2xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-slate-800';
+    if (!g) return mini ? `<button type="button" onclick="slogGoalSheet()" class="mt-3 w-full py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-[11px] font-black text-slate-600 dark:text-slate-300">＋ 週の目標時間を決める</button>` : `<div class="${box} flex items-center gap-3"><div class="flex-1 min-w-0"><p class="text-sm font-black text-slate-900 dark:text-white">週の目標</p><p class="text-[11px] font-bold text-slate-400">月曜〜日曜の合計の目標を決めると、進み具合が見えます</p></div><button type="button" onclick="slogGoalSheet()" class="px-3 py-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-black flex-none">目標を決める</button></div>`;
+    const pct = Math.min(100, Math.round(p.ms / gm * 100)), done = p.ms >= gm, rest = gm - p.ms;
+    const note = done ? '目標を達成しました' : p.left > 0 ? `あと ${slogFmt(rest)}（残り${p.left}日なら、1日 ${slogFmt(Math.ceil(rest / p.left))}）` : `今日が今週の最終日です。あと ${slogFmt(rest)}`;
+    const bar = `<div class="h-2.5 rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden"><div class="h-full rounded-full ${done ? 'bg-emerald-500' : 'bg-blue-500'}" style="width:${pct}%"></div></div>`;
+    if (mini) return `<div class="mt-3 cursor-pointer" onclick="slogGoalSheet()"><div class="flex justify-between text-[11px] font-black text-slate-700 dark:text-slate-200 mb-1"><span>今週の目標</span><span class="tabular-nums">${slogFmt(p.ms)} / ${slogFmt(gm)}</span></div>${bar}<p class="text-[10px] font-bold ${done ? 'text-emerald-500' : 'text-slate-400'} mt-1">${note}</p></div>`;
+    return `<div class="${box}"><div class="flex items-center justify-between mb-2"><p class="text-sm font-black text-slate-900 dark:text-white">今週の目標 <span class="text-[11px] text-slate-400 font-bold">（月〜日）</span></p><button type="button" onclick="slogGoalSheet()" class="px-2.5 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[11px] font-black text-slate-600 dark:text-slate-300">変更</button></div><div class="flex items-baseline justify-between mb-1.5"><span class="text-lg font-black ${done ? 'text-emerald-500' : 'text-slate-900 dark:text-white'} tabular-nums">${pct}%</span><span class="text-xs font-bold text-slate-500 dark:text-slate-400 tabular-nums">${slogFmt(p.ms)} / ${slogFmt(gm)}</span></div>${bar}<p class="text-[11px] font-bold ${done ? 'text-emerald-500' : 'text-slate-400'} mt-2">${note}</p></div>`;
+}
+function slogGoalSheet() {
+    const g = slogGoal(), inp = 'w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white';
+    slogSheet(true, `<h3 class="font-black text-base text-slate-900 dark:text-white mb-1">週の目標時間</h3><p class="text-[11px] font-bold text-slate-400 mb-4">月曜から日曜までの、勉強時間の合計の目標です。</p>
+<div class="flex flex-wrap gap-2 mb-3">${[3, 5, 7, 10, 15, 20].map(h => `<button type="button" onclick="document.getElementById('slog-g-h').value=${h};document.getElementById('slog-g-m').value=0" class="px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs font-black text-slate-700 dark:text-slate-200">${h}時間</button>`).join('')}</div>
+<div class="flex items-center gap-2 mb-1"><input id="slog-g-h" type="number" min="0" max="168" inputmode="numeric" value="${Math.floor(g / 60)}" class="${inp}"><span class="text-sm font-black text-slate-500">時間</span><input id="slog-g-m" type="number" min="0" max="59" inputmode="numeric" value="${g % 60}" class="${inp}"><span class="text-sm font-black text-slate-500">分</span></div>
+<p id="slog-g-err" class="hidden text-xs font-bold text-rose-500 mb-2"></p>
+<div class="flex gap-2 mt-4">${g ? `<button type="button" onclick="slogGoalSave(true)" class="px-4 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-sm font-black">目標なし</button>` : ''}<button type="button" onclick="slogSheet(false)" class="flex-1 py-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-sm font-black">キャンセル</button><button type="button" onclick="slogGoalSave()" class="flex-1 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-sm font-black">保存</button></div>`);
+}
+function slogGoalSave(clear) {
+    const min = clear ? 0 : (parseInt(document.getElementById('slog-g-h').value) || 0) * 60 + (parseInt(document.getElementById('slog-g-m').value) || 0), err = document.getElementById('slog-g-err');
+    if (!clear && (min < 1 || min > 168 * 60)) { err.textContent = min < 1 ? '1分以上の時間を入れてください' : '168時間（1週間）以内にしてください'; err.classList.remove('hidden'); return; }
+    safeStorage.set('pm_study_week_goal', min); refreshStudyProfile(); slogSheet(false); slogRender(); showToast(clear ? '週の目標をなくしました' : '週の目標を保存しました');
+}
 function slogFillTimer() {
     const sel = document.getElementById('timer-subject-select'); if (!sel) return;
     const subs = slogSubjects(), cur = sel.value && sel.value !== '__add__' ? sel.value : ''; let last = ''; try { last = localStorage.getItem('pm_timer_last_subject') || ''; } catch (e) {}
@@ -14046,7 +14093,7 @@ slogFillTimer();
             const statWeek = document.getElementById('study-stat-week');
             if (statWeek) statWeek.textContent = formatStudyHoursLabel(weekMs);
 
-            const graphWrap = document.getElementById('study-week-graph'); if (graphWrap) { graphWrap.className = 'w-full'; graphWrap.innerHTML = slogChartSvg('day', true) + slogLegendHtml('day', true); } if (typeof slogRender === 'function') slogRender();
+            const graphWrap = document.getElementById('study-week-graph'); if (graphWrap) { graphWrap.className = 'w-full'; graphWrap.innerHTML = slogChartSvg('day', true) + slogLegendHtml('day', true) + slogGoalHtml(true); } if (typeof slogRender === 'function') slogRender();
         const badgeGrid = document.getElementById('study-badge-grid');
             if (badgeGrid) {
                 badgeGrid.innerHTML = STUDY_BADGES.map(b => {
@@ -14074,7 +14121,7 @@ slogFillTimer();
                         <div class="flex items-center justify-between px-3.5 py-2.5">
                             <div class="min-w-0">
                                 <p class="text-xs font-black text-slate-800 dark:text-slate-100">${escapeHtml(l.subject)}<span class="text-slate-400 font-bold"> ・ ${formatStudyHoursLabel(l.durationMs)}</span></p>
-                                <p class="text-[10px] font-bold text-slate-400 mt-0.5 tabular-nums">${escapeHtml(formatStudyLogWhen(l) || l.date || '')}</p>
+                                <p class="text-[10px] font-bold text-slate-400 mt-0.5 tabular-nums">${slogWhen(l)}</p>
                             </div>
                             <button onclick="deleteStudyLog('${l.id}')" class="p-1.5 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-400 hover:text-rose-500 shrink-0"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
                         </div>`).join('');
@@ -14689,7 +14736,7 @@ ${pmReportButtonHtml('eikomi', 'questions.' + qi, data)}
             const comp = document.getElementById('fc-complete');
             const scoreEl = document.getElementById('fc-final-score');
             if (comp) comp.classList.remove('hidden');
-            if (scoreEl) scoreEl.textContent = `${fcScore} / ${fcWords.length} 覚えた！（${Math.round(fcScore/fcWords.length*100)}%）`;
+            if (scoreEl) scoreEl.textContent = `${fcScore} / ${fcWords.length} 覚えた（${Math.round(fcScore/fcWords.length*100)}%）`;
             submitWordProgress(fcScore);
         }
 
@@ -14697,7 +14744,7 @@ ${pmReportButtonHtml('eikomi', 'questions.' + qi, data)}
             let words = weakOnly
                 ? fcWords.filter(w => fcWeakSet[w.word])
                 : [...fcWords].sort(() => Math.random() - 0.5);
-            if (words.length === 0) { showToast('未知語がありません！'); return; }
+            if (words.length === 0) { showToast('未知語がありません'); return; }
             fcWords = words;
             fcIndex = 0; fcScore = 0;
             document.getElementById('fc-complete')?.classList.add('hidden');
@@ -19378,7 +19425,7 @@ const KOBUN_TANGO = [
             const comp = document.getElementById('t19f-complete2');
             if (comp) comp.classList.remove('hidden');
             const fin = document.getElementById('t19f-final2');
-            if (fin) fin.textContent = t19_flashScore + ' / ' + t19_flashWords.length + ' 覚えた！（' + Math.round(t19_flashScore / t19_flashWords.length * 100) + '%）';
+            if (fin) fin.textContent = t19_flashScore + ' / ' + t19_flashWords.length + ' 覚えた（' + Math.round(t19_flashScore / t19_flashWords.length * 100) + '%）';
             updateT19Stats();
             submitWordProgress(t19_flashScore);
         }
@@ -19387,7 +19434,7 @@ const KOBUN_TANGO = [
             let words = weakOnly
                 ? t19_flashWords.filter(w => t19_weakSet[w.n] > 0)
                 : [...t19_flashWords].sort(() => Math.random() - 0.5);
-            if (words.length === 0) { showToast('苦手単語がありません！'); return; }
+            if (words.length === 0) { showToast('苦手単語がありません'); return; }
             t19StartFlash(words);
         }
 
@@ -19533,7 +19580,7 @@ const KOBUN_TANGO = [
                 if (t19_weakSet[wordN] > 0) t19_weakSet[wordN] = Math.max(0, t19_weakSet[wordN] - 1);
                 btn.classList.add('bg-green-100','border-green-400','dark:bg-green-900/40','dark:border-green-600');
                 if (fbEl) fbEl.className = 'py-2 px-3 rounded-xl text-sm font-black bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400';
-                if (fbTextEl) fbTextEl.textContent = '◯ 正解！';
+                if (fbTextEl) fbTextEl.textContent = '◯ 正解';
             } else {
                 t19_weakSet[wordN] = (t19_weakSet[wordN] || 0) + 1;
                 btn.classList.add('bg-blue-100','border-blue-400','dark:bg-rose-900/40','dark:border-rose-600');
@@ -19813,8 +19860,6 @@ const KOBUN_TANGO = [
                 const btn = document.getElementById('bottom-tab-' + k);
                 if (!btn) return;
                 const active = (k === key);
-                btn.classList.toggle('text-cyan-600', active);
-                btn.classList.toggle('dark:text-cyan-400', active);
                 btn.classList.toggle('text-slate-400', !active);
                 btn.classList.toggle('dark:text-slate-500', !active);
                 btn.classList.toggle('pm-tab-on', active);   // 浮き出て、大きくなる
@@ -20199,7 +20244,7 @@ const KOBUN_TANGO = [
                 document.getElementById('rh-photo-upload-area')?.classList.add('hidden');
                 document.getElementById('rh-photo-preview-area')?.classList.remove('hidden');
                 const info = document.getElementById('rh-info-text');
-                if (info) info.textContent = '準備OK！「この写真を読み取る」を押してね';
+                if (info) info.textContent = '準備OK。「この写真を読み取る」を押してね';
             }).catch((err) => {
                 console.warn('画像の圧縮に失敗したため、元の画像をそのまま使用します:', err);
                 const reader = new FileReader();
@@ -20211,7 +20256,7 @@ const KOBUN_TANGO = [
                     document.getElementById('rh-photo-upload-area')?.classList.add('hidden');
                     document.getElementById('rh-photo-preview-area')?.classList.remove('hidden');
                     const info = document.getElementById('rh-info-text');
-                    if (info) info.textContent = '準備OK！「この写真を読み取る」を押してね';
+                    if (info) info.textContent = '準備OK。「この写真を読み取る」を押してね';
                 };
                 reader.readAsDataURL(file);
             });
@@ -20223,7 +20268,7 @@ const KOBUN_TANGO = [
             document.getElementById('rh-photo-upload-area')?.classList.remove('hidden');
             document.getElementById('rh-photo-preview-area')?.classList.add('hidden');
                         const info = document.getElementById('rh-info-text');
-            if (info) info.textContent = 'プリントをセットしてね！';
+            if (info) info.textContent = 'プリントをセットしてください';
         }
         function renderBoldMarkdown(escapedText) {
             return escapedText.replace(/\*\*(.+?)\*\*/g, '<strong class="text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40 px-1 rounded">$1</strong>');
@@ -20316,8 +20361,8 @@ const KOBUN_TANGO = [
                 resetRonriAnalyzeButton();
                 updateRonriPhotoRemaining();
                 const info3 = document.getElementById('rh-info-text');
-                if (info3) info3.textContent = '解析が終わったよ！別の写真に差し替えることもできます';
-                showToast('解析が完了しました！');
+                if (info3) info3.textContent = '解析が終わりました。別の写真に差し替えることもできます';
+                showToast('解析が完了しました');
             } catch (err) {
                 console.error(err);
                 clearInterval(rhProgressTimer);
@@ -20524,7 +20569,7 @@ const KOBUN_TANGO = [
             if (subject === 'math') { _navigateTo('math'); return; }
             if (subject === 'science') { _navigateTo('science'); return; }
             if (subject === 'social') { _navigateTo('social'); return; }
-            showToast('このコースは近日公開予定です！お楽しみに');
+            showToast('このコースは近日公開予定です。お楽しみに');
         }
 
         function _showJapaneseHome() {
@@ -20800,7 +20845,7 @@ const KOBUN_TANGO = [
             const li = (arr, icon, cls) => (Array.isArray(arr) ? arr : []).filter(Boolean).map(t => `<li class="flex gap-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 leading-relaxed"><span class="${cls} shrink-0">${icon}</span><span>${escapeHtmlText(t)}</span></li>`).join('');
             const corrections = Array.isArray(r.corrections) ? r.corrections : [];
             const corrHtml = corrections.length === 0
-                ? '<p class="text-xs font-bold text-emerald-500">修正が必要な箇所は見つかりませんでした。すばらしい英文です！</p>'
+                ? '<p class="text-xs font-bold text-emerald-500">修正が必要な箇所は見つかりませんでした。すばらしい英文です</p>'
                 : corrections.map((c, i) => `
                     <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-2.5 space-y-1">
                         <div class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-rose-500 text-white text-[10px] font-black flex items-center justify-center shrink-0">${i + 1}</span><span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">${escapeHtmlText(c.category || '')}</span></div>
@@ -21092,7 +21137,7 @@ const KOBUN_TANGO = [
                 renderKobunReaderTabs();
                 showKobunText(id);
                 updateKobunPhotoRemaining();
-                showToast('読み取りが完了しました！');
+                showToast('読み取りが完了しました');
                 if (typeof lucide !== 'undefined') lucide.createIcons();
             } catch (err) {
                 console.error(err);
@@ -21242,7 +21287,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             resultEl.classList.remove('hidden');
             resultEl.innerHTML = `
                 <i data-lucide="party-popper" class="w-9 h-9 text-rose-500 mx-auto"></i>
-                <p class="text-xl font-black text-slate-800 dark:text-white">${kvScore} / ${kvQueue.length} 覚えた！</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white">${kvScore} / ${kvQueue.length} 覚えた</p>
                 <div class="space-y-2 pt-1">
                     <button onclick="openKobunVocab()" class="w-full py-3 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-2xl text-xs font-black hover:opacity-90 transition-all">もう一度</button>
                     <button onclick="openKobunHome()" class="w-full py-2.5 text-slate-400 text-xs font-bold">古典Homeに戻る</button>
@@ -21315,7 +21360,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 fb.classList.remove('hidden');
                 if (allCorrect) {
                     fb.className = 'mt-2.5 text-[11px] font-bold text-emerald-500';
-                    fb.textContent = '✓ 正解！';
+                    fb.textContent = '✓ 正解';
                 } else {
                     fb.className = 'mt-2.5 text-[11px] font-bold text-rose-500';
                     fb.textContent = '正しい形：' + item.blanks.map(i => `${KATSUYOU_FORM_LABELS[i]}=${item.forms[i]}`).join('、');
@@ -21340,7 +21385,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                     </button>`;
                 }
                 return `
-                <button onclick="showToast('このモードは近日公開予定です！お楽しみに')" class="pm-subj pm-off">
+                <button onclick="showToast('このモードは近日公開予定です。お楽しみに')" class="pm-subj pm-off">
                     <span class="pm-pill">作成中</span>
                     <span class="pm-badge"><i data-lucide="${item.icon}" class="w-5 h-5"></i></span>
                     <span class="pm-name">${escapeHtml(item.label)}</span>
@@ -21560,7 +21605,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
 
         function openSocialQA(subjectKey) {
             const data = SOCIAL_QA_DATA[subjectKey];
-            if (!data || data.length === 0) { showToast('このモードは近日公開予定です！お楽しみに'); return; }
+            if (!data || data.length === 0) { showToast('このモードは近日公開予定です。お楽しみに'); return; }
             sqaSubjectKey = subjectKey;
             sqaSubjectLabel = SUBJECT_LABELS[subjectKey] || '一問一答';
             sqaQueue = [...data].sort(() => Math.random() - 0.5);
@@ -21647,7 +21692,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             area.innerHTML = `
                 <div class="w-full space-y-2.5">
                     <div class="flex items-center justify-center gap-1.5 py-1.5 rounded-xl bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 text-sm font-black">
-                        <i data-lucide="check-circle" class="w-4 h-4"></i><span>◯ 正解！</span>
+                        <i data-lucide="check-circle" class="w-4 h-4"></i><span>◯ 正解</span>
                     </div>
                     <p class="text-[11px] font-bold text-slate-400">今の答え、どっちでしたか？</p>
                     <div class="grid grid-cols-2 gap-2.5">
@@ -21847,7 +21892,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
                 } else if (targetEl) {
                     geoMistakes++;
                     updateGeoPuzzleProgress();
-                    showToast('ちがう場所みたい…もう一度！');
+                    showToast('ちがう場所みたい…もう一度');
                 }
             }
             document.addEventListener('pointermove', onMove);
@@ -21876,9 +21921,9 @@ ${pmReportButtonHtml('kobun', 'all', t)}
             resultEl.classList.remove('hidden');
             resultEl.innerHTML = `
                 <i data-lucide="party-popper" class="w-9 h-9 text-amber-500 mx-auto"></i>
-                <p class="text-xl font-black text-slate-800 dark:text-white">全${GEO_COUNTRIES.length}か国クリア！</p>
+                <p class="text-xl font-black text-slate-800 dark:text-white">全${GEO_COUNTRIES.length}か国クリア</p>
                 <p class="text-xs font-bold text-slate-400">間違えた回数：${geoMistakes}回</p>
-                ${isNewBest ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-500 text-white text-[10px] font-black"><i data-lucide="trophy" class="w-3 h-3"></i>自己ベスト更新！</span>` : ''}
+                ${isNewBest ? `<span class="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-500 text-white text-[10px] font-black"><i data-lucide="trophy" class="w-3 h-3"></i>自己ベスト更新</span>` : ''}
                 <div class="space-y-2 pt-1">
                     <button onclick="startGeoPuzzleGame()" class="w-full py-3 bg-gradient-to-r from-sky-500 via-emerald-500 to-amber-500 text-white rounded-2xl text-xs font-black hover:opacity-90 transition-all">もう一度</button>
                     <button onclick="closeCountryPuzzle()" class="w-full py-2.5 text-slate-400 text-xs font-bold">閉じる</button>
@@ -22083,7 +22128,7 @@ ${pmReportButtonHtml('kobun', 'all', t)}
         }
         function openFormulaMode(subjectKey, keepSearch) {
             const data = FORMULA_DATA[subjectKey];
-            if (!data) { showToast('このモードは近日公開予定です！お楽しみに'); return; }
+            if (!data) { showToast('このモードは近日公開予定です。お楽しみに'); return; }
             if (!keepSearch) { formulaQuery = ''; formulaScope = 'course'; }
             if (subjectKey === 'physics') formulaScope = 'course';
             formulaApplyKey(subjectKey);
@@ -26839,7 +26884,7 @@ async function devUsageLoadTrend(selected) {
         // ---------- 開発者ページ ----------
         let devItems = [], devLoaded = false;
         const profCache = new Map();
-        const REPLY_TEMPLATES = ['直しました。ご報告ありがとうございました！', '確認しました。対応を進めます。', '再現できませんでした。どの画面で、何をしたときか、もう少し詳しく教えてください。', '要望として受け取りました。検討します。'];
+        const REPLY_TEMPLATES = ['直しました。ご報告ありがとうございました', '確認しました。対応を進めます。', '再現できませんでした。どの画面で、何をしたときか、もう少し詳しく教えてください。', '要望として受け取りました。検討します。'];
         const SEV = { low: ['低', 'bg-slate-200 text-slate-600'], medium: ['中', 'bg-amber-100 text-amber-700'], high: ['高', 'bg-rose-100 text-rose-700'] };
         const fmt = (ms) => { if (!ms) return ''; const d = new Date(ms); return `${d.getMonth() + 1}/${d.getDate()} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; };
 
@@ -27094,21 +27139,20 @@ async function devUsageLoadTrend(selected) {
         .cal-ev{transition:filter .15s ease,transform .15s ease}
         .cal-ev:hover{filter:brightness(1.08);z-index:5}
         @media (prefers-reduced-motion: reduce){#cal-view-pill{transition:none !important}}
-        /* 下のタブバー：選んでいるタブが、浮き出て大きくなる */
-        #bottom-tab-bar { --pm-bar-bg: #ffffff; --pm-tab-c: #06b6d4; --pm-tab-glow: rgba(6,182,212,.42); }
-        .dark #bottom-tab-bar { --pm-bar-bg: #0c1220; --pm-tab-c: #06b6d4; --pm-tab-glow: rgba(34,211,238,.38); }
-        #pm-tab-ind { display: none !important; }
+        /* 下のタブバー：選んでいるタブの上で境目の線がふくらむ。アイコンはそのふくらみの中へ少し持ち上がる（丸や青い色は使わない） */
+        #bottom-tab-bar { --pm-bar-bg: #ffffff; --pm-bar-line: var(--pm-line, #e8e4dd); --pm-tab-ink: #1e293b; --pm-wave-shade: rgba(15,23,42,.07); }
+        .dark #bottom-tab-bar { --pm-bar-bg: #0c1220; --pm-bar-line: #1e293b; --pm-tab-ink: #e2e8f0; --pm-wave-shade: rgba(0,0,0,.35); }
         #bottom-tab-bar > button { position: relative; -webkit-tap-highlight-color: transparent; }
         .pm-tab-bubble { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 9999px;
-            transition: transform .55s cubic-bezier(.34,1.56,.64,1), background-color .3s ease, box-shadow .35s ease, color .25s ease; }
+            transition: transform .55s cubic-bezier(.34,1.56,.64,1), color .25s ease; }
         #bottom-tab-bar > button:not(.pm-tab-on):active .pm-tab-bubble { transform: scale(.86); }
-        #bottom-tab-bar > button.pm-tab-on .pm-tab-bubble { transform: translateY(-15px) scale(1.5); background: var(--pm-tab-c); color: #ffffff;
-            box-shadow: 0 0 0 3px var(--pm-bar-bg), 0 9px 18px var(--pm-tab-glow); }
-        #bottom-tab-bar > button.pm-tab-on:active .pm-tab-bubble { transform: translateY(-13px) scale(1.4); }
+        #bottom-tab-bar > button.pm-tab-on { color: var(--pm-tab-ink); }
+        #bottom-tab-bar > button.pm-tab-on .pm-tab-bubble { transform: translateY(-13px) scale(1.3); }
+        #bottom-tab-bar > button.pm-tab-on:active .pm-tab-bubble { transform: translateY(-12px) scale(1.2); }
         .pm-tab-label { transition: transform .45s cubic-bezier(.34,1.56,.64,1), color .25s ease; }
-        #bottom-tab-bar > button.pm-tab-on .pm-tab-label { font-weight: 900; transform: translateY(-1px) scale(1.06); }
+        #bottom-tab-bar > button.pm-tab-on .pm-tab-label { font-weight: 600; transform: translateY(-6px); }
         html:not(.pm-fx) .pm-tab-bubble, html:not(.pm-fx) .pm-tab-label { transition: none; }
-        @media (prefers-reduced-motion: reduce) { .pm-tab-bubble, .pm-tab-label { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { .pm-tab-bubble, .pm-tab-label, #pm-tab-ind { transition: none; } }
     </style>
     <script>
 (function () {
@@ -28507,6 +28551,7 @@ async function devUsageLoadTrend(selected) {
             var el = tapTarget(e.target);
             if (!el) return;
             pressed = el;
+            if (el.closest('#bottom-tab-bar')) return;     // 下のタブは、青い波紋を出さない
             var r = document.createElement('span');
             r.className = 'pm-ripple';
             r.style.left = e.clientX + 'px'; r.style.top = e.clientY + 'px';
@@ -28524,13 +28569,18 @@ async function devUsageLoadTrend(selected) {
         document.addEventListener('touchstart', function () {}, { passive: true });
 
         var nav = document.getElementById('bottom-tab-bar'), ind = null, lastKey = '', lastActive = null, placed = false;
-        function activeTab() { return nav ? nav.querySelector(':scope > button.text-cyan-600') : null; }
+        function activeTab() { return nav ? nav.querySelector(':scope > button.pm-tab-on') : null; }
         function moveIndicator(pop) {
             if (!nav) return;
-            if (!ind) { ind = document.createElement('span'); ind.id = 'pm-tab-ind'; nav.appendChild(ind); }
+            if (!ind) {
+                ind = document.createElement('span'); ind.id = 'pm-tab-ind';
+                // 山のかたち：底の線(y=12.5)から、なだらかに上がって下りる。塗りで元の平らな線を隠し、輪郭の線で置き換える
+                ind.innerHTML = '<svg viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="fill" d="M0 21.5C26 21.5 30 1 50 1S74 21.5 100 21.5V22H0Z"/><path class="line" d="M0 21.5C26 21.5 30 1 50 1S74 21.5 100 21.5"/></svg>';
+                nav.appendChild(ind);
+            }
             var a = activeTab();
             if (!a || !nav.getClientRects().length) { ind.classList.remove('on'); lastActive = a; return; }
-            var nr = nav.getBoundingClientRect(), r = a.getBoundingClientRect(), w = 28;
+            var nr = nav.getBoundingClientRect(), r = a.getBoundingClientRect(), w = Math.round(Math.min(Math.max(r.width * 1.3, 100), 150));
             if (!placed) { ind.style.transition = 'none'; }
             ind.style.width = w + 'px';
             ind.style.setProperty('--x', (r.left - nr.left + (r.width - w) / 2) + 'px');
