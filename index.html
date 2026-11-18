@@ -1244,13 +1244,26 @@ html.dark .dev-log-link { color: #e2e8f0; }
         html.dark .pm-ripple { --pm-ripple-c: rgba(103,232,249,.28); }
 
         /* 下のタブバー：画面との境目の線が、選んだタブの上でなだらかにふくらむ（波うつ）。色は付けず、線と同じ色で輪郭を描く */
-        #pm-tab-ind { position: absolute; left: 0; top: -22px; height: 22px; width: 100px; pointer-events: none; opacity: 0; filter: drop-shadow(0 -2px 3px var(--pm-wave-shade, rgba(15,23,42,.07)));
-            transform: translateX(var(--x, 0px)); transition: transform .55s var(--pm-spring), opacity .2s ease; }
-        #pm-tab-ind.on { opacity: 1; }
-        #pm-tab-ind svg { display: block; width: 100%; height: 100%; overflow: visible; }
+        #bottom-tab-bar.pm-wave-on { border-top-color: transparent !important; }   /* 境界線は、山と同じSVGの中で1本の線として描く（枠線とのつなぎ目をなくす） */
+        #pm-tab-ind { position: absolute; z-index: 0; left: 0; right: 0; top: -15px; height: 15px; pointer-events: none; }
+        #pm-tab-ind svg { display: block; width: 100%; height: 15px; overflow: visible; }
+        #pm-tab-ind .base { stroke: var(--pm-bar-line, #e8e4dd); stroke-width: 1; }
+        #pm-tab-ind .bump { opacity: 0; transform-origin: 0 0; transform: translateX(var(--x, 0px)) scaleX(var(--s, 1));
+            transition: transform .55s var(--pm-spring), opacity .2s ease; }
+        #pm-tab-ind.on .bump { opacity: 1; }
+        #pm-tab-ind.no-anim .bump { transition: none; }
         #pm-tab-ind .fill { fill: var(--pm-bar-bg, #ffffff); }
         #pm-tab-ind .line { fill: none; stroke: var(--pm-bar-line, #e8e4dd); stroke-width: 1; vector-effect: non-scaling-stroke; }
-        html:not(.pm-fx) #pm-tab-ind { transition: none; }
+        html:not(.pm-fx) #pm-tab-ind .bump { transition: none; }
+        .pm-clamp4 { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }   /* 長い課題の内容を4行で折りたたむ */
+        /* 教科の色：--sc に教科の色を入れて使う（成績管理と同じ配色。国語＝ばら色／数学＝藍／英語＝シアン／理科＝緑／社会＝琥珀） */
+        .pm-subj-card { border-left: 4px solid var(--sc, #94a3b8) !important; background-image: linear-gradient(color-mix(in srgb, var(--sc, #94a3b8) 8%, transparent), color-mix(in srgb, var(--sc, #94a3b8) 8%, transparent)); }
+        .pm-subj-badge { background-color: color-mix(in srgb, var(--sc, #94a3b8) 22%, transparent) !important; color: color-mix(in srgb, var(--sc, #94a3b8) 40%, #0f172a) !important; }
+        .dark .pm-subj-badge { color: var(--sc, #94a3b8) !important; }
+        .pm-subj-dot { display: inline-block; width: .5rem; height: .5rem; border-radius: 9999px; background-color: var(--sc, #94a3b8); flex-shrink: 0; }
+        .pm-subj-chip { border-color: color-mix(in srgb, var(--sc, #94a3b8) 60%, transparent) !important; }
+        .pm-subj-chip[aria-pressed="true"] { background-color: var(--sc, #94a3b8) !important; border-color: var(--sc, #94a3b8) !important; color: #0f172a !important; }
+        .pm-subj-head { border-left: 4px solid var(--sc, #94a3b8); }
         .pm-fx #bottom-tab-bar > button.pm-tab-pop svg { animation: pmTabPop .5s var(--pm-spring); }
 
         .pm-fx :is(#home-container,#english-home,#japanese-home,#math-home,#science-home,#social-home,#mypage-panel,#seasonal-corner-panel,#grades-panel,#preset-section-selector,#english-entry-selector,#ronri-entry-selector):not(.hidden) .grid:not(:has(> :nth-child(13))) > * { animation: pmRise .55s var(--pm-ease) backwards; }
@@ -2621,21 +2634,9 @@ html.dark .dev-log-link { color: #e2e8f0; }
                                 <div class="flex items-center gap-2 mb-1">
                     <i data-lucide="calendar-clock" class="w-6 h-6 text-amber-500"></i>
                     <h2 class="text-lg font-black text-slate-800 dark:text-white">期間限定コーナー</h2>
+                    <button id="seasonal-edit-btn" onclick="openSeasonalSetup()" class="hidden ml-auto shrink-0 items-center gap-1.5 px-3.5 py-2 rounded-full bg-cyan-600 hover:bg-cyan-700 text-white text-xs font-black"><i data-lucide="pencil" class="w-3.5 h-3.5"></i>編集</button>
                 </div>
                 <p class="text-xs font-semibold text-slate-400 -mt-2 mb-2">長期休暇課題など、その時期だけ使うものはここにまとまります</p>
-
-                <div id="seasonal-dev-manage" class="hidden bg-slate-50 dark:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-600 rounded-2xl p-4 space-y-3">
-                    <p class="text-[11px] font-black text-slate-500 dark:text-slate-400 flex items-center gap-1.5"><i data-lucide="settings-2" class="w-3.5 h-3.5"></i>開発者：表示する項目を追加・管理</p>
-<button onclick="openSeasonalSetup()" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5"><i data-lucide="plus" class="w-4 h-4"></i>テスト・長期課題を設定する</button>
-                    <div class="flex items-center justify-between bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2.5">
-                        <span class="text-xs font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5"><i data-lucide="sun" class="w-3.5 h-3.5 text-amber-500"></i>長期休暇課題</span>
-                        <button onclick="cmsToggleSummerTaskEnabled()" id="seasonal-summer-enabled-toggle" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 shrink-0 bg-emerald-500">
-                            <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-5"></span>
-                        </button>
-                    </div>
-                    <p class="text-[10px] text-slate-400 dark:text-slate-500 leading-relaxed">OFFにすると、その項目のカードが一般ユーザーから見えなくなります（あなたには点検のため引き続き表示されます）。名称の変更や中身の追加・編集は、それぞれのカードを開いてから行えます。</p>
-                </div>
-
 
 <button onclick="openExamBoard()" id="exam-board-entry-btn" class="hidden w-full p-5 bg-white dark:bg-[#0f172a] hover:bg-slate-100 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 hover:border-cyan-500 rounded-2xl text-left transition-all duration-300 flex items-center justify-between group">
 <div class="flex items-center space-x-4">
@@ -2651,7 +2652,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
 </div>
 </button>
 
-                <button onclick="openSummerTaskModal()" id="summer-task-entry-btn" class="w-full p-5 bg-white dark:bg-[#0f172a] hover:bg-slate-100 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 rounded-2xl text-left transition-all duration-300 flex items-center justify-between group">
+                <button onclick="openSummerTaskModal()" id="summer-task-entry-btn" class="hidden w-full p-5 bg-white dark:bg-[#0f172a] hover:bg-slate-100 dark:hover:bg-slate-800 border-2 border-slate-200 dark:border-slate-800 hover:border-amber-400 dark:hover:border-amber-500 rounded-2xl text-left transition-all duration-300 flex items-center justify-between group">
                     <div class="flex items-center space-x-4">
                         <div class="w-12 h-12 rounded-2xl bg-amber-600 flex items-center justify-center text-white shrink-0">
                             <i data-lucide="sun" class="w-6 h-6"></i>
@@ -2667,6 +2668,10 @@ html.dark .dev-log-link { color: #e2e8f0; }
                     </div>
                 </button>
 
+                <div id="seasonal-empty-msg" class="hidden text-center py-12">
+                    <p class="text-sm font-black text-slate-500 dark:text-slate-400">いまは表示するものがありません</p>
+                    <p id="seasonal-empty-hint" class="hidden text-xs font-semibold text-slate-400 dark:text-slate-500 mt-1.5">右上の「編集」から、長期課題やテストを追加できます</p>
+                </div>
                             </section>
 
             <div id="english-home" class="hidden w-full max-w-4xl mx-auto animate-fade-in space-y-4">
@@ -3703,7 +3708,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
 
     
 
-    <div id="dev-settings-modal" inert class="dark fixed inset-0 z-[9999] flex flex-col opacity-0 pointer-events-none transition-opacity duration-200" role="dialog" aria-modal="true" aria-label="開発者ページ">
+    <div id="dev-settings-modal" inert class="fixed inset-0 z-[9999] flex flex-col opacity-0 pointer-events-none transition-opacity duration-200" role="dialog" aria-modal="true" aria-label="開発者ページ">
 <div id="dev-drawer-overlay" onclick="devDrawerClose()"></div>
 <aside id="dev-drawer" aria-label="目次">
 <div class="dev-menu" style="margin-bottom:1.2rem"><button type="button" onclick="devPageShow('home')" class="dev-menu-card"><i data-lucide="layout-dashboard" class="w-4 h-4"></i><span class="dev-menu-title">ホーム</span></button></div>
@@ -3872,15 +3877,6 @@ html.dark .dev-log-link { color: #e2e8f0; }
             <div data-dev-panel-head></div>
             <div class="dev-card">
                     <div id="dev-section-content-summertitle" class="space-y-3">
-                        <div class="flex items-center justify-between gap-2 bg-white dark:bg-slate-900 rounded-xl px-3 py-2.5 border border-slate-200 dark:border-slate-700">
-                            <div class="min-w-0">
-                                <p class="text-[11px] font-black text-slate-700 dark:text-slate-200">このコーナーを表示する</p>
-                                <p class="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">OFFにすると、ホーム画面のカードとメニューが一般ユーザーから見えなくなります</p>
-                            </div>
-                            <button onclick="cmsToggleSummerTaskEnabled()" id="cms-summer-enabled-toggle" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 shrink-0 bg-emerald-500">
-                                <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-5"></span>
-                            </button>
-                        </div>
                         <div>
                             <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed mb-2">ホーム画面のカード・メニュー・掲示画面のタイトルに使われる名称です（例：「夏休みの課題一覧」「冬休みの課題一覧」）。</p>
                             <input type="text" id="cms-summer-title-input" placeholder="例：冬休みの課題一覧"
@@ -4703,22 +4699,26 @@ html.dark .dev-log-link { color: #e2e8f0; }
 </div>
 <div class="flex-1 overflow-y-auto px-4 py-4 max-w-2xl w-full mx-auto space-y-5">
 <div>
-<p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2">① 設定するものを選んでください</p>
+<p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2">設定するものを選んでください</p>
 <div class="grid grid-cols-2 gap-3">
 <button onclick="openExamSetup()" class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left hover:border-slate-400">
 <i data-lucide="clipboard-list" class="w-5 h-5 text-cyan-600 dark:text-cyan-400 mb-2"></i>
 <p class="text-sm font-black text-slate-800 dark:text-white">テスト</p>
 <p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">名前・期日・時間割・教科・範囲</p>
 </button>
-<button onclick="closeSeasonalSetup(); cmsAddSummerTaskFromReal();" class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left hover:border-slate-400">
+<button onclick="openSummerSetup()" class="p-4 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left hover:border-slate-400">
 <i data-lucide="sun" class="w-5 h-5 text-amber-600 dark:text-amber-400 mb-2"></i>
 <p class="text-sm font-black text-slate-800 dark:text-white">長期課題</p>
-<p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">夏休みなどの課題を追加</p>
+<p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mt-0.5">名前・教科・課題名・範囲・期限</p>
 </button>
 </div>
 </div>
 <div>
-<p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2">登録済みのテスト</p>
+<p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2">登録済みの長期課題</p>
+<div id="seasonal-setup-summer-list" class="space-y-2"></div>
+</div>
+<div>
+<p class="text-[11px] font-black text-slate-500 dark:text-slate-400 mb-2">登録済みのテスト（考査範囲）</p>
 <div id="seasonal-setup-exam-list" class="space-y-2"></div>
 </div>
 </div>
@@ -4727,12 +4727,12 @@ html.dark .dev-log-link { color: #e2e8f0; }
 <div id="exam-setup-modal" class="hidden fixed inset-0 z-[9995] bg-white dark:bg-[#0c1220] flex flex-col">
 <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
 <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="clipboard-list" class="w-5 h-5 text-cyan-600 dark:text-cyan-400"></i><span id="exam-setup-title">テストを設定</span></h3>
-<button onclick="closeExamSetup()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+<button onclick="examSetupRequestClose()" aria-label="閉じる" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
 </div>
 <div id="exam-setup-body" class="flex-1 overflow-y-auto px-4 py-4 max-w-2xl w-full mx-auto space-y-4"></div>
 <div class="flex items-center gap-2 px-4 py-3 border-t border-slate-200 dark:border-slate-800 shrink-0 max-w-2xl w-full mx-auto">
 <button id="exam-setup-delete-btn" onclick="deleteExamSetup()" class="hidden px-4 py-2.5 text-rose-600 dark:text-rose-400 rounded-xl text-xs font-black hover:bg-slate-100 dark:hover:bg-slate-800">削除</button>
-<button onclick="closeExamSetup()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black">キャンセル</button>
+<button onclick="examSetupRequestClose()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black">キャンセル</button>
 <button onclick="saveExamSetup()" class="flex-1 py-2.5 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-black">保存</button>
 </div>
 <datalist id="exam-setup-subjects"></datalist>
@@ -4755,54 +4755,24 @@ html.dark .dev-log-link { color: #e2e8f0; }
                 <p id="summer-task-class-label" class="text-[10px] text-slate-500 dark:text-slate-400 mt-1 ml-7"></p>
             </div>
             <div class="flex items-center gap-1.5 shrink-0">
-                <button id="summer-task-add-btn" style="display:none" onclick="cmsAddSummerTaskFromReal()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800" title="課題を追加"><i data-lucide="plus" class="w-4 h-4 text-amber-500"></i></button>
                 <button onclick="closeSummerTaskModal()" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
         </div>
         <div id="summer-task-subject-filters" class="flex flex-wrap gap-1.5 px-4 pt-3 max-w-2xl w-full mx-auto"></div>
-        <div id="summer-task-list" class="flex-1 overflow-y-auto px-4 py-4 space-y-3 max-w-2xl w-full mx-auto"></div>
+        <div id="summer-task-summary" class="px-4 pt-3 max-w-2xl w-full mx-auto"></div>
+        <div id="summer-task-list" class="flex-1 overflow-y-auto px-4 pt-4 pb-24 space-y-3 max-w-2xl w-full mx-auto"></div>
+        <button id="summer-task-fab" style="display:none" onclick="openSummerSetup({ from: 'student' })" aria-label="長期課題を追加・編集" class="absolute right-5 bottom-6 w-14 h-14 rounded-full bg-amber-600 hover:bg-amber-700 text-white shadow-lg flex items-center justify-center"><i data-lucide="plus" class="w-6 h-6"></i></button>
     </div>
 
-    <div id="cms-summer-task-modal" class="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-slate-900/80 opacity-0 pointer-events-none transition-all duration-300">
-        <div class="bg-white dark:bg-[#0c1220] border border-slate-200 dark:border-slate-800 rounded-2xl p-6 w-full max-w-md max-h-[90vh] overflow-y-auto transform scale-95 transition-all duration-300" id="cms-summer-task-card">
-            <h3 class="text-base font-black text-slate-900 dark:text-white mb-4 flex items-center gap-2"><i data-lucide="sun" class="w-4 h-4"></i>夏休みの課題を編集</h3>
-            <div class="space-y-3">
-                <div>
-                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">教科 <span class="text-rose-500">必須</span></label>
-                    <input type="text" id="cms-summer-task-subject" placeholder="例：数学"
-                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">タイトル（任意）</label>
-                    <input type="text" id="cms-summer-task-title" placeholder="例：夏期課題プリント"
-                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">提出期限（任意）</label>
-                    <input type="date" id="cms-summer-task-due"
-                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400">
-                </div>
-                <div>
-                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">課題の内容 <span class="text-rose-500">必須</span></label>
-                    <textarea id="cms-summer-task-content" rows="5" placeholder="例：ワークP.10〜30、自由研究1つ、読書感想文（原稿用紙3枚）"
-                        class="w-full px-3 py-2 mt-1 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-amber-400 resize-none"></textarea>
-                </div>
-                <div>
-                    <label class="text-[11px] font-black text-slate-500 dark:text-slate-400">対象クラス（未選択で全クラス共通）</label>
-                    <div id="cms-summer-task-class-checks" class="flex flex-wrap gap-1.5 mt-1.5"></div>
-                    <div class="flex items-center gap-2 mt-1.5">
-                        <button type="button" onclick="cmsSummerTaskClassSelectAll()" class="text-[10px] font-black text-amber-600 dark:text-amber-400 hover:opacity-70">すべて選択</button>
-                        <button type="button" onclick="cmsSummerTaskClassClear()" class="text-[10px] font-black text-slate-400 hover:opacity-70">選択解除</button>
-                    </div>
-                </div>
-            </div>
-            <div class="flex gap-2 mt-5">
-                <button onclick="cmsDeleteSummerTaskFromModal()" id="cms-summer-task-delete-btn" class="hidden items-center space-x-1.5 px-3 py-2 text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl text-xs font-black transition-all">
-                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i><span>削除</span>
-                </button>
-                <button onclick="closeCmsSummerTaskModal()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-black hover:opacity-90 transition-all">キャンセル</button>
-                <button onclick="cmsConfirmSummerTask()" class="flex-1 py-2.5 bg-amber-600 text-white rounded-xl text-xs font-black hover:opacity-90 transition-all">保存する</button>
-            </div>
+    <div id="summer-setup-modal" class="hidden fixed inset-0 z-[9995] bg-white dark:bg-[#0c1220] flex flex-col">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
+            <h3 class="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2"><i data-lucide="sun" class="w-5 h-5 text-amber-500"></i><span id="summer-setup-title">長期課題を設定</span></h3>
+            <button onclick="summerSetupRequestClose()" aria-label="閉じる" class="p-1.5 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800"><i data-lucide="x" class="w-4 h-4"></i></button>
+        </div>
+        <div id="summer-setup-body" class="flex-1 overflow-y-auto px-4 py-4 max-w-2xl w-full mx-auto space-y-4"></div>
+        <div class="flex items-center gap-2 px-4 py-3 border-t border-slate-200 dark:border-slate-800 shrink-0 max-w-2xl w-full mx-auto">
+            <button onclick="summerSetupRequestClose()" class="flex-1 py-2.5 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-black">キャンセル</button>
+            <button onclick="saveSummerSetup()" class="flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black">保存</button>
         </div>
     </div>
 
@@ -8391,7 +8361,6 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 }
                 window._remoteSummerTasks = Array.isArray(cfg.summerTasks) ? cfg.summerTasks : [];
             window._remoteExams = Array.isArray(cfg.exams) ? cfg.exams : [];
-                window._remoteSummerTaskEnabled = cfg.summerTaskEnabled !== false;
                 window._remoteSummerTaskTitle = (typeof cfg.summerTaskTitle === 'string' && cfg.summerTaskTitle.trim()) ? cfg.summerTaskTitle.trim() : '';
                 applySummerTaskTitleToUI();
                 updateSummerTaskEntryVisibility();
@@ -8660,27 +8629,6 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             showToast(next ? 'AIチャットを表示します' : 'AIチャットを非表示にしました');
         }
 
-        function isSummerTaskEnabledFlag() {
-            return window._remoteSummerTaskEnabled !== false;
-        }
-        function isSummerTaskEnabled() {
-            return devUnlocked || isSummerTaskEnabledFlag();
-        }
-        function cmsToggleSummerTaskEnabled() {
-            if (!cmsSession) { showToast('先にGitHubへ接続してください'); return; }
-            const current = cmsConfigData.summerTaskEnabled !== false;
-            cmsConfigData.summerTaskEnabled = !current;
-            window._remoteSummerTaskEnabled = cmsConfigData.summerTaskEnabled;
-            updateSummerTaskEnabledToggleUI();
-            updateSummerTaskEntryVisibility();
-            cmsMarkDirty();
-            showToast(cmsConfigData.summerTaskEnabled ? '長期休暇課題を表示します（公開して反映）' : '長期休暇課題を非表示にしました（公開して反映）');
-        }
-        function updateSummerTaskEnabledToggleUI() {
-            const on = cmsConfigData.summerTaskEnabled !== false;
-            setToggleSwitchUI('seasonal-summer-enabled-toggle', on);
-            setToggleSwitchUI('cms-summer-enabled-toggle', on);
-        }
                 function getSummerTaskTitle() {
             const t = window._remoteSummerTaskTitle;
             return (typeof t === 'string' && t.trim()) ? t.trim() : '夏休みの課題一覧';
@@ -8701,15 +8649,23 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             cmsMarkDirty();
             showToast(`名称を「${getSummerTaskTitle()}」に変更しました（GitHubへの保存が必要です）`);
         }
+        // 長期課題の入口：このユーザーに見える課題が1件でもあるときだけ出す
         function updateSummerTaskEntryVisibility() {
-            const enabled = isSummerTaskEnabled();
             const btn = document.getElementById('summer-task-entry-btn');
-            if (btn) btn.classList.toggle('hidden', !enabled);
+            if (btn) btn.classList.toggle('hidden', getVisibleSummerTasks().length === 0);
+            updateSeasonalCornerEmpty();
+        }
+        // 長期課題もテストも出せないときは、案内を出す
+        function updateSeasonalCornerEmpty() {
+            const msg = document.getElementById('seasonal-empty-msg'); if (!msg) return;
+            const s = document.getElementById('summer-task-entry-btn'), x = document.getElementById('exam-board-entry-btn');
+            const empty = (!s || s.classList.contains('hidden')) && (!x || x.classList.contains('hidden'));
+            msg.classList.toggle('hidden', !empty);
+            const hint = document.getElementById('seasonal-empty-hint'); if (hint) hint.classList.toggle('hidden', !devUnlocked);
         }
         function refreshSeasonalCornerDevManage() {
-            const block = document.getElementById('seasonal-dev-manage');
-            if (block) block.classList.toggle('hidden', !devUnlocked);
-            updateSummerTaskEnabledToggleUI();
+            const editBtn = document.getElementById('seasonal-edit-btn');
+            if (editBtn) editBtn.classList.toggle('hidden', !devUnlocked);
             updateSummerTaskEntryVisibility();
         }
         let examSetup = null;
@@ -8724,7 +8680,19 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             _exShow('seasonal-setup-modal');
         }
         function closeSeasonalSetup() { _exHide('seasonal-setup-modal'); }
+        function renderSeasonalSummerCard() {
+            const box = document.getElementById('seasonal-setup-summer-list'); if (!box) return;
+            const tasks = cmsConfigData.summerTasks || [];
+            if (!tasks.length) { box.innerHTML = '<p class="text-xs font-semibold text-slate-400 dark:text-slate-500 py-3">まだありません。「長期課題」から追加できます</p>'; return; }
+            const subjects = new Set(tasks.map(t => t.subject).filter(Boolean)), due = tasks.filter(t => t.dueDate).length;
+            box.innerHTML = `<div class="flex items-center justify-between gap-2 p-3 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl">
+                <div class="min-w-0"><p class="text-xs font-black text-slate-800 dark:text-white truncate">${escapeHtml(cmsConfigData.summerTaskTitle || '夏休みの課題一覧')}</p>
+                <p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">教科${subjects.size}・課題${tasks.length}件・期限あり${due}件</p></div>
+                <button onclick="openSummerSetup()" class="shrink-0 px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-[11px] font-black text-slate-700 dark:text-slate-200">編集</button>
+            </div>`;
+        }
         function renderSeasonalSetupList() {
+            renderSeasonalSummerCard();
             const box = document.getElementById('seasonal-setup-exam-list'); if (!box) return;
             const list = cmsConfigData.exams || [];
             if (!list.length) { box.innerHTML = '<p class="text-xs font-semibold text-slate-400 dark:text-slate-500 py-3">まだありません。「テスト」から追加できます</p>'; return; }
@@ -8774,7 +8742,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 });
             }
             st.activeDate = st.dates[0] || null;
-            examSetup = st;
+            examSetup = st; examSetupSnap = _exSnap(st);
             const dl = document.getElementById('exam-setup-subjects');
             if (dl && typeof GRADE_SUBJECTS !== 'undefined') dl.innerHTML = GRADE_SUBJECTS.map(x => `<option value="${escapeHtml(x.label)}"></option>`).join('');
             document.getElementById('exam-setup-title').textContent = ex ? 'テストを編集' : 'テストを設定';
@@ -8787,6 +8755,25 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function _exClassIds(st) {
             const all = (window._remoteClasses || []).map(c => c.id);
             return st && st.classIds.length ? st.classIds.filter(id => all.includes(id)) : all;
+        }
+        let examSetupSnap = '';
+        // 画面に出ている入力内容だけを比べる（選んでいる日付タブなどは含めない）
+        function _exSnap(st) { return JSON.stringify([st.name, st.classIds, st.dates, st.days, st.extra]); }
+        function examSetupRequestClose() {
+            if (examSetup && _exSnap(examSetup) !== examSetupSnap && !confirm('入力した内容は、まだ保存されていません。保存せずに閉じますか？')) return;
+            closeExamSetup();
+        }
+        // 最後の日の「次の平日」（土日は飛ばす）
+        function _exNextWeekday(d) {
+            const dt = new Date(d + 'T00:00:00Z');
+            do { dt.setUTCDate(dt.getUTCDate() + 1); } while (dt.getUTCDay() === 0 || dt.getUTCDay() === 6);
+            return dt.toISOString().slice(0, 10);
+        }
+        function examSetAddNextDay() {
+            const st = examSetup; if (!st || !st.dates.length) return;
+            const inp = document.getElementById('exam-setup-date-input'); if (!inp) return;
+            inp.value = _exNextWeekday(st.dates[st.dates.length - 1]);
+            examSetAddDate();
         }
         function _exBlankEntry() { return { subject: '', range: '', classIds: [], id: null }; }
         function _exTimeRows(day) { return day ? day.rows.map(r => ({ n: r.n, start: r.start, end: r.end, entries: [_exBlankEntry()] })) : []; }
@@ -8829,8 +8816,20 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const day = _exDay(); if (!day) return;
             const n = day.rows.reduce((m, r) => Math.max(m, r.n), 0) + 1;
             if (n > 10) { showToast('校時は10までです'); return; }
-            day.rows.push({ n, start: '', end: '', entries: [_exBlankEntry()] });
+            // 時刻は、前の校時の10分後から、同じ長さで入れておく（違えば直せます）
+            const prev = day.rows[day.rows.length - 1];
+            let start = '', end = '';
+            if (prev && prev.start && prev.end) {
+                const toM = s => { const a = s.split(':').map(Number); return a[0] * 60 + a[1]; };
+                const fmt = m => String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
+                const len = toM(prev.end) - toM(prev.start), s = toM(prev.end) + 10;
+                if (len > 0 && s + len < 24 * 60) { start = fmt(s); end = fmt(s + len); }
+            }
+            day.rows.push({ n, start, end, entries: [_exBlankEntry()] });
             renderExamSetup();
+            // 追加した校時の「教科」欄に、すぐ入力できるようにする
+            const subs = document.querySelectorAll('#exam-setup-body input[list="exam-setup-subjects"]');
+            if (subs.length) subs[subs.length - 1].focus();
         }
         function examRemoveRow(i) { const day = _exDay(); if (day) { day.rows.splice(i, 1); renderExamSetup(); } }
         function examToggleSelfStudy(i) {
@@ -8871,7 +8870,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             else {
                 const d = st.activeDate && st.days[st.activeDate] ? st.activeDate : st.dates[0]; st.activeDate = d;
                 const day = st.days[d], cl = _exClassIds(st);
-                const dateTabs = st.dates.map(x => tab(x === d, wd(x), `examSetSelectDate('${x}')`)).join('');
+                const filled = (x) => st.days[x].rows.reduce((a, r) => a + (r.selfStudy ? 0 : r.entries.filter(e => String(e.subject || '').trim()).length), 0);
+                const dateTabs = st.dates.map(x => tab(x === d, `${wd(x)}<span class="ml-1 opacity-70">${filled(x)}</span>`, `examSetSelectDate('${x}')`)).join('');
                 const others = st.dates.filter(x => x !== d);
                 const copyBox = others.length ? `<div class="flex items-center gap-2"><select id="exam-setup-copy-from" class="${INP}">${others.map(x => `<option value="${x}">${wd(x)}</option>`).join('')}</select><button onclick="examCopyTimes(document.getElementById('exam-setup-copy-from').value)" class="px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-[11px] font-black text-slate-700 dark:text-slate-200 shrink-0">の校時と時刻をコピー</button></div>` : '';
                 const entryHtml = (i, r) => r.entries.map((e, j) => `<div class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-2.5 space-y-2">
@@ -8894,7 +8894,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             body.innerHTML = `
                 <div class="${card}">${lab('②', 'テスト名')}<input type="text" value="${escapeHtml(st.name)}" placeholder="例：1学期期末考査" oninput="examSetName(this.value)" class="${INP}">${classHtml}</div>
                 <div class="${card}">${lab('③', '期日', '日付を選んで「追加」。複数日あるときは何度でも追加できます')}
-                    <div class="flex gap-2"><input type="date" id="exam-setup-date-input" class="${INP}"><button onclick="examSetAddDate()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-black shrink-0">追加</button></div>
+                    <div class="flex gap-2"><input type="date" id="exam-setup-date-input" onkeydown="if(event.key==='Enter'){event.preventDefault();examSetAddDate();}" class="${INP}"><button onclick="examSetAddDate()" class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white rounded-xl text-xs font-black shrink-0">追加</button></div>
+                    ${st.dates.length ? `<button onclick="examSetAddNextDay()" class="w-full py-1.5 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-[11px] font-black text-slate-600 dark:text-slate-300">＋ ${wd(_exNextWeekday(st.dates[st.dates.length - 1]))} を追加（次の平日）</button>` : ''}
                     <div class="flex flex-wrap gap-1.5">${dateChips}</div></div>
                 <div class="${card}">${lab('④⑤⑥', '時間割・教科・テスト範囲', '日ごとに、先に校時と時刻を作り、その校時ごとに教科・範囲と、受けるクラスを選びます')}${main}</div>`;
             if (typeof lucide !== 'undefined') lucide.createIcons();
@@ -8938,6 +8939,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         let examBoardCells = [];
         const _EX_CIRCLED = '①②③④⑤⑥⑦⑧⑨⑩';
         function _exTodayStr() { return getJSTDateOnly().toISOString().slice(0, 10); }
+        function _exDaysLeft(d) { return Math.round((Date.parse(d + 'T00:00:00Z') - Date.parse(_exTodayStr() + 'T00:00:00Z')) / 86400000); }
+        function _exCountText(d) { const n = _exDaysLeft(d); return n === 0 ? '・今日' : (n > 0 && n <= 14 ? '・あと' + n + '日' : ''); }
         function _exWdLabel(d) { return `${Number(d.slice(5, 7))}/${Number(d.slice(8))}（${_EX_WD[new Date(d + 'T00:00:00Z').getUTCDay()]}）`; }
         function _exSessClasses(ex, x) { return (Array.isArray(x.classIds) && x.classIds.length) ? x.classIds : (Array.isArray(ex.classIds) ? ex.classIds : []); }
         function _exCanSee(ex, x) { if (devUnlocked) return true; const ids = _exSessClasses(ex, x); return ids.length === 0 || ids.includes(window.currentUserClassId || null); }
@@ -8956,7 +8959,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const today = _exTodayStr();
             const up = list.flatMap(ex => (ex.sessions || []).filter(x => x && x.date >= today && x.subject && _exCanSee(ex, x)).map(x => ({ x, ex }))).sort((a, b) => a.x.date.localeCompare(b.x.date) || (a.x.period || 0) - (b.x.period || 0));
             if (badge) { badge.textContent = up.length ? `これから${up.length}件` : ''; badge.classList.toggle('hidden', !up.length); }
-            if (sub) sub.textContent = up.length ? `直近：${up[0].x.subject}（${_exWdLabel(up[0].x.date)}）` : 'スケジュールと教科ごとの範囲';
+            if (sub) sub.textContent = up.length ? `直近：${up[0].x.subject}（${_exWdLabel(up[0].x.date)}${_exCountText(up[0].x.date)}）` : 'スケジュールと教科ごとの範囲';
+            updateSeasonalCornerEmpty();
         }
         function openExamBoard() {
             const list = examBoardVisibleExams(); if (!list.length) { showToast('登録されているテストはありません'); return; }
@@ -8964,9 +8968,10 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const cur = list.find(ex => String(ex.id) === String(examBoard.examId));
             examBoard.examId = (cur || list.find(ex => (ex.sessions || []).some(x => x.date >= today)) || list[list.length - 1]).id;
             examBoard.subject = '*';
-            renderExamBoard(); _exShow('exam-board-modal');
+            renderExamBoard(); _exShow('exam-board-modal'); examBoardScrollToNext();
         }
         function closeExamBoard() { examBoardCloseSheet(); _exHide('exam-board-modal'); }
+        function examBoardEditCurrent() { const id = examBoard.examId; closeExamBoard(); openExamSetup(id); }
         function examBoardSetView(v) { examBoard.view = v; examBoardCloseSheet(); renderExamBoard(); }
         function examBoardSetExam(id) { examBoard.examId = id; examBoard.subject = '*'; examBoardCloseSheet(); renderExamBoard(); }
         function examBoardSetSubject(sj) { examBoard.subject = sj; renderExamBoard(); }
@@ -8982,9 +8987,21 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!ex) { head.innerHTML = ''; body.innerHTML = '<p class="text-xs font-semibold text-slate-400 py-8 text-center">登録されているテストはありません</p>'; return; }
             examBoard.examId = ex.id;
             head.innerHTML = `${list.length > 1 ? `<div class="flex gap-1.5 overflow-x-auto pb-1">${list.map(e => _exChip(e.id === ex.id, escapeHtml(e.name || 'テスト'), `examBoardSetExam(${schedIdArg(e.id)})`)).join('')}</div>` : `<p class="text-sm font-black text-slate-800 dark:text-white">${escapeHtml(ex.name || 'テスト')}</p>`}
-                <div class="flex gap-1.5">${_exChip(examBoard.view === 'schedule', 'スケジュール', "examBoardSetView('schedule')")}${_exChip(examBoard.view === 'subject', '教科ごと', "examBoardSetView('subject')")}</div>`;
+                <div class="flex gap-1.5">${_exChip(examBoard.view === 'schedule', 'スケジュール', "examBoardSetView('schedule')")}${_exChip(examBoard.view === 'subject', '教科ごと', "examBoardSetView('subject')")}${devUnlocked ? '<button onclick="examBoardEditCurrent()" class="ml-auto shrink-0 px-3 py-1.5 rounded-lg text-[11px] font-black border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 flex items-center gap-1"><i data-lucide="pencil" class="w-3 h-3"></i>このテストを編集</button>' : ''}</div>`;
             body.innerHTML = examBoard.view === 'schedule' ? examBoardTableHtml(ex) : examBoardSubjectHtml(ex);
             if (typeof lucide !== 'undefined') lucide.createIcons();
+            if (examBoard.view === 'schedule') examBoardScrollToNext();
+        }
+        // 横に長い表を、今日（なければ次のテスト日）の列が見える位置まで自動でずらす
+        function examBoardScrollToNext() {
+            const body = document.getElementById('exam-board-body'); if (!body) return;
+            const wrap = body.querySelector('.overflow-x-auto'); if (!wrap || !wrap.clientWidth) return;
+            const today = _exTodayStr();
+            const ths = Array.prototype.slice.call(wrap.querySelectorAll('th[data-exdate]'));
+            const target = ths.filter(th => th.getAttribute('data-exdate') >= today)[0];
+            if (!target || target === ths[0]) return;
+            const sticky = wrap.querySelector('th.sticky');
+            wrap.scrollLeft += target.getBoundingClientRect().left - wrap.getBoundingClientRect().left - (sticky ? sticky.offsetWidth : 0) - 4;
         }
         function examBoardTableHtml(ex) {
             examBoardCells = [];
@@ -9027,10 +9044,10 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const usedDates = dates.filter(d => cols.some(c => c.date === d));
             const btn = (sx, ci, emph, stacked) => {
                 examBoardCells.push({ ex, s: sx, col: cols[ci], cls: ids(sx) || [] });
-                return `<button data-exidx="${examBoardCells.length - 1}" onclick="examBoardShowCell(${examBoardCells.length - 1})" class="block w-full px-1.5 py-2 text-xs ${emph ? 'font-black text-white hover:bg-cyan-700' : 'font-bold text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800'} ${stacked ? 'border-t border-slate-300 dark:border-slate-600' : ''}" style="min-width:56px;max-width:92px;min-height:44px;margin:0 auto;overflow-wrap:anywhere">${escapeHtml(sx.subject)}</button>`;
+                return `<button data-exidx="${examBoardCells.length - 1}" onclick="examBoardShowCell(${examBoardCells.length - 1})" style="--sc:${pmSubjectColor(sx.subject)};box-shadow:inset 4px 0 0 var(--sc)" class="block w-full pl-2.5 pr-1.5 py-2 text-xs ${emph ? 'font-black text-white hover:bg-cyan-700' : 'font-bold text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800'} ${stacked ? 'border-t border-slate-300 dark:border-slate-600' : ''}" style="min-width:56px;max-width:92px;min-height:44px;margin:0 auto;overflow-wrap:anywhere">${escapeHtml(sx.subject)}</button>`;
             };
             const corner = rowIds.length ? `<th rowspan="3" class="${hd} sticky left-0 z-10 px-2 text-[10px] font-black text-slate-600 dark:text-slate-300">組</th>` : '';
-            const dateHead = usedDates.map(d => `<th colspan="${cols.reduce((a, c, i) => a + (c.date === d ? colInfo[i].k : 0), 0)}" class="${hd} px-2 py-1.5 text-xs font-black ${d === today ? 'text-cyan-700 dark:text-cyan-300' : 'text-slate-800 dark:text-slate-100'}">${_exWdLabel(d)}</th>`).join('');
+            const dateHead = usedDates.map(d => `<th data-exdate="${d}" colspan="${cols.reduce((a, c, i) => a + (c.date === d ? colInfo[i].k : 0), 0)}" class="${hd} px-2 py-1.5 text-xs font-black ${d === today ? 'text-cyan-700 dark:text-cyan-300' : 'text-slate-800 dark:text-slate-100'}">${_exWdLabel(d)}</th>`).join('');
             const nHead = cols.map((c, i) => `<th colspan="${colInfo[i].k}" class="${hd} px-1 py-1 text-xs font-black text-slate-800 dark:text-slate-100">${_EX_CIRCLED[c.n - 1] || c.n}</th>`).join('');
             const tHead = cols.map((c, i) => `<th colspan="${colInfo[i].k}" class="${hd} px-1 py-0.5 text-[9px] font-semibold text-slate-500 dark:text-slate-400 whitespace-nowrap">${c.time ? escapeHtml(c.time).replace('〜', '<br>〜') : ''}</th>`).join('');
             let rowsHtml = '';
@@ -9096,18 +9113,58 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     const cn = devUnlocked && Array.isArray(x.classIds) && x.classIds.length ? x.classIds.map(id => (classesAll.find(k => k.id === id) || {}).name || id).join('・') : '';
                     const past = x.date < today;
                     return `<div class="flex gap-3 py-2.5 border-t border-slate-200 dark:border-slate-700">
-                        <div class="w-28 shrink-0"><p class="text-xs font-black ${past ? 'text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100'}">${_exWdLabel(x.date)}${past ? '　終了' : ''}</p>
+                        <div class="w-28 shrink-0"><p class="text-xs font-black ${past ? 'text-slate-400 dark:text-slate-500' : 'text-slate-800 dark:text-slate-100'}">${_exWdLabel(x.date)}${past ? '　終了' : (_exDaysLeft(x.date) === 0 ? '<span class="ml-1.5 text-[10px] font-black px-1.5 py-0.5 rounded-full bg-rose-500 text-white">今日</span>' : (_exDaysLeft(x.date) <= 7 ? `<span class="ml-1.5 text-[10px] font-black px-1.5 py-0.5 rounded-full ${_exDaysLeft(x.date) <= 3 ? 'bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'}">あと${_exDaysLeft(x.date)}日</span>` : ''))}</p>
                         <p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">${x.period ? x.period + '校時' : ''}${x.time ? '<br>' + escapeHtml(x.time) : ''}${cn ? '<br>' + escapeHtml(cn) : ''}</p></div>
                         <p class="flex-1 min-w-0 text-xs font-semibold whitespace-pre-wrap break-words ${x.range ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400 dark:text-slate-500'}">${x.range ? escapeHtml(x.range) : '範囲はまだ登録されていません'}</p></div>`;
                 }).join('');
-                return `<div class="mb-5"><p class="text-sm font-black text-slate-900 dark:text-white mb-1">${escapeHtml(sj)}</p>${rows}</div>`;
+                return `<div class="mb-5" style="--sc:${pmSubjectColor(sj)}"><p class="pm-subj-head pl-2.5 text-sm font-black text-slate-900 dark:text-white mb-1">${escapeHtml(sj)}</p>${rows}</div>`;
             }).join('');
             return chips + blocks;
         }
 
+        // ───────── 教科の色（成績管理と同じ配色）─────────
+        // 教科名は自由入力なので、名前から 国・数・英・理・社 に振り分ける。当てはまらない教科は「その他」
+        const PM_SUBJECT_ORDER = ['japanese', 'math', 'english', 'science', 'social', 'other'];
+        function pmSubjectKey(name) {
+            const s = String(name || '');
+            if (/国語|現代文|現文|古文|古典|漢文|言語文化|^国$/.test(s)) return 'japanese';
+            if (/数学|算数|数[ⅠⅡⅢ1-3IVABC]|^数/.test(s)) return 'math';
+            if (/英|English|コミュニケーション|論理表現|コミュ/i.test(s)) return 'english';
+            if (/理科|物理|化学|生物|地学|^理$/.test(s)) return 'science';
+            if (/社会|地理|歴史|日本史|世界史|公共|政治|経済|倫理|^社$/.test(s)) return 'social';
+            return 'other';
+        }
+        function pmSubjectColor(name) { const k = pmSubjectKey(name); const g = GRADE_SUBJECTS.find(x => x.key === k); return g ? g.color : '#94a3b8'; }
+        function pmSubjectRank(name) { return PM_SUBJECT_ORDER.indexOf(pmSubjectKey(name)); }
+        // 白地の文字や印にも使えるよう、教科の色を少し濃くした色（カレンダー用）
+        function pmSubjectColorDeep(name) {
+            const n = parseInt(pmSubjectColor(name).replace('#', ''), 16), mix = (v, t) => Math.round(v * 0.72 + t * 0.28);
+            return '#' + [mix((n >> 16) & 255, 15), mix((n >> 8) & 255, 23), mix(n & 255, 42)].map(x => x.toString(16).padStart(2, '0')).join('');
+        }
+
+        // 完了のチェックは、この端末の中にだけ保存する（localStorage）
+        const SUMMER_DONE_KEY = 'pm_summer_done';
+        let summerTaskExpanded = new Set();
+        function summerTaskDoneSet() { try { return new Set(JSON.parse(localStorage.getItem(SUMMER_DONE_KEY) || '[]').map(String)); } catch (e) { return new Set(); } }
+        function summerTaskToggleDone(id) {
+            const s = summerTaskDoneSet(); id = String(id);
+            if (s.has(id)) s.delete(id); else s.add(id);
+            try { localStorage.setItem(SUMMER_DONE_KEY, JSON.stringify(Array.from(s))); } catch (e) {}
+            renderSummerTaskContent();
+            if (typeof refreshCalendarIfVisible === 'function') refreshCalendarIfVisible();
+        }
+        function summerTaskToggleMore(id) {
+            id = String(id);
+            if (summerTaskExpanded.has(id)) summerTaskExpanded.delete(id); else summerTaskExpanded.add(id);
+            renderSummerTaskContent();
+        }
+        function summerDateLabel(d) { return /^\d{4}-\d{2}-\d{2}$/.test(String(d || '')) ? _exWdLabel(d) : String(d || ''); }
         function getVisibleSummerTasks() {
             const myClassId = window.currentUserClassId || null;
             const list = window._remoteSummerTasks || [];
+            const today = _exTodayStr(), done = summerTaskDoneSet();
+            // 上から：期限がこれから → 期限なし → 期限を過ぎた未完了 → 完了済み
+            const rank = (t) => done.has(String(t.id)) ? 3 : (!t.dueDate ? 1 : (t.dueDate >= today ? 0 : 2));
             return list.filter(t => {
                 if (devUnlocked) return true;
                 const ids = Array.isArray(t.classIds) ? t.classIds : [];
@@ -9115,7 +9172,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             }).slice().sort((a, b) => {
                 const da = a.dueDate || '9999-99-99';
                 const db = b.dueDate || '9999-99-99';
-                return da.localeCompare(db) || (a.subject || '').localeCompare(b.subject || '');
+                return rank(a) - rank(b) || da.localeCompare(db) || (a.subject || '').localeCompare(b.subject || '');
             });
         }
         function summerTaskClassNamesOf(t) {
@@ -9137,15 +9194,16 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 if (sub) sub.textContent = 'クラスごとの課題をチェック';
                 return;
             }
-            badge.textContent = `${list.length}件公開中`;
+            const done = summerTaskDoneSet();
+            const todo = list.filter(t => !done.has(String(t.id)));
+            badge.textContent = todo.length ? `未完了${todo.length}件` : '全て完了';
             badge.classList.remove('hidden');
             if (sub) {
-                const next = list[0];
-                sub.textContent = `直近：${next.subject || ''}${next.dueDate ? '（期限 ' + next.dueDate + '）' : ''}`;
+                const next = todo[0];     // 並び順の先頭＝いちばん近い期限の未完了
+                sub.textContent = next ? `直近：${next.subject || ''}${next.dueDate ? '（期限 ' + summerDateLabel(next.dueDate) + '）' : ''}` : 'クラスごとの課題をチェック';
             }
         }
         function openSummerTaskModal() {
-            if (!isSummerTaskEnabled()) return;
             const modal = document.getElementById('summer-task-modal');
             if (!modal) return;
             modal.classList.remove('hidden');
@@ -9167,172 +9225,315 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             summerTaskSubjectFilter = subject;
             renderSummerTaskContent();
         }
+        // 教科の並び：国・数・英・理・社・その他の順（同じ分類は登場順）
+        function summerTaskSubjectsOf(list) {
+            const seen = []; list.forEach(t => { const s = t.subject || '教科未設定'; if (!seen.includes(s)) seen.push(s); });
+            return seen.map((s, i) => ({ s, i })).sort((a, b) => pmSubjectRank(a.s) - pmSubjectRank(b.s) || a.i - b.i).map(x => x.s);
+        }
+        let summerTaskSubjectChoices = [];
+        function setSummerTaskSubjectFilterAt(i) { setSummerTaskSubjectFilter(summerTaskSubjectChoices[i] == null ? null : summerTaskSubjectChoices[i]); }
         function renderSummerTaskSubjectFilters(list) {
             const wrap = document.getElementById('summer-task-subject-filters');
             if (!wrap) return;
-            const subjects = Array.from(new Set(list.map(t => t.subject).filter(Boolean)));
+            const subjects = summerTaskSubjectsOf(list); summerTaskSubjectChoices = subjects;
             if (subjects.length <= 1) { wrap.innerHTML = ''; return; }
-            const chipCls = (active) => `text-[10px] font-black px-2.5 py-1 rounded-full border transition-all ${active ? 'bg-amber-500 text-white border-amber-500' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}`;
-            let html = `<button onclick="setSummerTaskSubjectFilter(null)" class="${chipCls(summerTaskSubjectFilter === null)}">すべて</button>`;
-            subjects.forEach(s => {
-                html += `<button onclick="setSummerTaskSubjectFilter('${s.replace(/'/g, "\\'")}')" class="${chipCls(summerTaskSubjectFilter === s)}">${escapeHtml(s)}</button>`;
+            if (summerTaskSubjectFilter !== null && !subjects.includes(summerTaskSubjectFilter)) summerTaskSubjectFilter = null;
+            const base = 'text-[10px] font-black px-2.5 py-1 rounded-full border transition-colors flex items-center gap-1.5';
+            const allOn = summerTaskSubjectFilter === null;
+            let html = `<button onclick="setSummerTaskSubjectFilter(null)" aria-pressed="${allOn}" class="${base} ${allOn ? 'bg-slate-800 dark:bg-slate-200 text-white dark:text-slate-900 border-slate-800 dark:border-slate-200' : 'bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-400 border-slate-200 dark:border-slate-700'}">すべて</button>`;
+            subjects.forEach((s, i) => {
+                const on = summerTaskSubjectFilter === s;
+                html += `<button onclick="setSummerTaskSubjectFilterAt(${i})" aria-pressed="${on}" style="--sc:${pmSubjectColor(s)}" class="${base} pm-subj-chip ${on ? '' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300'}"><span class="pm-subj-dot"></span>${escapeHtml(s)}</button>`;
             });
             wrap.innerHTML = html;
         }
-        function summerTaskCardHtml(t) {
+        function summerTaskCardHtml(t, inGroup) {
             const todayStr = getJSTDateOnly().toISOString().slice(0, 10);
             const daysLeft = t.dueDate ? Math.ceil((new Date(t.dueDate + 'T00:00:00') - new Date(todayStr + 'T00:00:00')) / 86400000) : null;
+            const id = escapeHtml(String(t.id));
+            const done = summerTaskDoneSet().has(String(t.id));
+            const open = summerTaskExpanded.has(String(t.id));
+            const bd = 'text-[10px] font-black px-2 py-0.5 rounded-full';
             let dueBadge = '';
-            if (t.dueDate) {
-                if (daysLeft > 0) dueBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-rose-600 dark:text-rose-300">提出まであと${daysLeft}日</span>`;
-                else if (daysLeft === 0) dueBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-rose-500 text-white">本日締切</span>`;
-                else dueBadge = `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300">締切済み</span>`;
+            if (done) dueBadge = `<span class="${bd} bg-emerald-100 dark:bg-emerald-500/20 text-emerald-700 dark:text-emerald-300">完了</span>`;
+            else if (t.dueDate) {
+                if (daysLeft > 3) dueBadge = `<span class="${bd} bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">あと${daysLeft}日</span>`;
+                else if (daysLeft > 0) dueBadge = `<span class="${bd} bg-rose-100 dark:bg-rose-500/20 text-rose-700 dark:text-rose-300">あと${daysLeft}日</span>`;
+                else if (daysLeft === 0) dueBadge = `<span class="${bd} bg-rose-500 text-white">本日締切</span>`;
+                else dueBadge = `<span class="${bd} bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-300">締切済み</span>`;
             }
+            const long = !!t.content && (t.content.length > 140 || t.content.split('\n').length > 4);
+            const checkBtn = `<button onclick="summerTaskToggleDone('${id}')" aria-pressed="${done}" aria-label="${done ? '未完了に戻す' : '完了にする'}" class="shrink-0 -ml-1 -mt-1 w-11 h-11 flex items-center justify-center"><span class="w-6 h-6 rounded-full border-2 flex items-center justify-center ${done ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-slate-300 dark:border-slate-500'}">${done ? '<i data-lucide="check" class="w-4 h-4"></i>' : ''}</span></button>`;
             return `
-            <div class="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-3">
-                <div class="flex items-start justify-between gap-2">
-                    <div class="min-w-0">
+            <div style="--sc:${pmSubjectColor(t.subject)}" class="pm-subj-card bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-4 mb-3 ${done ? 'opacity-60' : ''}">
+                <div class="flex items-start gap-2">${checkBtn}<div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1.5 flex-wrap">
-                            <span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-amber-600 text-white">${escapeHtml(t.subject || '教科未設定')}</span>
-                            ${t.dueDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(t.dueDate)}</span>` : ''}
+                            ${inGroup ? '' : `<span class="pm-subj-badge text-[10px] font-black px-2 py-0.5 rounded-full">${escapeHtml(t.subject || '教科未設定')}</span>`}
+                            ${t.dueDate ? `<span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-0.5"><i data-lucide="calendar" class="w-3 h-3"></i>${escapeHtml(summerDateLabel(t.dueDate))}</span>` : ''}
                             ${dueBadge}
                             ${t.unverified ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-amber-700 dark:text-amber-300 border border-slate-300 dark:border-slate-600 flex items-center gap-0.5"><i data-lucide="triangle-alert" class="w-3 h-3"></i>情報が不確かな可能性があります</span>` : ''}
                         </div>
-                        <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5">${escapeHtml((t.title && t.title.trim()) ? t.title : (t.subject ? t.subject + 'の課題' : '課題名未設定'))}</h4>
+                        <h4 class="text-sm font-black text-slate-800 dark:text-white mt-1.5 ${done ? 'line-through decoration-slate-400' : ''}">${escapeHtml((t.title && t.title.trim()) ? t.title : (t.subject ? t.subject + 'の課題' : '課題名未設定'))}</h4>
                         <p class="text-[11px] font-bold text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1"><i data-lucide="users" class="w-3 h-3"></i>対象：${escapeHtml(summerTaskClassNamesOf(t))}</p>
                     </div>
-                    ${devUnlocked ? `<div class="flex gap-1 shrink-0">
-                        <button onclick="cmsToggleSummerTaskUnverified('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 ${t.unverified ? 'text-amber-500' : 'text-slate-400'}" title="「情報が不確かかも」マークを切り替え"><i data-lucide="triangle-alert" class="w-3.5 h-3.5"></i></button>
-                        <button onclick="cmsEditSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="pencil" class="w-3.5 h-3.5"></i></button>
-                        <button onclick="cmsRemoveSummerTaskFromReal('${escapeHtml(String(t.id))}')" class="p-1.5 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-700 text-rose-500"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
-                    </div>` : ''}
                 </div>
                 <div class="mt-3 pt-3 border-t border-slate-200 dark:border-slate-700">
-                    ${t.content ? `<p class="text-xs text-slate-700 dark:text-slate-200 font-semibold whitespace-pre-wrap leading-relaxed">${escapeHtml(t.content)}</p>` : `<p class="text-xs text-slate-400 dark:text-slate-500 italic font-semibold">まだ課題の内容は入力されていません</p>`}
+                    ${t.content ? `<p class="text-[10px] font-black text-slate-400 dark:text-slate-500 mb-1">範囲</p><p class="text-xs text-slate-700 dark:text-slate-200 font-semibold whitespace-pre-wrap leading-relaxed ${long && !open ? 'pm-clamp4' : ''}">${escapeHtml(t.content)}</p>${long ? `<button onclick="summerTaskToggleMore('${id}')" class="mt-1.5 py-1 text-[11px] font-black text-amber-600 dark:text-amber-400">${open ? '閉じる' : '続きを読む'}</button>` : ''}` : `<p class="text-xs text-slate-400 dark:text-slate-500 italic font-semibold">まだ課題の内容は入力されていません</p>`}
                 </div>
             </div>`;
+        }
+        // 見せ方：期限順 / 教科別（この端末に覚えておく）
+        let summerTaskView = (function () { try { return localStorage.getItem('pm_summer_view') === 'subject' ? 'subject' : 'due'; } catch (e) { return 'due'; } })();
+        function setSummerTaskView(v) {
+            summerTaskView = v === 'subject' ? 'subject' : 'due';
+            try { localStorage.setItem('pm_summer_view', summerTaskView); } catch (e) {}
+            renderSummerTaskContent();
+        }
+        // 教科別：教科ごとに見出し（色つき）でまとめる。開発者には、教科ごとの「＋」ボタンも出す
+        let summerTaskGroupSubjects = [];
+        function summerTaskGroupedHtml(list) {
+            const subjects = summerTaskSubjectsOf(list); summerTaskGroupSubjects = subjects;
+            const done = summerTaskDoneSet();
+            return subjects.map((s, i) => {
+                const items = list.filter(t => (t.subject || '教科未設定') === s);
+                const left = items.filter(t => !done.has(String(t.id))).length;
+                const plus = devUnlocked ? `<button onclick="summerTaskAddFor(${i})" aria-label="${escapeHtml(s)}の課題を追加" class="shrink-0 w-10 h-10 -mr-1.5 flex items-center justify-center rounded-full text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="plus" class="w-5 h-5"></i></button>` : '';
+                return `<section class="pt-1" style="--sc:${pmSubjectColor(s)}">
+                    <div class="pm-subj-head flex items-center justify-between gap-2 pl-3 mb-2"><div class="min-w-0"><p class="text-sm font-black text-slate-900 dark:text-white">${escapeHtml(s)}</p><p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400">${left ? '未完了' + left + '件' : '全て完了'}・全${items.length}件</p></div>${plus}</div>
+                    ${items.map(t => summerTaskCardHtml(t, true)).join('')}</section>`;
+            }).join('');
+        }
+        function summerTaskAddFor(i) { const s = summerTaskGroupSubjects[i]; if (s != null) openSummerSetup({ from: 'student', subject: s === '教科未設定' ? 'その他' : s, addRow: true }); }
+        function renderSummerTaskSummary(all) {
+            const el = document.getElementById('summer-task-summary'); if (!el) return;
+            if (!all.length) { el.innerHTML = ''; return; }
+            const done = summerTaskDoneSet(), today = _exTodayStr();
+            const doneN = all.filter(t => done.has(String(t.id))).length, todo = all.filter(t => !done.has(String(t.id)));
+            const near = todo.filter(t => t.dueDate && t.dueDate >= today && _exDaysLeft(t.dueDate) <= 3).length;
+            const pct = Math.round(doneN / all.length * 100);
+            const seg = (v, label) => `<button onclick="setSummerTaskView('${v}')" aria-pressed="${summerTaskView === v}" class="px-3 py-1 text-[11px] font-black rounded-md ${summerTaskView === v ? 'bg-white dark:bg-slate-600 text-slate-900 dark:text-white shadow-sm' : 'text-slate-500 dark:text-slate-400'}">${label}</button>`;
+            el.innerHTML = `<div class="flex items-center justify-between gap-2"><div class="min-w-0"><p class="text-xs font-black text-slate-700 dark:text-slate-200">完了 ${doneN} / ${all.length}件</p>${near ? `<p class="text-[11px] font-black text-rose-600 dark:text-rose-300 mt-0.5">期限が近い ${near}件</p>` : ''}</div>
+                <div class="inline-flex shrink-0 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">${seg('due', '期限順')}${seg('subject', '教科別')}</div></div>
+                <div class="mt-1.5 h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden"><div class="h-full rounded-full bg-emerald-600" style="width:${pct}%"></div></div>`;
         }
         function renderSummerTaskContent() {
             const listWrap = document.getElementById('summer-task-list');
             if (!listWrap) return;
-            const addBtn = document.getElementById('summer-task-add-btn');
+            const addBtn = document.getElementById('summer-task-fab');
             if (addBtn) addBtn.style.display = devUnlocked ? 'flex' : 'none';
             const all = getVisibleSummerTasks();
             renderSummerTaskSubjectFilters(all);
-            const list = all.filter(t => !summerTaskSubjectFilter || t.subject === summerTaskSubjectFilter);
+            renderSummerTaskSummary(all);
+            const list = all.filter(t => !summerTaskSubjectFilter || (t.subject || '教科未設定') === summerTaskSubjectFilter);
             updateSummerTaskEntryBadge();
             updateExamBoardEntry();
             if (list.length === 0) {
                 listWrap.innerHTML = `
                     <div class="text-center py-14">
                         <i data-lucide="sun" class="w-10 h-10 mx-auto text-slate-300 dark:text-slate-600 mb-2"></i>
-                        <p class="text-xs font-bold text-slate-400 dark:text-slate-500">まだ夏休みの課題は公開されていません</p>
+                        <p class="text-xs font-bold text-slate-400 dark:text-slate-500">まだ課題は公開されていません</p>
                     </div>`;
                 if (typeof lucide !== 'undefined') lucide.createIcons();
                 return;
             }
-            listWrap.innerHTML = list.map(t => summerTaskCardHtml(t)).join('');
+            listWrap.innerHTML = summerTaskView === 'subject' ? summerTaskGroupedHtml(list) : list.map(t => summerTaskCardHtml(t)).join('');
             if (typeof lucide !== 'undefined') lucide.createIcons();
         }
 
-        let cmsSummerTaskEditId = null;
-        function cmsAddSummerTaskFromReal() {
-            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard('github'); return; }
-            cmsOpenSummerTaskModal(null);
-        }
-        function cmsEditSummerTaskFromReal(id) {
-            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard('github'); return; }
-            const idx = (cmsConfigData.summerTasks || []).findIndex(x => String(x.id) === String(id));
-            if (idx < 0) { showToast('データが見つかりませんでした。再読込してください'); return; }
-            cmsOpenSummerTaskModal(idx);
-        }
-        function cmsRemoveSummerTaskFromReal(id) {
-            if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard('github'); return; }
-            if (!confirm('この課題を削除しますか？')) return;
-            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
-            const idx = cmsConfigData.summerTasks.findIndex(x => String(x.id) === String(id));
-            if (idx < 0) return;
-            cmsConfigData.summerTasks.splice(idx, 1);
-            window._remoteSummerTasks = cmsConfigData.summerTasks.slice();
-            renderSummerTaskContent();
-            cmsMarkDirty();
-            showToast('削除しました（GitHubへの保存が必要です）');
-        }
-        function cmsToggleSummerTaskUnverified(id) {
+        // ───────── 長期課題の設定（開発者）─────────
+        // ① 名前 → ② 教科 → ③ 教科ごとに「課題名・範囲・期限」。保存すると、生徒の長期課題コーナーと、カレンダー（期限がタスクとして）に反映される
+        let summerSetup = null, summerSetupSnap = '', _ssUid = 0, summerSetupReturn = 'chooser';
+        const SS_DEFAULT_SUBJECTS = ['国語', '数学', '英語', '理科', '社会', 'その他'];
+        function _ssSnap(st) { return JSON.stringify([st.name, st.classIds, st.subjects, st.rows.map(r => [r.subject, r.title, r.content, r.dueDate, r.unverified])]); }
+        function _ssBlankRow(subject) { return { uid: ++_ssUid, orig: null, subject, title: '', content: '', dueDate: '', unverified: false }; }
+        function _ssSortSubjects(st) { st.subjects.sort((a, b) => st.pool.indexOf(a) - st.pool.indexOf(b)); }
+        function _ssRowFilled(r) { return !!((r.title || '').trim() || (r.content || '').trim()); }
+        // opts: { from:'student' }＝長期課題の画面の「＋」から開いた（閉じたらその画面へ戻る）／ { subject, addRow }＝その教科に、空の課題を1つ足して入力へ
+        function openSummerSetup(opts) {
+            if (!devUnlocked) return;
+            const o = (opts && typeof opts === 'object' && !opts.target) ? opts : {};
+            summerSetupReturn = o.from === 'student' ? 'student' : 'chooser';
             if (!cmsSession) { showToast('先にGitHubへ接続してください'); openDevDashboard('github'); return; }
             cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
-            const t = cmsConfigData.summerTasks.find(x => String(x.id) === String(id));
-            if (!t) return;
-            t.unverified = !t.unverified;
-            window._remoteSummerTasks = cmsConfigData.summerTasks.slice();
-            renderSummerTaskContent();
-            cmsMarkDirty();
-            showToast(t.unverified ? '「情報が不確かかも」マークをつけました（GitHubへの保存が必要です）' : 'マークを外しました（GitHubへの保存が必要です）');
-        }
-        function cmsOpenSummerTaskModal(idx) {
-            cmsSummerTaskEditId = idx;
-            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
-            const t = idx != null ? cmsConfigData.summerTasks[idx] : { subject: '', title: '', content: '', dueDate: '', classIds: [] };
-            document.getElementById('cms-summer-task-subject').value = t.subject || '';
-            document.getElementById('cms-summer-task-title').value = t.title || '';
-            document.getElementById('cms-summer-task-due').value = t.dueDate || '';
-            document.getElementById('cms-summer-task-content').value = t.content || '';
-            cmsRenderSummerTaskClassChecks(t.classIds || []);
-            const delBtn = document.getElementById('cms-summer-task-delete-btn');
-            if (delBtn) delBtn.classList.toggle('hidden', idx == null);
-            cmsOpenModal('cms-summer-task-modal', 'cms-summer-task-card');
-        }
-        function closeCmsSummerTaskModal() { cmsCloseModal('cms-summer-task-modal', 'cms-summer-task-card'); }
-        function cmsDeleteSummerTaskFromModal() {
-            if (cmsSummerTaskEditId == null) return;
-            const t = cmsConfigData.summerTasks[cmsSummerTaskEditId];
-            closeCmsSummerTaskModal();
-            if (t) cmsRemoveSummerTaskFromReal(t.id);
-        }
-        function cmsRenderSummerTaskClassChecks(selectedIds) {
-            const wrap = document.getElementById('cms-summer-task-class-checks');
-            if (!wrap) return;
-            const classes = cmsConfigData.classes || [];
-            if (classes.length === 0) {
-                wrap.innerHTML = '<p class="text-[10px] text-slate-400">クラスがまだありません（「クラス設定」から追加できます）</p>';
-                return;
+            const tasks = cmsConfigData.summerTasks;
+            const st = { name: cmsConfigData.summerTaskTitle || '', classIds: [], classTouched: false, pool: SS_DEFAULT_SUBJECTS.slice(), subjects: [], rows: [], extra: '', bulk: '' };
+            // 登録済みの課題を読み込む。クラス指定がすべて同じなら、それを「対象クラス」の初期値にする
+            const sig = tasks.map(t => JSON.stringify((t.classIds || []).slice().sort()));
+            if (tasks.length && sig.every(x => x === sig[0])) st.classIds = (tasks[0].classIds || []).slice();
+            tasks.forEach(t => {
+                const subject = String(t.subject || '').trim() || 'その他';
+                if (!st.pool.includes(subject)) st.pool.push(subject);
+                if (!st.subjects.includes(subject)) st.subjects.push(subject);
+                st.rows.push({ uid: ++_ssUid, orig: t, subject, title: t.title || '', content: t.content || '', dueDate: /^\d{4}-\d{2}-\d{2}$/.test(t.dueDate || '') ? t.dueDate : '', unverified: !!t.unverified });
+            });
+            _ssSortSubjects(st);
+            if (o.subject) {
+                if (!st.pool.includes(o.subject)) st.pool.push(o.subject);
+                if (!st.subjects.includes(o.subject)) { st.subjects.push(o.subject); _ssSortSubjects(st); }
+                if (o.addRow) { const row = _ssBlankRow(o.subject); st.rows.push(row); st.focusUid = row.uid; }
             }
-            wrap.innerHTML = classes.map(c => `
-                <label class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full border border-slate-200 dark:border-slate-700 cursor-pointer text-[11px] font-bold">
-                    <input type="checkbox" class="cms-summer-task-class-check" value="${escapeHtml(c.id)}" ${selectedIds.includes(c.id) ? 'checked' : ''}>
-                    <span style="width:8px;height:8px;border-radius:50%;background:${classChipColor(c.id)};display:inline-block;"></span>
-                    ${escapeHtml(c.name)}
-                </label>`).join('');
+            summerSetup = st; summerSetupSnap = _ssSnap(st);
+            document.getElementById('summer-setup-title').textContent = tasks.length ? '長期課題を編集' : '長期課題を設定';
+            renderSummerSetup();
+            closeSeasonalSetup();
+            _exShow('summer-setup-modal');
+            if (st.focusUid) {
+                setTimeout(() => { const el = document.querySelector(`#summer-setup-body [data-ss-title="${st.focusUid}"]`); if (el) { el.scrollIntoView({ block: 'center' }); el.focus(); } }, 60);
+            }
         }
-        function cmsSummerTaskClassSelectAll() {
-            document.querySelectorAll('.cms-summer-task-class-check').forEach(el => { el.checked = true; });
+        function closeSummerSetup() { _exHide('summer-setup-modal'); summerSetup = null; if (devUnlocked && summerSetupReturn !== 'student') { renderSeasonalSetupList(); _exShow('seasonal-setup-modal'); } summerSetupReturn = 'chooser'; }
+        function summerSetupRequestClose() {
+            if (summerSetup && _ssSnap(summerSetup) !== summerSetupSnap && !confirm('入力した内容は、まだ保存されていません。保存せずに閉じますか？')) return;
+            closeSummerSetup();
         }
-        function cmsSummerTaskClassClear() {
-            document.querySelectorAll('.cms-summer-task-class-check').forEach(el => { el.checked = false; });
+        function summerSetName(v) { if (summerSetup) summerSetup.name = v; }
+        function summerSetExtra(v) { if (summerSetup) summerSetup.extra = v; }
+        function summerSetBulk(v) { if (summerSetup) summerSetup.bulk = v; }
+        function summerSetRow(uid, key, val) { const r = summerSetup && summerSetup.rows.find(x => x.uid === uid); if (r) r[key] = val; }
+        function summerSetToggleClass(id) {
+            const st = summerSetup; if (!st) return;
+            const i = st.classIds.indexOf(id);
+            if (i >= 0) st.classIds.splice(i, 1); else st.classIds.push(id);
+            st.classTouched = true; renderSummerSetup();
         }
-        function cmsConfirmSummerTask() {
-            const subject = document.getElementById('cms-summer-task-subject').value.trim();
-            const title = document.getElementById('cms-summer-task-title').value.trim();
-            const dueDate = document.getElementById('cms-summer-task-due').value;
-            const content = document.getElementById('cms-summer-task-content').value.trim();
-            const classIds = Array.from(document.querySelectorAll('.cms-summer-task-class-check:checked')).map(el => el.value);
-            if (!subject || !content) { showToast('教科と課題の内容は必須です'); return; }
-            cmsConfigData.summerTasks = cmsConfigData.summerTasks || [];
+        function summerSetToggleSubject(j) {
+            const st = summerSetup; if (!st) return;
+            const s = st.pool[j]; if (s == null) return;
+            if (st.subjects.includes(s)) {
+                const mine = st.rows.filter(r => r.subject === s), filled = mine.filter(_ssRowFilled).length;
+                if (filled && !confirm(`「${s}」を外すと、入力済みの課題${filled}件も削除されます。よろしいですか？`)) return;
+                st.rows = st.rows.filter(r => r.subject !== s);
+                st.subjects = st.subjects.filter(x => x !== s);
+            } else {
+                st.subjects.push(s); _ssSortSubjects(st);
+                st.rows.push(_ssBlankRow(s));
+            }
+            renderSummerSetup();
+        }
+        function summerSetAddSubject() {
+            const st = summerSetup; if (!st) return;
+            const v = String(st.extra || '').trim();
+            if (!v) { showToast('追加する教科の名前を入れてください'); return; }
+            if (!st.pool.includes(v)) st.pool.push(v);
+            if (!st.subjects.includes(v)) { st.subjects.push(v); _ssSortSubjects(st); st.rows.push(_ssBlankRow(v)); }
+            st.extra = ''; renderSummerSetup();
+        }
+        function summerSetAddRow(i) {
+            const st = summerSetup; if (!st) return;
+            const s = st.subjects[i]; if (s == null) return;
+            const row = _ssBlankRow(s); st.rows.push(row); renderSummerSetup();
+            const el = document.querySelector(`#summer-setup-body [data-ss-title="${row.uid}"]`); if (el) el.focus();
+        }
+        function summerSetRemoveRow(uid) {
+            const st = summerSetup; if (!st) return;
+            const r = st.rows.find(x => x.uid === uid); if (!r) return;
+            if (_ssRowFilled(r) && !confirm('この課題を削除しますか？')) return;
+            st.rows = st.rows.filter(x => x.uid !== uid); renderSummerSetup();
+        }
+        // 期限がまだ入っていない課題に、同じ期限をまとめて入れる
+        function summerSetFillDue() {
+            const st = summerSetup; if (!st) return;
+            if (!/^\d{4}-\d{2}-\d{2}$/.test(st.bulk || '')) { showToast('入れたい期限を選んでください'); return; }
+            const targets = st.rows.filter(r => !r.dueDate);
+            if (!targets.length) { showToast('期限が未入力の課題はありません'); return; }
+            targets.forEach(r => { r.dueDate = st.bulk; });
+            renderSummerSetup(); showToast(`${targets.length}件に期限を入れました`);
+        }
+        function renderSummerSetup() {
+            const st = summerSetup, body = document.getElementById('summer-setup-body'); if (!st || !body) return;
+            const INP = 'w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-800 dark:text-white';
+            const CARD = 'rounded-2xl border border-slate-200 dark:border-slate-700 p-3 space-y-2.5';
+            const LBL = 'text-[11px] font-black text-slate-500 dark:text-slate-400';
+            const HINT = 'text-[10px] font-semibold text-slate-400 dark:text-slate-500';
+            const chip = (on, label, fn) => `<button type="button" onclick="${fn}" aria-pressed="${on}" class="px-3 py-1.5 rounded-full text-xs font-black border ${on ? 'bg-amber-600 border-amber-600 text-white' : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300'}">${label}</button>`;
+            const classes = cmsConfigData.classes || [];
+            const classChips = classes.length
+                ? classes.map(c => chip(st.classIds.includes(c.id), escapeHtml(c.name || c.id), `summerSetToggleClass(${schedIdArg(c.id)})`)).join('')
+                : `<p class="${HINT}">クラスが未登録のため、全員向けになります</p>`;
+            const subjectChips = st.pool.map((s, j) => { const on = st.subjects.includes(s); return `<button type="button" onclick="summerSetToggleSubject(${j})" aria-pressed="${on}" style="--sc:${pmSubjectColor(s)}" class="pm-subj-chip px-3 py-1.5 rounded-full text-xs font-black border flex items-center gap-1.5 ${on ? '' : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300'}"><span class="pm-subj-dot"></span>${escapeHtml(s)}</button>`; }).join('');
+            const total = st.rows.filter(_ssRowFilled).length;
+            const sections = st.subjects.map((s, i) => {
+                const rows = st.rows.filter(r => r.subject === s);
+                const rowsHtml = rows.map(r => `<div class="rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-2.5 space-y-2">
+                    <div class="flex items-start gap-2">
+                        <input type="text" data-ss-title="${r.uid}" value="${escapeHtml(r.title)}" oninput="summerSetRow(${r.uid}, 'title', this.value)" placeholder="課題名（例：ワーク、レポート）" maxlength="60" class="${INP}">
+                        <button type="button" onclick="summerSetRemoveRow(${r.uid})" aria-label="この課題を削除" class="shrink-0 w-9 h-9 flex items-center justify-center rounded-lg text-rose-500 hover:bg-slate-200 dark:hover:bg-slate-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                    </div>
+                    <textarea rows="2" oninput="summerSetRow(${r.uid}, 'content', this.value)" placeholder="範囲（例：p.10〜30、第1〜3章）" class="${INP}">${escapeHtml(r.content)}</textarea>
+                    <div class="flex items-center gap-2">
+                        <span class="shrink-0 ${LBL}">期限</span>
+                        <input type="date" value="${escapeHtml(r.dueDate)}" onchange="summerSetRow(${r.uid}, 'dueDate', this.value)" class="${INP}">
+                    </div>
+                    <label class="flex items-center gap-1.5 text-[10px] font-bold text-slate-500 dark:text-slate-400"><input type="checkbox" ${r.unverified ? 'checked' : ''} onchange="summerSetRow(${r.uid}, 'unverified', this.checked)">情報が不確か（生徒に注意マークを出す）</label>
+                </div>`).join('');
+                return `<div style="--sc:${pmSubjectColor(s)}" class="${CARD} pm-subj-card">
+                    <div class="flex items-center justify-between"><p class="text-xs font-black text-slate-800 dark:text-white">${escapeHtml(s)}</p><span class="${HINT}">${rows.filter(_ssRowFilled).length}件</span></div>
+                    ${rowsHtml}
+                    <button type="button" onclick="summerSetAddRow(${i})" class="w-full py-2 border border-dashed border-slate-300 dark:border-slate-600 rounded-lg text-[11px] font-black text-slate-600 dark:text-slate-300">＋ ${escapeHtml(s)}の課題を追加</button>
+                </div>`;
+            }).join('');
+            body.innerHTML = `
+                <div class="${CARD}">
+                    <p class="${LBL}">① 長期課題の名前</p>
+                    <input type="text" id="summer-setup-name" value="${escapeHtml(st.name)}" oninput="summerSetName(this.value)" placeholder="例：冬休みの課題" maxlength="30" class="${INP}">
+                    <p class="${HINT}">生徒の「期間限定」の見出しと、カレンダーでの分類名になります。</p>
+                    <p class="${LBL} pt-1">対象クラス（選ばなければ全クラス）</p>
+                    <div class="flex flex-wrap gap-1.5">${classChips}</div>
+                </div>
+                <div class="${CARD}">
+                    <p class="${LBL}">② 課題のある教科</p>
+                    <div class="flex flex-wrap gap-1.5">${subjectChips}</div>
+                    <div class="flex gap-2">
+                        <input type="text" value="${escapeHtml(st.extra)}" oninput="summerSetExtra(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();summerSetAddSubject();}" placeholder="他の教科を追加（例：情報）" maxlength="20" class="${INP}">
+                        <button type="button" onclick="summerSetAddSubject()" class="shrink-0 px-4 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-xs font-black text-slate-700 dark:text-slate-200">追加</button>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <div class="flex items-baseline justify-between px-1"><p class="${LBL}">③ 教科ごとの課題（課題名・範囲・期限）</p><span class="${HINT}">全${total}件</span></div>
+                    ${st.subjects.length ? `<div class="${CARD}">
+                        <p class="${LBL}">期限をまとめて入れる</p>
+                        <div class="flex gap-2"><input type="date" value="${escapeHtml(st.bulk)}" onchange="summerSetBulk(this.value)" class="${INP}"><button type="button" onclick="summerSetFillDue()" class="shrink-0 px-3 py-2 rounded-lg bg-slate-200 dark:bg-slate-700 text-[11px] font-black text-slate-700 dark:text-slate-200">未入力に入れる</button></div>
+                        <p class="${HINT}">期限が空の課題にだけ入ります。入力済みの期限は変わりません。</p>
+                    </div>${sections}` : `<p class="${HINT} px-1 py-2">② で教科を選ぶと、ここに入力欄が出ます。</p>`}
+                </div>`;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        }
+        function saveSummerSetup() {
+            const st = summerSetup; if (!st) return;
+            const name = String(st.name || '').trim();
+            if (!name) { showToast('① 長期課題の名前を入れてください'); const el = document.getElementById('summer-setup-name'); if (el) el.focus(); return; }
+            const items = st.rows.filter(_ssRowFilled);
+            const had = (cmsConfigData.summerTasks || []).length;
+            if (!items.length && !had) { showToast('課題を1件以上入力してください（課題名か範囲のどちらか）'); return; }
+            if (!items.length && had && !confirm('課題が1件もありません。登録済みの課題がすべて削除されます。よろしいですか？')) return;
             const now = new Date().toISOString();
-            const existing = cmsSummerTaskEditId != null ? cmsConfigData.summerTasks[cmsSummerTaskEditId] : null;
-            const entry = {
-                id: (existing && existing.id) || Date.now(),
-                subject, title, content, dueDate, classIds,
-                createdAt: (existing && existing.createdAt) || now,
-                updatedAt: now,
-            };
-            if (cmsSummerTaskEditId != null) cmsConfigData.summerTasks[cmsSummerTaskEditId] = entry;
-            else cmsConfigData.summerTasks.push(entry);
-            window._remoteSummerTasks = cmsConfigData.summerTasks.slice();
-            closeCmsSummerTaskModal();
+            const used = new Set(items.filter(r => r.orig && r.orig.id != null).map(r => String(r.orig.id)));
+            let seq = 0;
+            const nextId = () => { let id; do { id = Date.now() + (seq++); } while (used.has(String(id))); used.add(String(id)); return id; };
+            const out = items.map(r => {
+                const o = r.orig || null;
+                const classIds = (o && !st.classTouched && Array.isArray(o.classIds)) ? o.classIds.slice() : st.classIds.slice();
+                const entry = Object.assign({}, o || {}, {
+                    id: (o && o.id != null) ? o.id : nextId(),
+                    subject: r.subject, title: String(r.title || '').trim(), content: String(r.content || '').trim(), dueDate: r.dueDate || '', classIds,
+                    createdAt: (o && o.createdAt) || now, updatedAt: now,
+                });
+                if (r.unverified) entry.unverified = true; else delete entry.unverified;
+                return entry;
+            });
+            cmsConfigData.summerTasks = out;
+            cmsConfigData.summerTaskTitle = name;
+            window._remoteSummerTasks = out.slice();
+            window._remoteSummerTaskTitle = name;
+            applySummerTaskTitleToUI();
             renderSummerTaskContent();
+            updateSummerTaskEntryBadge();
+            updateSummerTaskEntryVisibility();
+            if (typeof refreshCalendarIfVisible === 'function') refreshCalendarIfVisible();
             cmsMarkDirty();
-            showToast('夏休みの課題を保存しました（GitHubへの保存が必要です）');
+            const noDue = out.filter(t => !t.dueDate).length;
+            closeSummerSetup();
+            showToast(`「${name}」を保存しました（課題${out.length}件）。GitHubへの保存が必要です` + (noDue ? `／期限のない${noDue}件はカレンダーに出ません` : ''));
         }
 
         let _selfHtmlHash = null;
@@ -11000,7 +11201,16 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     time: (a && b) ? a.trim() : null, endTime: (a && b) ? b.trim() : null, color: SCHEDULE_COLORS[0], isRemote: true, isExam: true, examId: ex.id,
                 };
             }).filter(Boolean));
-            return [...scheduleItems.flatMap(expandLocalSchedule), ...remoteItems, ...examItems]
+            // 長期課題の期限を「タスク」として載せる（完了にした課題・期限のない課題は載せない。表示OFFのときは開発者にだけ載せる）
+            const summerDone = summerTaskDoneSet();
+            const summerItems = getVisibleSummerTasks()
+                .filter(t => t && /^\d{4}-\d{2}-\d{2}$/.test(t.dueDate || '') && !summerDone.has(String(t.id)))
+                .map(t => ({
+                    id: 'remote_summer_' + t.id, type: 'task', title: [t.subject, t.title].filter(Boolean).join('　') || '長期課題', subject: getSummerTaskTitle(), date: t.dueDate,
+                    memo: t.content ? '範囲：' + t.content : null, classIds: Array.isArray(t.classIds) ? t.classIds : [], classId: null, notifyAt: null,
+                    time: null, endTime: null, color: pmSubjectColorDeep(t.subject), isRemote: true, isSummer: true, summerId: t.id,
+                }));
+            return [...scheduleItems.flatMap(expandLocalSchedule), ...remoteItems, ...examItems, ...summerItems]
                 .filter(x => x && typeof x.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(x.date))
                 .sort((a, b) => a.date.localeCompare(b.date) || (a.time || '').localeCompare(b.time || '') || String(a.id).localeCompare(String(b.id)));
         }
@@ -12419,7 +12629,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 iconEl.innerHTML = `<i data-lucide="${typeInfo.icon}" class="w-4 h-4"></i>`;
             }
             const sourceLabelEl = document.getElementById('schedule-detail-source-label');
-            if (sourceLabelEl) sourceLabelEl.textContent = s.isRemote ? '学校からのお知らせ予定' : '自分で追加した予定';
+            if (sourceLabelEl) sourceLabelEl.textContent = s.isSummer ? '長期課題の期限' : (s.isRemote ? '学校からのお知らせ予定' : '自分で追加した予定');
             const typeLabelEl = document.getElementById('schedule-detail-type-label');
             if (typeLabelEl) { typeLabelEl.textContent = typeInfo.label; typeLabelEl.style.color = eventColor(s); }
             document.getElementById('schedule-detail-title').textContent = s.title || '';
@@ -12475,6 +12685,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             closeScheduleDetailModal();
             const _ex = getAllSchedules().find(x => x.id === id);
             if (_ex && _ex.isExam) { if (devUnlocked) openExamSetup(_ex.examId); return; }
+            if (_ex && _ex.isSummer) { if (devUnlocked) openSummerSetup(); return; }
             openScheduleInputModal(id);
         }
 
@@ -12484,6 +12695,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const s = getAllSchedules().find(x => x.id === id);
             closeScheduleDetailModal();
             if (s && s.isExam) { showToast('テストの変更・削除は「期間限定の設定」から行ってください'); return; }
+            if (s && s.isSummer) { showToast('長期課題の変更・削除は「期間限定の設定」から行ってください'); return; }
             if (s && s.isRemote && devUnlocked) {
                 if (confirm('この予定を削除します。全ユーザーの予定から消えます。よろしいですか？')) cmsDeleteGlobalScheduleById(cmsStripRemoteIdPrefix(id));
                 return;
@@ -23429,7 +23641,6 @@ async function devAutoEnter() {
                 cmsRenderModeList();
                 const summerTitleInput = document.getElementById('cms-summer-title-input');
                 if (summerTitleInput) summerTitleInput.value = cmsConfigData.summerTaskTitle || '';
-                updateSummerTaskEnabledToggleUI();
                 loadDevUserCount();
             }
             devPageShow(typeof key === 'string' ? key : (wasOpen ? devPageCurrent : 'home'));
@@ -24112,10 +24323,8 @@ async function devAutoEnter() {
             cmsRenderModeList();
             window._remoteSummerTasks = (cmsConfigData.summerTasks || []).slice();
             window._remoteExams = (cmsConfigData.exams || []).slice();
-            window._remoteSummerTaskEnabled = cmsConfigData.summerTaskEnabled !== false;
             window._remoteSummerTaskTitle = cmsConfigData.summerTaskTitle || '';
             applySummerTaskTitleToUI();
-            updateSummerTaskEnabledToggleUI();
             const summerTitleInput = document.getElementById('cms-summer-title-input');
             if (summerTitleInput) summerTitleInput.value = cmsConfigData.summerTaskTitle || '';
             renderSummerTaskContent();
@@ -27140,19 +27349,19 @@ async function devUsageLoadTrend(selected) {
         .cal-ev:hover{filter:brightness(1.08);z-index:5}
         @media (prefers-reduced-motion: reduce){#cal-view-pill{transition:none !important}}
         /* 下のタブバー：選んでいるタブの上で境目の線がふくらむ。アイコンはそのふくらみの中へ少し持ち上がる（丸や青い色は使わない） */
-        #bottom-tab-bar { --pm-bar-bg: #ffffff; --pm-bar-line: var(--pm-line, #e8e4dd); --pm-tab-ink: #1e293b; --pm-wave-shade: rgba(15,23,42,.07); }
-        .dark #bottom-tab-bar { --pm-bar-bg: #0c1220; --pm-bar-line: #1e293b; --pm-tab-ink: #e2e8f0; --pm-wave-shade: rgba(0,0,0,.35); }
-        #bottom-tab-bar > button { position: relative; -webkit-tap-highlight-color: transparent; }
+        #bottom-tab-bar { --pm-bar-bg: #ffffff; --pm-bar-line: var(--pm-line, #e8e4dd); --pm-tab-ink: #1e293b; }
+        .dark #bottom-tab-bar { --pm-bar-bg: #0c1220; --pm-bar-line: #1e293b; --pm-tab-ink: #e2e8f0; }
+        #bottom-tab-bar > button { position: relative; z-index: 1; -webkit-tap-highlight-color: transparent; }
         .pm-tab-bubble { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 9999px;
             transition: transform .55s cubic-bezier(.34,1.56,.64,1), color .25s ease; }
         #bottom-tab-bar > button:not(.pm-tab-on):active .pm-tab-bubble { transform: scale(.86); }
         #bottom-tab-bar > button.pm-tab-on { color: var(--pm-tab-ink); }
-        #bottom-tab-bar > button.pm-tab-on .pm-tab-bubble { transform: translateY(-13px) scale(1.3); }
-        #bottom-tab-bar > button.pm-tab-on:active .pm-tab-bubble { transform: translateY(-12px) scale(1.2); }
+        #bottom-tab-bar > button.pm-tab-on .pm-tab-bubble { transform: translateY(-10px) scale(1.25); }
+        #bottom-tab-bar > button.pm-tab-on:active .pm-tab-bubble { transform: translateY(-9px) scale(1.15); }
         .pm-tab-label { transition: transform .45s cubic-bezier(.34,1.56,.64,1), color .25s ease; }
-        #bottom-tab-bar > button.pm-tab-on .pm-tab-label { font-weight: 600; transform: translateY(-6px); }
+        #bottom-tab-bar > button.pm-tab-on .pm-tab-label { font-weight: 600; transform: translateY(-4px); }
         html:not(.pm-fx) .pm-tab-bubble, html:not(.pm-fx) .pm-tab-label { transition: none; }
-        @media (prefers-reduced-motion: reduce) { .pm-tab-bubble, .pm-tab-label, #pm-tab-ind { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { .pm-tab-bubble, .pm-tab-label, #pm-tab-ind .bump { transition: none; } }
     </style>
     <script>
 (function () {
@@ -27187,7 +27396,7 @@ async function devUsageLoadTrend(selected) {
                 .concat(STUDY_MODE_KEYS.filter(k => flags[k] !== false).map(k => 'f:' + k));
         }
         if (t === 'seasonal') {
-            const tasks = (window._remoteSummerTaskEnabled === false) ? [] : (typeof getVisibleSummerTasks === 'function' ? getVisibleSummerTasks() : []);
+            const tasks = (typeof getVisibleSummerTasks === 'function' ? getVisibleSummerTasks() : []);
             return tasks.filter(x => x && x.id != null).map(x => 't:' + x.id).concat((window._remoteExams || []).filter(x => x && x.id != null).map(x => 'x:' + x.id));
         }
         return [];
@@ -28570,22 +28779,29 @@ async function devUsageLoadTrend(selected) {
 
         var nav = document.getElementById('bottom-tab-bar'), ind = null, lastKey = '', lastActive = null, placed = false;
         function activeTab() { return nav ? nav.querySelector(':scope > button.pm-tab-on') : null; }
+        // タブの位置と幅。transform（押した時の縮みなど）の影響を受けない offset 系で測る
+        function tabBox(a) {
+            if (a.offsetParent === nav) return { x: a.offsetLeft, w: a.offsetWidth };
+            var nr = nav.getBoundingClientRect(), r = a.getBoundingClientRect();
+            return { x: r.left - nr.left, w: r.width };
+        }
         function moveIndicator(pop) {
             if (!nav) return;
             if (!ind) {
                 ind = document.createElement('span'); ind.id = 'pm-tab-ind';
                 // 山のかたち：底の線(y=12.5)から、なだらかに上がって下りる。塗りで元の平らな線を隠し、輪郭の線で置き換える
-                ind.innerHTML = '<svg viewBox="0 0 100 22" preserveAspectRatio="none" aria-hidden="true"><path class="fill" d="M0 21.5C26 21.5 30 1 50 1S74 21.5 100 21.5V22H0Z"/><path class="line" d="M0 21.5C26 21.5 30 1 50 1S74 21.5 100 21.5"/></svg>';
+                ind.innerHTML = '<svg aria-hidden="true"><line class="base" x1="0" x2="100%" y1="14.5" y2="14.5"/><g class="bump"><path class="fill" d="M0 14.5C22 14.5 38 1 60 1S98 14.5 120 14.5V17H0Z"/><path class="line" d="M0 14.5C22 14.5 38 1 60 1S98 14.5 120 14.5"/></g></svg>';
+                nav.classList.add('pm-wave-on');
                 nav.appendChild(ind);
             }
             var a = activeTab();
             if (!a || !nav.getClientRects().length) { ind.classList.remove('on'); lastActive = a; return; }
-            var nr = nav.getBoundingClientRect(), r = a.getBoundingClientRect(), w = Math.round(Math.min(Math.max(r.width * 1.3, 100), 150));
-            if (!placed) { ind.style.transition = 'none'; }
-            ind.style.width = w + 'px';
-            ind.style.setProperty('--x', (r.left - nr.left + (r.width - w) / 2) + 'px');
+            var box = tabBox(a), w = Math.round(Math.min(Math.max(box.w * 1.5, 112), 170));
+            if (!placed) { ind.classList.add('no-anim'); }
+            ind.style.setProperty('--s', w / 120);
+            ind.style.setProperty('--x', (box.x + (box.w - w) / 2) + 'px');
             ind.classList.add('on');
-            if (!placed) { placed = true; requestAnimationFrame(function () { requestAnimationFrame(function () { ind.style.transition = ''; }); }); }
+            if (!placed) { placed = true; requestAnimationFrame(function () { requestAnimationFrame(function () { ind.classList.remove('no-anim'); }); }); }
             if (pop && fx() && a !== lastActive) {
                 a.classList.remove('pm-tab-pop'); void a.offsetWidth; a.classList.add('pm-tab-pop');
                 setTimeout(function () { a.classList.remove('pm-tab-pop'); }, 600);
@@ -28601,6 +28817,20 @@ async function devUsageLoadTrend(selected) {
             window.addEventListener('resize', function () { moveIndicator(false); });
             window.addEventListener('orientationchange', function () { setTimeout(function () { moveIndicator(false); }, 200); });
             moveIndicator(false);
+            // 起動直後はフォントの読み込みなどで、あとからタブの幅や位置が動く。変わるたびに山を置き直す
+            var remeasureId = 0;
+            function remeasure() {
+                if (remeasureId) return;
+                remeasureId = requestAnimationFrame(function () { remeasureId = 0; moveIndicator(false); });
+            }
+            if (window.ResizeObserver) {
+                var ro = new ResizeObserver(remeasure);
+                ro.observe(nav);
+                nav.querySelectorAll(':scope > button').forEach(function (b) { ro.observe(b); });
+            }
+            if (document.fonts && document.fonts.ready) document.fonts.ready.then(remeasure);
+            window.addEventListener('load', function () { remeasure(); setTimeout(remeasure, 400); });
+            if (window.visualViewport) window.visualViewport.addEventListener('resize', remeasure);
         }
 
         window.pmCountUp = function (el, ms) {
