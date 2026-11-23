@@ -1209,7 +1209,38 @@ html.dark .dev-log-link { color: #e2e8f0; }
         } catch (e) { document.documentElement.classList.add('pm-fx'); }
     })();
     </script>
-    <style id="pm-skeleton-css">
+    <style id="pm-otp-css">
+/* ===== ワンタイムコード：6つの枠（3桁・区切り・3桁） ===== */
+.pm-otp{ position:relative; display:flex; justify-content:center; }
+.pm-otp-boxes{ display:flex; align-items:center; gap:.45rem; width:100%; max-width:19rem; }
+.pm-otp-box{ flex:1 1 0; min-width:0; height:2.9rem; display:flex; align-items:center; justify-content:center; position:relative;
+  border-radius:.5rem; border:1px solid #e2e8f0; background:#f8fafc; color:#0f172a;
+  font-size:1.3rem; font-weight:600; font-variant-numeric:tabular-nums; line-height:1;
+  transition:border-color .12s ease, box-shadow .12s ease; }
+.dark .pm-otp-box{ border-color:#3a3f4b; background:#14171f; color:#f8fafc; }
+.pm-otp-dash{ flex:0 0 .6rem; text-align:center; color:#94a3b8; font-weight:600; user-select:none; }
+.pm-otp-box.filled{ border-color:#cbd5e1; }
+.dark .pm-otp-box.filled{ border-color:#4a5060; }
+/* 入力中の枠：青い縁と光、点滅するカーソル */
+.pm-otp:focus-within .pm-otp-box.active{ border-color:#3b82f6; box-shadow:0 0 0 3px rgba(59,130,246,.28); }
+.pm-otp:focus-within .pm-otp-box.active:empty::after{ content:""; width:2px; height:1.35rem; border-radius:1px; background:#3b82f6; animation:pm-otp-caret 1s steps(1) infinite; }
+/* 入力を受け取る本物の入力欄（枠の上に透明で重ねる：数字キーボード・貼り付け・SMS自動入力に対応） */
+.pm-otp .pm-otp-input{ position:absolute !important; inset:0; width:100% !important; height:100% !important; z-index:2;
+  opacity:0 !important; border:0 !important; outline:0 !important; box-shadow:none !important; background:transparent !important;
+  padding:0 !important; margin:0; color:transparent !important; caret-color:transparent; font-size:16px !important; cursor:text; }
+/* まちがえたとき：赤い縁と、ひと揺れ */
+.pm-otp.err .pm-otp-box{ border-color:#f43f5e; box-shadow:0 0 0 3px rgba(244,63,94,.18); }
+.pm-otp.err .pm-otp-boxes{ animation:pm-otp-shake .35s; }
+/* 確認ボタン：6桁そろうまでは、うすい灰色 */
+.pm-otp-submit:disabled{ background:#e2e8f0 !important; color:#94a3b8 !important; cursor:not-allowed; opacity:1 !important; }
+.dark .pm-otp-submit:disabled{ background:#2c2f38 !important; color:#6b7280 !important; }
+/* ダークモードの有効なボタン：アプリの他の主ボタンと同じく、明るい地に濃い文字 */
+.dark #invite-submit:not(:disabled){ color:#0b1120 !important; }
+@keyframes pm-otp-caret{ 50%{ opacity:0 } }
+@keyframes pm-otp-shake{ 20%,60%{ transform:translateX(-4px) } 40%,80%{ transform:translateX(4px) } }
+@media (prefers-reduced-motion:reduce){ .pm-otp.err .pm-otp-boxes{ animation:none } .pm-otp:focus-within .pm-otp-box.active:empty::after{ animation:none } }
+</style>
+<style id="pm-skeleton-css">
 /* ===== スケルトン：実画面と同じ構造・同じクラスのまま、文字だけ灰色の帯にする ===== */
 .pm-skt, .pm-skb{
   --sk-a:rgba(148,163,184,.30); --sk-b:rgba(148,163,184,.14);
@@ -1286,6 +1317,11 @@ window.pmReloadWithSkeleton = function () {
         requestAnimationFrame(function () {
             requestAnimationFrame(function () { setTimeout(function () { location.reload(); }, 60); });
         });
+        /* 再読み込みが行われなかったとき（「このページを離れますか？」でキャンセルした等）は、スケルトンを外して操作できるように戻す */
+        setTimeout(function () {
+            el.style.pointerEvents = 'none';
+            el.classList.add('hidden');
+        }, 4000);
     } catch (e) { location.reload(); }
 };
 </script>
@@ -2194,22 +2230,24 @@ window.pmReloadWithSkeleton = function () {
 
         <div class="sw-page hidden" data-sw-step="invite">
             <div class="sticky top-0 bg-white/95 dark:bg-[#0b1120]/95 backdrop-blur px-4 py-3 border-b border-slate-100 dark:border-slate-800 z-10">
-                <h2 class="text-base font-black text-slate-800 dark:text-white">ワンタイムコードの入力</h2>
+                <h2 id="sw-invite-title" class="text-base font-black text-slate-800 dark:text-white">ワンタイムコードをもらう</h2>
             </div>
             <div class="p-5 max-w-md mx-auto space-y-3">
-                <p class="text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed">クラス・学校の予定・英語セクション・期間限定コーナーは、開発者から受け取った「ワンタイムコード」を入力した人だけが使えます。</p>
                 <div id="sw-invite-request" class="space-y-3">
+                    <p class="text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed">クラス・学校の予定・英語セクション・期間限定コーナーは、開発者から受け取った「ワンタイムコード」を入力した人だけが使えます。</p>
                     <p class="text-xs font-black text-slate-700 dark:text-slate-200 leading-relaxed">下のボタンで送信すると、開発者に依頼が届きます。開発者が、口頭または「お知らせ」でコードを伝えます。</p>
                     <button id="sw-invite-request-btn" onclick="pmRequestInviteCode('sw')" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">ワンタイムコードを送信</button>
                 </div>
-                <div id="sw-invite-enter" class="hidden space-y-3">
-                    <p id="sw-invite-note" class="text-xs font-black text-slate-700 dark:text-slate-200 leading-relaxed"></p>
-                    <input type="text" id="sw-invite-input" maxlength="12" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter') swSubmitInvite()" placeholder="XXXX-XXXX"
-                        class="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm font-bold tracking-widest text-slate-900 dark:text-white focus:outline-none focus:border-blue-400">
-                    <button id="sw-invite-submit-btn" onclick="swSubmitInvite()" class="w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">確認する</button>
-                    <button id="sw-invite-resend-btn" onclick="pmRequestInviteCode('sw')" class="w-full text-[11px] font-bold underline text-slate-400 hover:text-slate-600">コードが届かないときは、もう一度送信する</button>
+                <div id="sw-invite-enter" class="hidden">
+                    <p id="sw-invite-note" class="text-xs font-bold text-slate-500 dark:text-slate-400 leading-relaxed"></p>
+                    <div class="pm-otp mt-5">
+                        <div class="pm-otp-boxes" aria-hidden="true"><span class="pm-otp-box"></span><span class="pm-otp-box"></span><span class="pm-otp-box"></span><span class="pm-otp-dash">–</span><span class="pm-otp-box"></span><span class="pm-otp-box"></span><span class="pm-otp-box"></span></div>
+                        <input id="sw-invite-input" class="pm-otp-input" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" aria-label="6桁のコード" spellcheck="false" data-submit="sw-invite-submit-btn" oninput="pmOtpSync(this)" onkeydown="if(event.key==='Enter') swSubmitInvite()">
+                    </div>
                 </div>
                 <p id="sw-invite-error" class="hidden text-[11px] font-bold text-rose-500 text-center"></p>
+                <button id="sw-invite-submit-btn" onclick="swSubmitInvite()" disabled class="pm-otp-submit hidden w-full py-3 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-xl text-sm font-black hover:opacity-90 transition-all">確認する</button>
+                <button id="sw-invite-resend-btn" onclick="pmRequestInviteCode('sw')" class="hidden w-full text-[11px] font-bold underline text-slate-400 hover:text-slate-600">コードが届かないときは、もう一度送信する</button>
                 <button onclick="swSkipInvite()" class="w-full py-2.5 text-xs font-bold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">入力せずに進む</button>
                 <p class="text-[10px] font-bold text-slate-400 text-center">あとから、設定の「ワンタイムコードを入力」でも入力できます。</p>
             </div>
@@ -4682,22 +4720,24 @@ window.pmReloadWithSkeleton = function () {
 
     <div id="invite-modal" class="fixed inset-0 z-[10060] hidden flex items-center justify-center p-5 bg-slate-900/60">
         <div class="w-full max-w-sm bg-white dark:bg-[#0f172a] rounded-lg p-6 max-h-[90vh] overflow-y-auto">
-            <h2 class="text-base font-semibold text-slate-900 dark:text-white">ワンタイムコードの入力</h2>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">クラス、学校の予定、英語セクション、期間限定コーナーは、開発者から受け取った「ワンタイムコード」を入力した人だけが使えます。</p>
-            <div id="invite-step-request" class="mt-4 space-y-3">
+            <h2 id="invite-title" class="text-base font-semibold text-slate-900 dark:text-white">ワンタイムコードをもらう</h2>
+            <div id="invite-step-request" class="mt-3 space-y-3">
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">クラス、学校の予定、英語セクション、期間限定コーナーは、開発者から受け取った「ワンタイムコード」を入力した人だけが使えます。</p>
                 <p class="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-relaxed">下のボタンで送信すると、開発者に依頼が届きます。開発者が、口頭または「お知らせ」でコードを伝えます。</p>
                 <button id="invite-request-btn" onclick="pmRequestInviteCode('modal')" class="w-full px-5 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--pm-accent)">ワンタイムコードを送信</button>
             </div>
-            <div id="invite-step-enter" class="hidden mt-4">
-                <p id="invite-sent-note" class="text-xs font-semibold text-slate-700 dark:text-slate-200 leading-relaxed"></p>
-                <label for="invite-code-input" class="block text-xs font-medium text-slate-500 dark:text-slate-400 mt-4 mb-1.5">ワンタイムコード</label>
-                <input id="invite-code-input" type="text" maxlength="12" autocomplete="one-time-code" autocapitalize="characters" spellcheck="false" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter') pmSubmitInviteCode()" class="w-full px-3 py-2.5 text-sm font-semibold tracking-widest" placeholder="XXXX-XXXX">
-                <button id="invite-resend-btn" onclick="pmRequestInviteCode('modal')" class="mt-2 text-[11px] font-semibold underline text-slate-400 hover:text-slate-600">コードが届かないときは、もう一度送信する</button>
+            <div id="invite-step-enter" class="hidden">
+                <p id="invite-sent-note" class="text-xs text-slate-500 dark:text-slate-400 mt-2 leading-relaxed"></p>
+                <div class="pm-otp mt-5">
+                    <div class="pm-otp-boxes" aria-hidden="true"><span class="pm-otp-box"></span><span class="pm-otp-box"></span><span class="pm-otp-box"></span><span class="pm-otp-dash">–</span><span class="pm-otp-box"></span><span class="pm-otp-box"></span><span class="pm-otp-box"></span></div>
+                    <input id="invite-code-input" class="pm-otp-input" type="text" inputmode="numeric" pattern="[0-9]*" autocomplete="one-time-code" aria-label="6桁のコード" spellcheck="false" data-submit="invite-submit" oninput="pmOtpSync(this)" onkeydown="if(event.key==='Enter') pmSubmitInviteCode()">
+                </div>
             </div>
-            <p id="invite-error" class="hidden text-xs text-rose-600 mt-2"></p>
-            <div class="flex items-center justify-end gap-2 mt-6">
-                <button onclick="pmCloseInviteModal()" class="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">あとで</button>
-                <button id="invite-submit" onclick="pmSubmitInviteCode()" class="hidden px-5 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--pm-accent)">確認する</button>
+            <p id="invite-error" class="hidden text-xs text-rose-600 mt-3 text-center"></p>
+            <button id="invite-submit" onclick="pmSubmitInviteCode()" disabled class="pm-otp-submit hidden w-full mt-5 px-5 py-2.5 rounded-lg text-sm font-semibold text-white" style="background:var(--pm-accent)">確認する</button>
+            <button id="invite-resend-btn" onclick="pmRequestInviteCode('modal')" class="hidden w-full mt-3 text-[11px] font-semibold underline text-slate-400 hover:text-slate-600">コードが届かないときは、もう一度送信する</button>
+            <div class="flex items-center justify-center mt-4">
+                <button onclick="pmCloseInviteModal()" class="px-4 py-2 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800">あとで</button>
             </div>
         </div>
     </div>
@@ -7465,7 +7505,7 @@ window.pmReloadWithSkeleton = function () {
             if (current && current !== step && !opts.noHistory) swHistory.push(current);
             swShowStep(step);
             if (step === 'invite') {
-                const ii = document.getElementById('sw-invite-input'); if (ii) ii.value = '';
+                const ii = document.getElementById('sw-invite-input'); if (ii) { ii.value = ''; pmOtpSync(ii); }
                 const ie = document.getElementById('sw-invite-error'); if (ie) ie.classList.add('hidden');
                 if (typeof pmInviteRender === 'function') pmInviteRender('sw');
             }
@@ -7666,7 +7706,7 @@ window.pmReloadWithSkeleton = function () {
             const input = document.getElementById('sw-invite-input'), err = document.getElementById('sw-invite-error');
             const code = pmInviteNormalize((input && input.value) || '');
             if (err) err.classList.add('hidden');
-            if (!code) { if (err) { err.textContent = 'ワンタイムコードを入力してください'; err.classList.remove('hidden'); } return; }
+            if (code.length !== 6) { if (err) { err.textContent = '6桁のコードを入力してください'; err.classList.remove('hidden'); } pmOtpError(input); return; }
             swSetBtnLoading('sw-invite-submit-btn', true, '確認しています…');
             try {
                 await window.AppFirebase.joinWithInviteCode(code);
@@ -7679,8 +7719,10 @@ window.pmReloadWithSkeleton = function () {
                     err.textContent = (e && e.code === 'permission-denied') ? 'コードが違うか、期限が切れています。開発者に確認して、もう一度送信してください' : '通信に失敗しました。時間をおいてもう一度お試しください';
                     err.classList.remove('hidden');
                 }
+                pmOtpError(input);
             } finally {
                 swSetBtnLoading('sw-invite-submit-btn', false, '', '確認する');
+                const b2 = document.getElementById('sw-invite-submit-btn'); if (b2) b2.disabled = pmInviteNormalize((input && input.value) || '').length !== 6;
             }
         }
         function swSkipInvite() { pmMarkPrompted(); swGoto('google', { noHistory: true }); }
@@ -26698,9 +26740,28 @@ async function devUsageLoadTrend(selected) {
             pmOpenInviteModal();
         }
         /* ===== ワンタイムコード（利用者側） ===== */
+        // 6つの枠に、入力した数字を映す。全角数字・ハイフン・空白は取りのぞく（貼り付けにも対応）
+        function pmOtpSync(inp) {
+            if (!inp) return '';
+            let v = String(inp.value || '').replace(/[０-９]/g, c => String.fromCharCode(c.charCodeAt(0) - 0xFEE0)).replace(/\D/g, '').slice(0, 6);
+            if (inp.value !== v) inp.value = v;
+            const wrap = inp.closest('.pm-otp');
+            if (wrap) {
+                wrap.classList.remove('err');
+                wrap.querySelectorAll('.pm-otp-box').forEach((b, i) => {
+                    b.textContent = v[i] || '';
+                    b.classList.toggle('filled', i < v.length);
+                    b.classList.toggle('active', v.length < 6 && i === v.length);
+                });
+            }
+            const btn = inp.dataset.submit && document.getElementById(inp.dataset.submit);
+            if (btn) btn.disabled = v.length !== 6;
+            return v;
+        }
+        function pmOtpError(inp) { const w = inp && inp.closest('.pm-otp'); if (w) { w.classList.remove('err'); void w.offsetWidth; w.classList.add('err'); } }
         const PM_INVITE_UI = {
-            modal: { req: 'invite-step-request', enter: 'invite-step-enter', note: 'invite-sent-note', input: 'invite-code-input', err: 'invite-error', reqBtn: 'invite-request-btn', submit: 'invite-submit' },
-            sw:    { req: 'sw-invite-request',   enter: 'sw-invite-enter',   note: 'sw-invite-note',   input: 'sw-invite-input',   err: 'sw-invite-error',  reqBtn: 'sw-invite-request-btn', submit: 'sw-invite-submit-btn' },
+            modal: { req: 'invite-step-request', enter: 'invite-step-enter', note: 'invite-sent-note', input: 'invite-code-input', err: 'invite-error', reqBtn: 'invite-request-btn', submit: 'invite-submit', resend: 'invite-resend-btn', title: 'invite-title' },
+            sw:    { req: 'sw-invite-request',   enter: 'sw-invite-enter',   note: 'sw-invite-note',   input: 'sw-invite-input',   err: 'sw-invite-error',  reqBtn: 'sw-invite-request-btn', submit: 'sw-invite-submit-btn', resend: 'sw-invite-resend-btn', title: 'sw-invite-title' },
         };
         const pmInviteEl = (k, id) => document.getElementById(PM_INVITE_UI[k][id]);
         function pmInviteNormalize(v) { return String(v || '').toUpperCase().replace(/[\s\-－ー_]/g, ''); }
@@ -26717,7 +26778,10 @@ async function devUsageLoadTrend(selected) {
             const expired = !!(r && r.status === 'issued' && expMs && expMs < Date.now());
             const sent = !!r && !expired;
             req.classList.toggle('hidden', sent); enter.classList.toggle('hidden', !sent);
-            const sub = pmInviteEl(k, 'submit'); if (sub && k === 'modal') sub.classList.toggle('hidden', !sent);
+            const sub = pmInviteEl(k, 'submit'); if (sub) sub.classList.toggle('hidden', !sent);
+            const rs = pmInviteEl(k, 'resend'); if (rs) rs.classList.toggle('hidden', !sent);
+            const ttl = pmInviteEl(k, 'title'); if (ttl) ttl.textContent = sent ? '6桁のコードを入力' : 'ワンタイムコードをもらう';
+            pmOtpSync(pmInviteEl(k, 'input'));
             const reqBtn = pmInviteEl(k, 'reqBtn'); if (reqBtn) reqBtn.disabled = false;
             if (expired && err) { err.textContent = '前のコードは期限が切れました。もう一度送信してください'; err.classList.remove('hidden'); }
             const note = pmInviteEl(k, 'note');
@@ -26749,7 +26813,7 @@ async function devUsageLoadTrend(selected) {
         }
         function pmOpenInviteModal() {
             const m = document.getElementById('invite-modal'); if (!m) return;
-            document.getElementById('invite-code-input').value = '';
+            document.getElementById('invite-code-input').value = ''; pmOtpSync(document.getElementById('invite-code-input'));
             document.getElementById('invite-error').classList.add('hidden');
             m.classList.remove('hidden');
             pmInviteRender('modal');
@@ -26759,7 +26823,7 @@ async function devUsageLoadTrend(selected) {
             const input = document.getElementById('invite-code-input'), err = document.getElementById('invite-error'), btn = document.getElementById('invite-submit');
             const code = pmInviteNormalize(input.value);
             err.classList.add('hidden');
-            if (!code) { err.textContent = 'ワンタイムコードを入力してください'; err.classList.remove('hidden'); return; }
+            if (code.length !== 6) { err.textContent = '6桁のコードを入力してください'; err.classList.remove('hidden'); pmOtpError(input); return; }
             btn.disabled = true; btn.textContent = '確認しています…';
             try {
                 await window.AppFirebase.joinWithInviteCode(code);
@@ -26769,7 +26833,8 @@ async function devUsageLoadTrend(selected) {
             } catch (e) {
                 err.textContent = (e && e.code === 'permission-denied') ? 'コードが違うか、期限が切れています。開発者に確認して、もう一度送信してください' : '通信に失敗しました。時間をおいてもう一度お試しください';
                 err.classList.remove('hidden');
-            } finally { btn.disabled = false; btn.textContent = '確認する'; }
+                pmOtpError(input);
+            } finally { btn.textContent = '確認する'; btn.disabled = pmInviteNormalize(input.value).length !== 6; }
         }
 
         const SECMON_PILL = {
@@ -27047,15 +27112,15 @@ async function devUsageLoadTrend(selected) {
 
         /* ===== ワンタイムコード（開発者側） ===== */
         const CMS_INVITE_TTL_H = 24;                                   // コードの有効時間（時間）
-        const CMS_INVITE_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';   // 読み間違えやすい文字（I・O・0・1）を除く
         const CMS_ONETIME_RULES = "// ============================================================\n//  ワンタイムコード用の Firestore ルール（コピー用）\n//  1) すでにある「match /members/{uid} { … }」を、下の members に置き換える\n//  2) 下の inviteRequests と inviteCodes を、同じ場所に追加する\n//  3) 「公開」を押す\n//  ※ match /private/invite は消さないでください（公式アカウントの確認に使っています）\n//  ※ isOfficial() と isRegistered() は、すでにあるルールの関数を使います\n// ============================================================\n\n    // ===== ワンタイムコード =====\n    // 流れ：利用者が inviteRequests に「依頼」を書く → 公式アカウント（開発者）が inviteCodes にコードを発行する\n    //       → 利用者がコードを入力すると、members に認められる（同時に、そのコードを「使用済み」にする）。\n    //  ・コードは「その人あて・未使用・期限内」のときだけ使える（1回きり）\n    //  ・コード本体（inviteCodes）を読めるのは公式アカウントだけ。利用者は、このルールの中でだけ照合される\n    //  ・認められる書き込みと「使用済み」の書き込みは、同じバッチで行うことが必須（getAfter で確かめる）\n    //  ・以前の共通の限定番号（private/invite）では、認められなくなる。このドキュメントは、公式アカウントの確認に使うので消さない\n\n    match /members/{uid} {\n      allow read: if request.auth != null && (request.auth.uid == uid || isOfficial());\n      allow create: if request.auth != null && request.auth.uid == uid\n                    && request.resource.data.keys().hasOnly(['code', 'joinedAt'])\n                    && request.resource.data.code is string\n                    && request.resource.data.joinedAt == request.time\n                    && exists(/databases/$(database)/documents/inviteCodes/$(uid))\n                    && get(/databases/$(database)/documents/inviteCodes/$(uid)).data.code == request.resource.data.code\n                    && get(/databases/$(database)/documents/inviteCodes/$(uid)).data.used == false\n                    && request.time < get(/databases/$(database)/documents/inviteCodes/$(uid)).data.expiresAt\n                    && getAfter(/databases/$(database)/documents/inviteCodes/$(uid)).data.used == true;\n      allow update, delete: if isOfficial();\n    }\n\n    // inviteRequests … 利用者が「ワンタイムコードを送信」したときの依頼\n    //  ・書けるのは本人（ゲストを除く。匿名アカウントの大量作成で、依頼が埋まらないようにするため）。決まった形・名前は40字まで\n    //  ・読めるのは、本人と公式アカウント（一覧は公式アカウントだけ）\n    match /inviteRequests/{uid} {\n      allow get: if request.auth != null && (request.auth.uid == uid || isOfficial());\n      allow list: if isOfficial();\n      allow create, update: if isRegistered() && request.auth.uid == uid\n                            && request.resource.data.keys().hasOnly(['uid', 'nickname', 'status', 'requestedAt'])\n                            && request.resource.data.uid == uid\n                            && request.resource.data.status == 'pending'\n                            && request.resource.data.nickname is string\n                            && request.resource.data.nickname.size() <= 40\n                            && request.resource.data.requestedAt == request.time;\n      allow update, delete: if isOfficial();\n    }\n\n    // inviteCodes … 公式アカウントが発行したコード本体\n    //  ・読む・作る・消すのは公式アカウントだけ\n    //  ・本人ができる更新は、「未使用 → 使用済み」だけ（認められる書き込みと同じバッチのときだけ）\n    match /inviteCodes/{uid} {\n      allow read, create, delete: if isOfficial();\n      allow update: if isOfficial()\n                    || (request.auth != null && request.auth.uid == uid\n                        && resource.data.used == false\n                        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used', 'usedAt'])\n                        && request.resource.data.used == true\n                        && existsAfter(/databases/$(database)/documents/members/$(uid)));\n    }\n";
         let _cmsInvite = { reqs: [], codes: {}, sent: {} };
+        // 6桁の数字（口頭で伝えやすい）。偏りが出ないよう、250未満の乱数だけを使う
         function cmsGenInviteCode() {
-            const a = new Uint8Array(8); crypto.getRandomValues(a);
-            let c = ''; a.forEach(b => { c += CMS_INVITE_ALPHABET[b & 31]; });
+            let c = '';
+            while (c.length < 6) { const a = new Uint8Array(12); crypto.getRandomValues(a); for (const b of a) { if (b < 250 && c.length < 6) c += String(b % 10); } }
             return c;
         }
-        const cmsFmtCode = (c) => c.length === 8 ? c.slice(0, 4) + '-' + c.slice(4) : c;
+        const cmsFmtCode = (c) => c.length === 6 ? c.slice(0, 3) + '-' + c.slice(3) : c;
         function cmsInviteFmtTime(ms) {
             if (!ms) return '';
             const d = new Date(ms); const p = (n) => String(n).padStart(2, '0');
