@@ -11,6 +11,7 @@
         try {
             window.__PM_PANE = (window.parent !== window) && /^pm-pane-[ab]$/.test(window.name || '');   // 画面分割の中で開かれたアプリ
             if (window.__PM_PANE) document.documentElement.classList.add('pm-pane');
+            if (window.__PM_PANE && /[?&]pmtabs=1(?:&|$)/.test(location.search)) document.documentElement.classList.add('pm-pane-tabs');   // 左右の分割：この枠は、自分の下部タブを出す
             var h = location.hostname;
             var dev = location.protocol === 'file:' || h === 'localhost' || h === '127.0.0.1' || h === '[::1]' || /\.local$/.test(h);
             var mq = function (q) { return !!(window.matchMedia && window.matchMedia(q).matches); };
@@ -1242,6 +1243,11 @@ html.dark .dev-log-link { color: #e2e8f0; }
 #pm-split-host.h .pm-split-grip{ width:4px; height:38px; }
 #pm-split-host.h .pm-split-which{ writing-mode:vertical-rl; padding:9px 3px; letter-spacing:.06em; }
 #pm-split-host.h.dragging{ cursor:col-resize; }
+html.pm-split-h #bottom-tab-bar{ visibility:hidden; pointer-events:none; }
+#pm-split-host.h .pm-split-which{ display:none; }   /* 左右のときは、各枠のタブが直接その枠を切り替えるので、「どちらに開く」の表示は要らない */
+/* 上下のとき：もう一方の画面が開いているタブに、小さな点 */
+#bottom-tab-bar button.pm-split-other{ position:relative; }
+#bottom-tab-bar button.pm-split-other::after{ content:""; position:absolute; left:50%; bottom:3px; width:6px; height:6px; margin-left:-3px; border-radius:50%; background:var(--pm-accent,#34436b); }
 html.pm-split-on, html.pm-split-on body{ overflow:hidden !important; }
 html.pm-split-on #floating-timer-btn, html.pm-split-on #floating-aichat-btn{ z-index:9500 !important; }   /* 浮遊ボタンは、分割の上に出す */
 html.pm-split-on #feedback-fab{ z-index:8000 !important; }   /* 「ご意見」の浮遊タブは、境界線の✕ボタンに重なるので、分割中は裏に回す */
@@ -1252,9 +1258,11 @@ html.pm-split-on #feedback-fab{ z-index:8000 !important; }   /* 「ご意見」�
 .dark .pm-split-pill[aria-pressed="true"]{ color:#0b1120; }
 .pm-split-pill[disabled]{ opacity:.35; cursor:not-allowed; }
 /* 分割の中に表示されているアプリ（枠の中）：下部タブ・浮遊ボタン・インストール案内・分割ボタンは出さない（親の画面が受け持つ） */
-html.pm-pane #bottom-tab-bar, html.pm-pane #floating-timer-btn, html.pm-pane #floating-aichat-btn, html.pm-pane #install-gate, html.pm-pane #feedback-fab,
-html.pm-pane .pm-sknav, html.pm-pane .pm-skfab, html.pm-pane #pm-split-menu-btn, html.pm-pane #mypage-split-btn{ display:none !important; }
-html.pm-pane body{ padding-bottom:0 !important; }
+html.pm-pane #floating-timer-btn, html.pm-pane #floating-aichat-btn, html.pm-pane #install-gate, html.pm-pane #feedback-fab,
+html.pm-pane .pm-skfab, html.pm-pane #pm-split-menu-btn, html.pm-pane #mypage-split-btn{ display:none !important; }
+/* 上下のとき：下部タブは親の1本だけ（枠の中では出さない）。左右のとき（pm-pane-tabs）：枠ごとに、自分の下部タブを出す */
+html.pm-pane:not(.pm-pane-tabs) #bottom-tab-bar, html.pm-pane:not(.pm-pane-tabs) .pm-sknav{ display:none !important; }
+html.pm-pane:not(.pm-pane-tabs) body{ padding-bottom:0 !important; }
 </style>
 <style id="pm-otp-css">
 /* ===== ワンタイムコード：6つの枠（3桁・区切り・3桁） ===== */
@@ -29554,6 +29562,7 @@ async function devUsageLoadTrend(selected) {
             if (e.source !== window.parent) return;
             const d = e.data; if (!d || !d.pmSplit) return;
             if (d.type === 'goto') gotoKey(d.key);
+            else if (d.type === 'layout') document.documentElement.classList.toggle('pm-pane-tabs', !!d.tabs);
         });
         document.addEventListener('pointerdown', () => post({ type: 'focus' }), true);   // この枠を触ったら、「操作中」にする
         document.addEventListener('focusin', () => post({ type: 'focus' }), true);
@@ -29605,13 +29614,23 @@ async function devUsageLoadTrend(selected) {
         div.setAttribute('aria-label', S.h ? '左右の大きさを変える（ドラッグ、または左右キー）' : '上下の大きさを変える（ドラッグ、または上下キー）');
         const sw = $('pm-split-swap'), t = S.h ? '左右を入れ替える' : '上下を入れ替える';
         sw.title = t; sw.setAttribute('aria-label', t);
-        updateWhich(); refreshTitles();
+        document.documentElement.classList.toggle('pm-split-h', S.h);
+        ['a', 'b'].forEach(id => { if (S.panes[id] && S.panes[id].ready) sendTo(id, { type: 'layout', tabs: S.h }); });
+        updateWhich(); refreshTitles(); updateTabMarks();
+    }
+    // 上下のとき：「操作中でない側の画面」が開いているタブに、点を付ける
+    function updateTabMarks() {
+        document.querySelectorAll('#bottom-tab-bar button.pm-split-other').forEach(b => b.classList.remove('pm-split-other'));
+        if (!S.open || S.h) return;
+        const act = S.panes[S.active], oth = S.panes[S.active === 'a' ? 'b' : 'a'];
+        const k = oth && (oth.cur || oth.want), ak = act && (act.cur || act.want);
+        if (k && k !== ak) { const b = $('bottom-tab-' + k); if (b) b.classList.add('pm-split-other'); }
     }
     function setActive(id) {
         if (!S.panes[id]) return;
         S.active = id;
         ['a', 'b'].forEach(k => { const el = paneEl(k); if (el) el.classList.toggle('active', k === id); });
-        updateWhich();
+        updateWhich(); updateTabMarks();
         setTabHighlight(S.panes[id].cur);
     }
     function applyOrder() {
@@ -29625,14 +29644,14 @@ async function devUsageLoadTrend(selected) {
     }
     function applyBottom() {
         const nav = $('bottom-tab-bar'); const h = nav ? nav.offsetHeight : 66;
-        $('pm-split-host').style.setProperty('--pm-split-bottom', (h || 66) + 'px');
+        $('pm-split-host').style.setProperty('--pm-split-bottom', (S.h ? 0 : (h || 66)) + 'px');   // 左右のときは、親の下部タブの場所まで広げる（各枠が、自分のタブを持つ）
     }
 
     function start(keyA, keyB) {
         if (S.open) return;
         if (!window.currentAppUser) { toast('ログインすると、画面分割が使えます'); return; }
         try { if (typeof closeSettingsDrawer === 'function') closeSettingsDrawer(); } catch (_) {}
-        const base = location.href.split('#')[0];
+        const base = (function () { const u = new URL(location.href.split('#')[0]); if (isH()) u.searchParams.set('pmtabs', '1'); else u.searchParams.delete('pmtabs'); return u.toString(); })();
         const last = readLast();
         S.r = clamp(typeof last.r === 'number' ? last.r : 0.5, 0.18, 0.82);
         S.top = 'a'; S.active = 'a';
@@ -29650,6 +29669,10 @@ async function devUsageLoadTrend(selected) {
         $('pm-split-host').classList.remove('hidden');
         applyLayout(); applyBottom(); applyOrder(); applyRatio(); setActive('a');
         saveLast({ a: keyA, b: keyB });
+        if (!S.h) {   // 上下のとき、初めて使うときだけ：下のタブの使い方を案内
+            let seen = false; try { seen = localStorage.getItem('pm_split_hint') === '1'; } catch (_) {}
+            if (!seen) { try { localStorage.setItem('pm_split_hint', '1'); } catch (_) {} setTimeout(() => toast('下のタブは、青い縁の画面に開きます。長押しで、もう一方に開きます'), 900); }
+        }
         clearTimeout(S.timer);
         S.timer = setTimeout(() => {   // 開けなかったとき（ネットワーク・設定で枠の表示が止められているなど）
             if (S.open && !(S.panes.a && S.panes.a.ready && S.panes.b && S.panes.b.ready)) { toast('画面分割を開けませんでした'); close({ noNav: true }); }
@@ -29663,8 +29686,8 @@ async function devUsageLoadTrend(selected) {
         clearTimeout(S.timer);
         ['a', 'b'].forEach(k => { const el = paneEl(k); if (el) el.innerHTML = ''; S.panes[k] = null; });   // 枠の中のアプリが閉じる（保存待ちのデータは、閉じるときに送られる）
         $('pm-split-host').classList.add('hidden');
-        document.documentElement.classList.remove('pm-split-on');
-        S.open = false; S.drag = false;
+        document.documentElement.classList.remove('pm-split-on', 'pm-split-h');
+        S.open = false; S.drag = false; updateTabMarks();
         saveLast({ r: S.r });
         if (!(opts && opts.noNav)) gotoKey(key);   // 操作していた画面を、そのまま続けて開く
     }
@@ -29673,7 +29696,7 @@ async function devUsageLoadTrend(selected) {
 
     function routeToPane(id, key) {
         const p = S.panes[id]; if (!p) return;
-        p.want = key;
+        p.want = key; updateTabMarks();
         if (p.ready) sendTo(id, { type: 'goto', key });
     }
 
@@ -29686,14 +29709,15 @@ async function devUsageLoadTrend(selected) {
         const markReady = () => {   // 枠のアプリが動いていて、指示を受け取れる状態
             if (p.ready) return;
             p.ready = true;
+            sendTo(id, { type: 'layout', tabs: S.h });
             if (p.want && p.cur !== p.want) sendTo(id, { type: 'goto', key: p.want });
             if (S.panes.a && S.panes.a.ready && S.panes.b && S.panes.b.ready) clearTimeout(S.timer);
         };
         if (d.type === 'ready') {
-            p.cur = d.key || null; markReady(); refreshTitles();
+            p.cur = d.key || null; markReady(); refreshTitles(); updateTabMarks();
             if (S.active === id) setTabHighlight(p.cur);
         } else if (d.type === 'tab') {
-            p.cur = d.key || null; markReady(); refreshTitles();
+            p.cur = d.key || null; markReady(); refreshTitles(); updateTabMarks();
             if (S.active === id) setTabHighlight(p.cur);
         } else if (d.type === 'focus') {
             if (S.active !== id) setActive(id);
@@ -29733,8 +29757,8 @@ async function devUsageLoadTrend(selected) {
     })();
     window.addEventListener('resize', () => {
         if (!S.open) return;
-        applyBottom();
         if (isH() !== S.h) { applyLayout(); const host = $('pm-split-host'), div = $('pm-split-divider'), r = host.getBoundingClientRect(); const avail = (S.h ? r.width : r.height) - (S.h ? div.offsetWidth : div.offsetHeight); const [lo, hi] = limits(avail); S.r = clamp(S.r, lo, hi); applyRatio(); }
+        applyBottom();
     });
     try { const nav = $('bottom-tab-bar'); if (nav && typeof ResizeObserver === 'function') new ResizeObserver(() => { if (S.open) applyBottom(); }).observe(nav); } catch (_) {}
     // 戻るボタンで、分割をやめる
