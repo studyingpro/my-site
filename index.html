@@ -652,7 +652,7 @@ html.dark .dev-log-link { color: #e2e8f0; }
         .ks-text.ks-hl { color: var(--ks-hl); }
         .ks-trans { color: var(--ks-trans); font-family: sans-serif; font-size: .95rem; font-weight: 800; line-height: 1.6; margin-inline-start: 1.6rem; padding-inline-start: 1rem; border-left: 1px dashed var(--ks-edge); }
 
-        #toast, #undo-toast, #error-toast, #new-version-banner, #dev-floating-indicator {
+        #toast, #undo-toast, #error-toast, #new-version-banner {
             bottom: calc(var(--bottom-tab-h, 0px) + 1rem) !important;
         }
         #toast, #undo-toast, #error-toast { z-index: 2147483500 !important; }
@@ -1741,7 +1741,6 @@ window.pmReloadWithSkeleton = function () {
             <span class="pm-skind"><svg aria-hidden="true"><line class="base" x1="0" x2="100%" y1="14.5" y2="14.5"/><g class="bump"><path class="fill" d="M0 14.5C22 14.5 38 1 60 1S98 14.5 120 14.5V17H0Z"/><path class="line" d="M0 14.5C22 14.5 38 1 60 1S98 14.5 120 14.5"/></g></svg></span>
         </div>
         <span class="pm-skfab pm-skfab-timer w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 items-center justify-center" style="display:none"><span class="pm-skb w-5 h-5 rounded-full"></span></span>
-        <span class="pm-skfab pm-skfab-aichat w-12 h-12 rounded-full pm-skb" style="display:none"></span>
         <script>
 (function () {
     var el = document.getElementById('auth-loading-screen'); if (!el) return;
@@ -1772,7 +1771,7 @@ window.pmReloadWithSkeleton = function () {
         var tabH = Math.max(nav ? nav.offsetHeight : 0, 66), S = 48, M = 10;   /* スタイル適用前でも実物の高さ(66px)を下回らない */
         var minX = M, maxX = W - S - M, minY = M, maxYn = Math.max(minY, H - tabH - S - M), maxY0 = H - S - M;
         var clamp = function (x, a, b) { return Math.min(Math.max(x, a), Math.max(a, b)); };
-        [['timer', 'pm_fab_pos_timer', 'pm_show_timer_fab', 96 + S + 12], ['aichat', 'pm_fab_pos_aichat', 'pm_show_aichat_fab', 96]].forEach(function (d) {
+        [['timer', 'pm_fab_pos_timer', 'pm_show_timer_fab', 96 + S + 12]].forEach(function (d) {
             var b = el.querySelector('.pm-skfab-' + d[0]); if (!b) return;
             var show = true, pos = null;
             try { show = JSON.parse(localStorage.getItem(d[2])) !== false; } catch (e) {}
@@ -1971,15 +1970,7 @@ window.pmReloadWithSkeleton = function () {
                                 </span>
                             </button>
                             <div class="my-1 border-t border-slate-100 dark:border-slate-800"></div>
-                            <button onclick="toggleAiChatFabVisibility()" id="aichat-fab-toggle-btn" data-keep-open class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
-                                <span class="flex items-center space-x-3 min-w-0">
-                                    <i data-lucide="message-circle" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
-                                    <span class="text-xs font-bold text-slate-700 dark:text-slate-200 truncate">AIチャットを表示</span>
-                                </span>
-                                <span id="aichat-fab-toggle-switch" class="toggle-switch-track relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 bg-emerald-500 shrink-0">
-                                    <span class="toggle-switch-knob inline-block h-4 w-4 transform rounded-full bg-white transition-transform duration-200 translate-x-5"></span>
-                                </span>
-                            </button>
+                            
                             <button onclick="toggleTimerFabVisibility()" id="timer-fab-toggle-btn" data-keep-open class="w-full flex items-center justify-between px-3.5 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors">
                                 <span class="flex items-center space-x-3 min-w-0">
                                     <i data-lucide="timer" class="w-4 h-4 text-blue-500 dark:text-cyan-400 shrink-0"></i>
@@ -2855,6 +2846,8 @@ window.pmReloadWithSkeleton = function () {
                 <button onclick="pmOpenInviteModal()" class="shrink-0 text-xs font-semibold hover:underline" style="color:var(--pm-accent)">コードを入力</button>
             </div>
 
+                <div id="mypage-testplan-card" class="mb-4"></div>
+
                 <div>
                     <div class="flex items-center justify-between mb-1.5 ml-1">
                         <p class="text-[10px] font-black uppercase tracking-widest text-slate-400">直近の予定</p>
@@ -2946,6 +2939,7 @@ window.pmReloadWithSkeleton = function () {
                             </button>
                         </div>
                     </div>
+                    <button type="button" id="tp-calbanner" onclick="tp.open()" class="tp-calbanner"><i data-lucide="clipboard-list"></i><span>テスト計画 <small id="tp-cal-sub">範囲・目標点・何周するかを決めて管理</small></span><i id="tp-cal-dot" class="tp-newbadge hidden">新</i><i data-lucide="chevron-right"></i></button>
                     <div id="cal-jst-clock" class="flex flex-wrap items-center gap-x-2 gap-y-0.5 mb-3 text-xs font-bold text-slate-500 dark:text-slate-400">
                         <i data-lucide="clock" class="w-5 h-5 text-rose-500 shrink-0"></i>
                         <span>日本時間</span>
@@ -4601,7 +4595,7 @@ window.pmReloadWithSkeleton = function () {
                     <label class="text-[10px] font-black text-cyan-700 dark:text-cyan-300 flex items-center gap-1.5 mb-1">
                         <i data-lucide="bell" class="w-3.5 h-3.5"></i><span>通知日時（任意）</span>
                     </label>
-                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2">指定した日時になると、アプリを開いているユーザーの端末に通知が表示されます。</p>
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-2">指定した日時になると、アプリを閉じていても、ユーザーの端末に通知が届きます（通知の許可が必要です）。</p>
                     <input type="datetime-local" id="cms-sch-notify"
                         class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400">
                     <button type="button" onclick="document.getElementById('cms-sch-notify').value=''" class="text-[10px] text-slate-400 hover:text-rose-500 mt-1">通知をクリア</button>
@@ -4869,7 +4863,7 @@ window.pmReloadWithSkeleton = function () {
 <div class="dev-fab-row" role="group" aria-label="開発者モード">
 <button type="button" onclick="openDevDashboard('home')" class="dev-fab-main" title="開発者ページを開く（Ctrl/⌘ + Shift + D）"><i data-lucide="layout-dashboard" class="w-4 h-4"></i><span class="dev-fab-label">開発者ページ</span></button>
 <button type="button" onclick="cmsSaveToGitHub()" id="dev-floating-publish-btn" class="dev-fab-pub" title="GitHubに保存して公開"><i data-lucide="upload-cloud" class="w-4 h-4"></i><span class="dev-fab-label">公開</span></button>
-<button type="button" id="dev-floating-tab" class="dev-fab-min" aria-label="小さくする・元に戻す" title="小さくする"><i data-lucide="chevrons-left" class="w-4 h-4"></i></button>
+<button type="button" id="dev-floating-tab" class="dev-fab-min" aria-label="開発者メニューを開く・閉じる" title="開発者メニューを開く" aria-expanded="false"><i data-lucide="chevrons-left" class="w-4 h-4"></i></button>
 </div>
 </div>
 
@@ -4980,9 +4974,6 @@ window.pmReloadWithSkeleton = function () {
     <div id="floating-tools">
         <button id="floating-timer-btn" onclick="toggleTimerPanel()" class="w-12 h-12 rounded-full bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center active:scale-95 transition-all" title="タイマー">
             <i data-lucide="timer" class="w-5 h-5 text-blue-500 dark:text-cyan-400"></i>
-        </button>
-        <button id="floating-aichat-btn" onclick="openGeneralAiChat()" class="w-12 h-12 rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 flex items-center justify-center active:scale-95 transition-all" title="何でも聞けるAIチャット">
-            <i data-lucide="message-circle" class="w-5 h-5 text-white"></i>
         </button>
     </div>
 
@@ -5577,7 +5568,7 @@ window.pmReloadWithSkeleton = function () {
 <input type="date" id="schedule-input-until" title="繰り返しの終わり（空なら2年先まで）" class="hidden w-32 py-2 bg-transparent border-0 border-b-2 border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white focus:outline-none"></div>
 <div class="flex items-center space-x-3"><i data-lucide="bell" class="w-4 h-4 text-slate-400 shrink-0"></i>
 <select id="schedule-input-notifymin" class="flex-1 min-w-0 py-2 bg-transparent dark:bg-[#0c1220] border-0 border-b-2 border-slate-200 dark:border-slate-700 text-sm font-bold text-slate-900 dark:text-white focus:outline-none"><option value="">通知しない</option><option value="0">開始時刻に通知</option><option value="10">10分前</option><option value="30">30分前</option><option value="60">1時間前</option><option value="1440">1日前</option></select></div>
-<p class="text-[10px] text-slate-400 pl-7 -mt-2">通知は、アプリを開いている間に届きます</p>
+<p class="text-[10px] text-slate-400 pl-7 -mt-2">通知は、アプリを閉じていても届きます（初めてのときは、通知を許可してください）</p>
 <div class="flex items-center space-x-3"><i data-lucide="palette" class="w-4 h-4 text-slate-400 shrink-0"></i><div id="schedule-input-colors" class="grid grid-cols-5 gap-3 p-1 flex-1 min-w-0"></div></div>
                 <div id="schedule-input-dev-section" class="hidden bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl p-3.5 space-y-3">
                     <label class="flex items-center justify-between cursor-pointer">
@@ -5602,7 +5593,7 @@ window.pmReloadWithSkeleton = function () {
                             <label class="text-[10px] font-black text-cyan-700 dark:text-cyan-300 flex items-center gap-1.5 mb-1">
                                 <i data-lucide="bell" class="w-3.5 h-3.5"></i><span>通知日時（任意）</span>
                             </label>
-                            <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-1.5">指定した日時に、アプリを開いているユーザーの端末へ通知が表示されます。</p>
+                            <p class="text-[10px] text-slate-500 dark:text-slate-400 mb-1.5">指定した日時に、アプリを閉じていても、ユーザーの端末へ通知が届きます（通知の許可が必要です）。</p>
                             <input type="datetime-local" id="schedule-input-notify" class="w-full px-3 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg text-xs font-bold text-slate-900 dark:text-white focus:outline-none focus:border-cyan-400">
                         </div>
                         <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">保存すると「変更を保存」状態になります。実際に全員に反映するには、開発者ダッシュボードの「GitHubに保存して公開」を押してください。</p>
@@ -5836,6 +5827,7 @@ window.pmReloadWithSkeleton = function () {
             'pm_timer_sound',               // タイマーの音
             'pm_essay_expanded',
             'pm_dev_home_order',            // 開発者ホームのカードの並び順
+            'pm_test_plans',                // テスト計画
         ];
         const CLOUD_SYNC_PREFIXES = ['t19_mastered_', 't19_weak_', 't19_lastSession_'];   // 単語の「覚えた」「苦手」と、途中経過（本ごと）
         // 設定のように、画面が古いまま保存して上書きしてしまう心配がないものは、他の端末の変更をその場で取り込む（それ以外は「更新あり」と知らせてから）
@@ -5844,7 +5836,7 @@ window.pmReloadWithSkeleton = function () {
         const isSoftKey = (k) => PM_SOFT_KEYS.has(k) || k.startsWith('t19_lastSession_');
         const isSyncKey = (k) => typeof k === 'string' && (CLOUD_SYNC_KEYS.includes(k) || (k.length < 80 && CLOUD_SYNC_PREFIXES.some(p => k.startsWith(p))));
         function pmSyncKind(key) {
-            if (['pm_schedule_items', 'pm_grade_records', 'pm_scan_history', 'pm_trash_history', 'pm_study_logs'].includes(key)) return 'list';   // idで見分ける配列
+            if (['pm_schedule_items', 'pm_grade_records', 'pm_scan_history', 'pm_trash_history', 'pm_study_logs', 'pm_test_plans'].includes(key)) return 'list';   // idで見分ける配列
             if (key === 'pm_done_submissions') return 'set';
             if (key.startsWith('t19_mastered_') || key.startsWith('t19_weak_')) return 'map';   // 単語ごとの「覚えた」「苦手」（途中経過 t19_lastSession_ は、ひとまとまりの値）
             if (key === 'pm_geo_puzzle_plays') return 'max';
@@ -7833,6 +7825,7 @@ window.pmReloadWithSkeleton = function () {
             swSetBtnLoading('sw-invite-submit-btn', true, '確認しています…');
             try {
                 await window.AppFirebase.joinWithInviteCode(code);
+                pmMarkInviteDone();
                 pmMarkPrompted();
                 await pmRefreshMembership();
                 showToast('確認できました。限定内容が使えます');
@@ -8919,9 +8912,10 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         (function setupDraggableFabs() {
             const SIZE = 48, MARGIN = 10, DRAG_PX = 6;
             const defs = [
-                { id: 'floating-aichat-btn', key: 'pm_fab_pos_aichat', defFromBottom: 96 },
-                { id: 'floating-timer-btn',  key: 'pm_fab_pos_timer',  defFromBottom: 96 + SIZE + 12 },
+                { id: 'floating-timer-btn',  key: 'pm_fab_pos_timer',  defFromBottom: 96 },
+                { id: 'dev-floating-indicator', key: 'pm_fab_pos_dev', defEdge: 'left', defFromBottom: 24, z: '9979', dev: true },   // 開発者ボタン：タイマーなどと同じ方法で動かせる
             ];
+            const isFolded = (d) => { const e = document.getElementById(d.id); return !d.dev || !e || e.classList.contains('is-fold'); };
             const probe = document.createElement('div');
             probe.style.cssText = 'position:fixed;top:0;left:0;width:0;height:0;visibility:hidden;padding-top:env(safe-area-inset-top,0px)';
             document.body.appendChild(probe);
@@ -8932,10 +8926,10 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 return { minX: MARGIN, maxX: window.innerWidth - SIZE - MARGIN, minY: MARGIN + safeTop, maxY: window.innerHeight - tab - SIZE - MARGIN };
             }
             function load(d) {
-                try { const v = JSON.parse(localStorage.getItem(d.key)); if (v && ['left','right','top','bottom'].includes(v.edge) && typeof v.t === 'number') return v; } catch (_) {}
+                if (MOVABLE) try { const v = JSON.parse(localStorage.getItem(d.key)); if (v && ['left','right'].includes(v.edge) && typeof v.t === 'number') return v; if (v && ['top','bottom'].includes(v.edge) && typeof v.t === 'number') { const bb = bounds(), cc = coords(v); return { edge: cc.x < window.innerWidth / 2 ? 'left' : 'right', t: clamp((cc.y - bb.minY) / Math.max(1, bb.maxY - bb.minY), 0, 1) }; } } catch (_) {}
                 const b = bounds();
                 const y = clamp(window.innerHeight - d.defFromBottom - SIZE, b.minY, b.maxY);
-                return { edge: 'right', t: b.maxY > b.minY ? (y - b.minY) / (b.maxY - b.minY) : 1 };
+                return { edge: d.defEdge || 'right', t: b.maxY > b.minY ? (y - b.minY) / (b.maxY - b.minY) : 1 };
             }
             function coords(pos) {
                 const b = bounds();
@@ -8945,38 +8939,57 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 if (pos.edge === 'bottom') return { x: b.minX + t * (b.maxX - b.minX), y: b.maxY };
                 return { x: b.maxX, y: b.minY + t * (b.maxY - b.minY) };
             }
-            const state = {};
+            const state = {}, PEEK = 22, TABH = 44, MOVABLE = false, revealed = {}, dragFlag = {}, hideT = {};   // 壁に隠れて、PEEK(px)だけ顔を出す
+            const timerPanelOpen = () => { const pn = document.getElementById('timer-panel'); return !!pn && !pn.classList.contains('hidden'); };
+            function isDocked(d) {
+                if (dragFlag[d.id]) return false;
+                if (d.dev) return isFolded(d);
+                return true;   // タイマーは、押すとタイマー画面が開く（出てくるのは画面のほう）
+            }
+            function reveal(d, on) {
+                clearTimeout(hideT[d.id]); revealed[d.id] = on;
+                if (on) hideT[d.id] = setTimeout(() => { if (timerPanelOpen()) { reveal(d, true); return; } revealed[d.id] = false; apply(d, true); }, 3500);
+                apply(d, true); positionTimerPanel();
+            }
             function apply(d, animate) {
                 const el = document.getElementById(d.id);
                 if (!el) return;
                 const c = coords(state[d.id]);
+                if (d.dev) { el.style.bottom = 'auto'; el.style.right = 'auto'; if (!isFolded(d)) { c.x = clamp(c.x, 8, window.innerWidth - el.offsetWidth - 8); c.y = clamp(c.y, 8, window.innerHeight - el.offsetHeight - 8); } }
                 el.style.transition = animate ? 'left .25s ease, top .25s ease, transform .15s' : 'transform .15s';
-                el.style.left = c.x + 'px';
-                el.style.top = c.y + 'px';
                 state[d.id].x = c.x; state[d.id].y = c.y;
+                let px = c.x;
+const dk = isDocked(d);
+                if (dk) px = state[d.id].edge === 'left' ? 0 : window.innerWidth - PEEK;   // タブの幅は PEEK(22px)
+                el.dataset.edge = state[d.id].edge;
+                if (!d.dev) el.classList.toggle('pm-dock', dk);
+                el.style.left = px + 'px';
+                el.style.top = (dk ? c.y - (TABH - SIZE) / 2 : c.y) + 'px';
             }
             const GAP = 8;
             function resolveOverlap(d) {
-                const other = defs.find(x => x.id !== d.id);
-                const otherEl = document.getElementById(other.id);
-                const ot = state[other.id], me = state[d.id];
-                if (!ot || ot.x == null || !me || !otherEl || otherEl.classList.contains('hidden')) return;
-                const c = coords(me);
-                const step = SIZE + GAP;
-                if (!(Math.abs(c.x - ot.x) < step && Math.abs(c.y - ot.y) < step)) return;
-                const b = bounds();
-                const vertical = (me.edge === 'left' || me.edge === 'right');
-                const axisMin = vertical ? b.minY : b.minX, axisMax = vertical ? b.maxY : b.maxX;
-                const cur = vertical ? c.y : c.x, otherPos = vertical ? ot.y : ot.x;
-                const cands = [otherPos + step, otherPos - step]
-                    .filter(v => v >= axisMin - 0.5 && v <= axisMax + 0.5)
-                    .sort((a, z) => Math.abs(a - cur) - Math.abs(z - cur));
-                const v = cands.length ? cands[0] : clamp(otherPos + step, axisMin, axisMax);
-                me.t = (v - axisMin) / Math.max(1, axisMax - axisMin);
+                const me = state[d.id], step = SIZE + GAP;
+                if (!me) return;
+                const others = defs.filter(o => {
+                    if (o.id === d.id) return false;
+                    const e = document.getElementById(o.id), s = state[o.id];
+                    return s && s.x != null && e && !e.classList.contains('hidden');
+                }).map(o => state[o.id]);
+                const clash = (t) => { const c = coords({ edge: me.edge, t }); return others.some(s => Math.abs(c.x - s.x) < step && Math.abs(c.y - s.y) < step); };
+                if (!clash(me.t)) { const c0 = coords(me); me.x = c0.x; me.y = c0.y; return; }
+                const b = bounds(), vertical = (me.edge === 'left' || me.edge === 'right');
+                const axisMin = vertical ? b.minY : b.minX, axisMax = vertical ? b.maxY : b.maxX, span = Math.max(1, axisMax - axisMin);
+                const cur = axisMin + me.t * span;
+                const cands = [axisMin, axisMax];
+                others.forEach(s => { const o = vertical ? s.y : s.x; cands.push(o + step, o - step); });
+                const ok = cands.filter(v => v >= axisMin - 0.5 && v <= axisMax + 0.5).map(v => (v - axisMin) / span).filter(t => !clash(t))
+                    .sort((x, z) => Math.abs(x * span + axisMin - cur) - Math.abs(z * span + axisMin - cur));
+                if (ok.length) me.t = ok[0];
+                const c = coords(me); me.x = c.x; me.y = c.y;
             }
             function layoutAll(animate) {
                 defs.forEach(d => { const c = coords(state[d.id]); state[d.id].x = c.x; state[d.id].y = c.y; });
-                resolveOverlap(defs[1]);
+                for (let i = 1; i < defs.length; i++) resolveOverlap(defs[i]);
                 defs.forEach(d => apply(d, animate));
                 positionTimerPanel();
             }
@@ -9015,8 +9028,9 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         window._pickPanelSpot = pickPanelSpot;
         function positionTimerPanel() {
             const panel = document.getElementById('timer-panel');
-            const st = state['floating-timer-btn'];
-            if (!panel || !st || st.x == null || panel.classList.contains('hidden')) return;
+            const st0 = state['floating-timer-btn'];
+            if (!panel || !st0 || st0.x == null || panel.classList.contains('hidden')) return;
+            const st = Object.assign({}, st0, { x: st0.edge === 'left' ? -SIZE + PEEK : window.innerWidth - PEEK });
             const chatEl = document.getElementById('floating-aichat-btn'), ct = state['floating-aichat-btn'];
             const other = (chatEl && !chatEl.classList.contains('hidden') && ct && ct.x != null) ? ct : null;
             const spot = pickPanelSpot(st, other, panel.offsetWidth, panel.offsetHeight, window.innerWidth, window.innerHeight, bounds(), SIZE, 10);
@@ -9028,10 +9042,12 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 const el = document.getElementById(d.id);
                 if (!el) return;
                 state[d.id] = load(d);
-                Object.assign(el.style, { position: 'fixed', zIndex: '40', touchAction: 'manipulation', userSelect: 'none', webkitUserSelect: 'none' });
+                Object.assign(el.style, { position: 'fixed', zIndex: d.z || '40', touchAction: 'manipulation', userSelect: 'none', webkitUserSelect: 'none' });
                 let sx = 0, sy = 0, ox = 0, oy = 0, pid = null, down = false, dragging = false, armed = true, lp = 0;
                 el.addEventListener('pointerdown', (e) => {
+                    if (!MOVABLE) return;   // 位置は固定（動かせない）
                     if (e.button !== undefined && e.button !== 0) return;
+                    if (!isFolded(d)) return;   // 開いているあいだは動かさない（ボタンを押すため）
                     down = true; dragging = false; pid = e.pointerId;
                     sx = e.clientX; sy = e.clientY; ox = state[d.id].x; oy = state[d.id].y;
                     armed = e.pointerType === 'mouse';
@@ -9045,13 +9061,27 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     if (!armed) { if (Math.hypot(mx, my) > 8) { clearTimeout(lp); down = false; } return; }
                     if (!dragging) {
                         if (Math.hypot(mx, my) < DRAG_PX) return;
-                        dragging = true;
-                        el.style.transition = 'transform .15s';
+                        dragging = true; dragFlag[d.id] = true; clearTimeout(hideT[d.id]);
+                        el.style.transition = 'left .12s ease, transform .15s';
                         el.style.transform = 'scale(1.1)';
                     }
                     const b = bounds();
-                    state[d.id].x = clamp(ox + mx, b.minX, b.maxX);
-                    state[d.id].y = clamp(oy + my, b.minY, b.maxY);
+                    let nx = clamp(ox + mx, b.minX, b.maxX), ny = clamp(oy + my, b.minY, b.maxY);
+                    // ほかのボタンにぶつからないよう、動かしている間も押し出す
+                    const need = SIZE + GAP;
+                    for (let pass = 0; pass < 3; pass++) {
+                        defs.forEach(o => {
+                            if (o.id === d.id) return;
+                            const oe = document.getElementById(o.id), os = state[o.id];
+                            if (!oe || oe.classList.contains('hidden') || !os || os.x == null) return;
+                            const dx = nx - os.x, dy = ny - os.y;
+                            if (Math.abs(dx) >= need || Math.abs(dy) >= need) return;
+                            if (Math.abs(dx) > Math.abs(dy)) nx = os.x + (dx >= 0 ? need : -need); else ny = os.y + (dy >= 0 ? need : -need);
+                            nx = clamp(nx, b.minX, b.maxX); ny = clamp(ny, b.minY, b.maxY);
+                        });
+                    }
+                    state[d.id].x = nx;
+                    state[d.id].y = ny;
                     el.style.left = state[d.id].x + 'px';
                     el.style.top = state[d.id].y + 'px';
                     positionTimerPanel();
@@ -9063,10 +9093,10 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     try { el.releasePointerCapture(pid); } catch (_) {}
                     el.style.transform = '';
                     if (!dragging) return;
-                    dragging = false;
+                    dragging = false; dragFlag[d.id] = false; revealed[d.id] = false;
                     window._fabSuppressClickUntil = Date.now() + 400;
                     const b = bounds(), st = state[d.id];
-                    const dist = { left: st.x - b.minX, right: b.maxX - st.x, top: st.y - b.minY, bottom: b.maxY - st.y };
+                    const dist = { left: st.x - b.minX, right: b.maxX - st.x };
                     const edge = Object.keys(dist).sort((a, c) => dist[a] - dist[c])[0];
                     const horizontalEdge = (edge === 'top' || edge === 'bottom');
                     const along = horizontalEdge ? (st.x - b.minX) / Math.max(1, b.maxX - b.minX) : (st.y - b.minY) / Math.max(1, b.maxY - b.minY);
@@ -9080,7 +9110,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 el.addEventListener('pointercancel', end);
             });
             document.addEventListener('click', (e) => {
-                if (Date.now() < (window._fabSuppressClickUntil || 0) && e.target.closest && e.target.closest('#floating-timer-btn, #floating-aichat-btn')) {
+                if (Date.now() < (window._fabSuppressClickUntil || 0) && e.target.closest && e.target.closest('#floating-timer-btn, #dev-floating-indicator')) {
                     e.stopPropagation(); e.preventDefault();
                 }
             }, true);
@@ -9089,7 +9119,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             window.addEventListener('resize', () => layoutAll(false));
             new MutationObserver(() => layoutAll(false)).observe(document.documentElement, { attributes: true, attributeFilter: ['style'] });
             const panel = document.getElementById('timer-panel');
-            if (panel) new MutationObserver(positionTimerPanel).observe(panel, { attributes: true, attributeFilter: ['class'] });
+            if (panel) new MutationObserver(() => { positionTimerPanel(); const td = defs.find(x => x.id === 'floating-timer-btn'); apply(td, true); }).observe(panel, { attributes: true, attributeFilter: ['class'] });
         })();
 
         function toggleTimerFabVisibility() {
@@ -9449,11 +9479,12 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
         function _exWdLabel(d) { return `${Number(d.slice(5, 7))}/${Number(d.slice(8))}（${_EX_WD[new Date(d + 'T00:00:00Z').getUTCDay()]}）`; }
         function _exSessClasses(ex, x) { return (Array.isArray(x.classIds) && x.classIds.length) ? x.classIds : (Array.isArray(ex.classIds) ? ex.classIds : []); }
         function _exCanSee(ex, x) { if (devUnlocked) return true; const ids = _exSessClasses(ex, x); return ids.length === 0 || ids.includes(window.currentUserClassId || null); }
+        function _exLastDate(ex) { return (ex.sessions || []).map(x => x && x.date).filter(Boolean).sort().pop() || '0000-00-00'; }   // 終わったテストは、利用者には見せない（データは残し、開発者には見える）
         function _exFirstDate(ex) { return (ex.sessions || []).map(x => x && x.date).filter(Boolean).sort()[0] || '9999-12-31'; }
         function examBoardVisibleExams() {
             const my = window.currentUserClassId || null;
             return (window._remoteExams || []).filter(ex => ex && (ex.sessions || []).some(x => x && x.date && x.subject)
-                && (devUnlocked || !(Array.isArray(ex.classIds) && ex.classIds.length) || ex.classIds.includes(my)))
+                && (devUnlocked || (_exFirstDate(ex) !== '9999-12-31' && _exLastDate(ex) >= _exTodayStr() && (!(Array.isArray(ex.classIds) && ex.classIds.length) || ex.classIds.includes(my)))))
                 .sort((a, b) => _exFirstDate(a).localeCompare(_exFirstDate(b)));
         }
         function updateExamBoardEntry() {
@@ -9566,7 +9597,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const usedDates = dates.filter(d => cols.some(c => c.date === d));
             const btn = (sx, ci, emph, stacked) => {
                 examBoardCells.push({ ex, s: sx, col: cols[ci], cls: ids(sx) || [] });
-                return `<button data-exidx="${examBoardCells.length - 1}" onclick="examBoardShowCell(${examBoardCells.length - 1})" style="--sc:${pmSubjectColor(sx.subject)};box-shadow:inset 4px 0 0 var(--sc)" class="block w-full pl-2.5 pr-1.5 py-2 text-xs ${emph ? 'font-black text-white hover:bg-cyan-700' : 'font-bold text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800'} ${stacked ? 'border-t border-slate-300 dark:border-slate-600' : ''}" style="min-width:56px;max-width:92px;min-height:44px;margin:0 auto;overflow-wrap:anywhere">${escapeHtml(sx.subject)}</button>`;
+                return `<button data-exidx="${examBoardCells.length - 1}" onclick="examBoardShowCell(${examBoardCells.length - 1})" style="--sc:${pmSubjectColor(sx.subject)};box-shadow:inset 4px 0 0 var(--sc);min-height:44px" class="block w-full pl-2.5 pr-1.5 py-2 text-xs ${emph ? 'font-black text-white hover:bg-cyan-700' : 'font-bold text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-800'} ${stacked ? 'border-t border-slate-300 dark:border-slate-600' : ''}">${escapeHtml(sx.subject)}</button>`;
             };
             const corner = rowIds.length ? `<th rowspan="3" class="${hd} sticky left-0 z-10 px-2 text-[10px] font-black text-slate-600 dark:text-slate-300">組</th>` : '';
             const dateHead = usedDates.map(d => `<th data-exdate="${d}" colspan="${cols.reduce((a, c, i) => a + (c.date === d ? colInfo[i].k : 0), 0)}" class="${hd} px-2 py-1.5 text-xs font-black ${d === today ? 'text-cyan-700 dark:text-cyan-300' : 'text-slate-800 dark:text-slate-100'}">${_exWdLabel(d)}</th>`).join('');
@@ -9596,6 +9627,15 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             return `<p class="text-[10px] font-semibold text-slate-500 dark:text-slate-400 mb-2 text-center">教科をタップすると、テスト範囲が見られます${rowIds.length && my && rowIds.includes(my) ? '（水色の行が自分の組です）' : ''}</p>
                 <div class="overflow-x-auto"><table class="mx-auto border-collapse min-w-max"><thead><tr>${corner}${dateHead}</tr><tr>${nHead}</tr><tr>${tHead}</tr></thead><tbody>${rowsHtml}</tbody></table></div>`;
         }
+        // 教科のマスは、ボタンの外（余白）を押しても反応するようにする（当たり判定をマス全体に広げる）
+        document.addEventListener('click', (e) => {
+            const td = e.target.closest && e.target.closest('#exam-board-body td');
+            if (!td || e.target.closest('button')) return;
+            const bs = td.querySelectorAll('button[data-exidx]'); if (!bs.length) return;
+            let best = bs[0], bd = Infinity;
+            bs.forEach(b => { const r = b.getBoundingClientRect(), d = e.clientY < r.top ? r.top - e.clientY : e.clientY > r.bottom ? e.clientY - r.bottom : 0; if (d < bd) { bd = d; best = b; } });
+            examBoardShowCell(Number(best.getAttribute('data-exidx')));
+        });
         function examBoardShowCell(i) {
             const c = examBoardCells[i]; if (!c) return;
             const s = c.s, sh = document.getElementById('exam-board-sheet'); if (!sh) return;
@@ -11934,8 +11974,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                     key: String(sc.id) + '|' + sc.notifyAt,
                     sid: String(sc.id),
                     at: new Date(t).toISOString(),
-                    title: '学習ProMaster：' + scheduleTypeLabelJa(sc.type) + 'のお知らせ',
-                    body: `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
+                    title: sc.notifyTitle || ('学習ProMaster：' + scheduleTypeLabelJa(sc.type) + 'のお知らせ'),
+                    body: sc.notifyBody || `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
                 });
             });
             // 動いているカウントダウンタイマー：終わる時刻に、閉じていても届くように預ける（アプリが動いていて終われば、すぐ取り消される）
@@ -12068,11 +12108,12 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             const clearHash = () => { try { if (/^#n=/.test(location.hash)) history.replaceState(history.state, '', location.pathname + location.search); } catch (e) {} };
             const attempt = () => {
                 // お知らせ・タイマーの通知：ログインできたら、その画面を開く
-                if (id === 'announce' || id === 'timer') {
+                if (id === 'announce' || id === 'timer' || id === 'exam') {
                     if (window.currentAppUser) {
                         clearHash(); _pmDeepRunning = false;
                         try {
                             if (id === 'announce') toggleAnnouncementModal(true);
+                            else if (id === 'exam') { if (typeof openExamBoard === 'function') openExamBoard(); }
                             else { const tp = document.getElementById('timer-panel'); if (tp && tp.classList.contains('hidden')) toggleTimerPanel(); }
                         } catch (e) {}
                         return;
@@ -12110,7 +12151,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 el.id = id;
                 el.className = 'fixed left-3 right-3 z-[9000] max-w-md mx-auto flex items-center gap-3 px-4 py-3 rounded-2xl shadow-xl bg-slate-900 text-white text-xs font-bold';
                 el.style.bottom = 'calc(env(safe-area-inset-bottom, 0px) + 84px)';
-                el.innerHTML = '<span class="flex-1">予定のお知らせを受け取るため、通知を許可してください</span><button type="button" class="shrink-0 px-3 py-1.5 rounded-full bg-cyan-500 text-white font-black">許可する</button>';
+                el.innerHTML = '<span class="flex-1">アプリを閉じていても予定が届くよう、通知を許可してください</span><button type="button" class="shrink-0 px-3 py-1.5 rounded-full bg-cyan-500 text-white font-black">許可する</button>';
                 el.querySelector('button').onclick = () => requestScheduleNotifyPermission();
                 document.body.appendChild(el);
             } catch (e) {}
@@ -12140,7 +12181,7 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
             if (!('Notification' in window)) { showToast('この端末は通知に対応していません'); return; }
             Notification.requestPermission().then(perm => {
                 if (perm === 'granted') {
-                    showToast('通知をオンにしました');
+                    showToast('通知をオンにしました。アプリを閉じていても届きます');
                     checkScheduleNotifications();
                     oneSignalOptIn();
                 } else {
@@ -12190,8 +12231,8 @@ return `${linkEl.open} class="relative block pb-3 border-b border-slate-200 dark
                 if (now - t > 90 * 1000) { fired.push(fk); changed = true; return; }
                 if (!serverActive) {
                     const typeLabel = scheduleTypeLabelJa(sc.type);
-                    pmShowLocalNotification('学習ProMaster：' + typeLabel + 'のお知らせ', {
-                        body: `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
+                    pmShowLocalNotification(sc.notifyTitle || ('学習ProMaster：' + typeLabel + 'のお知らせ'), {
+                        body: sc.notifyBody || `${sc.title}${sc.subject ? '（' + sc.subject + '）' : ''} - ${sc.date}${sc.time ? ' ' + sc.time : ''}`,
                         tag: 'pm-schedule-' + sc.id,
                     });
                 }
@@ -14743,6 +14784,7 @@ slogFillTimer();
         }
 
         function renderUpcomingScheduleOnMyPage() {
+            try { if (window.tp) window.tp.renderMyPageCard(); } catch (e) {}
             const wrap = document.getElementById('mypage-upcoming-schedule');
             if (!wrap) return;
             const items = (typeof getUpcomingSchedules === 'function' ? getUpcomingSchedules() : []).slice(0, 3);
@@ -23961,8 +24003,9 @@ async function devAutoEnter() {
 
         function devEnter() {
     devUnlocked = true;
-    try { showToast('開発者モードに入りました。左下の「開発者ページ」（Ctrl/⌘+Shift+D）から管理画面を開けます'); } catch (e) {}
+    try { showToast('開発者モードに入りました。左下の丸いボタンを押すと開発者ページを開けます'); } catch (e) {}
     updateDevFloatingIndicator();
+    try { if (location.hash === '#dev') setTimeout(() => openDevDashboard('home'), 300); } catch (e) {}
     refreshAllDevEditableViews();
     cmsSilentAutoConnect().then(() => refreshAllDevEditableViews());
 }
@@ -24493,17 +24536,24 @@ async function devAutoEnter() {
     const el = document.getElementById('dev-floating-indicator');
     if (!el) return;
     const KEY = 'pm_dev_fab_min';
-    let min = false; try { min = localStorage.getItem(KEY) === '1'; } catch (e) {}
-    function fit() { const tb = document.getElementById('bottom-tab-bar'); const h = tb && tb.offsetHeight ? tb.offsetHeight : 0; el.style.bottom = (h + 14) + 'px'; }
+    let min = true;   // ふだんは折りたたみ。タップで開き、外側をタップすると閉じる
+    function fit() { /* 位置は、タイマーなどと同じしくみ（長押しで移動）で決めます */ }
     function apply() {
         fit();
-        el.classList.toggle('is-min', min);
+        setTimeout(() => { try { window._fabRelayout && window._fabRelayout(); } catch (e) {} }, 0);
+        el.classList.toggle('is-fold', min);
         const t = document.getElementById('dev-floating-tab');
-        if (t) t.title = min ? '大きくする' : '小さくする';
+        if (t) { t.title = min ? '開発者メニューを開く' : '閉じる'; t.setAttribute('aria-expanded', String(!min)); }
     }
     setInterval(fit, 800);
     window.devPillApply = apply;
-    document.getElementById('dev-floating-tab').addEventListener('click', () => { min = !min; try { localStorage.setItem(KEY, min ? '1' : '0'); } catch (e) {} apply(); });
+    document.getElementById('dev-floating-tab').addEventListener('click', () => { min = !min; apply(); });
+    el.addEventListener('click', (e) => {
+        if (e.target.closest('.dev-fab-main, .dev-fab-pub')) { min = true; apply(); return; }
+        // 動かすための操作（ポインターの捕捉）でクリックが外側の枠に届いたときも、折りたたみ中なら開く
+        if (min && !e.target.closest('#dev-floating-tab')) { min = false; apply(); }
+    });
+    document.addEventListener('pointerdown', (e) => { if (!min && !el.contains(e.target)) { min = true; apply(); } }, true);
     window.addEventListener('resize', apply);
     // ショートカット：Ctrl/⌘ + Shift + D で開発者ページを開閉（開発者モードのときだけ）
     document.addEventListener('keydown', (e) => {
@@ -24516,52 +24566,75 @@ async function devAutoEnter() {
     apply();
 })();
 
-// 開発者ホームは、長押ししてドラッグすると、カード・「いまの状況」のタイル・グループ全体の順番を入れ替えられる。順番はアカウントに保存され、ほかの端末にも引き継がれる
+// 開発者ホームは、区切りなしの1枚のボード。長押ししてドラッグで順番を、「−／＋」で幅を変えられる。並び順と幅はアカウントに保存され、ほかの端末にも引き継がれる
 (function devHomeSort() {
     const KEY = 'pm_dev_home_order';
-    let sorting = false, drag = null, press = null, justDragged = false;
+    const SIZES = [3, 4, 6, 8, 12];                         // 12列のうちの幅（1/4・1/3・1/2・2/3・全幅）
+    const LABEL = { 3: '1/4', 4: '1/3', 6: '1/2', 8: '2/3', 12: '全幅' };
+    const MIN = { 't:dev-statusbar': 6, 't:dev-sec-tile': 6, 't:2': 4, 't:3': 6, 't:dev-github-card': 6, 't:5': 6, 't:6': 4 };   // 文字が窮屈にならない最小の幅
+    let sorting = false, drag = null, press = null, justDragged = false, rs = null, selected = null, defaults = { order: [], sizes: {} };
     const root = () => document.getElementById('dev-home-menu');
-    const load = () => { try { const v = JSON.parse(localStorage.getItem(KEY) || '[]'); return Array.isArray(v) ? v : []; } catch (e) { return []; } };
-    const keyed = (box) => [...box.children].filter(c => c.dataset && c.dataset.key);
-    const containers = () => { const r = root(); return r ? [r, ...r.querySelectorAll('.dev-menu'), ...r.querySelectorAll('.dev-grid')] : []; };
-    const save = () => { try { const out = []; containers().forEach(b => keyed(b).forEach(c => out.push(c.dataset.key))); localStorage.setItem(KEY, JSON.stringify(out)); } catch (e) {} };
-    function applyOrder(order) {
-        order = order || load();
-        containers().forEach(box => {
-            const rank = (c) => { const i = order.indexOf(c.dataset.key); return i < 0 ? 9999 : i; };
-            keyed(box).map((c, i) => [c, i]).sort((x, y) => (rank(x[0]) - rank(y[0])) || (x[1] - y[1])).forEach(([c]) => box.appendChild(c));
-        });
+    const board = () => document.getElementById('dev-home-board');
+    const minOf = (key) => MIN[key] || (key.startsWith('t:') ? 4 : 3);
+    const allowed = (key) => SIZES.filter(n => n >= minOf(key));
+    const load = () => {
+        try {
+            const v = JSON.parse(localStorage.getItem(KEY) || 'null');
+            if (Array.isArray(v)) return { order: v.filter(k => /^[ct]:/.test(k)), sizes: {}, heights: {} };   // 以前の形式（順番だけ）
+            if (v && typeof v === 'object') return { order: Array.isArray(v.order) ? v.order : [], sizes: (v.sizes && typeof v.sizes === 'object') ? v.sizes : {}, heights: (v.heights && typeof v.heights === 'object') ? v.heights : {} };
+        } catch (e) {}
+        return { order: [], sizes: {}, heights: {} };
+    };
+    const items = () => board() ? [...board().children].filter(c => c.dataset && c.dataset.key) : [];
+    const sizeOf = (el) => parseInt(el.dataset.size, 10);
+    const save = () => {
+        try {
+            const sizes = {}, heights = {};
+            items().forEach(c => { if (sizeOf(c) !== defaults.sizes[c.dataset.key]) sizes[c.dataset.key] = sizeOf(c); const h = parseInt(c.dataset.h, 10); if (h > 0) heights[c.dataset.key] = h; });
+            localStorage.setItem(KEY, JSON.stringify({ v: 3, order: items().map(c => c.dataset.key), sizes, heights }));
+        } catch (e) {}
+    };
+    function setSize(el, n) {
+        const ok = allowed(el.dataset.key);
+        if (!ok.includes(n)) n = ok.reduce((a, c) => Math.abs(c - n) < Math.abs(a - n) ? c : a, ok[0]);
+        el.dataset.size = n;
     }
-    function defaultOrder() {
-        const out = [];
-        const r = root(); if (!r) return out;
-        (r.__defaultOrder || []).forEach(k => out.push(k));
-        return out;
+    function setHeight(el, h) {   // 高さ（px）。中身より低くはならない。0は自動
+        if (h > 0) { el.dataset.h = h; el.style.minHeight = h + 'px'; } else { delete el.dataset.h; el.style.minHeight = ''; }
+    }
+    function naturalHeight(el) {   // 中身がちょうど収まる高さ
+        const keep = [el.style.minHeight, el.style.alignSelf];
+        el.style.minHeight = ''; el.style.alignSelf = 'start';
+        const h = el.offsetHeight;
+        el.style.minHeight = keep[0]; el.style.alignSelf = keep[1];
+        return h;
+    }
+    function apply(layout) {
+        const bd = board(); if (!bd) return;
+        const order = layout.order;
+        const rank = (c) => { const i = order.indexOf(c.dataset.key); return i < 0 ? 9999 : i; };
+        items().map((c, i) => [c, i]).sort((x, y) => (rank(x[0]) - rank(y[0])) || (x[1] - y[1])).forEach(([c]) => bd.appendChild(c));
+        items().forEach(c => { setSize(c, layout.sizes[c.dataset.key] != null ? parseInt(layout.sizes[c.dataset.key], 10) : defaults.sizes[c.dataset.key]); setHeight(c, parseInt((layout.heights || {})[c.dataset.key], 10) || 0); });
+    }
+    function select(el) {
+        if (selected && selected !== el) selected.classList.remove('is-selected');
+        selected = el; if (el) el.classList.add('is-selected');
     }
     function setSorting(on) {
         sorting = on;
         const r = root(); if (!r) return;
         r.classList.toggle('is-sorting', on);
+        if (!on) select(null);
         const bar = r.querySelector('.dev-sort-bar');
         if (bar) {
-            bar.querySelector('.dev-sort-hint').textContent = on ? 'ドラッグして入れ替えます（カード・状況のタイル・グループの見出しを動かせます）' : 'カード・タイル・見出しを長押しすると、順番を入れ替えられます';
+            bar.querySelector('.dev-sort-hint').textContent = on ? 'ドラッグで移動、選んだ部品の辺や角のハンドルで大きさを変えられます' : 'どれかを長押しすると、順番と大きさを変えられます';
             bar.querySelector('.dev-sort-actions').classList.toggle('hidden', !on);
         }
     }
-    // 指の下にあるものが、動かせる部品のどれか（カード／タイル／グループ）を調べる
-    function findItem(el) {
-        if (!el || !el.closest || !root() || !root().contains(el)) return null;
-        const card = el.closest('.dev-menu-card[data-key]'); if (card) return card;
-        const grid = el.closest('.dev-grid');
-        if (grid) { let t = el; while (t && t.parentElement !== grid) t = t.parentElement; if (t && t.dataset.key) return t; }
-        const head = el.closest('.dev-menu-group-title, .dev-section-label');
-        if (head) return head.closest('[data-key]');
-        return null;
-    }
+    const findItem = (el) => { const bd = board(); if (!el || !el.closest || !bd || !bd.contains(el)) return null; let t = el; while (t && t.parentElement !== bd) t = t.parentElement; return t && t.dataset && t.dataset.key ? t : null; };
     function startDrag(item, e) {
         const rect = item.getBoundingClientRect();
-        const isBlock = item.parentElement === root();
-        drag = { item, box: item.parentElement, id: e.pointerId, gx: e.clientX - rect.left, gy: e.clientY - rect.top, block: isBlock };
+        drag = { item, id: e.pointerId, gx: e.clientX - rect.left, gy: e.clientY - rect.top };
         item.classList.add('is-dragging');
         try { item.setPointerCapture(e.pointerId); } catch (_) {}
         place(e);
@@ -24574,16 +24647,17 @@ async function devAutoEnter() {
     }
     function onMove(e) {
         if (!drag || e.pointerId !== drag.id) return;
-        const { item, box, block } = drag;
+        const { item } = drag, bd = board();
         item.style.pointerEvents = 'none';
-        let under = document.elementFromPoint(e.clientX, e.clientY);
+        const under = findItem(document.elementFromPoint(e.clientX, e.clientY));
         item.style.pointerEvents = '';
-        while (under && under.parentElement !== box) under = under.parentElement;
-        if (under && under !== item && under.dataset && under.dataset.key) {
-            const sibs = keyed(box), ti = sibs.indexOf(under), ci = sibs.indexOf(item);
-            let ok = true;
-            if (block) { const tr = under.getBoundingClientRect(), mid = tr.top + tr.height / 2; ok = ti > ci ? e.clientY > mid : e.clientY < mid; }
-            if (ok) { if (ti > ci) box.insertBefore(item, under.nextSibling); else box.insertBefore(item, under); }
+        if (under && under !== item) {
+            // 相手の中央あたりに来たときだけ入れ替える（幅がちがうとき、行ったり来たりしないように）
+            const tr = under.getBoundingClientRect(), mx = tr.width * .25, my = tr.height * .25;
+            if (e.clientX > tr.left + mx && e.clientX < tr.right - mx && e.clientY > tr.top + my && e.clientY < tr.bottom - my) {
+                const sibs = items();
+                if (sibs.indexOf(under) > sibs.indexOf(item)) bd.insertBefore(item, under.nextSibling); else bd.insertBefore(item, under);
+            }
         }
         place(e);
         const main = document.getElementById('dev-page-main');
@@ -24598,47 +24672,80 @@ async function devAutoEnter() {
         drag = null; justDragged = true; setTimeout(() => { justDragged = false; }, 120);
         save();
     }
-    const reapply = () => { try { if (!drag && root() && root().dataset.sortReady) applyOrder(); } catch (e) {} };
+    // ハンドルをドラッグして大きさを変える（幅は決まった段階にそろい、高さは中身より低くならない）
+    function startResize(handle, e) {
+        const el = findItem(handle), bd = board(); if (!el) return;
+        const kind = handle.dataset.h;                 // r / l / b / br / bl
+        const bw = bd.getBoundingClientRect().width;
+        rs = { el, kind, id: e.pointerId, x: e.clientX, y: e.clientY, w: el.getBoundingClientRect().width, h: el.getBoundingClientRect().height, bw, nat: naturalHeight(el) };
+        el.classList.add('is-resizing');
+        try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+        select(el);
+    }
+    function onResize(e) {
+        if (!rs || e.pointerId !== rs.id) return;
+        const { el, kind } = rs;
+        if (kind === 'r' || kind === 'br' || kind === 'l' || kind === 'bl') {
+            const dx = (kind === 'l' || kind === 'bl') ? -(e.clientX - rs.x) : (e.clientX - rs.x);
+            const cols = Math.max(0, (rs.w + dx) / rs.bw) * 12;
+            const ok = allowed(el.dataset.key);
+            const n = ok.reduce((a, c) => Math.abs(c - cols) < Math.abs(a - cols) ? c : a, ok[0]);
+            if (n !== sizeOf(el)) setSize(el, n);
+        }
+        if (kind === 'b' || kind === 'br' || kind === 'bl') {
+            const h = Math.round((rs.h + (e.clientY - rs.y)) / 8) * 8;
+            setHeight(el, h <= rs.nat + 6 ? 0 : h);
+        }
+        const main = document.getElementById('dev-page-main');
+        if (main) { const mr = main.getBoundingClientRect(); if (e.clientY < mr.top + 60) main.scrollTop -= 12; else if (e.clientY > mr.bottom - 60) main.scrollTop += 12; }
+        e.preventDefault();
+    }
+    function endResize(e) {
+        if (!rs || (e && e.pointerId !== rs.id)) return;
+        rs.el.classList.remove('is-resizing'); rs = null;
+        justDragged = true; setTimeout(() => { justDragged = false; }, 150);
+        save();
+    }
+    const reapply = () => { try { if (!drag && board()) apply(load()); } catch (e) {} };
     window.addEventListener('app-cloud-key-updated', (e) => { if (e && e.detail && e.detail.key === KEY) reapply(); });
     window.addEventListener('app-cloud-data-loaded', reapply);
     window.devHomeSortInit = function () {
         const r = root(); if (!r || r.dataset.sortReady) return;
         r.dataset.sortReady = '1';
-        // カードに名前（キー）を付ける
-        r.querySelectorAll('.dev-menu-card').forEach(c => { const m = /devPageShow\('([^']+)'\)/.exec(c.getAttribute('onclick') || ''); if (m) c.dataset.key = 'c:' + m[1]; });
-        // 「いまの状況」の見出しとタイルを、ひとまとまり（グループと同じ扱い）にする
         const sec = r.closest('[data-dev-panel]');
+        const cards = [...r.querySelectorAll('.dev-menu-card')];
         const label = sec && sec.querySelector(':scope > .dev-section-label'), grid = sec && sec.querySelector(':scope > .dev-grid');
-        if (label && grid) {
-            const block = document.createElement('div'); block.className = 'dev-status-block'; block.dataset.key = 'g:status';
-            block.appendChild(label); block.appendChild(grid); r.appendChild(block);
-            [...grid.children].forEach((t, i) => { t.dataset.key = 't:' + (t.id || i); });
-        }
-        r.querySelectorAll('.dev-menu-group').forEach(g => { const t = g.querySelector('.dev-menu-group-title'); g.dataset.key = 'g:' + (t ? t.textContent.trim() : '') ; });
-        // 初期の順番を覚えておく
-        const def = []; containers().forEach(b => keyed(b).forEach(c => def.push(c.dataset.key))); r.__defaultOrder = def;
-        applyOrder();
-        r.insertAdjacentHTML('afterbegin', '<div class="dev-sort-bar"><span class="dev-sort-hint"></span><span class="dev-sort-actions hidden"><button type="button" class="dev-btn" data-sort="reset">初期の順に戻す</button><button type="button" class="dev-btn is-primary" data-sort="done">完了</button></span></div>');
+        const tiles = grid ? [...grid.children] : [];
+        // グループの区切りをなくし、すべてを1枚のボードに並べる
+        const bd = document.createElement('div'); bd.id = 'dev-home-board'; bd.className = 'dev-board';
+        cards.forEach(c => { const m = /devPageShow\('([^']+)'\)/.exec(c.getAttribute('onclick') || ''); if (!m) return; c.dataset.key = 'c:' + m[1]; defaults.sizes[c.dataset.key] = 4; bd.appendChild(c); });
+        tiles.forEach((t, i) => { const k = 't:' + (t.id || i); t.dataset.key = k; const m = /dev-span-(\d+)/.exec(t.className); defaults.sizes[k] = m ? parseInt(m[1], 10) : 6; bd.appendChild(t); });
+        r.querySelectorAll('.dev-menu-group').forEach(g => g.remove());
+        if (label) label.remove(); if (grid) grid.remove();
+        r.appendChild(bd);
+        bd.querySelectorAll(':scope > [data-key]').forEach(c => { defaults.order.push(c.dataset.key); c.insertAdjacentHTML('beforeend', '<span class="dev-handle h-l" data-h="l"></span><span class="dev-handle h-r" data-h="r"></span><span class="dev-handle h-b" data-h="b"></span><span class="dev-handle h-bl" data-h="bl"></span><span class="dev-handle h-br" data-h="br"></span>'); });
+        apply(load());
+        r.insertAdjacentHTML('afterbegin', '<div class="dev-sort-bar"><span class="dev-sort-hint"></span><span class="dev-sort-actions hidden"><button type="button" class="dev-btn" data-sort="reset">初期の配置に戻す</button><button type="button" class="dev-btn is-primary" data-sort="done">完了</button></span></div>');
         setSorting(false);
         r.querySelector('[data-sort="done"]').addEventListener('click', () => setSorting(false));
-        r.querySelector('[data-sort="reset"]').addEventListener('click', () => { try { localStorage.removeItem(KEY); } catch (e) {} applyOrder(defaultOrder()); });
+        r.querySelector('[data-sort="reset"]').addEventListener('click', () => { try { localStorage.removeItem(KEY); } catch (e) {} apply({ order: defaults.order, sizes: {}, heights: {} }); });
         r.addEventListener('pointerdown', (e) => {
             if (e.button > 0) return;
+            const hd = e.target.closest && e.target.closest('.dev-handle');
+            if (hd) { if (sorting) { e.preventDefault(); e.stopPropagation(); startResize(hd, e); } return; }
             const item = findItem(e.target); if (!item) return;
-            if (sorting) { startDrag(item, e); return; }
-            if (e.target.closest && e.target.closest('input, textarea, select')) return;   // 入力中の文字選択は邪魔しない
+            if (sorting) { select(item); startDrag(item, e); return; }
+            if (e.target.closest && e.target.closest('input, textarea, select')) return;
             const x = e.clientX, y = e.clientY;
-            press = { x, y, timer: setTimeout(() => { press = null; setSorting(true); startDrag(item, e); if (navigator.vibrate) { try { navigator.vibrate(15); } catch (_) {} } }, 450) };
+            press = { x, y, timer: setTimeout(() => { press = null; setSorting(true); select(item); startDrag(item, e); if (navigator.vibrate) { try { navigator.vibrate(15); } catch (_) {} } }, 450) };
         });
         const cancelPress = () => { if (press) { clearTimeout(press.timer); press = null; } };
-        // ドラッグ中に部品が入れ替わると指を捉える機能が外れ、枠の外で指を離すこともあるので、画面全体で受け取る
-        document.addEventListener('pointermove', (e) => { if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 8) cancelPress(); onMove(e); }, true);
-        document.addEventListener('pointerup', (e) => { cancelPress(); endDrag(e); }, true);
-        document.addEventListener('pointercancel', (e) => { cancelPress(); endDrag(e); }, true);
-        r.addEventListener('touchmove', (e) => { if (drag) e.preventDefault(); }, { passive: false });
+        document.addEventListener('pointermove', (e) => { if (press && Math.hypot(e.clientX - press.x, e.clientY - press.y) > 8) cancelPress(); onMove(e); onResize(e); }, true);
+        document.addEventListener('pointerup', (e) => { cancelPress(); endDrag(e); endResize(e); }, true);
+        document.addEventListener('pointercancel', (e) => { cancelPress(); endDrag(e); endResize(e); }, true);
+        r.addEventListener('touchmove', (e) => { if (drag || rs) e.preventDefault(); }, { passive: false });
         r.addEventListener('contextmenu', (e) => { if (findItem(e.target)) e.preventDefault(); });
-        // 並べ替え中・ドラッグ直後は、カードやボタンを押しても動かさない
-        r.addEventListener('click', (e) => { if (e.target.closest('.dev-sort-bar')) return; if (sorting || justDragged) { e.preventDefault(); e.stopPropagation(); } }, true);
+        r.addEventListener('click', (e) => { if (e.target.closest('.dev-sort-bar')) return; if (sorting || justDragged || rs) { e.preventDefault(); e.stopPropagation(); } }, true);
         document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && sorting) setSorting(false); });
     };
 })();
@@ -24705,7 +24812,11 @@ async function devAutoEnter() {
                 if (kind === 'ok') floatEl.classList.add('bg-emerald-500');
                 else if (kind === 'err') floatEl.classList.add('bg-rose-500');
                 else floatEl.classList.add('bg-amber-600');
-                floatEl.classList.toggle('hidden', !msg);
+                // 緑・赤の知らせだけ、短く表示して自動で消す（「未保存」は、公開ボタンの橙の点でわかるので出さない）
+                clearTimeout(window.__devFloatT);
+                const show = !!msg && (kind === 'ok' || kind === 'err');
+                floatEl.classList.toggle('hidden', !show);
+                if (show) window.__devFloatT = setTimeout(() => floatEl.classList.add('hidden'), kind === 'err' ? 6000 : 2800);
             }
             const chip = document.getElementById('dev-page-save-chip');
             if (chip) {
@@ -26914,15 +27025,19 @@ async function devUsageLoadTrend(selected) {
             pmOpenInviteModal();
             return false;
         }
+        // 一度でも認められた（ワンタイムコードで入った）人には、コードの案内を二度と出さない（端末に記録。通信の失敗で、また出てしまうのも防ぐ）
+        function pmInviteDoneKey() { const u = window.currentAppUser; return u ? 'pm_invite_done_' + u.uid : null; }
+        function pmInviteDone() { const k = pmInviteDoneKey(); if (!k) return false; try { return localStorage.getItem(k) === '1'; } catch (e) { return false; } }
+        function pmMarkInviteDone() { const k = pmInviteDoneKey(); if (!k) return; try { localStorage.setItem(k, '1'); } catch (e) {} }
         function pmUpdateInviteCard() {
             const card = document.getElementById('mypage-invite-card');
-            if (card) card.classList.toggle('hidden', pmIsAllowed() || !window.currentAppUser);
+            if (card) card.classList.toggle('hidden', pmIsAllowed() || pmInviteDone() || !window.currentAppUser);
         }
         function pmApplyAccessVisibility() {
             const allowed = pmIsAllowed();
             document.querySelectorAll('[data-pm-restricted]').forEach(el => el.classList.toggle('pm-restricted-off', !allowed));
             const btn = document.getElementById('invite-setting-btn');
-            if (btn) btn.classList.toggle('hidden', allowed || !window.currentAppUser);
+            if (btn) btn.classList.toggle('hidden', allowed || pmInviteDone() || !window.currentAppUser);
         }
         async function pmLoadProtectedContent() {
             if (!window._remoteProtectedInFirestore || !pmIsAllowed()) return;
@@ -26944,6 +27059,7 @@ async function devUsageLoadTrend(selected) {
         async function pmRefreshMembership() {
             window._pmIsMember = false;
             if (window.currentAppUser && window._remoteProtectedInFirestore) window._pmIsMember = await window.AppFirebase.getMembership();
+            if (window._pmIsMember === true && window._remoteProtectedInFirestore) pmMarkInviteDone();   // 認められた人は、今後コードの案内を出さない
             const _u = window.currentAppUser;
             if (window._pmLoadedUid && window._remoteProtectedInFirestore && !pmIsAllowed() && (!_u || _u.uid !== window._pmLoadedUid)) { pmReloadWithSkeleton(); return; }
             pmUpdateInviteCard();
@@ -26952,7 +27068,7 @@ async function devUsageLoadTrend(selected) {
             pmMaybePromptInvite();
         }
         window.addEventListener('app-auth-changed', () => { setTimeout(pmRefreshMembership, 600); });
-        window.addEventListener('app-official-resolved', () => { pmApplyAccessVisibility(); pmLoadProtectedContent(); pmMaybePromptInvite(); });
+        window.addEventListener('app-official-resolved', () => { try { if (window._remoteProtectedInFirestore && typeof isOfficialUser === 'function' && isOfficialUser()) pmMarkInviteDone(); } catch (e) {} pmApplyAccessVisibility(); pmLoadProtectedContent(); pmMaybePromptInvite(); });
 
         function pmPromptKey() { const u = window.currentAppUser; return u ? 'pm_invite_prompted_' + u.uid : null; }
         // 「あとで」「入力せずに進む」を押した記録は、アプリを開いている間だけ有効。次に開いたとき（新しい起動）には、また案内を出す
@@ -26978,7 +27094,7 @@ async function devUsageLoadTrend(selected) {
         function pmMaybePromptInvite(tries = 0) { if (window.__PM_PANE) return;
             if (!window._remoteProtectedInFirestore || !window.currentAppUser) return;
             if (window.currentAppUser.isAnonymous) return;   // ゲストは、コードを送れない（アカウント登録のあとに案内する）
-            if (pmIsAllowed() || pmWasPrompted()) return;
+            if (pmIsAllowed() || pmInviteDone() || pmWasPrompted()) return;
             const _im = document.getElementById('invite-modal');
             if (_im && !_im.classList.contains('hidden')) return;   // すでに開いている（入力中の数字を消さない）
             clearTimeout(_pmPromptTimer);
@@ -27078,6 +27194,7 @@ async function devUsageLoadTrend(selected) {
             btn.disabled = true; btn.textContent = '確認しています…';
             try {
                 await window.AppFirebase.joinWithInviteCode(code);
+                pmMarkInviteDone();
                 pmCloseInviteModal();
                 await pmRefreshMembership();
                 showToast('確認できました。限定内容が使えます');
@@ -30211,24 +30328,881 @@ html.dark #dev-floating-indicator .dev-fab-pub { color:#efe9e0; }
 #dev-floating-indicator.is-min .dev-fab-label { display:none; }
 #dev-floating-indicator.is-min .dev-fab-main, #dev-floating-indicator.is-min .dev-fab-pub { padding:.5rem .7rem; }
 #dev-floating-indicator.is-min .dev-fab-min svg { transform:rotate(180deg); }
-#dev-floating-status { max-width:80vw; margin-bottom:.5rem; padding:.45rem .9rem; border-radius:999px; font-size:12.5px; font-weight:600; color:#fff; box-shadow:0 4px 14px rgba(74,63,50,.15); }
+#dev-floating-status { position:absolute; left:0; bottom:calc(100% + .5rem); width:max-content; max-width:min(78vw,18rem); padding:.4rem .85rem; border-radius:999px; font-size:12.5px; font-weight:600; line-height:1.4; color:#fff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; box-shadow:0 4px 14px rgba(74,63,50,.15); pointer-events:none; }
 #dev-floating-status.hidden { display:none; }
 body.dev-page-open #dev-floating-indicator { display:none !important; }
-/* --- ホームの並べ替え --- */
-#dev-settings-modal#dev-settings-modal .dev-sort-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.6rem; margin:-.4rem 0 -.4rem; }
+/* --- ホーム：区切りなしの自由配置ボード --- */
+#dev-settings-modal#dev-settings-modal .dev-sort-bar { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:.6rem; min-height:2.6rem; }
 #dev-settings-modal#dev-settings-modal .dev-sort-hint { font-size:12.5px; color:var(--sub); }
 #dev-settings-modal#dev-settings-modal .dev-sort-actions { display:flex; gap:.5rem; }
 #dev-settings-modal#dev-settings-modal .dev-sort-actions.hidden { display:none; }
-#dev-settings-modal#dev-settings-modal .dev-status-block { display:block; }
-#dev-settings-modal#dev-settings-modal #dev-home-menu :is(.dev-menu-card, .dev-grid > *, .dev-menu-group-title, .dev-section-label) { -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
-#dev-settings-modal#dev-settings-modal #dev-home-menu.is-sorting :is(.dev-menu-card, .dev-grid > *, .dev-menu-group-title, .dev-section-label) { touch-action:none; cursor:grab; }
-#dev-settings-modal#dev-settings-modal #dev-home-menu.is-sorting :is(.dev-menu-card, .dev-grid > *) { outline:2px dashed var(--acc); outline-offset:-2px; }
-#dev-settings-modal#dev-settings-modal #dev-home-menu.is-sorting :is(.dev-menu-group-title, .dev-section-label) { display:inline-block; padding:.3rem .8rem; border-radius:999px; background:var(--acc-bg); color:var(--acc); }
+#dev-settings-modal#dev-settings-modal .dev-home-menu { gap:1rem; }
+#dev-settings-modal#dev-settings-modal .dev-board { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:1rem; align-items:stretch; }
+#dev-settings-modal#dev-settings-modal .dev-board > * { position:relative; min-width:0; margin:0 !important; container-type:inline-size; grid-column:span 4; overflow-wrap:anywhere; }
+#dev-settings-modal#dev-settings-modal .dev-board > [data-size="3"] { grid-column:span 3; }
+#dev-settings-modal#dev-settings-modal .dev-board > [data-size="4"] { grid-column:span 4; }
+#dev-settings-modal#dev-settings-modal .dev-board > [data-size="6"] { grid-column:span 6; }
+#dev-settings-modal#dev-settings-modal .dev-board > [data-size="8"] { grid-column:span 8; }
+#dev-settings-modal#dev-settings-modal .dev-board > [data-size="12"] { grid-column:span 12; }
+@media (max-width:899px) {
+  /* スマホ：1/4・1/3は2列、それ以上は1列 */
+  #dev-settings-modal#dev-settings-modal .dev-board > [data-size="3"], #dev-settings-modal#dev-settings-modal .dev-board > [data-size="4"] { grid-column:span 6; }
+  #dev-settings-modal#dev-settings-modal .dev-board > [data-size="6"], #dev-settings-modal#dev-settings-modal .dev-board > [data-size="8"], #dev-settings-modal#dev-settings-modal .dev-board > [data-size="12"] { grid-column:span 12; }
+}
+/* 幅がせまいカードは、説明を隠して文字が詰まらないようにする。広いときは横並びにする */
+@container (max-width:260px) { .dev-menu-desc { display:none !important; } }
+@container (max-width:200px) { .dev-menu-title { font-size:14px !important; } }
+#dev-settings-modal#dev-settings-modal #dev-home-board > .dev-menu-card:is([data-size="6"],[data-size="8"],[data-size="12"]) { flex-direction:row; align-items:center; gap:.9rem; }
+#dev-settings-modal#dev-settings-modal #dev-home-board > .dev-menu-card:is([data-size="6"],[data-size="8"],[data-size="12"]) svg { margin:0; flex:none; }
+#dev-settings-modal#dev-settings-modal #dev-home-board > .dev-menu-card:is([data-size="6"],[data-size="8"],[data-size="12"]) .dev-menu-desc { margin-left:auto; text-align:right; }
+/* 隣の部品が高くても、引き伸ばさずに中身の高さに合わせる（下の空きをなくす） */
+#dev-settings-modal#dev-settings-modal #dev-home-board > * { align-self:start; }
+#dev-settings-modal#dev-settings-modal #dev-home-board > * { -webkit-touch-callout:none; -webkit-user-select:none; user-select:none; }
+#dev-settings-modal#dev-settings-modal #dev-home-menu.is-sorting #dev-home-board > * { touch-action:none; cursor:grab; outline:2px dashed var(--acc); outline-offset:-2px; }
 #dev-settings-modal#dev-settings-modal #dev-home-menu.is-sorting .dev-menu-card:hover { transform:none; }
-#dev-settings-modal#dev-settings-modal #dev-home-menu .is-dragging { position:relative; z-index:20; cursor:grabbing; outline-style:solid !important; box-shadow:0 14px 34px rgba(74,63,50,.22); transition:none; opacity:.97; }
-#dev-settings-modal#dev-settings-modal #dev-home-menu .dev-menu-group.is-dragging, #dev-settings-modal#dev-settings-modal #dev-home-menu .dev-status-block.is-dragging { background:var(--paper); border-radius:1.25rem; padding:.6rem; margin:-.6rem; }
+#dev-settings-modal#dev-settings-modal #dev-home-board > .is-dragging { z-index:20; cursor:grabbing; outline-style:solid !important; box-shadow:0 14px 34px rgba(74,63,50,.22); transition:none; opacity:.97; }
+/* 大きさ変更ハンドル（選んだ部品だけに、辺と角に表示。PowerPointの図形と同じ感覚） */
+#dev-settings-modal#dev-settings-modal .dev-handle { display:none; position:absolute; z-index:6; width:12px; height:12px; border-radius:3px; background:#fff; border:2px solid var(--acc); box-shadow:0 1px 3px rgba(0,0,0,.2); touch-action:none; }
+#dev-settings-modal#dev-settings-modal .dev-handle::after { content:''; position:absolute; inset:-14px; }   /* 指でつかみやすいように、見た目より広くする */
+#dev-settings-modal#dev-settings-modal #dev-home-board > .is-selected .dev-handle { display:block; }
+#dev-settings-modal#dev-settings-modal .dev-handle.h-r { right:-7px; top:calc(50% - 6px); cursor:ew-resize; }
+#dev-settings-modal#dev-settings-modal .dev-handle.h-l { left:-7px; top:calc(50% - 6px); cursor:ew-resize; }
+#dev-settings-modal#dev-settings-modal .dev-handle.h-b { bottom:-7px; left:calc(50% - 6px); cursor:ns-resize; }
+#dev-settings-modal#dev-settings-modal .dev-handle.h-br { right:-7px; bottom:-7px; cursor:nwse-resize; }
+#dev-settings-modal#dev-settings-modal .dev-handle.h-bl { left:-7px; bottom:-7px; cursor:nesw-resize; }
+#dev-settings-modal#dev-settings-modal #dev-home-board > .is-selected { outline:2px solid var(--acc) !important; outline-offset:-2px; z-index:4; }
+#dev-settings-modal#dev-settings-modal #dev-home-board > .is-resizing { transition:none; }
 
 
+
+/* 左下の開発者ボタン：ふだんは小さな丸ボタン、タップすると広がる（展開方式） */
+#dev-floating-indicator.is-fold .dev-fab-main, #dev-floating-indicator.is-fold .dev-fab-pub { display:none; }
+#dev-floating-indicator.is-fold .dev-fab-row { box-sizing:border-box; width:48px; height:48px; padding:0; gap:0; justify-content:center; }
+#dev-floating-indicator.is-fold .dev-fab-min { position:relative; width:38px; height:38px; min-height:0; padding:0; justify-content:center; background:#4a7487; color:#fff; }
+html.dark #dev-floating-indicator.is-fold .dev-fab-min { background:#9cc0cf; color:#1d1a18; }
+#dev-floating-indicator.is-fold .dev-fab-min svg { transform:rotate(180deg); }
+#dev-floating-indicator.is-fold.is-dirty .dev-fab-min::after { content:''; position:absolute; top:.15rem; right:.15rem; width:.6rem; height:.6rem; border-radius:50%; background:#c4913a; border:2px solid #faf8f5; }
+#dev-floating-indicator:not(.is-fold) .dev-fab-min { color:#4a3f32; }
+/* ご意見・不具合タブ：画面の右端にぴったり付け、角丸は左側（内側）だけ */
+#feedback-fab { right:0 !important; left:auto !important; margin:0 !important; border-radius:12px 0 0 12px !important; padding:14px 7px 14px 8px !important; line-height:1; direction:ltr; }
+#feedback-fab span { writing-mode:vertical-rl; text-orientation:mixed; transform:none; letter-spacing:.18em; padding-left:0; }
+
+/* 壁から飛び出した、縦長の小さなタブ（タイマー・開発者ボタン） */
+#floating-timer-btn.pm-dock { width:22px !important; height:56px !important; padding:0 !important; overflow:hidden; border-radius:0 14px 14px 0 !important; border-left-width:0 !important; box-shadow:0 2px 10px rgba(74,63,50,.14); }
+#floating-timer-btn.pm-dock[data-edge="right"] { border-radius:14px 0 0 14px !important; border-left-width:1px !important; border-right-width:0 !important; }
+#floating-timer-btn.pm-dock > * { display:none !important; }
+#floating-timer-btn.pm-dock::after { content:'\203A'; font-size:22px; line-height:1; font-weight:700; color:#867e73; }
+#floating-timer-btn.pm-dock[data-edge="right"]::after { content:'\2039'; }
+#dev-floating-indicator.is-fold .dev-fab-row { width:22px; height:56px; border-radius:0 14px 14px 0; border-left-width:0; justify-content:center; }
+#dev-floating-indicator.is-fold[data-edge="right"] .dev-fab-row { border-radius:14px 0 0 14px; border-left-width:1px; border-right-width:0; }
+#dev-floating-indicator.is-fold .dev-fab-min { width:100%; height:100%; background:transparent !important; color:#867e73 !important; border-radius:inherit; }
+#dev-floating-indicator.is-fold .dev-fab-min svg { display:none; }
+#dev-floating-indicator.is-fold .dev-fab-min::before { content:'\203A'; font-size:22px; line-height:1; font-weight:700; }
+#dev-floating-indicator.is-fold[data-edge="right"] .dev-fab-min::before { content:'\2039'; }
+#dev-floating-indicator.is-fold.is-dirty .dev-fab-min::after { top:.3rem; right:.15rem; }
+
+/* タブにマークを入れる（タイマー＝ストップウォッチ／開発者＝</>）。位置は固定 */
+#floating-timer-btn.pm-dock, #dev-floating-indicator.is-fold .dev-fab-row { height:68px !important; flex-direction:column; align-items:center; justify-content:center; gap:8px; }
+#floating-timer-btn.pm-dock::before, #dev-floating-indicator.is-fold .dev-fab-row::after { content:''; display:block; width:15px; height:15px; background:#4a3f32; -webkit-mask:var(--pm-ico) center/contain no-repeat; mask:var(--pm-ico) center/contain no-repeat; writing-mode:horizontal-tb; letter-spacing:0; }
+html.dark #floating-timer-btn.pm-dock::before, html.dark #dev-floating-indicator.is-fold .dev-fab-row::after { background:#e7e1d8; }
+#floating-timer-btn.pm-dock { --pm-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='10' x2='14' y1='2' y2='2'/%3E%3Cline x1='12' x2='15' y1='14' y2='11'/%3E%3Ccircle cx='12' cy='14' r='8'/%3E%3C/svg%3E"); justify-content:center !important; }
+#dev-floating-indicator.is-fold { --pm-ico:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='16 18 22 12 16 6'/%3E%3Cpolyline points='8 6 2 12 8 18'/%3E%3C/svg%3E"); }
+#floating-timer-btn.pm-dock::after { order:2; font-size:18px; }
+#floating-timer-btn.pm-dock::before { order:1; }
+#dev-floating-indicator.is-fold .dev-fab-min { height:20px; flex:none; order:2; }
+#dev-floating-indicator.is-fold .dev-fab-row::after { order:1; }
+
+/* 矢印は出さず、マークだけにする */
+#floating-timer-btn.pm-dock::after { content:none !important; display:none !important; }
+#dev-floating-indicator.is-fold .dev-fab-min { display:none !important; }
+#floating-timer-btn.pm-dock, #dev-floating-indicator.is-fold .dev-fab-row { height:44px !important; gap:0; }
+#floating-timer-btn.pm-dock::before, #dev-floating-indicator.is-fold .dev-fab-row::after { width:16px; height:16px; }
+#dev-floating-indicator.is-fold .dev-fab-row { cursor:pointer; }
+
+#exam-board-body td:has(> button[data-exidx]) { cursor:pointer; }
+#exam-board-body td > button[data-exidx] { height:100%; }
 </style>
+<style id="testplan-css">
+/* ===== テスト計画 ===== */
+.tp-root { --bg:#faf8f5; --panel:#fffdfa; --line:#e6dfd4; --ink:#2f2a26; --sub:#6d655b; --soft:#f1ece4; --acc:#4a7487; --acc-d:#3d5e6e; --acc-bg:#e8f0f3; --ok:#507556; --ok-bg:#e8f1e8; --warn:#9a6a24; --warn-bg:#f8efd9; --bad:#a5544a; --bad-bg:#f8e7e3;
+  position:fixed; top:0; left:0; right:0; bottom:0; z-index:9978; overflow-y:auto; overscroll-behavior:contain; background:var(--bg); color:var(--ink); font-size:15px; line-height:1.7; -webkit-overflow-scrolling:touch; }
+html.dark .tp-root { --bg:#1f1c1a; --panel:#292523; --line:#3d3733; --ink:#efe9e0; --sub:#b0a89c; --soft:#322d2a; --acc:#9cc0cf; --acc-d:#bcd7e2; --acc-bg:#2a3438; --ok:#9cc4a1; --ok-bg:#27322a; --warn:#e3c47c; --warn-bg:#38301f; --bad:#e2a89e; --bad-bg:#3a2926; }
+.tp-root.hidden { display:none; }
+.tp-root * { box-sizing:border-box; }
+:where(.tp-root) button { font-family:inherit; border:0; background:transparent; color:inherit; cursor:pointer; padding:0; -webkit-appearance:none; appearance:none; }
+:where(.tp-root) :is(h1,h2,p,ol,ul,li) { margin:0; padding:0; list-style:none; }
+.tp-root i[data-lucide], .tp-root svg { width:1.15rem; height:1.15rem; flex:none; }
+.tp-head { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:.4rem; padding:calc(env(safe-area-inset-top,0px) + .6rem) .8rem .6rem; background:color-mix(in srgb, var(--bg) 90%, transparent); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border-bottom:1px solid var(--line); }
+.tp-head h1 { flex:1; min-width:0; font-size:1.05rem; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.tp-head-right { display:inline-flex; }
+.tp-iconbtn { display:inline-flex; align-items:center; justify-content:center; width:2.6rem; height:2.6rem; border-radius:999px; color:var(--ink); background:transparent; }
+.tp-iconbtn:active { background:var(--soft); }
+.tp-body { max-width:36rem; margin:0 auto; padding:1rem 1rem 2.5rem; display:flex; flex-direction:column; gap:.9rem; }
+.tp-btn { display:inline-flex; align-items:center; justify-content:center; gap:.4rem; min-height:2.8rem; padding:.55rem 1.1rem; border-radius:999px; background:var(--soft); border:1px solid var(--line); color:var(--ink); font-size:14px; font-weight:700; }
+.tp-btn.is-primary { background:var(--acc); border-color:var(--acc); color:#fff; }
+html.dark .tp-btn.is-primary { color:#1d1a18; }
+.tp-btn.is-lg { min-height:3.2rem; font-size:15px; padding:.7rem 1.6rem; }
+.tp-btn.is-block { width:100%; }
+.tp-btn.is-danger { color:var(--bad); background:transparent; margin-top:.6rem; }
+.tp-btn:active { transform:scale(.98); }
+/* 空の状態 */
+.tp-empty { text-align:center; padding:1.5rem .5rem; display:flex; flex-direction:column; align-items:center; gap:.9rem; }
+.tp-empty-ico { width:4.2rem; height:4.2rem; border-radius:1.4rem; background:var(--acc-bg); color:var(--acc); display:flex; align-items:center; justify-content:center; }
+.tp-empty-ico svg { width:2rem; height:2rem; }
+.tp-empty h2 { font-size:1.2rem; font-weight:700; }
+.tp-empty p { font-size:14px; color:var(--sub); max-width:24rem; }
+.tp-steps { text-align:left; display:flex; flex-direction:column; gap:.5rem; width:100%; max-width:24rem; font-size:14px; }
+.tp-steps li { display:flex; gap:.7rem; align-items:center; padding:.7rem .9rem; border-radius:1rem; background:var(--panel); border:1px solid var(--line); }
+.tp-steps b { width:1.6rem; height:1.6rem; flex:none; border-radius:50%; background:var(--acc-bg); color:var(--acc); display:flex; align-items:center; justify-content:center; font-size:12px; }
+/* 一覧のカード */
+.tp-card { width:100%; text-align:left; padding:1rem 1.1rem; border-radius:1.25rem; background:var(--panel); border:1px solid var(--line); box-shadow:0 2px 8px rgba(74,63,50,.05); display:flex; flex-direction:column; gap:.6rem; }
+.tp-card:active { transform:scale(.99); }
+.tp-card-top { display:flex; align-items:center; justify-content:space-between; gap:.6rem; }
+.tp-card-title { font-size:1.02rem; font-weight:700; min-width:0; overflow-wrap:anywhere; }
+.tp-days { flex:none; padding:.15rem .7rem; border-radius:999px; background:var(--acc-bg); color:var(--acc); font-size:12.5px; font-weight:700; white-space:nowrap; }
+.tp-days.is-near { background:var(--warn-bg); color:var(--warn); }
+.tp-days.is-done { background:var(--soft); color:var(--sub); }
+.tp-chips { display:flex; flex-wrap:wrap; gap:.35rem; }
+.tp-chip { display:inline-flex; align-items:center; gap:.3rem; padding:.15rem .6rem; border-radius:999px; background:var(--soft); font-size:12.5px; font-weight:600; }
+.tp-chip i { width:.5rem; height:.5rem; border-radius:50%; background:var(--c); }
+.tp-chip em { font-style:normal; color:var(--sub); font-weight:500; }
+.tp-bar { display:block; height:.55rem; border-radius:999px; background:var(--soft); overflow:hidden; }
+.tp-bar i { display:block; height:100%; border-radius:999px; background:var(--acc); transition:width .4s ease; }
+.tp-card-foot { display:flex; justify-content:space-between; font-size:12.5px; color:var(--sub); font-weight:600; }
+/* 詳細：ヒーロー */
+.tp-hero { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1.1rem 1.2rem; border-radius:1.5rem; background:var(--acc-bg); }
+.tp-hero-main { display:flex; align-items:center; gap:.9rem; min-width:0; }
+.tp-count { display:flex; align-items:baseline; gap:.2rem; color:var(--acc); }
+.tp-count b { font-size:3rem; line-height:1; font-weight:700; letter-spacing:-.02em; }
+.tp-count span { font-size:1rem; font-weight:700; }
+.tp-count-sub { font-size:13px; color:var(--sub); font-weight:600; line-height:1.5; }
+.tp-count-sub.is-wide { font-size:14px; color:var(--ink); }
+.tp-hero-side { display:flex; flex-direction:column; align-items:center; gap:.25rem; flex:none; }
+.tp-ring { --p:0; width:4.2rem; height:4.2rem; border-radius:50%; background:conic-gradient(var(--acc) calc(var(--p) * 1%), color-mix(in srgb, var(--acc) 18%, transparent) 0); display:flex; align-items:center; justify-content:center; position:relative; }
+.tp-ring::before { content:''; position:absolute; inset:.45rem; border-radius:50%; background:var(--panel); }
+.tp-ring span { position:relative; font-weight:700; font-size:1.1rem; }
+.tp-ring small { font-size:.65rem; margin-left:1px; }
+.tp-hero-cap { font-size:12px; color:var(--sub); font-weight:600; }
+.tp-verdict { display:flex; gap:.7rem; align-items:flex-start; padding:.85rem 1rem; border-radius:1.1rem; font-size:14px; line-height:1.65; }
+.tp-verdict p { margin:0; } .tp-verdict svg { margin-top:.2rem; }
+.tp-verdict.is-ok { background:var(--ok-bg); color:var(--ok); } .tp-verdict.is-warn { background:var(--warn-bg); color:var(--warn); } .tp-verdict.is-bad { background:var(--bad-bg); color:var(--bad); }
+.tp-verdict b { font-weight:700; }
+/* タブ */
+.tp-tabs { display:flex; padding:.25rem; border-radius:999px; background:var(--soft); position:sticky; top:calc(env(safe-area-inset-top,0px) + 3.9rem); z-index:4; }
+.tp-tabs button { flex:1; min-height:2.5rem; border-radius:999px; font-size:14px; font-weight:700; color:var(--sub); }
+.tp-tabs button.is-on { background:var(--panel); color:var(--ink); box-shadow:0 1px 4px rgba(74,63,50,.12); }
+.tp-note { font-size:13.5px; color:var(--sub); text-align:center; padding:.4rem 0; }
+.tp-note-s { font-size:12.5px; color:var(--sub); font-weight:600; }
+/* 日ごとのやること */
+.tp-day { padding:.8rem .9rem; border-radius:1.2rem; background:var(--panel); border:1px solid var(--line); display:flex; flex-direction:column; gap:.3rem; }
+.tp-day.is-today { border-color:var(--acc); box-shadow:0 0 0 3px color-mix(in srgb, var(--acc) 14%, transparent); }
+.tp-day-h { display:flex; align-items:baseline; gap:.5rem; margin-bottom:.15rem; }
+.tp-day-h b { font-size:1rem; font-weight:700; } .tp-day-h span { font-size:12.5px; color:var(--sub); } .tp-day-h em { margin-left:auto; font-style:normal; font-size:12.5px; color:var(--sub); font-weight:600; }
+.tp-mark { display:flex; gap:.5rem; align-items:center; font-size:13px; padding:.4rem .7rem; border-radius:.8rem; background:var(--soft); color:var(--sub); font-weight:600; }
+.tp-mark.is-test { background:var(--bad-bg); color:var(--bad); }
+.tp-task { position:relative; display:flex; align-items:center; gap:.7rem; padding:.55rem .2rem; min-height:2.9rem; cursor:pointer; }
+.tp-task input { position:absolute; opacity:0; width:1px; height:1px; }
+.tp-box, .tp-check .tp-box { flex:none; width:1.45rem; height:1.45rem; border-radius:.5rem; border:2px solid color-mix(in srgb, var(--sub) 55%, transparent); background:var(--panel); display:inline-block; position:relative; transition:background .2s, border-color .2s; }
+.tp-task input:checked + .tp-box, .tp-check input:checked + .tp-box { background:var(--acc); border-color:var(--acc); }
+.tp-task input:checked + .tp-box::after, .tp-check input:checked + .tp-box::after { content:''; position:absolute; left:.38rem; top:.1rem; width:.35rem; height:.7rem; border:solid #fff; border-width:0 2px 2px 0; transform:rotate(45deg); }
+html.dark .tp-task input:checked + .tp-box::after, html.dark .tp-check input:checked + .tp-box::after { border-color:#1d1a18; }
+.tp-task input:focus-visible + .tp-box { outline:3px solid color-mix(in srgb, var(--acc) 35%, transparent); outline-offset:2px; }
+.tp-task-t { flex:1; min-width:0; font-size:14.5px; overflow-wrap:anywhere; line-height:1.5; }
+.tp-task-t b { margin-right:.4rem; font-weight:700; }
+.tp-task-t.is-done { text-decoration:line-through; color:var(--sub); }
+.tp-dot { display:inline-block; width:.55rem; height:.55rem; border-radius:50%; background:var(--c); margin-right:.4rem; }
+.tp-task em { flex:none; font-style:normal; font-size:12.5px; color:var(--sub); font-weight:600; }
+.tp-task.is-late em { color:var(--bad); }
+.tp-task + .tp-task { border-top:1px solid var(--line); }
+/* 教科ごと */
+.tp-subj { --c:#64748b; padding:1rem; border-radius:1.25rem; background:var(--panel); border:1px solid var(--line); border-top:4px solid var(--c); display:flex; flex-direction:column; gap:.6rem; }
+.tp-subj-h { display:flex; align-items:center; justify-content:space-between; gap:.5rem; }
+.tp-subj-name { display:inline-flex; align-items:center; gap:.5rem; font-size:1.05rem; font-weight:700; }
+.tp-subj-name i { width:.7rem; height:.7rem; border-radius:50%; background:var(--c); }
+.tp-subj-meta { display:flex; flex-wrap:wrap; gap:.3rem 1.1rem; font-size:13px; color:var(--sub); } .tp-subj-meta b { color:var(--ink); font-weight:700; }
+.tp-ranges { display:flex; flex-direction:column; }
+.tp-range { display:flex; align-items:center; border-top:1px solid var(--line); }
+.tp-range .tp-task { flex:1; min-width:0; } .tp-range .tp-task + .tp-task { border:0; }
+.tp-x { display:inline-flex; align-items:center; justify-content:center; width:2.4rem; height:2.4rem; border-radius:50%; color:var(--sub); flex:none; }
+.tp-x:active { background:var(--soft); }
+.tp-add { display:flex; gap:.5rem; }
+.tp-add input { flex:1; min-width:0; }
+/* 入力 */
+.tp-root input[type="text"], .tp-root input[type="date"], .tp-root input[type="number"], .tp-root select, .tp-root textarea { width:100%; min-height:2.8rem; padding:.55rem .8rem; border-radius:.9rem; border:1.5px solid var(--line); background:var(--panel); color:var(--ink); font-size:16px; font-family:inherit; }
+.tp-root textarea { line-height:1.6; resize:vertical; }
+.tp-root input:focus, .tp-root select:focus, .tp-root textarea:focus { outline:none; border-color:var(--acc); box-shadow:0 0 0 4px color-mix(in srgb, var(--acc) 18%, transparent); }
+.tp-field { display:flex; flex-direction:column; gap:.35rem; min-width:0; }
+.tp-field > span { font-size:13px; font-weight:700; color:var(--sub); }
+.tp-field small { font-size:12px; color:var(--sub); line-height:1.5; }
+.tp-form { gap:1.1rem; }
+.tp-pick { display:flex; flex-wrap:wrap; gap:.45rem; }
+.tp-pickbtn { --c:#64748b; min-height:2.6rem; padding:.4rem 1rem; border-radius:999px; border:1.5px solid var(--line); background:var(--panel); font-size:14px; font-weight:700; color:var(--ink); }
+.tp-pickbtn.is-on { background:color-mix(in srgb, var(--c) 18%, var(--panel)); border-color:var(--c); }
+.tp-row2 { display:grid; grid-template-columns:1fr 1fr; gap:.7rem; }
+@media (max-width:380px) { .tp-row2 { grid-template-columns:1fr; } }
+.tp-pair { display:flex; align-items:center; gap:.4rem; } .tp-pair em { font-style:normal; color:var(--sub); }
+.tp-check { display:flex; align-items:center; gap:.7rem; font-size:14.5px; font-weight:600; cursor:pointer; position:relative; }
+.tp-check input { position:absolute; opacity:0; width:1px; height:1px; }
+.tp-actions { display:flex; flex-direction:column; gap:.5rem; position:sticky; bottom:0; padding:.7rem 0 .3rem; background:linear-gradient(to top, var(--bg) 70%, transparent); }
+.tp-actions .tp-btn { width:100%; }
+/* 結果 */
+.tp-score { display:flex; align-items:center; flex-wrap:wrap; gap:.6rem; } .tp-score input { width:6.5rem; } .tp-score > span { color:var(--sub); font-size:13.5px; }
+.tp-gap { font-size:13px; padding:.15rem .7rem; border-radius:999px; } .tp-gap.is-ok { background:var(--ok-bg); color:var(--ok); } .tp-gap.is-ng { background:var(--warn-bg); color:var(--warn); }
+.tp-total { text-align:center; padding:.9rem; border-radius:1.1rem; background:var(--acc-bg); color:var(--acc); font-size:14px; } .tp-total b { font-size:1.5rem; }
+/* 入口（カレンダー・マイページ） */
+.tp-calbanner { display:flex; align-items:center; gap:.6rem; width:100%; padding:.7rem .95rem; margin-bottom:.75rem; border-radius:1rem; background:var(--nd-paper,#faf8f5); border:1px solid var(--nd-line,#e6dfd4); color:#2f2a26; font-size:13.5px; font-weight:700; text-align:left; }
+html.dark .tp-calbanner { background:#292523; border-color:#3d3733; color:#efe9e0; }
+.tp-calbanner svg { color:#4a7487; width:1.2rem; height:1.2rem; } html.dark .tp-calbanner svg { color:#9cc0cf; }
+.tp-calbanner span { flex:1; } .tp-calbanner small { font-weight:600; opacity:.65; }
+.tp-mycard { display:flex; align-items:center; gap:.9rem; width:100%; padding:.9rem 1rem; border-radius:1.2rem; background:#fffdfa; border:1px solid #e6dfd4; color:#2f2a26; text-align:left; }
+html.dark .tp-mycard { background:#292523; border-color:#3d3733; color:#efe9e0; }
+.tp-mycard > svg:first-child, .tp-mycard.is-empty > svg:first-child { width:2.4rem; height:2.4rem; padding:.55rem; border-radius:.9rem; background:#e8f0f3; color:#4a7487; }
+html.dark .tp-mycard > svg:first-child { background:#2a3438; color:#9cc0cf; }
+.tp-mycard small { display:block; font-size:12.5px; opacity:.7; font-weight:500; line-height:1.5; }
+.tp-mycard b { font-weight:700; font-size:15px; }
+.tp-mycount { flex:none; display:flex; align-items:baseline; gap:.1rem; color:#4a7487; } .tp-mycount b { font-size:2.1rem; line-height:1; } html.dark .tp-mycount { color:#9cc0cf; }
+.tp-mytext, .tp-mycard > span:nth-child(2) { flex:1; min-width:0; display:flex; flex-direction:column; gap:.25rem; }
+.tp-mytext .tp-bar { margin-top:.1rem; }
+.tp-mycard > svg:last-child { color:#a0988c; width:1.2rem; height:1.2rem; flex:none; }
+
+
+/* v2: 期間限定リンク・周回 */
+.tp-exams { margin:0 0 1.2rem; display:flex; flex-direction:column; gap:.6rem; }
+.tp-h2 { display:flex; align-items:center; gap:.4rem; font-size:14px; font-weight:700; color:var(--sub); margin:0 0 .2rem; }
+.tp-h2 svg { width:1.1rem; height:1.1rem; }
+.tp-exam { background:var(--acc-bg); border:1px solid var(--line); border-radius:1.1rem; padding:.9rem 1rem; display:flex; flex-direction:column; gap:.65rem; }
+.tp-exam-top { display:flex; align-items:center; justify-content:space-between; gap:.5rem; } .tp-exam-top b { font-size:15px; }
+.tp-link { display:inline-flex; align-items:center; gap:.2rem; margin-left:.4rem; font-size:11px; font-weight:700; color:var(--acc); } .tp-link svg { width:.8rem; height:.8rem; }
+.tp-linkbar { display:flex; align-items:flex-start; gap:.5rem; padding:.65rem .85rem; margin-bottom:.8rem; border-radius:.9rem; background:var(--acc-bg); color:var(--acc-d); font-size:12.5px; font-weight:600; line-height:1.55; } .tp-linkbar svg { width:1rem; height:1rem; flex:none; margin-top:.2rem; }
+html.dark .tp-linkbar { color:#b9d3de; }
+.tp-newbadge { flex:none; font-style:normal; font-size:10.5px; font-weight:800; padding:.1rem .45rem; border-radius:999px; background:#d9825f; color:#fff; }
+.tp-newbadge.hidden { display:none; }
+.tp-laps { display:flex; align-items:center; justify-content:space-between; gap:.6rem; font-size:13px; font-weight:700; padding:.5rem 0; }
+.tp-stepper { display:inline-flex; align-items:center; gap:.2rem; background:var(--soft); border-radius:999px; padding:.15rem; }
+.tp-stepper button { width:2.4rem; height:2.4rem; border-radius:50%; background:var(--panel); border:1px solid var(--line); font-size:18px; font-weight:700; color:var(--ink); }
+.tp-stepper button:disabled { opacity:.35; } .tp-stepper b { min-width:2.8rem; text-align:center; }
+.tp-pills { display:flex; flex-wrap:wrap; gap:.4rem; padding:.2rem 0 .5rem; }
+.tp-pill { min-height:2.2rem; padding:.2rem .8rem; border-radius:999px; background:var(--soft); border:1px solid var(--line); font-size:12.5px; font-weight:700; color:var(--ink); }
+.tp-pill.is-on { background:var(--acc); border-color:var(--acc); color:#fff; } .tp-pill.is-part { background:var(--acc-bg); border-color:var(--acc); }
+html.dark .tp-pill.is-on { color:#1d1a18; }
+.tp-range-main { flex:1; min-width:0; } .tp-range-t { font-size:14px; font-weight:600; overflow-wrap:anywhere; } .tp-range-t em { font-style:normal; font-size:12px; color:var(--sub); margin-left:.4rem; }
+.tp-seg { display:flex; flex-wrap:wrap; gap:.35rem; }
+.tp-seg button { flex:1; min-width:3rem; min-height:2.6rem; border-radius:.8rem; background:var(--soft); border:1px solid var(--line); font-size:13.5px; font-weight:700; color:var(--ink); }
+.tp-seg button.is-on { background:var(--acc); border-color:var(--acc); color:#fff; } html.dark .tp-seg button.is-on { color:#1d1a18; }
+.tp-exranges { display:flex; flex-wrap:wrap; gap:.35rem; } .tp-exranges span { padding:.2rem .65rem; border-radius:.7rem; background:var(--acc-bg); font-size:12.5px; font-weight:600; }
+.tp-task.is-late .tp-task-t { color:var(--bad); }
+.tp-lap { display:inline-block; margin-left:.45rem; padding:0 .5rem; border-radius:999px; background:var(--acc-bg); color:var(--acc-d); font-size:11px; font-weight:700; vertical-align:1px; } html.dark .tp-lap { color:#b9d3de; }
+.tp-task-t b { margin-right:.4rem; }
+
+.tp-cands { margin:.7rem 0; padding:.7rem .8rem; border-radius:1rem; background:var(--soft); }
+.tp-cands-h { display:flex; align-items:flex-start; justify-content:space-between; gap:.6rem; } .tp-cands-h b { display:block; font-size:14px; } .tp-cands-h small { display:block; font-size:12px; color:var(--sub); line-height:1.5; margin-top:.1rem; }
+.tp-cands-btns { display:flex; gap:.3rem; flex:none; } .tp-cands-btns button { min-height:2.2rem; padding:0 .7rem; border-radius:999px; background:var(--panel); border:1px solid var(--line); font-size:12.5px; font-weight:700; color:var(--ink); }
+.tp-cgroup { margin-top:.5rem; } .tp-cgroup > b { display:block; font-size:12px; color:var(--sub); font-weight:700; margin-bottom:.1rem; }
+.tp-cand { padding:.4rem .1rem; } .tp-cand + .tp-cand { border-top:1px solid var(--line); }
+.tp-paste { margin:.6rem 0; } .tp-paste summary { display:flex; align-items:center; gap:.4rem; min-height:2.6rem; font-size:13px; font-weight:700; color:var(--acc-d); cursor:pointer; } .tp-paste summary svg { width:1rem; height:1rem; }
+html.dark .tp-paste summary { color:#9cc0cf; }
+.tp-paste textarea { width:100%; border:1px solid var(--line); border-radius:.9rem; padding:.7rem .8rem; background:var(--panel); color:var(--ink); font-size:14px; line-height:1.6; resize:vertical; }
+.tp-paste-btns { display:flex; flex-wrap:wrap; gap:.4rem; margin-top:.5rem; }
+.tp-rates { margin:0 0 .8rem; padding:.2rem .9rem .7rem; border-radius:1rem; background:var(--panel); border:1px solid var(--line); }
+.tp-rates summary { display:flex; align-items:center; gap:.4rem; min-height:2.8rem; font-size:13.5px; font-weight:700; cursor:pointer; flex-wrap:wrap; } .tp-rates summary svg { width:1rem; height:1rem; } .tp-rates summary small { font-weight:600; color:var(--sub); font-size:12px; }
+.tp-rate { display:flex; align-items:center; justify-content:space-between; gap:.6rem; padding:.3rem 0; font-size:13.5px; font-weight:600; }
+.tp-taskrow { display:flex; align-items:center; gap:.3rem; } .tp-taskrow + .tp-taskrow { border-top:1px solid var(--line); } .tp-taskrow .tp-task { flex:1; min-width:0; border-top:0 !important; }
+.tp-taskrow.is-done .tp-task-t { text-decoration:line-through; opacity:.55; } .tp-taskrow.is-done em { opacity:.55; }
+.tp-mvwrap { position:relative; flex:none; width:3.4rem; height:2.2rem; display:grid; place-items:center; border-radius:999px; background:var(--soft); border:1px solid var(--line); } .tp-mvwrap.is-pinned { background:var(--acc-bg); border-color:var(--acc); }
+.tp-mvwrap svg { display:none; } .tp-mvi { font-size:11px; font-weight:700; line-height:1.2; text-align:center; pointer-events:none; color:var(--sub); }
+.tp-mv { position:absolute; inset:0; width:100%; height:100%; opacity:0; font-size:16px; cursor:pointer; }
+.tp-sel { min-height:2.4rem; padding:0 .6rem; border-radius:.7rem; border:1px solid var(--line); background:var(--soft); color:var(--ink); font-size:14px; font-weight:600; }
+.tp-note { margin:.5rem 0 0; font-size:12px; color:var(--sub); line-height:1.6; }
+</style>
+<script>
+/* ===== テスト計画（期間限定のテストと連動／周回・ページ割り振り） ===== */
+(function testPlan() {
+    const KEY = 'pm_test_plans';
+    const $ = (id) => document.getElementById(id);
+    const esc = (s) => escapeHtml(String(s == null ? '' : s));
+    const today = () => slogToday();
+    const dnum = (s) => { const [y, m, d] = String(s).split('-').map(Number); return Date.UTC(y, m - 1, d) / 86400000; };
+    const diff = (a, b) => Math.round(dnum(a) - dnum(b));
+    const addDays = (s, n) => slogAddDays(s, n);
+    const fmtMD = (s) => { const [y, m, d] = s.split('-').map(Number); return m + '/' + d + '(' + '日月火水木金土'[new Date(Date.UTC(y, m - 1, d)).getUTCDay()] + ')'; };
+    const isDate = (s) => /^\d{4}-\d{2}-\d{2}$/.test(String(s || ''));
+    const uid = (p) => p + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+    const load = () => { const v = safeStorage.get(KEY); return Array.isArray(v) ? v : []; };
+    const save = (arr) => { safeStorage.set(KEY, arr); };
+    const findPlan = (id) => load().find(p => p.id === id);
+    const color = (name) => { try { return pmSubjectColor(name); } catch (e) { return '#94a3b8'; } };   // 期間限定コーナーと同じ教科色
+    const colorDeep = (name) => { try { return pmSubjectColorDeep(name); } catch (e) { return color(name); } };
+    const DAILY = [30, 60, 90, 120, 150, 180, 240];
+    const LAPS = [1, 2, 3, 4, 5];
+    const CHUNK_MIN = 30;                 // 1回の勉強のめやす（ページのある範囲は、このくらいに区切る）
+    const RATE_DEF = { page: 3, sheet: 5, item: 10, task: 10 };
+    let R = Object.assign({}, RATE_DEF);
+    const setRates = (p) => { R = Object.assign({}, RATE_DEF, (p && p.rates) || {}); return R; };
+    const PER_PAGE_MIN = 3;               // ページ数だけ書いてあるときの、1ページあたりの時間
+    const fmtMin = (m) => { m = Math.round(m); if (m < 60) return m + '分'; const h = Math.floor(m / 60), r = m % 60; return h + '時間' + (r ? r + '分' : ''); };
+    let view = { name: 'list', id: null, tab: 'sched', draft: null, showAllDays: false };
+
+    /* ---------- 範囲の読み取り：ページ・時間 ---------- */
+    const RE_A = /[pPｐＰ]\.?\s*(\d{1,4})(?:\s*[〜~～\-－–ー]\s*[pPｐＰ]?\.?\s*(\d{1,4}))?/;
+    const RE_B = /(\d{1,4})(?:\s*[〜~～\-－–ー]\s*(\d{1,4}))?\s*(?:ページ|頁)/;
+    function parseRangeLine(line) {
+        line = String(line || '').trim(); if (!line) return null;
+        let explicit = null;
+        const tm = /[\s　\/／]*(\d{1,3})\s*分\s*$/.exec(line);
+        if (tm) { explicit = Math.min(240, Math.max(5, parseInt(tm[1], 10))); line = line.slice(0, tm.index).trim(); }
+        if (!line) return null;
+        let pages = null, base = line;
+        const m = RE_A.exec(line) || RE_B.exec(line);
+        if (m) {
+            let a = parseInt(m[1], 10), b = m[2] != null ? parseInt(m[2], 10) : a;
+            if (b < a) { const t = a; a = b; b = t; }
+            if (b - a + 1 <= 400) { pages = { from: a, to: b }; base = (line.slice(0, m.index) + ' ' + line.slice(m.index + m[0].length)).replace(/[\s　]+/g, ' ').replace(/[：:の・、,]+\s*$/, '').trim(); }
+        }
+        const n = pages ? pages.to - pages.from + 1 : 0;
+        const min = explicit || (pages ? Math.min(240, Math.max(10, n * R.page)) : 30);
+        return { text: line.slice(0, 60), base: base.slice(0, 40), pages, min };
+    }
+    const splitRanges = (text) => String(text || '').split(/[\r\n、，,;；]+/).map(x => x.trim()).filter(Boolean);
+    // 範囲 → 1回ぶんの勉強（チャンク）に分ける。ページがあれば、約30分ずつ
+    function chunksOf(r) {
+        if (!r.pages) return [{ ci: 0, label: r.text, min: r.min || 30 }];
+        const P = r.pages.to - r.pages.from + 1, per = (r.min || P * PER_PAGE_MIN) / P;
+        const un = r.unit === 'No' ? 'No' : 'p', cp = Math.max(1, Math.round(CHUNK_MIN / per)), n = Math.min(40, Math.ceil(P / cp)), out = [];
+        for (let i = 0; i < n; i++) {
+            const a = r.pages.from + i * cp, b = Math.min(r.pages.to, a + cp - 1);
+            out.push({ ci: i, from: a, to: b, label: ((r.base ? r.base + ' ' : '') + (a === b ? un + a : un + a + '〜' + (un === 'p' ? '' : un) + b)).trim(), min: Math.max(5, Math.round(per * (b - a + 1))) });
+        }
+        return out;
+    }
+    const keysOf = (r) => { const k = Array.isArray(r.keys) ? r.keys.slice() : []; if (r.done && !k.length) k.push('1:0'); return k; };
+    const lapsOf = (s) => Math.min(5, Math.max(1, parseInt(s.laps, 10) || 1));
+    function rangeUnits(s, r) {        // その範囲の、すべての周・チャンク
+        const ch = chunksOf(r), ks = keysOf(r), out = [];
+        for (let lap = 1; lap <= lapsOf(s); lap++) ch.forEach(c => out.push({ s, r, lap, ci: c.ci, key: lap + ':' + c.ci, label: c.label, min: c.min, from: c.from, to: c.to, done: ks.includes(lap + ':' + c.ci) }));
+        return out;
+    }
+    const allUnits = (s) => (s.ranges || []).flatMap(r => rangeUnits(s, r));
+
+    /* ---------- 集計 ---------- */
+    function subjStats(s) {
+        const u = allUnits(s), d = u.filter(x => x.done);
+        return { total: u.length, done: d.length, min: u.reduce((a, x) => a + x.min, 0), doneMin: d.reduce((a, x) => a + x.min, 0), pct: u.length ? Math.round(d.length / u.length * 100) : 0 };
+    }
+    function planStats(p) {
+        const a = p.subjects.map(subjStats), total = a.reduce((x, y) => x + y.total, 0), done = a.reduce((x, y) => x + y.done, 0);
+        return { total, done, min: a.reduce((x, y) => x + y.min, 0), doneMin: a.reduce((x, y) => x + y.doneMin, 0), pct: total ? Math.round(done / total * 100) : 0 };
+    }
+    function studiedMin(p, s) {
+        const logs = safeStorage.get('pm_study_logs'); if (!Array.isArray(logs)) return 0;
+        return logs.filter(l => l && l.subject === s.name && l.date >= p.createdAt && l.date <= s.date).reduce((a, l) => a + (Number(l.durationMs) || 0) / 60000, 0);
+    }
+    function nextTestDate(p) { const t = today(); const ds = p.subjects.map(s => s.date).filter(d => isDate(d) && d >= t).sort(); return ds[0] || null; }
+    function lastTestDate(p) { const ds = p.subjects.map(s => s.date).filter(isDate).sort(); return ds[ds.length - 1] || null; }
+    const daysLabel = (date) => { const n = diff(date, today()); return n > 0 ? 'あと' + n + '日' : n === 0 ? '今日！' : '終了'; };
+
+    /* ---------- 学習スケジュール：周回・ページ・期限をまとめて割り振る ---------- */
+    function buildSchedule(p) {
+        setRates(p);
+        const t = today(), units = [], moves = p.moves || {}, log = p.log || {}, fixed = [];
+        p.subjects.forEach(s => {
+            if (!isDate(s.date)) return;
+            const dl = s.date < t ? t : (diff(s.date, t) <= 1 ? t : addDays(s.date, -1));
+            const all = allUnits(s), byLap = {}; all.forEach(u => { (byLap[u.lap] = byLap[u.lap] || []).push(u); });
+            Object.values(byLap).forEach(arr => arr.forEach((u, i) => { u.dl = dl; u.frac = i / arr.length; }));
+            all.forEach(u => {
+                u.fkey = s.id + '|' + u.r.id + '|' + u.key;
+                if (u.done) { if (log[u.fkey] && isDate(log[u.fkey])) fixed.push({ ...u, date: log[u.fkey], pin: false }); return; }   // やった日のところに残す
+                if (s.date < t) return;
+                if (moves[u.fkey] && isDate(moves[u.fkey]) && moves[u.fkey] >= t) { fixed.push({ ...u, date: moves[u.fkey], pin: true }); return; }   // 自分で動かした予定
+                units.push(u);
+            });
+        });
+        units.sort((a, b) => (a.dl < b.dl ? -1 : a.dl > b.dl ? 1 : a.lap - b.lap || a.frac - b.frac || (a.s.name < b.s.name ? -1 : a.s.name > b.s.name ? 1 : 0)));
+        const cap = Math.max(15, p.dailyMin || 90);
+        const pinnedBy = {}; fixed.filter(x => !x.done || x.date >= t).forEach(x => { pinnedBy[x.date] = (pinnedBy[x.date] || 0) + x.min; });
+        let cum = 0, need = 0;
+        units.forEach(x => { cum += x.min; need = Math.max(need, cum / (diff(x.dl, t) + 1)); });
+        const total = cum + fixed.filter(x => x.pin).reduce((a, x) => a + x.min, 0);
+        const last = units.reduce((m, x) => x.dl > m ? x.dl : m, t), nDays = Math.max(1, diff(last, t) + 1);
+        const pace = Math.min(cap, Math.max(20, Math.ceil(Math.max(need, cum / nDays) * 1.05)));
+        const byDay = {};
+        fixed.forEach(x => { const d = byDay[x.date] = byDay[x.date] || { date: x.date, items: [], min: 0 }; d.items.push({ ...x, late: false }); d.min += x.min; });
+        let k = 0;
+        for (let day = 0; day < nDays + 90 && k < units.length; day++) {
+            const ds = addDays(t, day), limit = day < nDays ? pace : cap; let used = (byDay[ds] ? byDay[ds].min : 0); const arr = [];
+            while (k < units.length) {
+                const m = units[k].min;
+                if (used > 0 && used + m > limit * 1.15) break;
+                arr.push({ ...units[k], late: ds > units[k].dl }); used += m; k++;
+            }
+            if (arr.length) { const d = byDay[ds] = byDay[ds] || { date: ds, items: [], min: 0 }; d.items.push(...arr); d.min = used; }
+        }
+        // 同じ日・同じ範囲・同じ周で続いているチャンクは、1行にまとめる（例：ワーク p10〜15 + p16〜21 → p10〜21）
+        const days = Object.values(byDay).sort((a, b) => a.date < b.date ? -1 : 1).map(d => {
+            d.items.sort((a, b) => (b.done ? 1 : 0) - (a.done ? 1 : 0) || (b.pin ? 1 : 0) - (a.pin ? 1 : 0));   // 済み → 動かした予定 → 自動
+            const rows = [];
+            d.items.forEach(u => {
+                const prev = rows[rows.length - 1];
+                if (prev && prev.r === u.r && prev.lap === u.lap && prev.s === u.s && !!prev.done === !!u.done && !!prev.pin === !!u.pin && u.to != null && prev.to != null && u.ci === prev.lastCi + 1) {
+                    prev.to = u.to; prev.lastCi = u.ci; prev.min += u.min; prev.keys.push(u.key); prev.fkeys.push(u.fkey); prev.late = prev.late || u.late;
+                    const un = u.r.unit === 'No' ? 'No' : 'p'; prev.label = ((u.r.base ? u.r.base + ' ' : '') + (prev.from === prev.to ? un + prev.from : un + prev.from + '〜' + (un === 'p' ? '' : un) + prev.to)).trim();
+                } else rows.push({ s: u.s, r: u.r, lap: u.lap, from: u.from, to: u.to, lastCi: u.ci, label: u.label, min: u.min, keys: [u.key], fkeys: [u.fkey], late: u.late, done: !!u.done, pin: !!u.pin });
+            });
+            return { date: d.date, min: d.items.reduce((a, x) => a + (x.done ? 0 : x.min), 0), items: rows };
+        });
+        const late = days.reduce((a, d) => a + d.items.filter(x => x.late).length, 0);
+        return { days, total, need: Math.ceil(need), cap, late, count: units.length };
+    }
+
+    /* ---------- 先生のお知らせから、範囲・提出物だけを取り出す ---------- */
+    const hash = (str) => { let h = 5381; for (let i = 0; i < str.length; i++) h = ((h << 5) + h + str.charCodeAt(i)) | 0; return (h >>> 0).toString(36); };
+        function extractNotice(raw) {
+        const text = String(raw || '').replace(/^[ \t\u3000]*[①-⑳]\s*/gm, '').normalize('NFKC').replace(/[〜～∼]/g, '〜').replace(/~/g, '〜');
+        const lines = text.split(/\r?\n/).map(l => l.replace(/[　\t]+/g, ' ').trim()).filter(Boolean);
+        let sec = null, sub = '', heads = 0; const items = [], seen = new Set();
+        const KIND = { book: '教科書', work: '問題集', submit: '提出物' };
+        const push = (kind, o) => { o.kind = kind; o.id = 'n' + hash(kind + '|' + o.text); if (seen.has(o.id)) return; seen.add(o.id); items.push(o); };
+        const pageItem = (kind, base, a, b) => {
+            const pr = parseRangeLine((base ? base + ' ' : '') + 'p' + a + '〜' + b); if (pr) push(kind, { text: pr.text, base: pr.base, pages: pr.pages, unit: 'p', min: pr.min });
+        };
+        lines.forEach(line => {
+            const hm = /^(\d{1,2})[\s.、)）]+(.{1,14})$/.exec(line);
+            if (hm && !/\d{3}/.test(hm[2]) && !/p\s*\d/i.test(hm[2])) {       // 「1 教科書」「3 問題集」のような見出し
+                const t = hm[2]; heads++; sub = '';
+                sec = /教科書/.test(t) ? 'book' : /問題集|ワーク|演習|プリント集/.test(t) ? 'work' : /提出/.test(t) ? 'submit' : 'skip';
+                return;
+            }
+            if (!sec || sec === 'skip') return;
+            if (/^[※＊*]/.test(line) || /^ただし/.test(line)) return;
+            const sm = /^[(（](\d{1,2})[)）]\s*(.*)$/.exec(line);
+            if (sm) { sub = sm[2].trim(); if (sec !== 'submit' || !sub || !/tokuMo|課題|ドリル|ワーク/i.test(sub)) return; line = ''; }
+            line = line.replace(/^[①-⑳]\s*/, '').trim();
+            if (sec === 'submit') {
+                if (/期限|状況|確認|Classroom/.test(line) && !/No/i.test(line)) return;
+                const nm = /^(.*?)\s*No\.?\s*(\d{1,4})\s*[〜\-]\s*(?:No\.?)?\s*(\d{1,4})/i.exec(line);
+                if (nm) {
+                    let a = +nm[2], b = +nm[3]; if (b < a) { const t = a; a = b; b = t; }
+                    const label = (nm[1] || sub || 'プリント').replace(/[:：]\s*$/, '').trim() || 'プリント', n = b - a + 1;
+                    if (n <= 200) push('submit', { text: (label + ' No' + a + '〜No' + b).slice(0, 60), base: label.slice(0, 40), pages: { from: a, to: b }, unit: 'No', min: Math.min(240, Math.max(5, n * R.sheet)) });
+                    return;
+                }
+                const ds = line.match(/\d{1,2}\/\d{1,2}/g);
+                if (ds && /課題|提出|まで/.test(line)) push('submit', { text: ((sub || '課題') + ' 課題 ' + ds.join('・')).slice(0, 60), base: sub || '課題', pages: null, unit: 'p', min: Math.max(R.task, ds.length * R.task) });
+                return;
+            }
+            if (!line) return;
+            let base = '';
+            line.split(/[、,，;；]/).forEach(piece => {
+                piece = piece.trim(); if (!piece) return;
+                const m = /[pP]\.?\s*(\d{1,4})\s*(?:〜\s*[pP]?\.?\s*(\d{1,4}))?(.*)$/.exec(piece); if (!m) return;
+                const before = piece.slice(0, m.index).replace(/[：:の\s]+$/, '').trim(); if (before) base = before.slice(0, 20);
+                const bs = base || KIND[sec], a = +m[1], b = m[2] != null ? +m[2] : a, rest = (m[3] || '').trim();
+                if (rest && /\d|例題|問|章/.test(rest) && m[2] == null) {       // 「p35 発展例題4」「p37 59」：ページ＋問題番号
+                    push(sec, { text: (bs + ' ' + piece.slice(m.index)).replace(/\s+/g, ' ').slice(0, 60), base: bs, pages: null, unit: 'p', min: R.item });
+                } else if (m[2] != null && rest && /\d/.test(rest) === false || m[2] != null || !rest) {
+                    pageItem(sec, bs, Math.min(a, b), Math.max(a, b));
+                } else push(sec, { text: (bs + ' ' + piece.slice(m.index)).replace(/\s+/g, ' ').slice(0, 60), base: bs, pages: null, unit: 'p', min: R.item });
+            });
+            // 「p116 188〜189」のようにページの後ろが問題番号のとき（上の分岐で pages が出た場合は重複しない）
+        });
+        return { items, heads, kindLabel: KIND };
+    }
+    const noticeLike = (raw) => { try { const r = extractNotice(raw); return r.heads >= 1 && r.items.length >= 1; } catch (e) { return false; } };
+    function candidatesOf(s) {
+        const seen = new Set(), out = [];
+        [s.noticeExam, s.pasted].forEach(t => { if (t) extractNotice(t).items.forEach(c => { if (!seen.has(c.id)) { seen.add(c.id); out.push(c); } }); });
+        return out;
+    }
+    // お知らせの候補のうち、選ばれているものを範囲にする（チェックの記録は残す）
+    function applyNotice(s) {
+        const cands = candidatesOf(s), off = Array.isArray(s.off) ? s.off : [];
+        const old = (s.ranges || []).filter(r => r.src === 'notice'), keep = (s.ranges || []).filter(r => r.src !== 'notice');
+        const next = cands.filter(c => !off.includes(c.id)).map(c => { const o = old.find(r => r.id === c.id); return { id: c.id, text: c.text, base: c.base, pages: c.pages, unit: c.unit, min: o && o.minEdited ? o.min : c.min, keys: o ? keysOf(o) : [], src: 'notice', kind: c.kind }; });
+        const same = next.length === old.length && next.every((r, i) => old[i] && old[i].id === r.id && old[i].min === r.min);
+        if (!same) s.ranges = next.concat(keep).slice(0, 80);
+        return !same;
+    }
+
+    /* ---------- 期間限定のテストとの連動 ---------- */
+    function exams() { try { if (typeof examBoardVisibleExams === 'function') return examBoardVisibleExams() || []; } catch (e) {} return Array.isArray(window._remoteExams) ? window._remoteExams : []; }
+    function examSubjects(ex, ranged) {       // 開発者が入れた教科・日付・範囲（このユーザーに関係するぶん）
+        const canSee = (x) => { try { return typeof _exCanSee === 'function' ? _exCanSee(ex, x) : true; } catch (e) { return true; } };
+        const items = (ex.sessions || []).filter(x => x && isDate(x.date) && x.subject && canSee(x)).slice().sort((a, b) => a.date.localeCompare(b.date) || (a.period || 0) - (b.period || 0));
+        const map = new Map();
+        items.forEach(x => {
+            let e = map.get(x.subject); if (!e) { e = { name: x.subject, date: x.date, ranges: [], rawL: [], notice: '' }; map.set(x.subject, e); }
+            if (x.date < e.date) e.date = x.date;
+            if (x.range && !e.rawL.includes(x.range)) e.rawL.push(x.range);
+        });
+        map.forEach(e => { e.notice = e.rawL.join('\n'); if (noticeLike(e.notice)) { e.ranges = []; } else { e.notice = ''; e.rawL.forEach(r => splitRanges(r).forEach(t => { if (!e.ranges.includes(t)) e.ranges.push(t); })); } });
+        return [...map.values()].filter(e => !ranged || e.ranges.length || e.notice).sort((a, b) => { try { return pmSubjectRank(a.name) - pmSubjectRank(b.name); } catch (e) { return 0; } });
+    }
+    function pendingExams() {        // まだ計画にしていない、これからのテスト
+        const t = today(), have = new Set(load().map(p => p.examId).filter(Boolean).map(String));
+        return exams().filter(ex => !have.has(String(ex.id)) && examSubjects(ex, true).some(s => s.date >= t));
+    }
+    function mkRange(line, src, old) {
+        const pr = parseRangeLine(line); if (!pr) return null;
+        return { id: old ? old.id : uid('r'), text: pr.text, base: pr.base, pages: pr.pages, min: pr.min, keys: old ? keysOf(old) : [], src: src || undefined };
+    }
+    // 開発者がテストの日付・教科・範囲を変えたら、連動している計画にも反映する（自分で足した範囲や、チェックの記録は残す）
+    function syncPlanFromExam(p) {
+        setRates(p);
+        if (!p.examId) return false;
+        const ex = exams().find(e => String(e.id) === String(p.examId)); if (!ex) return false;
+        const es = examSubjects(ex); let changed = false;
+        es.forEach(e => {
+            let s = p.subjects.find(x => x.name === e.name);
+            if (!s) { if (!(e.ranges.length || e.notice)) return; s = { id: uid('s'), name: e.name, date: e.date, target: null, max: 100, score: null, laps: p.defaultLaps || 2, ranges: [], linked: true }; p.subjects.push(s); changed = true; }
+            if (!s.linked) { s.linked = true; changed = true; }
+            if ((s.noticeExam || '') !== (e.notice || '')) { s.noticeExam = e.notice || ''; changed = true; }
+            if (s.date !== e.date) { s.date = e.date; changed = true; }
+            const mine = (s.ranges || []).filter(r => r.src !== 'exam'), oldEx = (s.ranges || []).filter(r => r.src === 'exam');
+            const next = []; e.ranges.forEach(line => { const pr = parseRangeLine(line); if (!pr) return; const o = oldEx.find(r => r.text === pr.text); const nr = mkRange(line, 'exam', o); if (nr) next.push(nr); });
+            const same = next.length === oldEx.length && next.every((r, i) => r.text === oldEx[i].text && r.min === oldEx[i].min);
+            if (!same) { s.ranges = next.concat(mine); changed = true; }
+            if (applyNotice(s)) changed = true;
+        });
+        if (changed) p.updatedAt = new Date().toISOString();
+        return changed;
+    }
+    function syncAll() {
+        const arr = load(); let any = false;
+        arr.forEach(p => { if (syncPlanFromExam(p)) any = true; });
+        if (any) { save(arr); arr.forEach(p => { if (p.examId) syncCalendar(p); }); }
+        return any;
+    }
+
+    /* ---------- 予定（カレンダー）との連携 ---------- */
+    function syncCalendar(p, remove) {
+        try {
+            scheduleItems = scheduleItems.filter(x => x.testPlanId !== p.id);
+            if (!remove && p.calOn) {
+                p.subjects.forEach((s, i) => {
+                    if (!isDate(s.date)) return;
+                    scheduleItems.push({ id: Date.now() + i, type: 'test', title: (p.title + '｜' + s.name).slice(0, 100), subject: s.name, date: s.date,
+                        memo: (s.target != null ? '目標 ' + s.target + '点（テスト計画）' : 'テスト計画から追加'), time: null, endTime: null, repeat: 'none', repeatUntil: null, notifyMin: null, color: colorDeep(s.name), testPlanId: p.id });
+                });
+            }
+            if (!remove && p.calOn) {
+                let seq = 0; const sc = buildSchedule(p);
+                sc.days.forEach(d => {
+                    const by = new Map(); d.items.forEach(x => { if (!by.has(x.s.id)) by.set(x.s.id, { s: x.s, rows: [] }); by.get(x.s.id).rows.push(x); });
+                    by.forEach(g => {
+                        const done = g.rows.every(r => r.done), min = g.rows.reduce((a, r) => a + r.min, 0);
+                        const rt = p.remindAt === undefined ? '18:00' : p.remindAt;   // 毎日のお知らせの時刻（空なら通知しない）
+                        const at = (rt && !done) ? new Date(d.date + 'T' + rt + ':00+09:00').getTime() : NaN;
+                        const lines = g.rows.filter(r => !r.done).map(r => r.label + (lapsOf(g.s) > 1 ? '（' + r.lap + '周目）' : ''));
+                        let hs = 5381; const hk = p.id + '|' + d.date + '|' + g.s.id; for (let ci = 0; ci < hk.length; ci++) hs = ((hs << 5) + hs + hk.charCodeAt(ci)) | 0;
+                        scheduleItems.push({ id: 9e12 + (hs >>> 0), type: 'task',
+                            notifyAt: at > Date.now() + 60000 ? new Date(at).toISOString() : null,
+                            notifyTitle: '学習ProMaster：今日のテスト勉強（' + g.s.name + '）',
+                            notifyBody: lines.slice(0, 3).join('、') + (lines.length > 3 ? ' ほか' : '') + '（' + min + '分）。テストまであと' + Math.max(0, diff(g.s.date, d.date)) + '日', title: ((done ? '✓ ' : '') + g.s.name + ' 勉強 ' + min + '分').slice(0, 100), subject: g.s.name, date: d.date,
+                            memo: g.rows.map(r => (r.done ? '✓ ' : '・') + r.label + (lapsOf(g.s) > 1 ? '（' + r.lap + '周目）' : '') + ' ' + r.min + '分').join('\n') + '\n（テスト計画：' + p.title + '）',
+                            time: null, endTime: null, repeat: 'none', repeatUntil: null, notifyMin: null, color: colorDeep(g.s.name), testPlanId: p.id, testPlanStudy: true, done: done || undefined });
+                    });
+                });
+            }
+            persistScheduleItems();
+            try { if (window.pmPushSyncSoon) window.pmPushSyncSoon(2000); } catch (e) {}
+            ['renderScheduleSection', 'refreshCalendarIfVisible', 'renderHomeNextCard', 'renderUpcomingScheduleOnMyPage'].forEach(n => { try { if (typeof window[n] === 'function') window[n](); } catch (e) {} });
+        } catch (e) { console.warn('カレンダーへの反映に失敗しました', e); }
+    }
+
+    /* ---------- 画面の土台 ---------- */
+    function ensureRoot() {
+        let r = $('tp-root'); if (r) return r;
+        r = document.createElement('div'); r.id = 'tp-root'; r.className = 'tp-root hidden'; r.setAttribute('role', 'dialog'); r.setAttribute('aria-label', 'テスト計画');
+        document.body.appendChild(r);
+        r.addEventListener('input', onInput); r.addEventListener('change', onInput);
+        return r;
+    }
+    function open(id) {
+        const r = ensureRoot();
+        const tb = $('bottom-tab-bar'); r.style.bottom = (tb && tb.offsetHeight ? tb.offsetHeight : 0) + 'px';
+        r.classList.remove('hidden'); document.documentElement.classList.add('tp-open');
+        const changed = syncAll();
+        view = (id && findPlan(id)) ? { name: 'detail', id, tab: 'sched', draft: null, showAllDays: false } : { name: 'list', id: null, tab: 'sched', draft: null, showAllDays: false };
+        render(); r.scrollTop = 0;
+        if (changed) showToast('期間限定のテストの変更を、計画に反映しました');
+    }
+    function close() { const r = $('tp-root'); if (r) r.classList.add('hidden'); document.documentElement.classList.remove('tp-open'); renderMyPageCard(); }
+    function go(name, id) { view.name = name; if (id !== undefined) view.id = id; if (name === 'detail') view.tab = view.tab || 'sched'; render(); const r = $('tp-root'); if (r) r.scrollTop = 0; }
+    function render() {
+        const r = ensureRoot(); if (r.classList.contains('hidden')) return;
+        r.innerHTML = view.name === 'edit' ? renderEdit() : view.name === 'detail' && findPlan(view.id) ? renderDetail(findPlan(view.id)) : renderList();
+        try { if (typeof lucide !== 'undefined') lucide.createIcons(); } catch (e) {}
+    }
+    const head = (title, back, right) => `<header class="tp-head"><button type="button" class="tp-iconbtn" onclick="${back}" aria-label="戻る"><i data-lucide="chevron-left"></i></button><h1>${esc(title)}</h1><span class="tp-head-right">${right || ''}</span></header>`;
+    const subjChips = (s) => `<span class="tp-chip" style="--c:${color(s.name)}"><i></i>${esc(s.name)}<em>${isDate(s.date) ? fmtMD(s.date) : ''}</em></span>`;
+
+    /* ---------- 一覧 ---------- */
+    function renderList() {
+        const plans = load().slice().sort((a, b) => { const x = nextTestDate(a), y = nextTestDate(b); if (x && y) return x < y ? -1 : x > y ? 1 : 0; return x ? -1 : y ? 1 : (b.createdAt || '').localeCompare(a.createdAt || ''); });
+        const pend = pendingExams();
+        const pendHtml = pend.length ? `<section class="tp-exams"><h2 class="tp-h2">テスト範囲が登録されています</h2>${pend.map(ex => {
+            const es = examSubjects(ex, true);
+            return `<div class="tp-exam"><div class="tp-exam-top"><b>${esc(ex.name || 'テスト')}</b><span class="tp-days">${es.length}教科</span></div><div class="tp-chips">${es.map(subjChips).join('')}</div><button type="button" class="tp-btn is-primary is-block" onclick="tp.fromExam('${esc(String(ex.id)).replace(/'/g, '')}')">計画をつくる</button></div>`;
+        }).join('')}</section>` : '';
+        let body;
+        if (!plans.length) {
+            body = pendHtml || `<div class="tp-empty"><h2>テスト計画</h2><p>テストの範囲が登録されると、ここから計画をつくれます。</p></div>`;
+        } else {
+            body = pendHtml + plans.map(p => {
+                const st = planStats(p), nx = nextTestDate(p), done = !nx;
+                return `<button type="button" class="tp-card" onclick="tp.openPlan('${p.id}')"><div class="tp-card-top"><div class="tp-card-title">${esc(p.title)}${p.examId ? '<small class="tp-link"><i data-lucide="link"></i>期間限定</small>' : ''}</div>
+                  <span class="tp-days ${done ? 'is-done' : diff(nx, today()) <= 3 ? 'is-near' : ''}">${done ? '終了' : daysLabel(nx)}</span></div>
+                  <div class="tp-chips">${p.subjects.map(subjChips).join('')}</div>
+                  <div class="tp-bar"><i style="width:${st.pct}%"></i></div><div class="tp-card-foot"><span>${st.done}/${st.total} 回</span><span>${st.pct}%</span></div></button>`;
+            }).join('');
+        }
+        return head('テスト計画', 'tp.close()') + `<div class="tp-body">${body}</div>`;
+    }
+
+    /* ---------- 詳細 ---------- */
+    function renderDetail(p) {
+        const st = planStats(p), nx = nextTestDate(p), sc = buildSchedule(p);
+        const tabs = [['sched', 'やること'], ['subj', '教科ごと'], ['result', '結果']];
+        const hero = `<div class="tp-hero"><div class="tp-hero-main">${nx ? `<div class="tp-count"><b>${diff(nx, today()) > 0 ? diff(nx, today()) : 0}</b><span>日</span></div><div class="tp-count-sub">${diff(nx, today()) > 0 ? '最初のテストまで' : '今日がテストです'}<br>${fmtMD(nx)}</div>` : `<div class="tp-count-sub is-wide">テストは終わりました<br>「結果」で点数を記録できます</div>`}</div>
+          <div class="tp-hero-side"><div class="tp-ring" style="--p:${st.pct}"><span>${st.pct}<small>%</small></span></div><div class="tp-hero-cap">${st.done}/${st.total} 回</div></div></div>`;
+        let verdict = '';
+        if (nx && sc.count) {
+            const cls = sc.late ? 'is-bad' : sc.need > sc.cap * .75 ? 'is-warn' : 'is-ok';
+            const msg = sc.late ? `間に合わないものが <b>${sc.late}件</b> あります。1日 <b>${fmtMin(Math.ceil(sc.need / 10) * 10)}</b> ほど必要です。` : sc.need > sc.cap * .75 ? `ほぼ毎日 <b>${fmtMin(sc.need)}</b> 必要です。` : `1日 <b>${fmtMin(Math.max(20, sc.need))}</b> ほどで終わります。`;
+            verdict = `<div class="tp-verdict ${cls}"><i data-lucide="${sc.late ? 'alert-triangle' : 'check-circle-2'}"></i><p>${msg}</p></div>`;
+        } else if (nx && !sc.count && st.total) verdict = `<div class="tp-verdict is-ok"><i data-lucide="check-circle-2"></i><p>やることはすべて終わりました。</p></div>`;
+        else if (nx && !st.total) verdict = `<div class="tp-verdict is-warn"><i data-lucide="info"></i><p>${'範囲がまだ入っていません。'}</p></div>`;
+        const body = view.tab === 'sched' ? renderSched(p, sc) : view.tab === 'subj' ? renderSubj(p) : renderResult(p);
+        const link = '';
+        return head(p.title, "tp.go('list')", `<button type="button" class="tp-iconbtn" onclick="tp.editPlan('${p.id}')" aria-label="編集"><i data-lucide="pencil"></i></button>`) +
+            `<div class="tp-body">${hero}${link}${verdict}<div class="tp-tabs" role="tablist">${tabs.map(([k, l]) => `<button type="button" role="tab" aria-selected="${view.tab === k}" class="${view.tab === k ? 'is-on' : ''}" onclick="tp.tab('${k}')">${l}</button>`).join('')}</div>${body}</div>`;
+    }
+    function renderSched(p, sc) {
+        const t = today();
+        if (!sc.days.length) return `<p class="tp-note">やることはありません。</p>`;
+        const markers = {};
+        p.subjects.forEach(s => { if (!isDate(s.date) || s.date < t) return; (markers[s.date] = markers[s.date] || []).push({ k: 'test', s }); const eve = addDays(s.date, -1); if (eve >= t) (markers[eve] = markers[eve] || []).push({ k: 'eve', s }); });
+        const dates = [...new Set([...sc.days.map(d => d.date), ...Object.keys(markers)])].filter(x => x >= t).sort();
+        const limit = view.showAllDays ? dates.length : 7, shown = dates.slice(0, limit);
+        const rows = shown.map(ds => {
+            const d = sc.days.find(x => x.date === ds), mk = markers[ds] || [], n = diff(ds, t);
+            return `<section class="tp-day ${n === 0 ? 'is-today' : ''}"><div class="tp-day-h"><b>${n === 0 ? '今日' : n === 1 ? '明日' : fmtMD(ds)}</b>${n > 1 ? '' : `<span>${fmtMD(ds)}</span>`}${d ? `<em>約${fmtMin(d.min)}</em>` : ''}</div>
+              ${mk.map(m => m.k === 'test' ? `<div class="tp-mark is-test"><i data-lucide="flag"></i>${esc(m.s.name)}のテスト${m.s.target != null ? '（目標 ' + esc(m.s.target) + '点）' : ''}</div>` : `<div class="tp-mark"><i data-lucide="moon"></i>${esc(m.s.name)}のテスト前日</div>`).join('')}
+              ${d ? d.items.map(x => taskRow(p, x)).join('') : ''}</section>`;
+        }).join('');
+        return rows + (dates.length > limit ? `<button type="button" class="tp-btn is-block" onclick="tp.more()">さらに先の日を見る（あと${dates.length - limit}日）</button>` : '');
+    }
+    function moveSelect(p, x) {
+        const t = today(), end = x.s.date && x.s.date >= t ? x.s.date : t, opts = [];
+        for (let d = t, n = 0; d <= end && n < 80; d = addDays(d, 1), n++) opts.push(`<option value="${d}">${diff(d, t) === 0 ? '今日' : diff(d, t) === 1 ? '明日' : fmtMD(d)}${d === end ? '（テスト日）' : ''}</option>`);
+        return `<span class="tp-mvwrap ${x.pin ? 'is-pinned' : ''}"><span class="tp-mvi">${x.pin ? '変更済' : '日変更'}</span><select class="tp-mv" aria-label="やる日を変える" onchange="tp.move('${p.id}','${x.s.id}','${x.fkeys.join(',')}',this.value)"><option value="">${x.pin ? '変更済み' : 'やる日を選ぶ'}</option>${x.pin ? '<option value="auto">自動にもどす</option>' : ''}${opts.join('')}</select></span>`;
+    }
+    function taskRow(p, x) {
+        const lab = `<label class="tp-task ${x.late ? 'is-late' : ''} ${x.done ? 'is-done' : ''}" style="--c:${color(x.s.name)}"><input type="checkbox" ${x.done ? 'checked' : ''} onchange="tp.toggleKeys('${p.id}','${x.s.id}','${x.r.id}','${x.keys.join(',')}',this.checked)"><span class="tp-box"></span><span class="tp-task-t"><i class="tp-dot"></i><b>${esc(x.s.name)}</b>${esc(x.label)}${lapsOf(x.s) > 1 ? `<span class="tp-lap">${x.lap}周目</span>` : ''}</span><em>${x.min}分${x.late ? '・遅れ' : ''}${x.pin ? '・変更済み' : ''}</em></label>`;
+        return `<div class="tp-taskrow ${x.done ? 'is-done' : ''}">${lab}${x.done ? '' : moveSelect(p, x)}</div>`;
+    }
+        function lapPills(p, s, r) {
+        const ch = chunksOf(r), ks = keysOf(r), out = [];
+        for (let lap = 1; lap <= lapsOf(s); lap++) {
+            const n = ch.filter(c => ks.includes(lap + ':' + c.ci)).length, all = n === ch.length;
+            out.push(`<button type="button" class="tp-pill ${all ? 'is-on' : n ? 'is-part' : ''}" onclick="tp.toggleLap('${p.id}','${s.id}','${r.id}',${lap})" aria-pressed="${all}">${lap}周目${ch.length > 1 ? ' ' + n + '/' + ch.length : ''}${all ? ' ✓' : ''}</button>`);
+        }
+        return out.join('');
+    }
+    function renderRates(p) {
+        const r = Object.assign({}, RATE_DEF, p.rates || {});
+        const row = (k, label, unit) => `<label class="tp-rate"><span>${label}</span><span class="tp-stepper"><button type="button" aria-label="${label}を減らす" onclick="tp.rate('${p.id}','${k}',-1)" ${r[k] <= 1 ? 'disabled' : ''}>−</button><b>${r[k]}${unit}</b><button type="button" aria-label="${label}を増やす" onclick="tp.rate('${p.id}','${k}',1)" ${r[k] >= 60 ? 'disabled' : ''}>＋</button></span></label>`;
+        return `<details class="tp-rates"><summary><i data-lucide="timer"></i>時間と通知の設定 <small>1ページ${r.page}分・通知 ${((p.remindAt === undefined ? '18:00' : p.remindAt) || 'なし')}</small></summary>${row('page', '1ページ', '分')}${row('sheet', 'プリント1枚', '分')}${row('item', '問題・例題1つ', '分')}${row('task', '課題1回', '分')}<label class="tp-rate"><span>毎日のお知らせ</span><select class="tp-sel" onchange="tp.remind('${p.id}',this.value)">${[['', '通知しない'], ['07:00', '朝7時'], ['12:30', '昼12時半'], ['18:00', '夕方6時'], ['21:00', '夜9時']].map(o => `<option value="${o[0]}" ${((p.remindAt === undefined ? '18:00' : p.remindAt) === o[0]) ? 'selected' : ''}>${o[1]}</option>`).join('')}</select></label><p class="tp-note">その日にやることを、アプリを閉じていても通知します（通知の許可が必要。カレンダーに入れる設定のときだけ）</p></details>`;
+    }
+    function renderSubj(p) {
+        return renderRates(p) + p.subjects.map(s => {
+            const st = subjStats(s), studied = studiedMin(p, s), laps = lapsOf(s);
+            return `<section class="tp-subj" style="--c:${color(s.name)}"><div class="tp-subj-h"><span class="tp-subj-name"><i></i>${esc(s.name)}</span><span class="tp-days ${isDate(s.date) && diff(s.date, today()) <= 3 && diff(s.date, today()) >= 0 ? 'is-near' : diff(s.date, today()) < 0 ? 'is-done' : ''}">${isDate(s.date) ? fmtMD(s.date) + '・' + daysLabel(s.date) : '日付なし'}</span></div>
+              <div class="tp-subj-meta"><span>目標 <b>${s.target != null ? esc(s.target) + '/' + esc(s.max || 100) + '点' : '未設定'}</b></span><span>勉強記録 <b>${fmtMin(studied)}</b></span></div>
+              <div class="tp-laps"><span>何周する？</span><div class="tp-stepper"><button type="button" aria-label="周回を減らす" onclick="tp.laps('${p.id}','${s.id}',-1)" ${laps <= 1 ? 'disabled' : ''}>−</button><b>${laps}周</b><button type="button" aria-label="周回を増やす" onclick="tp.laps('${p.id}','${s.id}',1)" ${laps >= 5 ? 'disabled' : ''}>＋</button></div></div>
+              <div class="tp-bar"><i style="width:${st.pct}%"></i></div><div class="tp-card-foot"><span>${st.done}/${st.total} 回（${fmtMin(st.min)}）</span><span>${st.pct}%</span></div>
+              ${renderCands(p, s)}
+              <div class="tp-ranges">${(s.ranges || []).map(r => `<div class="tp-range"><div class="tp-range-main"><div class="tp-range-t">${esc(r.text)}${r.src === 'exam' || r.src === 'notice' ? '<small class="tp-link"><i data-lucide="link"></i></small>' : ''}<em>${r.min || 30}分${r.pages ? '・' + (r.pages.to - r.pages.from + 1) + (r.unit === 'No' ? '枚' : 'ページ') : ''}</em></div><div class="tp-pills">${lapPills(p, s, r)}</div></div>${r.src === 'exam' || r.src === 'notice' ? '' : `<button type="button" class="tp-x" aria-label="この範囲を削除" onclick="tp.delRange('${p.id}','${s.id}','${r.id}')"><i data-lucide="x"></i></button>`}</div>`).join('') || '<p class="tp-note">範囲がまだありません</p>'}</div>
+              <div class="tp-add"><input type="text" id="tp-add-${s.id}" maxlength="60" placeholder="自分で範囲を追加（例：ワーク p10〜20）" enterkeyhint="done" onkeydown="if(event.key==='Enter'){event.preventDefault();tp.addRange('${p.id}','${s.id}')}"><button type="button" class="tp-btn is-primary" onclick="tp.addRange('${p.id}','${s.id}')">追加</button></div></section>`;
+        }).join('');
+    }
+    function syncCalendarById(pid) { const p = findPlan(pid); if (p) syncCalendar(p); }
+    function renderCands(p, s) {
+        setRates(p);
+        const cs = candidatesOf(s), off = new Set(s.off || []), on = cs.filter(c => !off.has(c.id)).length;
+        const names = { book: '教科書', work: '問題集', submit: '提出物' };
+        const groups = ['book', 'work', 'submit'].map(k => {
+            const g = cs.filter(c => c.kind === k); if (!g.length) return '';
+            return `<div class="tp-cgroup"><b>${names[k]}</b>${g.map(c => `<label class="tp-task tp-cand" style="--c:${color(s.name)}"><input type="checkbox" ${off.has(c.id) ? '' : 'checked'} onchange="tp.pickCand('${p.id}','${s.id}','${c.id}',this.checked)"><span class="tp-box"></span><span class="tp-task-t">${esc(c.text)}</span><em>${c.min}分${c.pages ? '・' + (c.pages.to - c.pages.from + 1) + (c.unit === 'No' ? '枚' : 'p') : ''}</em></label>`).join('')}</div>`;
+        }).join('');
+        const head = cs.length ? `<div class="tp-cands"><div class="tp-cands-h"><span><b>やる範囲</b><small>チェックしたものが計画に入ります（${on}/${cs.length}）</small></span><span class="tp-cands-btns"><button type="button" onclick="tp.pickAll('${p.id}','${s.id}',true)">全部</button><button type="button" onclick="tp.pickAll('${p.id}','${s.id}',false)">外す</button></span></div>${groups}</div>` : '';
+        const paste = `<details class="tp-paste"${cs.length ? '' : ' open'}><summary><i data-lucide="clipboard-paste"></i>お知らせの文章から範囲を読み取る</summary><textarea id="tp-paste-${s.id}" rows="5" placeholder="お知らせの文章を貼る">${esc(s.pasted || '')}</textarea><div class="tp-paste-btns"><button type="button" class="tp-btn is-primary" onclick="tp.paste('${p.id}','${s.id}')">読み取る</button>${s.pasted ? `<button type="button" class="tp-btn" onclick="tp.clearPaste('${p.id}','${s.id}')">貼った内容を消す</button>` : ''}</div></details>`;
+        return head + paste;
+    }
+    function renderResult(p) {
+        const scored = p.subjects.filter(s => s.score != null && s.score !== '');
+        const sum = scored.reduce((a, s) => a + Number(s.score), 0), maxSum = scored.reduce((a, s) => a + Number(s.max || 100), 0);
+        return `<p class="tp-note">テストが返ってきたら、点数を入れて目標と比べましょう。</p>` + p.subjects.map(s => {
+            const has = s.score != null && s.score !== '', gap = has && s.target != null ? Number(s.score) - Number(s.target) : null;
+            return `<section class="tp-subj" style="--c:${color(s.name)}"><div class="tp-subj-h"><span class="tp-subj-name"><i></i>${esc(s.name)}</span><span class="tp-note-s">${s.target != null ? '目標 ' + esc(s.target) + '点' : '目標なし'}</span></div>
+              <div class="tp-score"><input type="number" inputmode="decimal" min="0" max="${esc(s.max || 100)}" id="tp-sc-${s.id}" value="${has ? esc(s.score) : ''}" placeholder="点数" onchange="tp.score('${p.id}','${s.id}',this.value)"><span>/ ${esc(s.max || 100)}点</span>
+              ${gap == null ? '' : `<b class="tp-gap ${gap >= 0 ? 'is-ok' : 'is-ng'}">${gap >= 0 ? '目標達成 +' + gap : 'あと ' + (-gap) + '点'}</b>`}</div></section>`;
+        }).join('') + (scored.length ? `<div class="tp-total">合計 <b>${sum}</b> / ${maxSum}点${scored.length === p.subjects.length ? '（平均 ' + Math.round(sum / scored.length * 10) / 10 + '点）' : ''}</div>` : '') +
+            `<button type="button" class="tp-btn is-block is-danger" onclick="tp.delPlan('${p.id}')"><i data-lucide="trash-2"></i>この計画を削除</button>`;
+    }
+
+    /* ---------- 作成・編集 ---------- */
+    function blankSubject(name, date) { return { name, date: date || '', target: '', max: 100, laps: 2, rangesText: '', examRanges: [], linked: false, sid: uid('s') }; }
+    function toDraft(p) {
+        return { id: p.id, examId: p.examId || null, title: p.title, dailyMin: p.dailyMin || 90, calOn: p.calOn !== false, createdAt: p.createdAt, defaultLaps: p.defaultLaps || 2, rates: Object.assign({}, RATE_DEF, p.rates || {}),
+            subjects: p.subjects.map(s => ({ name: s.name, date: s.date, target: s.target == null ? '' : s.target, max: s.max || 100, sid: s.id, laps: lapsOf(s), linked: !!s.linked,
+                examRanges: (s.ranges || []).filter(r => r.src === 'exam').map(r => r.text), notice: s.noticeExam || '', noticeN: candidatesOf(s).length, pasted: s.pasted || '', off: (s.off || []).slice(),
+                rangesText: (s.ranges || []).filter(r => r.src !== 'exam' && r.src !== 'notice').map(r => r.text + ((r.min || 30) !== (r.pages ? Math.min(240, Math.max(10, (r.pages.to - r.pages.from + 1) * PER_PAGE_MIN)) : 30) ? '　' + r.min + '分' : '')).join('\n') })) };
+    }
+    function fromExamDraft(ex) {
+        const es = examSubjects(ex, true);
+        return { id: null, examId: ex.id, title: ex.name || 'テスト', dailyMin: 90, calOn: true, createdAt: today(), defaultLaps: 2,
+            subjects: es.map(e => ({ name: e.name, date: e.date, target: '', max: 100, laps: 2, rangesText: '', examRanges: e.ranges.slice(), notice: e.notice || '', noticeN: e.notice ? extractNotice(e.notice).items.length : 0, pasted: '', off: [], linked: true, sid: uid('s') })) };
+    }
+    function subjectNames() { try { return slogSubjects().map(s => s.name).filter(n => n !== 'その他'); } catch (e) { return ['国語', '数学', '英語', '理科', '社会']; } }
+    function renderEdit() {
+        const d = view.draft, names = subjectNames(); d.subjects.forEach(s => { if (!names.includes(s.name)) names.push(s.name); });
+        const sel = (n) => d.subjects.some(s => s.name === n);
+        const allLaps = d.subjects.length && d.subjects.every(s => s.laps === d.subjects[0].laps) ? d.subjects[0].laps : null;
+        return head(d.id ? '計画を編集' : '新しいテスト計画', d.id ? "tp.go('detail')" : "tp.go('list')") + `<div class="tp-body tp-form">
+          ${d.examId ? `<div class="tp-linkbar"><i data-lucide="link"></i><span>期間限定のテストから作成しています。日付と先生の範囲は自動で入り、変更があれば自動で更新されます</span></div>` : ''}
+          <label class="tp-field"><span>テストの名前</span><input type="text" id="tp-f-title" maxlength="40" value="${esc(d.title)}" placeholder="例：2学期 期末テスト"></label>
+          <label class="tp-field"><span>1日に勉強できる時間</span><select id="tp-f-daily">${DAILY.map(m => `<option value="${m}" ${Number(d.dailyMin) === m ? 'selected' : ''}>${fmtMin(m)}</option>`).join('')}</select><small>この時間に収まるように、やることを割り振ります</small></label>
+          ${d.examId ? '' : `<div class="tp-field"><span>受ける教科（タップで選ぶ）</span><div class="tp-pick">${names.map(n => `<button type="button" class="tp-pickbtn ${sel(n) ? 'is-on' : ''}" style="--c:${color(n)}" aria-pressed="${sel(n)}" onclick="tp.pick(this.dataset.n)" data-n="${esc(n)}">${esc(n)}</button>`).join('')}</div>
+            <div class="tp-add"><input type="text" id="tp-f-new" maxlength="12" placeholder="ほかの教科（例：家庭科）" enterkeyhint="done" onkeydown="if(event.key==='Enter'){event.preventDefault();tp.pickNew()}"><button type="button" class="tp-btn" onclick="tp.pickNew()">追加</button></div></div>`}
+          ${d.subjects.length ? `<div class="tp-field"><span>何周したい？（全教科まとめて）</span><div class="tp-seg">${LAPS.map(n => `<button type="button" class="${allLaps === n ? 'is-on' : ''}" aria-pressed="${allLaps === n}" onclick="tp.setAllLaps(${n})">${n}周</button>`).join('')}</div><small>範囲を全部やりきるのを1周として、その回数ぶんを、テストまでの日数とページに割り振ります。教科ごとに変えることもできます</small></div>` : ''}
+          ${d.subjects.map((s, i) => `<section class="tp-subj tp-formsubj" style="--c:${color(s.name)}"><div class="tp-subj-h"><span class="tp-subj-name"><i></i>${esc(s.name)}</span>${d.examId ? '' : `<button type="button" class="tp-x" aria-label="この教科を外す" data-n="${esc(s.name)}" onclick="tp.pick(this.dataset.n)"><i data-lucide="x"></i></button>`}</div>
+            <div class="tp-row2"><label class="tp-field"><span>テスト日</span><input type="date" data-i="${i}" data-k="date" value="${esc(s.date)}" ${s.linked ? 'disabled' : ''}></label>
+            <label class="tp-field"><span>目標点 / 満点</span><span class="tp-pair"><input type="number" inputmode="decimal" min="0" data-i="${i}" data-k="target" value="${esc(s.target)}" placeholder="80"><em>/</em><input type="number" inputmode="decimal" min="1" data-i="${i}" data-k="max" value="${esc(s.max)}" placeholder="100"></span></label></div>
+            <div class="tp-field"><span>何周する？</span><div class="tp-seg">${LAPS.map(n => `<button type="button" class="${s.laps === n ? 'is-on' : ''}" aria-pressed="${s.laps === n}" onclick="tp.setLaps(${i},${n})">${n}周</button>`).join('')}</div></div>
+            ${s.linked && s.notice ? `<div class="tp-field"><span>先生のお知らせ</span><small>範囲・提出物を${s.noticeN || 0}件読み取りました。計画をつくったあと、やるものをえらべます</small></div>` : ''}${s.linked && !s.notice ? `<div class="tp-field"><span>先生が登録した範囲</span>${s.examRanges.length ? `<div class="tp-exranges">${s.examRanges.map(t => `<span>${esc(t)}</span>`).join('')}</div>` : '<small>まだ範囲は登録されていません。入ると自動で反映されます</small>'}</div>` : ''}
+            <label class="tp-field"><span>${s.linked ? '自分で追加する範囲（1行に1つ）' : 'テスト範囲（1行に1つ）'}</span><textarea rows="${s.linked ? 3 : 4}" data-i="${i}" data-k="rangesText" placeholder="ワーク p10〜20&#10;教科書 第3章 45分&#10;単語帳 Unit5">${esc(s.rangesText)}</textarea><small>「p10〜20」のようにページを書くと、日ごとに区切って割り振ります（1ページ3分で計算）。行末に「45分」で時間を指定できます</small></label></section>`).join('')}
+          ${d.subjects.length ? `<label class="tp-check"><input type="checkbox" id="tp-f-cal" ${d.calOn ? 'checked' : ''}><span class="tp-box"></span><span>テスト日をカレンダーにも入れる</span></label>` : ''}
+          <div class="tp-actions"><button type="button" class="tp-btn is-primary is-lg" onclick="tp.savePlan()"><i data-lucide="check"></i>${d.id ? '保存する' : '計画をつくる'}</button></div></div>`;
+    }
+    function onInput(e) {
+        const el = e.target; if (!el || view.name !== 'edit' || !view.draft) return;
+        const d = view.draft;
+        if (el.id === 'tp-f-title') d.title = el.value; else if (el.id === 'tp-f-daily') d.dailyMin = Number(el.value); else if (el.id === 'tp-f-cal') d.calOn = el.checked;
+        else if (el.dataset && el.dataset.i != null) { const s = d.subjects[Number(el.dataset.i)]; if (s) s[el.dataset.k] = el.value; }
+    }
+    function savePlan() {
+        const d = view.draft; if (!d) return;
+        const title = (d.title || '').trim() || 'テスト計画';
+        if (!d.subjects.length) { showToast('受ける教科を1つ以上えらんでください'); return; }
+        const bad = d.subjects.find(s => !isDate(s.date)); if (bad) { showToast(bad.name + 'のテスト日を入れてください'); return; }
+        const old = d.id ? findPlan(d.id) : null; setRates({ rates: d.rates });
+        const subjects = d.subjects.map(s => {
+            const o = old && old.subjects.find(x => x.id === s.sid), oldR = (o && o.ranges) || [];
+            const max = Number(s.max) > 0 ? Number(s.max) : 100, tg = s.target === '' || s.target == null ? null : Math.min(max, Math.max(0, Number(s.target)));
+            if (noticeLike(s.rangesText)) { s.pasted = ((s.pasted ? s.pasted + '\n' : '') + s.rangesText).slice(0, 6000); s.rangesText = ''; }
+            const ranges = [];
+            (s.examRanges || []).forEach(line => { const pr = parseRangeLine(line); if (!pr) return; const r = mkRange(line, 'exam', oldR.find(x => x.src === 'exam' && x.text === pr.text)); if (r) ranges.push(r); });
+            splitRanges(s.rangesText).slice(0, 40).forEach(line => { const pr = parseRangeLine(line); if (!pr) return; const r = mkRange(line, undefined, oldR.find(x => x.src !== 'exam' && x.text === pr.text)); if (r) ranges.push(r); });
+            const ns = { id: s.sid, name: s.name, date: s.date, target: tg, max, score: o ? o.score : null, laps: Math.min(5, Math.max(1, Number(s.laps) || 1)), linked: !!s.linked, noticeExam: s.notice || '', pasted: s.pasted || '', off: (s.off || []).slice(), ranges: ranges.concat(oldR.filter(r => r.src === 'notice')).slice(0, 80) };
+            applyNotice(ns); return ns;
+        });
+        const plan = { id: d.id || uid('tp'), examId: d.examId || null, title: title.slice(0, 40), createdAt: d.createdAt || today(), dailyMin: Number(d.dailyMin) || 90, calOn: d.calOn !== false, defaultLaps: d.defaultLaps || 2, rates: Object.assign({}, RATE_DEF, d.rates || {}), subjects, updatedAt: new Date().toISOString() };
+        const arr = load(), i = arr.findIndex(p => p.id === plan.id);
+        if (i >= 0) arr[i] = plan; else arr.push(plan);
+        save(arr); syncCalendar(plan);
+        view = { name: 'detail', id: plan.id, tab: 'sched', draft: null, showAllDays: false };
+        render(); showToast('テスト計画を保存しました');
+    }
+    function mutate(pid, fn) { const arr = load(), p = arr.find(x => x.id === pid); if (!p) return null; setRates(p); fn(p); p.updatedAt = new Date().toISOString(); save(arr); try { syncCalendar(p); } catch (e) {} return p; }
+    const findR = (p, sid, rid) => { const s = p.subjects.find(x => x.id === sid); return { s, r: s && (s.ranges || []).find(x => x.id === rid) }; };
+
+    /* ---------- 入口（マイページ・カレンダー） ---------- */
+    function renderMyPageCard() {
+        const pend = pendingExams();
+        const plans = load().filter(p => nextTestDate(p)).sort((a, b) => nextTestDate(a) < nextTestDate(b) ? -1 : 1), p = plans[0];
+        const bn = $('tp-cal-sub'); if (bn) bn.textContent = pend.length ? 'テスト範囲が登録されています' : '範囲・目標点・進み具合';
+        const dot = $('tp-cal-dot'); if (dot) dot.classList.add('hidden');
+        const cb = $('tp-calbanner'); if (cb) cb.style.display = (pend.length || load().length) ? '' : 'none';
+        const el = $('mypage-testplan-card'); if (!el) return;
+        const pendNote = '';
+        if (!p && !pend.length) el.innerHTML = '';
+        else if (!p) el.innerHTML = `<button type="button" onclick="tp.open()" class="tp-mycard is-empty"><i data-lucide="clipboard-list"></i><span><b>テスト計画${pendNote}</b><small>${pend.length ? esc(pend[0].name || 'テスト') + ' の範囲が登録されています' : ''}</small></span><i data-lucide="chevron-right"></i></button>`;
+        else {
+            const st = planStats(p), n = diff(nextTestDate(p), today());
+            el.innerHTML = `<button type="button" onclick="tp.open('${p.id}')" class="tp-mycard"><span class="tp-mycount"><b>${n > 0 ? n : 0}</b>日</span><span class="tp-mytext"><b>${esc(p.title)}${pendNote}</b><small>${n > 0 ? 'テストまで' : '今日がテスト'}・${st.done}/${st.total} 回（${st.pct}%）</small><span class="tp-bar"><i style="width:${st.pct}%"></i></span></span><i data-lucide="chevron-right"></i></button>`;
+        }
+        try { if (typeof lucide !== 'undefined') lucide.createIcons(); } catch (e) {}
+    }
+
+    /* ---------- 公開する操作 ---------- */
+    const reset = (o) => { view = Object.assign({ name: 'list', id: null, tab: 'sched', draft: null, showAllDays: false }, o); render(); const r = $('tp-root'); if (r) r.scrollTop = 0; };
+    window.tp = {
+        open, close, go, render, renderMyPageCard, load, buildSchedule, parseRangeLine, extractNotice, noticeLike, chunksOf, syncAll, pendingExams, examSubjects,
+        openPlan: (id) => reset({ name: 'detail', id }),
+        newPlan: () => reset({ name: 'edit', draft: { id: null, examId: null, title: '', dailyMin: 90, calOn: true, createdAt: today(), defaultLaps: 2, subjects: [] } }),
+        fromExam: (exid) => { const ex = exams().find(e => String(e.id) === String(exid)); if (!ex) { showToast('テストが見つかりません'); return; } reset({ name: 'edit', draft: fromExamDraft(ex) }); },
+        editPlan: (id) => { const p = findPlan(id); if (!p) return; reset({ name: 'edit', id, tab: view.tab, draft: toDraft(p) }); },
+        tab: (k) => { view.tab = k; render(); },
+        more: () => { view.showAllDays = true; render(); },
+        extractNotice, noticeLike,
+        pick: (name) => {
+            const d = view.draft; if (!d) return; const i = d.subjects.findIndex(s => s.name === name);
+            if (i >= 0) d.subjects.splice(i, 1); else { const first = d.subjects.find(s => isDate(s.date)); const b = blankSubject(name, first ? first.date : ''); b.laps = d.defaultLaps || 2; d.subjects.push(b); }
+            render();
+        },
+        pickNew: () => { const el = $('tp-f-new'), n = el && el.value.trim(); if (!n) return; const d = view.draft; if (!d.subjects.some(s => s.name === n)) { const first = d.subjects.find(s => isDate(s.date)); const b = blankSubject(n, first ? first.date : ''); b.laps = d.defaultLaps || 2; d.subjects.push(b); } render(); },
+        setAllLaps: (n) => { const d = view.draft; if (!d) return; d.defaultLaps = n; d.subjects.forEach(s => { s.laps = n; }); render(); },
+        setLaps: (i, n) => { const d = view.draft; if (d && d.subjects[i]) { d.subjects[i].laps = n; render(); } },
+        savePlan,
+        laps: (pid, sid, dlt) => { mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (s) s.laps = Math.min(5, Math.max(1, lapsOf(s) + dlt)); }); render(); },
+        toggleKeys: (pid, sid, rid, keys, on) => {
+            mutate(pid, p => { const { r } = findR(p, sid, rid); if (!r) return; const ks = keysOf(r), set = new Set(ks); p.log = p.log || {}; keys.split(',').forEach(k => { on ? set.add(k) : set.delete(k); const fk = sid + '|' + rid + '|' + k; if (on) p.log[fk] = today(); else { delete p.log[fk]; if (p.moves) delete p.moves[fk]; } }); r.keys = [...set]; r.done = false; }); render(); if (!on) showToast('チェックをもどしました');
+        },
+        toggleLap: (pid, sid, rid, lap) => {
+            mutate(pid, p => { const { r } = findR(p, sid, rid); if (!r) return; const ch = chunksOf(r), ks = new Set(keysOf(r)), all = ch.every(c => ks.has(lap + ':' + c.ci)); p.log = p.log || {}; ch.forEach(c => { const k = lap + ':' + c.ci, fk = sid + '|' + rid + '|' + k; if (all) { ks.delete(k); delete p.log[fk]; } else { ks.add(k); p.log[fk] = p.log[fk] || today(); } }); r.keys = [...ks]; r.done = false; }); render();
+        },
+        addRange: (pid, sid) => {
+            const el = $('tp-add-' + sid);
+            if (el && noticeLike(el.value)) { mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (s) { s.pasted = ((s.pasted ? s.pasted + '\n' : '') + el.value).slice(0, 6000); applyNotice(s); } }); showToast('お知らせから範囲を読み取りました'); render(); return; }
+            const rs = splitRanges(el ? el.value : '').map(l => mkRange(l)).filter(Boolean); if (!rs.length) return;
+            mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (s) s.ranges = (s.ranges || []).concat(rs).slice(0, 60); }); render();
+        },
+        rate: (pid, k, dv) => { mutate(pid, p => { p.rates = Object.assign({}, RATE_DEF, p.rates || {}); p.rates[k] = Math.min(60, Math.max(1, (p.rates[k] || RATE_DEF[k]) + dv)); setRates(p); p.subjects.forEach(s => { (s.ranges || []).forEach(r => { if (r.src === 'notice') r.min = -1; }); applyNotice(s); }); }); syncCalendarById(pid); render(); },
+        remind: (pid, v) => { mutate(pid, p => { p.remindAt = v; }); if (v && 'Notification' in window && Notification.permission !== 'granted' && typeof requestScheduleNotifyPermission === 'function') requestScheduleNotifyPermission(); else showToast(v ? '毎日のお知らせを変えました' : '毎日のお知らせを止めました'); render(); },
+        pickCand: (pid, sid, cid, on) => { mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (!s) return; const off = new Set(s.off || []); if (on) off.delete(cid); else off.add(cid); s.off = [...off]; applyNotice(s); }); render(); },
+        pickAll: (pid, sid, on) => { mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (!s) return; s.off = on ? [] : candidatesOf(s).map(c => c.id); applyNotice(s); }); render(); },
+        paste: (pid, sid) => {
+            const el = $('tp-paste-' + sid), v = el ? el.value : ''; if (!noticeLike(v)) { showToast('範囲や提出物が見つかりませんでした。「1 教科書」のような見出しつきで貼ってください'); return; }
+            mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (s) { s.pasted = v.slice(0, 6000); applyNotice(s); } }); showToast('範囲・提出物を読み取りました'); render();
+        },
+        clearPaste: (pid, sid) => { mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (s) { s.pasted = ''; applyNotice(s); } }); render(); },
+        move: (pid, sid, fkeys, date) => {
+            if (!date) { render(); return; }
+            mutate(pid, p => { p.moves = p.moves || {}; fkeys.split(',').forEach(fk => { if (date === 'auto') delete p.moves[fk]; else p.moves[fk] = date; }); });
+            showToast(date === 'auto' ? '自動の割り振りにもどしました' : fmtMD(date) + 'に変更しました'); render();
+        },
+        delRange: (pid, sid, rid) => { mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (s) s.ranges = s.ranges.filter(r => r.id !== rid); }); render(); },
+        score: (pid, sid, v) => { mutate(pid, p => { const s = p.subjects.find(x => x.id === sid); if (s) s.score = v === '' ? null : Math.min(Number(s.max || 100), Math.max(0, Number(v))); }); render(); },
+        delPlan: (pid) => {
+            if (!confirm('この計画を削除しますか？（カレンダーに入れたテスト日も消えます）')) return;
+            const p = findPlan(pid); save(load().filter(x => x.id !== pid)); if (p) syncCalendar(p, true);
+            reset({}); showToast('削除しました');
+        },
+    };
+    (function hook() {
+        const h = window.hideAllPanels;
+        if (typeof h === 'function' && !h.__tp) { const w = function () { const r = $('tp-root'); if (r && !r.classList.contains('hidden')) { r.classList.add('hidden'); document.documentElement.classList.remove('tp-open'); } return h.apply(this, arguments); }; w.__tp = 1; window.hideAllPanels = w; }
+        // 開発者が期間限定のテストを入れた・変えたとき（テスト一覧が更新されるとき）に、入口の表示と連動中の計画を更新する
+        const u = window.updateExamBoardEntry;
+        if (typeof u === 'function' && !u.__tp) { const w2 = function () { const r = u.apply(this, arguments); try { syncAll(); renderMyPageCard(); render(); } catch (e) {} return r; }; w2.__tp = 1; window.updateExamBoardEntry = w2; }
+        window.addEventListener('popstate', () => { const r = $('tp-root'); if (r && !r.classList.contains('hidden')) close(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const r = $('tp-root'); if (r && !r.classList.contains('hidden')) close(); } });
+        window.addEventListener('app-cloud-key-updated', (e) => { if (e && e.detail && e.detail.key === KEY) { render(); renderMyPageCard(); } });
+        window.addEventListener('app-cloud-data-loaded', () => { render(); renderMyPageCard(); });
+        if (document.readyState !== 'loading') renderMyPageCard(); else document.addEventListener('DOMContentLoaded', renderMyPageCard);
+    })();
+})();
+</script>
 </body>
 </html>
