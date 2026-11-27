@@ -4359,6 +4359,19 @@ window.pmReloadWithSkeleton = function () {
             </div>
         </section>
 
+        <section data-dev-panel="health" class="dev-panel hidden">
+            <div data-dev-panel-head></div>
+            <div class="dev-card">
+                <div id="dev-section-content-health" class="space-y-3">
+                    <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">Workerが、日本時間の 6・12・18・21時に自動で点検した結果です（利用者には見えません）。異常があると、いつものセキュリティ日報にも「要確認」で届きます。「いま点検する」で、その場でもう一度ぜんぶ調べられます。</p>
+                    <button id="health-run-btn" type="button" onclick="healthLoad(true)" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-lg text-xs font-black hover:opacity-90 transition-all">いま点検する</button>
+                    <div id="health-summary"></div>
+                    <div id="health-result" class="space-y-5"></div>
+                    <p class="text-[10px] text-slate-400 leading-relaxed">見ているもの：1分ごとの確認(Cron)・通知の予約と失敗・D1の容量・OneSignalの配信・サイトが開けるか・Firestoreのルール・公開ページへの鍵の混入・公式アカウントの増減・外部ライブラリの版・Firebaseの使用量。バックアップ、請求や支払い、iPhone実機での通知の確認は、自動では見られません。</p>
+                </div>
+            </div>
+        </section>
+
         <section data-dev-panel="protect" class="dev-panel hidden">
             <div data-dev-panel-head></div>
             <div class="dev-card">
@@ -24119,6 +24132,7 @@ async function devAutoEnter() {
             { key: 'usage',       icon: 'activity',         label: '利用状況',            group: '状況の確認',       desc: 'その日に何人が使ったか、どのページ・機能が使われたかを確認します。', short: '人数・ページ・機能' },
             { key: 'accesslog',   icon: 'list-checks',      label: 'アクセスログ',        group: '状況の確認',       desc: 'いつ・誰が・どの画面や機能を使ったかを、IPアドレスや端末の情報つきで確認します。', short: '日時・IP・端末' },
             { key: 'feedback',    icon: 'message-circle',   label: 'フィードバック',      group: '状況の確認',       desc: '利用者から届いた不具合・デザイン・要望と、AIが作った編集案を確認します。', short: '報告・AIの編集案' },
+            { key: 'health',      icon: 'heart-pulse',      label: '運営点検',            group: '状況の確認',       desc: '通知が止まっていないか、ルールが開いていないかなどを、自動で点検した結果です。', short: '動作・通知・安全の自動点検' },
             { key: 'users',       icon: 'users-round',      label: 'ユーザー・公式マーク', group: 'ユーザー・安全',   desc: 'アカウント数の確認と、公式マークのオン・オフができます。', short: '人数・公式マーク' },
             { key: 'secmon',      icon: 'shield-alert',     label: 'セキュリティ監視',    group: 'ユーザー・安全',   desc: '危ない設定や不審なアクセスがないかを診断します。', short: '診断・不審なアクセス' },
             { key: 'protect',     icon: 'lock',             label: '公開の制限',          group: 'ユーザー・安全',   desc: '限定データの移行と、ワンタイムコードの発行です。', short: '限定データ・ワンタイムコード' },
@@ -25181,6 +25195,8 @@ function devRestorePrev() {
         devDrawerClose();
         const cur = devPageCurrent;
         document.querySelectorAll('#dev-drawer .dev-menu-card').forEach(b => b.classList.toggle('is-current', b.getAttribute('onclick') === "devPageShow('" + cur + "')"));
+        if (cur === 'health') { try { healthLoad(false); } catch (e) {} }
+        if (cur === 'home' && !window._devHealthAuto && devUnlocked) { window._devHealthAuto = 1; setTimeout(() => { try { healthLoad(false); } catch (e) {} }, 1500); }
         if (cur === 'home') { devPendingRender(); devHomeAi(); devHomeSpark(); devHomeTick(true); if (!window._devSecAuto && devUnlocked) { window._devSecAuto = 1; setTimeout(() => { try { secmonRun(); } catch (e) {} }, 900); } }
         if (gh) setTimeout(() => { const c = document.getElementById('dev-github-card'); if (c) c.scrollIntoView({ block: 'start', behavior: 'smooth' }); }, 60);
     };
@@ -25228,6 +25244,7 @@ function devLampsRender() {
         ['GitHub', gh ? '接続中' : '未接続', gh ? 'ok' : 'warn', "devPageShow('github')"],
         ['公開', d == null ? '未取得' : d.length ? '未公開 ' + d.length + '件' : '最新', d && !d.length ? 'ok' : 'warn', "devPageShow('home')"],
         ['セキュリティ', SEC[0], SEC[1], "devPageShow('secmon')"],
+        ['運営点検', healthLamp()[0], healthLamp()[1], "devPageShow('health')"],
         ['AI利用', a ? (a.max > a.lim * 2 ? '過剰' : a.max > a.lim ? '上限超え' : '正常') : '-', a ? (a.max > a.lim * 2 ? 'bad' : a.max > a.lim ? 'warn' : 'ok') : 'warn', "devPageShow('limit')"]
     ];
     devSetIf(document.getElementById('dev-lamps'), L.map(x => '<button type="button" class="dev-lamp is-' + x[2] + '" onclick="' + x[3] + '"><i></i><span>' + x[0] + '</span><b>' + x[1] + '</b></button>').join(''));
@@ -27265,6 +27282,96 @@ async function devUsageLoadTrend(selected) {
             if (!res.ok) throw fail('error', 'Workerの応答がおかしいです（' + res.status + '）');
             return res.json();
         }
+        // ---- 運営点検（Workerの /admin/health の結果を見せる）----
+        const HEALTH_PILL = {
+            ok: ['正常', SECMON_PILL.ok[1]], warn: ['注意', SECMON_PILL.warn[1]], bad: ['異常', SECMON_PILL.bad[1]], info: ['お知らせ', SECMON_PILL.info[1]],
+        };
+        const HEALTH_ORDER = { bad: 0, warn: 1, info: 2, ok: 3 };
+        let _healthState = null, _healthBusy = false, _healthAt = 0;
+        async function healthFetch(run) {
+            const base = (typeof PM_REPORT_URL !== 'undefined' ? PM_REPORT_URL : '').replace(/\/report$/, '');
+            if (!base) throw new Error('WorkerのURLが分かりません');
+            const token = await window.AppFirebase.getIdToken();
+            if (!token) throw new Error('ログインしていません');
+            let res;
+            try { res = await fetch(base + '/admin/health' + (run ? '?run=1' : ''), { headers: { Authorization: 'Bearer ' + token }, cache: 'no-store' }); }
+            catch (e) { throw new Error('Workerに届きませんでした（Workerが古い版のままか、通信できていません）'); }
+            if (res.status === 404 || res.status === 405) throw new Error('Workerが古い版のままです（最新の worker.js に置き換えてください）');
+            if (res.status === 401 || res.status === 403) throw new Error('Workerが、公式アカウントとして確認できませんでした');
+            if (res.status === 429) throw new Error('短い間に押しすぎました。少し待ってからもう一度お試しください');
+            if (res.status === 500) { let j = null; try { j = await res.json(); } catch (_) {} throw new Error(j && j.error === 'db-not-bound' ? 'D1データベースが結びつけられていません' : 'Workerでエラーが起きました'); }
+            if (!res.ok) throw new Error('Workerの応答がおかしいです（' + res.status + '）');
+            return res.json();
+        }
+        function healthTime(t) {
+            if (!t) return '';
+            return new Date(t).toLocaleString('ja-JP', { timeZone: 'Asia/Tokyo', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false });
+        }
+        function healthAgo(t) {
+            const m = Math.max(0, Math.round((Date.now() - t) / 60000));
+            return m < 1 ? 'いま' : m < 60 ? m + '分前' : m < 1440 ? Math.floor(m / 60) + '時間前' : Math.floor(m / 1440) + '日前';
+        }
+        function healthCounts() {
+            const it = (_healthState && _healthState.items) || [];
+            return { bad: it.filter(x => x.level === 'bad').length, warn: it.filter(x => x.level === 'warn').length, n: it.length };
+        }
+        function healthRow(it) {
+            const [label, cls] = HEALTH_PILL[it.level] || HEALTH_PILL.info;
+            const strip = { bad: 'border-l-rose-400', warn: 'border-l-amber-400', ok: 'border-l-emerald-400', info: 'border-l-slate-300 dark:border-l-slate-600' }[it.level] || 'border-l-slate-300';
+            const hot = it.level === 'bad' || it.level === 'warn';
+            return `<div class="bg-white dark:bg-[#0c1220]/95 border border-slate-200 dark:border-slate-800 border-l-4 ${strip} rounded-xl p-3 space-y-1">
+                <div class="flex items-start gap-2"><span class="shrink-0 text-[10px] font-black px-2 py-0.5 rounded-full ${cls}">${label}</span><p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${escapeHtml(it.title)}</p></div>
+                ${it.detail ? `<p class="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed whitespace-pre-wrap">${escapeHtml(it.detail)}</p>` : ''}
+                ${it.fix ? `<p class="text-[11px] ${hot ? 'font-bold text-blue-600 dark:text-cyan-400' : 'text-slate-500 dark:text-slate-400'} leading-relaxed">${hot ? '対処' : 'メモ'}：${escapeHtml(it.fix)}</p>` : ''}
+                <p class="text-[10px] text-slate-400">確認：${escapeHtml(healthTime(it.t))}（${escapeHtml(healthAgo(it.t))}）</p>
+            </div>`;
+        }
+        function healthRender(errMsg) {
+            const sum = document.getElementById('health-summary'), out = document.getElementById('health-result');
+            if (!sum || !out) return;
+            const btn = document.getElementById('health-run-btn');
+            if (btn) { btn.disabled = _healthBusy; btn.textContent = _healthBusy ? '点検しています…（10〜20秒ほどかかります）' : 'いま点検する'; }
+            if (errMsg) {
+                sum.innerHTML = `<div class="dev-verdict is-warn"><b>取得できませんでした</b><span>${escapeHtml(errMsg)}</span></div>`;
+                out.innerHTML = ''; return;
+            }
+            if (!_healthState) { sum.innerHTML = _healthBusy ? '' : '<div class="dev-verdict is-warn"><b>まだ点検していません</b><span>「いま点検する」を押してください</span></div>'; out.innerHTML = ''; return; }
+            const c = healthCounts();
+            const st = c.bad ? 'bad' : c.warn ? 'warn' : 'ok';
+            const head = c.bad ? '異常 ' + c.bad + '件' : c.warn ? '要確認 ' + c.warn + '件' : '異常なし';
+            const tip = c.bad ? 'すぐに確認してください。下の「対処」を見てください' : c.warn ? '時間のあるときに確認してください' : 'いま点検した項目に、問題は見つかりませんでした';
+            sum.innerHTML = `<div class="dev-verdict is-${st}"><b>${head}</b><span>${tip}　最終点検 ${escapeHtml(healthTime(_healthState.at))}（${escapeHtml(healthAgo(_healthState.at))}）／${c.n}項目</span></div>`;
+            const groups = ['動いているか', '安全', '週に1回'], bars = { '動いているか': 'bg-cyan-500', '安全': 'bg-emerald-500', '週に1回': 'bg-slate-400' };
+            const items = _healthState.items.slice();
+            const known = new Set(groups);
+            items.forEach(x => { if (!known.has(x.g)) { known.add(x.g); groups.push(x.g); } });
+            out.innerHTML = groups.map(g => {
+                const list = items.filter(x => x.g === g).sort((a, b) => (HEALTH_ORDER[a.level] ?? 9) - (HEALTH_ORDER[b.level] ?? 9));
+                if (!list.length) return '';
+                return `<div class="space-y-3"><div class="flex items-center gap-2"><span class="w-1 h-4 rounded-full ${bars[g] || 'bg-slate-400'}"></span><span class="text-sm font-black text-slate-800 dark:text-white">${escapeHtml(g)}</span><span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">${list.length}</span></div><div class="space-y-2">${list.map(healthRow).join('')}</div></div>`;
+            }).join('');
+        }
+        function healthLamp() {   // 開発者ホームのランプ用
+            if (window._devHealthErr) return ['取得不可', 'warn'];
+            if (!_healthState) return ['未取得', 'warn'];
+            const c = healthCounts();
+            return c.bad ? ['異常 ' + c.bad + '件', 'bad'] : c.warn ? ['注意 ' + c.warn + '件', 'warn'] : ['正常', 'ok'];
+        }
+        async function healthLoad(run) {
+            if (_healthBusy) return;
+            if (!run && _healthState && Date.now() - _healthAt < 30000) { healthRender(); return; }
+            _healthBusy = true; healthRender();
+            try {
+                const j = await healthFetch(!!run);
+                _healthState = j; _healthAt = Date.now(); window._devHealthErr = false;
+                _healthBusy = false; healthRender();
+            } catch (e) {
+                window._devHealthErr = true;
+                _healthBusy = false; healthRender(String((e && e.message) || e));
+            }
+            if (typeof devLampsRender === 'function') { try { devLampsRender(); } catch (_) {} }
+        }
+
         function secmonDays(n) {
             const out = [], base = Date.now() + 9 * 3600 * 1000;
             for (let i = n - 1; i >= 0; i--) out.push(new Date(base - i * 86400000).toISOString().slice(0, 10));
