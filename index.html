@@ -4344,7 +4344,7 @@ window.pmReloadWithSkeleton = function () {
             <div data-dev-panel-head></div>
             <div class="dev-card">
                     <div id="dev-section-content-secmon" class="space-y-3">
-                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">「どこが危ないか」「攻撃されていないか」を調べる、開発者だけの画面です（利用者には見えません）。押すたびに、いまの状態を調べ直します。</p>
+                        <p class="text-[10px] text-slate-500 dark:text-slate-400 leading-relaxed">利用者には見えない、開発者だけの画面です。押すたびに、いまの状態を調べ直します。結果は、いますぐやること・危ない所・不審な動きの順に並びます。</p>
                         <button id="secmon-run-btn" onclick="secmonRun()" class="w-full py-2.5 bg-gradient-to-r from-cyan-500 via-blue-500 to-violet-500 text-white rounded-lg text-xs font-black hover:opacity-90 transition-all">診断する</button>
                         <div id="secmon-summary"></div>
                         <div id="secmon-tools" style="display:none" class="flex flex-wrap items-center gap-3">
@@ -6384,29 +6384,29 @@ window.pmReloadWithSkeleton = function () {
                         try {
                             await fn();
                             if (undo) { try { await undo(); } catch (_) {} }
-                            results.push({ level: bad, title, detail: '第三者にもできてしまいます（' + danger + '）', fix });
+                            results.push({ level: bad, title, detail: '第三者にもできてしまう状態です（' + danger + '）', fix });
                         } catch (e) {
-                            if (e && e.code === 'permission-denied') results.push({ level: 'ok', title, detail: '第三者には拒否されます' });
+                            if (e && e.code === 'permission-denied') results.push({ level: 'ok', title, detail: '第三者には拒否されます（安全）' });
                             else results.push({ level: 'warn', title, detail: '確認できませんでした（' + ((e && (e.code || e.message)) || '不明') + '）' });
                         }
                     };
                     const rulesFix = 'Firestoreのルールを、firestore.rules の最新版に貼り替えて「公開」してください';
-                    await check('公式の確認用の書類（private/invite）を読める？', '公式アカウントの確認が盗まれる', () => getDoc(doc(d2, 'private', 'invite')), rulesFix);
-                    await check('ワンタイムコードを読める？', 'コードが盗まれる', () => getDoc(doc(d2, 'inviteCodes', uid)), rulesFix);
-                    await check('ワンタイムコードの依頼の一覧を読める？', '依頼した人の名前が分かる', () => getDocs(collection(d2, 'inviteRequests')), rulesFix);
-                    await check('限定データ（クラス・学校の予定）を読める？', '限定の内容が外に出る', () => getDocs(collection(d2, 'protected')), rulesFix);
-                    await check('限定セクション（英コ・論表）を読める？', '限定の内容が外に出る', () => getDocs(collection(d2, 'protected_sections')), rulesFix);
-                    await check('限定の写真を読める？', '教材の写真が外に出る', () => getDocs(collection(d2, 'protected_images')), rulesFix);
-                    await check('認められた人の一覧を読める？', '利用者の情報が分かる', () => getDocs(collection(d2, 'members')), rulesFix);
-                    await check('AIの訂正記録を読める？', '問題の内容が外に出る', () => getDocs(collection(d2, 'protected_corrections')), rulesFix);
-                    await check('セキュリティの記録を読める？', '攻撃の手がかりが相手に伝わる', () => getDocs(collection(d2, 'security_events')), rulesFix);
-                    await check('利用状況の記録を読める？', '利用者の動き（いつ・どれくらい使われているか）が外に出る', () => getDocs(query(collection(d2, 'usage_visits'), limit(1))), rulesFix);
-                    await check('他の人の学習記録を読める？', '個人の学習データが盗まれる', () => getDoc(doc(d2, 'users', me, 'appData', 'pm_study_logs')), rulesFix);
-                    await check('間違ったコードで、仲間に入れる？', 'コードなしで限定の内容が見られる', () => setDoc(doc(d2, 'members', uid), { code: '__probe_wrong_code__' }), rulesFix, () => deleteDoc(doc(d2, 'members', uid)));
-                    await check('自分を公式アカウントにできる？', '誰でも開発者になれてしまう（最も危険）', () => setDoc(doc(d2, 'publicProfiles', uid), { uid, nickname: 'probe', isOfficial: true }), rulesFix, () => deleteDoc(doc(d2, 'publicProfiles', uid)));
-                    await check('限定データを書き換えられる？', '教材の内容を改ざんされる', () => setDoc(doc(d2, 'protected', 'probe_doc'), { json: 'null' }), rulesFix, () => deleteDoc(doc(d2, 'protected', 'probe_doc')));
-                    await check('セキュリティの記録を偽造できる？', '攻撃の形跡を隠される・偽の警告を出される', () => setDoc(doc(d2, 'security_events', 'probe_doc'), { t: 'x' }), rulesFix, () => deleteDoc(doc(d2, 'security_events', 'probe_doc')));
-                    await check('ゲスト（匿名）でも、投稿を書き込める？', '荒らし・宣伝の書き込みに使われる恐れ', () => setDoc(doc(d2, 'posts', 'probe_doc'), { uid, text: 'probe', createdAt: serverTimestamp() }), rulesFix, () => deleteDoc(doc(d2, 'posts', 'probe_doc')), 'warn');
+                    await check('公式の確認用の書類（private/invite）の読み取り', '公式アカウントの確認が盗まれる', () => getDoc(doc(d2, 'private', 'invite')), rulesFix);
+                    await check('ワンタイムコードの読み取り', 'コードが盗まれる', () => getDoc(doc(d2, 'inviteCodes', uid)), rulesFix);
+                    await check('ワンタイムコードの依頼の一覧の読み取り', '依頼した人の名前が分かる', () => getDocs(collection(d2, 'inviteRequests')), rulesFix);
+                    await check('限定データ（クラス・学校の予定）の読み取り', '限定の内容が外に出る', () => getDocs(collection(d2, 'protected')), rulesFix);
+                    await check('限定セクション（英コ・論表）の読み取り', '限定の内容が外に出る', () => getDocs(collection(d2, 'protected_sections')), rulesFix);
+                    await check('限定の写真の読み取り', '教材の写真が外に出る', () => getDocs(collection(d2, 'protected_images')), rulesFix);
+                    await check('認められた人の一覧の読み取り', '利用者の情報が分かる', () => getDocs(collection(d2, 'members')), rulesFix);
+                    await check('AIの訂正記録の読み取り', '問題の内容が外に出る', () => getDocs(collection(d2, 'protected_corrections')), rulesFix);
+                    await check('セキュリティの記録の読み取り', '攻撃の手がかりが相手に伝わる', () => getDocs(collection(d2, 'security_events')), rulesFix);
+                    await check('利用状況の記録の読み取り', '利用者の動き（いつ・どれくらい使われているか）が外に出る', () => getDocs(query(collection(d2, 'usage_visits'), limit(1))), rulesFix);
+                    await check('他の人の学習記録の読み取り', '個人の学習データが盗まれる', () => getDoc(doc(d2, 'users', me, 'appData', 'pm_study_logs')), rulesFix);
+                    await check('間違ったコードでの仲間入り', 'コードなしで限定の内容が見られる', () => setDoc(doc(d2, 'members', uid), { code: '__probe_wrong_code__' }), rulesFix, () => deleteDoc(doc(d2, 'members', uid)));
+                    await check('自分を公式アカウントにする操作', '誰でも開発者になれてしまう（最も危険）', () => setDoc(doc(d2, 'publicProfiles', uid), { uid, nickname: 'probe', isOfficial: true }), rulesFix, () => deleteDoc(doc(d2, 'publicProfiles', uid)));
+                    await check('限定データの書き換え', '教材の内容を改ざんされる', () => setDoc(doc(d2, 'protected', 'probe_doc'), { json: 'null' }), rulesFix, () => deleteDoc(doc(d2, 'protected', 'probe_doc')));
+                    await check('セキュリティの記録の偽造', '攻撃の形跡を隠される・偽の警告を出される', () => setDoc(doc(d2, 'security_events', 'probe_doc'), { t: 'x' }), rulesFix, () => deleteDoc(doc(d2, 'security_events', 'probe_doc')));
+                    await check('ゲスト（匿名）による投稿の書き込み', '荒らし・宣伝の書き込みに使われる恐れ', () => setDoc(doc(d2, 'posts', 'probe_doc'), { uid, text: 'probe', createdAt: serverTimestamp() }), rulesFix, () => deleteDoc(doc(d2, 'posts', 'probe_doc')), 'warn');
                 } finally {
                     try { if (cred) await deleteUser(cred.user); } catch (_) {}
                     try { await signOut(getAuth(app2)); } catch (_) {}
@@ -24114,7 +24114,7 @@ async function devAutoEnter() {
             } catch (e) {
                 console.error('toggle official error', e);
                 const msg = (e && e.code === 'permission-denied')
-                    ? 'この操作を行う権限がありません（あなたのFirebaseアカウントがadminsコレクションに登録されているか確認してください）'
+                    ? 'この操作を行う権限がありません（あなたのFirebaseアカウントがadminsコレクションに登録されていることを確認してください）'
                     : '変更に失敗しました。時間をおいて再度お試しください';
                 showToast(msg);
             } finally {
@@ -24132,9 +24132,9 @@ async function devAutoEnter() {
             { key: 'usage',       icon: 'activity',         label: '利用状況',            group: '状況の確認',       desc: 'その日に何人が使ったか、どのページ・機能が使われたかを確認します。', short: '人数・ページ・機能' },
             { key: 'accesslog',   icon: 'list-checks',      label: 'アクセスログ',        group: '状況の確認',       desc: 'いつ・誰が・どの画面や機能を使ったかを、IPアドレスや端末の情報つきで確認します。', short: '日時・IP・端末' },
             { key: 'feedback',    icon: 'message-circle',   label: 'フィードバック',      group: '状況の確認',       desc: '利用者から届いた不具合・デザイン・要望と、AIが作った編集案を確認します。', short: '報告・AIの編集案' },
-            { key: 'health',      icon: 'heart-pulse',      label: '運営点検',            group: '状況の確認',       desc: '通知が止まっていないか、ルールが開いていないかなどを、自動で点検した結果です。', short: '動作・通知・安全の自動点検' },
+            { key: 'health',      icon: 'heart-pulse',      label: '運営点検',            group: '状況の確認',       desc: '通知の動作、ルールの状態、公開ページの安全性などを、自動で点検した結果です。', short: '動作・通知・安全の自動点検' },
             { key: 'users',       icon: 'users-round',      label: 'ユーザー・公式マーク', group: 'ユーザー・安全',   desc: 'アカウント数の確認と、公式マークのオン・オフができます。', short: '人数・公式マーク' },
-            { key: 'secmon',      icon: 'shield-alert',     label: 'セキュリティ監視',    group: 'ユーザー・安全',   desc: '危ない設定や不審なアクセスがないかを診断します。', short: '診断・不審なアクセス' },
+            { key: 'secmon',      icon: 'shield-alert',     label: 'セキュリティ監視',    group: 'ユーザー・安全',   desc: '危ない設定の洗い出しと、不審なアクセスの検出を行います。', short: '診断・不審なアクセス' },
             { key: 'protect',     icon: 'lock',             label: '公開の制限',          group: 'ユーザー・安全',   desc: '限定データの移行と、ワンタイムコードの発行です。', short: '限定データ・ワンタイムコード' },
             { key: 'limit',       icon: 'shield',           label: '利用制限',            group: 'ユーザー・安全',   desc: 'AI解析の1日あたりの回数制限を設定します。', short: '1日の回数・リセット' }
             ];
@@ -27238,6 +27238,29 @@ async function devUsageLoadTrend(selected) {
         };
         const SECMON_COMMON_CODES = ['123456', '1234567', '12345678', '123456789', '000000', '111111', 'password', 'qwerty', 'abc123'];
         const SECMON_ORDER = { bad: 0, warn: 1, info: 2, ok: 3 };
+        // ---- 点検・診断の見せ方（共通）：件数のチップ／いますぐやること／正常な項目はたたむ ----
+        function pmChips(c) {
+            const chip = (n, k, label) => n ? `<span class="text-[10px] font-black px-2 py-0.5 rounded-full ${SECMON_PILL[k][1]}">${label} ${n}</span>` : '';
+            return `<div class="flex flex-wrap gap-1.5 mt-2">${chip(c.bad, 'bad', '危険・異常')}${chip(c.warn, 'warn', '注意')}${chip(c.ok, 'ok', '正常')}${chip(c.info, 'info', '情報')}</div>`;
+        }
+        function pmCount(list) {
+            const c = { bad: 0, warn: 0, ok: 0, info: 0 };
+            list.forEach(x => { if (c[x.level] != null) c[x.level]++; });
+            return c;
+        }
+        function pmTodo(list) {
+            const todo = list.filter(x => (x.level === 'bad' || x.level === 'warn') && x.fix).sort((a, b) => (a.level === 'bad' ? 0 : 1) - (b.level === 'bad' ? 0 : 1));
+            if (!todo.length) return '';
+            const li = (x, i) => `<li class="flex gap-2"><span class="shrink-0 w-5 h-5 rounded-full ${x.level === 'bad' ? 'bg-rose-500' : 'bg-amber-500'} text-white text-[10px] font-black flex items-center justify-center mt-0.5">${i + 1}</span><div class="min-w-0"><p class="text-xs font-black text-slate-800 dark:text-white leading-snug">${escapeHtml(x.title)}</p><p class="text-[11px] text-blue-600 dark:text-cyan-400 font-bold leading-relaxed">${escapeHtml(x.fix)}</p></div></li>`;
+            return `<div class="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0c1220]/95 p-3 space-y-2.5"><p class="text-xs font-black text-slate-800 dark:text-white">いますぐやること（${todo.length} 件）</p><ol class="space-y-2.5">${todo.slice(0, 5).map(li).join('')}</ol>${todo.length > 5 ? `<p class="text-[10px] text-slate-400">ほか ${todo.length - 5} 件は、下の一覧に出ています</p>` : ''}</div>`;
+        }
+        // 問題のある項目は、そのまま並べる。正常な項目は、「見る」を押したときだけ開く
+        function pmFold(hot, oks, rowFn) {
+            let body = hot.map(rowFn).join('');
+            if (!hot.length && oks.length) body = '<p class="text-[11px] font-bold text-emerald-600 dark:text-emerald-400">問題は見つかりませんでした</p>';
+            if (oks.length) body += `<details class="secmon-details"><summary class="text-[11px] font-black text-slate-500 dark:text-slate-400 cursor-pointer select-none"><span class="secmon-open-label">正常な項目 ${oks.length} 件を見る</span><span class="secmon-close-label">正常な項目を閉じる</span></summary><div class="space-y-2 mt-2">${oks.map(rowFn).join('')}</div></details>`;
+            return body;
+        }
         function secmonRow(it) {
             const [label, cls] = SECMON_PILL[it.level] || SECMON_PILL.info;
             const strip = { bad: 'border-l-rose-400', warn: 'border-l-amber-400', ok: 'border-l-emerald-400', info: 'border-l-slate-300 dark:border-l-slate-600' }[it.level] || 'border-l-slate-300';
@@ -27251,9 +27274,10 @@ async function devUsageLoadTrend(selected) {
         function secmonSection(title, items, emptyText, opts) {
             opts = opts || {};
             const sorted = items.slice().sort((a, b) => (SECMON_ORDER[a.level] ?? 9) - (SECMON_ORDER[b.level] ?? 9));
+            const hot = sorted.filter(x => x.level !== 'ok'), oks = sorted.filter(x => x.level === 'ok');
             const head = `<span class="w-1 h-4 rounded-full ${opts.bar || 'bg-slate-400'}"></span><span class="text-sm font-black text-slate-800 dark:text-white">${escapeHtml(title)}</span><span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">${sorted.length}</span>`;
-            const body = sorted.length ? sorted.map(secmonRow).join('') : `<p class="text-[11px] text-slate-400">${escapeHtml(emptyText || '')}</p>`;
-            if (opts.collapsible) return `<details class="secmon-details"><summary class="flex items-center gap-2 cursor-pointer select-none">${head}<span class="ml-auto text-[10px] font-bold text-slate-400"><span class="secmon-open-label">開く</span><span class="secmon-close-label">閉じる</span></span></summary><div class="space-y-2 mt-3">${body}</div></details>`;
+            const body = sorted.length ? pmFold(hot, oks, secmonRow) : `<p class="text-[11px] text-slate-400">${escapeHtml(emptyText || '')}</p>`;
+            if (opts.collapsible) return `<details class="secmon-details"><summary class="flex items-center gap-2 cursor-pointer select-none">${head}<span class="ml-auto text-[10px] font-bold text-slate-400"><span class="secmon-open-label">開く</span><span class="secmon-close-label">閉じる</span></span></summary><div class="space-y-2 mt-3">${sorted.map(secmonRow).join('')}</div></details>`;
             return `<div class="space-y-3"><div class="flex items-center gap-2">${head}</div><div class="space-y-2">${body}</div></div>`;
         }
         async function secmonFetchWorker() {
@@ -27339,16 +27363,18 @@ async function devUsageLoadTrend(selected) {
             const c = healthCounts();
             const st = c.bad ? 'bad' : c.warn ? 'warn' : 'ok';
             const head = c.bad ? '異常 ' + c.bad + '件' : c.warn ? '要確認 ' + c.warn + '件' : '異常なし';
-            const tip = c.bad ? 'すぐに確認してください。下の「対処」を見てください' : c.warn ? '時間のあるときに確認してください' : 'いま点検した項目に、問題は見つかりませんでした';
-            sum.innerHTML = `<div class="dev-verdict is-${st}"><b>${head}</b><span>${tip}　最終点検 ${escapeHtml(healthTime(_healthState.at))}（${escapeHtml(healthAgo(_healthState.at))}）／${c.n}項目</span></div>`;
-            const groups = ['動いているか', '安全', '週に1回'], bars = { '動いているか': 'bg-cyan-500', '安全': 'bg-emerald-500', '週に1回': 'bg-slate-400' };
+            const tip = c.bad ? 'すぐに対処が必要です。下の「いますぐやること」に手順があります' : c.warn ? '時間のあるときに対処してください' : 'いま点検した項目に、問題は見つかりませんでした';
             const items = _healthState.items.slice();
+            sum.className = 'space-y-3';
+            sum.innerHTML = `<div class="dev-verdict is-${st}"><b>${head}</b><span>${tip}　最終点検 ${escapeHtml(healthTime(_healthState.at))}（${escapeHtml(healthAgo(_healthState.at))}）／${c.n}項目</span>${pmChips(pmCount(items))}</div>${pmTodo(items)}`;
+            const groups = ['動いているか', '安全', '週に1回'], bars = { '動いているか': 'bg-cyan-500', '安全': 'bg-emerald-500', '週に1回': 'bg-slate-400' };
             const known = new Set(groups);
             items.forEach(x => { if (!known.has(x.g)) { known.add(x.g); groups.push(x.g); } });
             out.innerHTML = groups.map(g => {
                 const list = items.filter(x => x.g === g).sort((a, b) => (HEALTH_ORDER[a.level] ?? 9) - (HEALTH_ORDER[b.level] ?? 9));
                 if (!list.length) return '';
-                return `<div class="space-y-3"><div class="flex items-center gap-2"><span class="w-1 h-4 rounded-full ${bars[g] || 'bg-slate-400'}"></span><span class="text-sm font-black text-slate-800 dark:text-white">${escapeHtml(g)}</span><span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">${list.length}</span></div><div class="space-y-2">${list.map(healthRow).join('')}</div></div>`;
+                const hot = list.filter(x => x.level !== 'ok'), oks = list.filter(x => x.level === 'ok');
+                return `<div class="space-y-3"><div class="flex items-center gap-2"><span class="w-1 h-4 rounded-full ${bars[g] || 'bg-slate-400'}"></span><span class="text-sm font-black text-slate-800 dark:text-white">${escapeHtml(g)}</span><span class="text-[10px] font-black px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300">${list.length}</span></div><div class="space-y-2">${pmFold(hot, oks, healthRow)}</div></div>`;
             }).join('');
         }
         function healthLamp() {   // 開発者ホームのランプ用
@@ -27417,7 +27443,7 @@ async function devUsageLoadTrend(selected) {
                 : st.nw ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-900'
                 : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900';
             const head = st.nb ? '危険 ' + st.nb + ' 件' + (st.nw ? '、注意 ' + st.nw + ' 件' : '') : st.nw ? '注意 ' + st.nw + ' 件' : 'いま見つかった問題はありません';
-            sumEl.innerHTML = `<div class="rounded-xl border p-3 ${tone}"><p class="text-sm font-black">${escapeHtml(head)}</p><p class="text-[10px] font-bold mt-0.5 opacity-80">調べた時刻：${escapeHtml(st.at.toLocaleString('ja-JP'))}</p>${st.diff ? `<p class="text-[10px] font-bold mt-0.5 opacity-80">${escapeHtml(st.diff)}</p>` : ''}</div>`;
+            sumEl.className = 'space-y-3'; sumEl.innerHTML = `<div class="rounded-xl border p-3 ${tone}"><p class="text-sm font-black">${escapeHtml(head)}</p><p class="text-[10px] font-bold mt-0.5 opacity-80">調べた時刻：${escapeHtml(st.at.toLocaleString('ja-JP'))}</p>${st.diff ? `<p class="text-[10px] font-bold mt-0.5 opacity-80">${escapeHtml(st.diff)}</p>` : ''}${pmChips(pmCount(st.risks.concat(st.signals)))}</div>${pmTodo(st.risks.concat(st.signals))}`;
             if (tools) tools.style.display = 'flex';
 
             const t = st.last24h;
@@ -27499,7 +27525,7 @@ async function devUsageLoadTrend(selected) {
                 const n = await window.AppFirebase.getMemberCount();
                 let prev = null; try { prev = Number(localStorage.getItem('sec_members_seen')); } catch (_) {}
                 try { localStorage.setItem('sec_members_seen', String(n)); } catch (_) {}
-                if (prev && n - prev >= 20) add(signals, 'warn', 'ワンタイムコードで認められた人が、前回の確認から ' + (n - prev) + ' 人増えました', '現在 ' + n + ' 人。', '想定外の人にコードを渡していないか確認する。心当たりのない依頼には、コードを発行しない');
+                if (prev && n - prev >= 20) add(signals, 'warn', 'ワンタイムコードで認められた人が、前回の確認から ' + (n - prev) + ' 人増えました', '現在 ' + n + ' 人。', '想定外の人にコードを渡していないことを確認する。心当たりのない依頼には、コードを発行しない');
                 else add(facts, 'info', 'ワンタイムコードで認められた人：' + n + '人', prev ? '前回の確認：' + prev + '人' : '');
             });
 
@@ -27513,7 +27539,7 @@ async function devUsageLoadTrend(selected) {
                 Object.keys(SECMON_EVENT_LABEL).forEach(t => {
                     const n = cnt[t] || 0; if (!n) return;
                     const [w, b] = thr[t] || [20, 100];
-                    add(signals, n >= b ? 'bad' : n >= w ? 'warn' : 'info', SECMON_EVENT_LABEL[t] + '：直近24時間に ' + n + ' 件', t === 'auto_corrected' ? 'まとめて報告されて、内容が書き換えられていないか、「報告・訂正」の記録を確認してください。' : t === 'admin_denied' ? '管理用の画面を探っている人がいる可能性があります。' : '');
+                    add(signals, n >= b ? 'bad' : n >= w ? 'warn' : 'info', SECMON_EVENT_LABEL[t] + '：直近24時間に ' + n + ' 件', t === 'auto_corrected' ? 'まとめて報告されて内容が書き換えられた形跡がないことを、「報告・訂正」の記録で確認してください。' : t === 'admin_denied' ? '管理用の画面を探っている人がいる可能性があります。' : '');
                 });
                 if (!recent.length) add(signals, 'ok', '直近24時間に、不審なアクセスの記録はありません', evs.length ? '' : '（記録は、Workerを最新版にしてから貯まり始めます）');
                 evs.slice(0, 15).forEach(e => add(facts, 'info', (SECMON_EVENT_LABEL[e.type] || e.type), new Date(e.t).toLocaleString('ja-JP') + (e.detail ? '　' + e.detail : '') + (e.who ? '　接続元:' + e.who : '')));
@@ -27616,7 +27642,7 @@ async function devUsageLoadTrend(selected) {
                 cmsRenderInviteRequests();
             } catch (e) {
                 list.innerHTML = '';
-                st.textContent = '読み込めませんでした。開発者（公式）アカウントでログインしているか、Firestoreのルール（下の「ルールをコピー」）を更新したか、確認してください';
+                st.textContent = '読み込めませんでした。開発者（公式）アカウントでログインしていることと、Firestoreのルール（下の「ルールをコピー」）を更新済みであることを確認してください';
                 st.className = 'text-[10px] font-bold text-rose-500';
             }
         }
